@@ -2,7 +2,7 @@
 
 from unittest import TestCase
 
-from borax.structures import AliasDictionary
+from borax.structures.dictionary import AliasDictionary
 
 demo_data = {
     'alias': {
