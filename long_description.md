@@ -1,5 +1,3 @@
-# Borax
-
 ## Overview
 
 Borax is a utils collections for python3 development, which contains some common data structures and the implementation of design patterns.

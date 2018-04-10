@@ -16,7 +16,7 @@ def create_point():
 
 
 def create_point_with_kwargs(x, y):
-    return MockPoint(1, 2)
+    return MockPoint(x, y)
 
 
 class LazyObjectTestCase(unittest.TestCase):
