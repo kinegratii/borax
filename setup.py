@@ -39,6 +39,7 @@ setup(
     license='MIT',
     author='Kinegratii',
     author_email='kinegratii@gmail.com',
+    lib_classifiers=lib_classifiers,
     description='A util collections for Python3.',
     long_description=read_long_description(),
     long_description_content_type='text/markdown',
