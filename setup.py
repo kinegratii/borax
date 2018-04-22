@@ -1,17 +1,7 @@
 # coding=utf8
-import re
 from setuptools import setup, find_packages
-from pathlib import Path
 
-
-def retrieve_version():
-    p = Path('borax', '__init__.py')
-    with p.open(encoding='utf8') as f:
-        version_file_content = f.read()
-        version_match = re.findall(r"__version__\s=\s'([\d.]+)'", version_file_content)
-        if version_match:
-            return version_match[0]
-        return RuntimeError("No version retrieved in package file.")
+from borax import __version__
 
 
 def read_long_description():
@@ -34,7 +24,7 @@ lib_classifiers = [
 
 setup(
     name='borax',
-    version=retrieve_version(),
+    version=__version__,
     packages=find_packages(exclude=['tests']),
     url='https://github.com/kinegratii/borax',
     license='MIT',
