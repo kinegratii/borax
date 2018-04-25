@@ -30,6 +30,10 @@ A lazy creator for a class object and function.
 
 A useful data structure for dictionary/list/set .
 
+### borax.patterns
+
+A implementation for the design patterns.
+
 ## License
 
 ```
