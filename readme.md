@@ -22,9 +22,7 @@ A enhance module using class-style define for const choices.
 
 A function sets for fetch the values of some axises.
 
-### borax.lazy
 
-A lazy creator for a class object and function.
 
 ### borax.structures
 
@@ -33,6 +31,14 @@ A useful data structure for dictionary/list/set .
 ### borax.patterns
 
 A implementation for the design patterns.
+
+#### borax.patterns.lazy
+
+A lazy creator for a class object and function.
+
+#### borax.patterns.singleton
+
+A singleton design patterns.
 
 ## License
 

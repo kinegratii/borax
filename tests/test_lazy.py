@@ -2,7 +2,7 @@
 
 import unittest
 
-from borax.lazy import LazyObject
+from borax.patterns.lazy import LazyObject
 
 
 class MockPoint(object):
