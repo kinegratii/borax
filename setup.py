@@ -3,12 +3,6 @@ from setuptools import setup, find_packages
 
 from borax import __version__
 
-
-def read_long_description():
-    with open('long_description.md', encoding='utf8') as f:
-        return f.read()
-
-
 lib_classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Programming Language :: Python :: 3",
@@ -32,6 +26,5 @@ setup(
     author_email='kinegratii@gmail.com',
     classifiers=lib_classifiers,
     description='A util collections for Python3.',
-    long_description=read_long_description(),
     long_description_content_type='text/markdown',
 )
