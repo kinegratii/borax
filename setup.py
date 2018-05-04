@@ -1,7 +1,7 @@
 # coding=utf8
 from setuptools import setup, find_packages
 
-from borax import __version__
+from borax import __version__, __author__
 
 lib_classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -22,9 +22,8 @@ setup(
     packages=find_packages(exclude=['tests']),
     url='https://github.com/kinegratii/borax',
     license='MIT',
-    author='Kinegratii',
+    author=__author__,
     author_email='kinegratii@gmail.com',
     classifiers=lib_classifiers,
     description='A util collections for Python3.',
-    long_description_content_type='text/markdown',
 )
