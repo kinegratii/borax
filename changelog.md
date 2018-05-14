@@ -1,6 +1,10 @@
 # 更新日志
 
-## v1.0.3
+## v1.0.4
+
+- 新增百分比类 `Percentage`
+
+## v1.0.3 (20180504)
 
 - 新增单例设计模式实现
 - `borax.lazy` 移到 `borax.patterns.lazy`
