@@ -12,6 +12,23 @@
 
 Borax is a utils collections for python3 development, which contains some common data structures and the implementation of design patterns.
 
+## Installation
+
+Use *pip* :
+
+```shell
+pip install borax
+
+```
+
+Or checkout source code:
+
+```shell
+git clone https://github.com/kinegratii/borax.git
+cd borax
+python setup.py install
+```
+
 ## Package & Module
 
 ### borax.choices
