@@ -6,7 +6,13 @@ from collections import namedtuple
 __all__ = ['EMPTY', 'AliasItem', "AliasDictionary"]
 
 EMPTY = object()
-AliasItem = namedtuple('AliasItem', 'alias key value')
+
+
+class AliasItem:
+    def __init__(self, alias, key, value):
+        self.alias = alias
+        self.key = key
+        self.value = value
 
 
 class AliasDictionary:
