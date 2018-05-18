@@ -56,3 +56,9 @@ class AliasDictionaryTestCase(TestCase):
             ('E', None, 'E'),
             ad.get_item('E', default='E')
         )
+
+    def test_get_available_items(self):
+        ad = AliasDictionary(demo_data['data'], demo_data['alias'])
+        for key, value, aliases in ad.get_available_items():
+            if key == 'a':
+                self.assertListEqual(['A', 'A1'], aliases)

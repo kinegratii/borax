@@ -32,3 +32,9 @@ class LazyObjectTestCase(unittest.TestCase):
         self.assertTrue(isinstance(p, LazyObject))
         self.assertEqual(1, p.x)
         self.assertTrue(isinstance(p, MockPoint))
+
+    def test_delete_attr(self):
+        p = LazyObject(MockPoint, kwargs={'x': 1, 'y': 2})
+        delattr(p, 'x')
+        with self.assertRaises(AttributeError):
+            c = p.x

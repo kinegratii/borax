@@ -23,7 +23,8 @@ class PercentTestCase(unittest.TestCase):
 
     def test_zero_total(self):
         p = Percentage(total=0)
-        p.increase(34)
+        p.increase(35)
+        p.decrease(1)
 
         self.assertEqual(0, p.total)
         self.assertEqual(34, p.completed)
