@@ -7,12 +7,7 @@ __all__ = ['EMPTY', 'AliasItem', "AliasDictionary"]
 
 EMPTY = object()
 
-
-class AliasItem:
-    def __init__(self, alias, key, value):
-        self.alias = alias
-        self.key = key
-        self.value = value
+AliasItem = namedtuple('AliasItem', 'alias key value')
 
 
 class AliasDictionary:
