@@ -17,7 +17,7 @@ Borax is a utils collections for python3 development, which contains some common
 Use *pip* :
 
 ```shell
-pip install borax
+$ pip install borax
 
 ```
 
@@ -29,6 +29,10 @@ cd borax
 python setup.py install
 ```
 
+## Document
+
+See [online document](https://kinegratii.github.io/borax) for more detail.
+
 ## Package & Module
 
 ### borax.choices
@@ -38,8 +42,6 @@ A enhance module using class-style define for const choices.
 ### borax.fetch
 
 A function sets for fetch the values of some axises.
-
-
 
 ### borax.structures
 

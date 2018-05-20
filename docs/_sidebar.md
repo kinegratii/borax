@@ -5,5 +5,6 @@
   - [choices](guides/choices)
   - [fetch](guides/fetch)
   - [percentage](guides/percentage)
+  - [singleton](guides/singleton)
 - **开发**
   - [版本日志](changelog)

@@ -6,7 +6,7 @@
 使用 *pip* ：
 
 ```shell
-pip install borax
+$ pip install borax
 ```
 
 或者使用开发代码
