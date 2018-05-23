@@ -115,7 +115,6 @@ Demo for multiple default values
 ```python
 from borax.fetch import fetch
 
-
 class Point:
     def __init__(self, x, y, z):
         self.x = x

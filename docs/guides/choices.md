@@ -4,7 +4,7 @@
 
 ## 基本使用
 
-继承自 `choices.ConstChoices`, 并使用 `ConstChoices.Item` 列出所有的可选项。
+继承自 `choices.ConstChoices`, 并使用 `choices.Item` 列出所有的可选项。
 
 ```python
 from borax import choices
@@ -25,7 +25,7 @@ True
 False
 ```
 
-### 整合到 Django
+## 整合到 Django
 
 未使用 `borax.choices` 时：
 
@@ -66,3 +66,21 @@ class Student(models.Model):
     )
 
 ```
+
+## 方法 API
+
+> 以下所有的方法均为 `ConstChoices` 类方法，
+
+- **`ConstChoices.choices`**
+
+所有选项列表。可直接用于 django.models.Field.choices 。
+
+类似于 `[(value1, display1), (value2, display2), ...]` 。
+
+- **`ConstChoices.is_valid(value)`**
+
+检查 `value` 是否是有效的选项。
+
+- **`ConstChoices.get_value_display(value)`**
+
+获取某个选项的文本。

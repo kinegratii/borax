@@ -17,7 +17,22 @@
         repo: 'https://github.com/kinegratii/borax/',
         loadSidebar: true,
         maxLevel: 4,
-        subMaxLevel: 3
+        subMaxLevel: 3,
+        plugins: [
+            function (hook) {
+                var footer = [
+                    '<hr/>',
+                    '<footer>',
+                    '<span><a href="https://github.com/kinegratii">kinegratii</a> &copy;2015-2018.</span>',
+                    '<span>Powered By <a href="https://github.com/QingWei-Li/docsify" target="_blank">docsify</a>.</span>',
+                    '</footer>'
+                ].join('');
+
+                hook.afterEach(function (html) {
+                    return html + footer
+                })
+            }
+        ]
     }
 </script>
 <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
