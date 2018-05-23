@@ -8,20 +8,25 @@
 
 
 
-## Overview
+## 概述
 
-Borax is a utils collections for python3 development, which contains some common data structures and the implementation of design patterns.
+Borax 是一个的 Python3 开发工具集合库,涉及到：
 
-## Installation
+ - 设计模式示例
+ - 数据结构
 
-Use *pip* :
+## 安装
+
+Borax 要求 Python 的版本至少为 3.5 以上。
+
+使用 *pip* ：
 
 ```shell
 $ pip install borax
 
 ```
 
-Or checkout source code:
+或者使用开发代码
 
 ```shell
 git clone https://github.com/kinegratii/borax.git
@@ -29,37 +34,56 @@ cd borax
 python setup.py install
 ```
 
-## Document
+## 模块用法示例
 
-See [online document](https://kinegratii.github.io/borax) for more detail.
+### Choices 模块
 
-## Package & Module
+在 django models 中使用 `choices` 。
 
-### borax.choices
+```python
+from django.db import models
+import ConstChoices
 
-A enhance module using class-style define for const choices.
+class Student(models.Model):
+    class GenderChoices(ConstChoices.ConstChoices):
+        MALE = ConstChoices.Item(1, 'male')
+        FEMALE = ConstChoices.Item(2, 'female')
+        UNKOWN = ConstChoices.Item(3, 'unkown')
+        
+    gender = models.IntergerFIeld(
+        choices=GenderChoices,
+        default=GenderChoices.UNKOWN
+    )
+```
 
-### borax.fetch
+### Fetch
 
-A function sets for fetch the values of some axises.
+从数据序列中选择一个或多个字段的数据。
 
-### borax.structures
+```python
+from borax.fetch import fetch
 
-A useful data structure for dictionary/list/set .
+objects = [
+    {'id': 282, 'name': 'Alice', 'age': 30},
+    {'id': 217, 'name': 'Bob', 'age': 56},
+    {'id': 328, 'name': 'Charlie', 'age': 56},
+]
 
-### borax.patterns
+names = fetch(objects, 'name')
+print(names)
+```
 
-A implementation for the design patterns.
+输出
 
-#### borax.patterns.lazy
+```
+['Alice', 'Bob', 'Charlie']
+```
 
-A lazy creator for a class object and function.
+## 文档
 
-#### borax.patterns.singleton
+在线文档托管在 [https://kinegratii.github.io/borax](https://kinegratii.github.io/borax) ，由 [docsify](https://docsify.js.org/) 构建。
 
-A singleton design patterns.
-
-## License
+## 开源协议
 
 ```
 The MIT License (MIT)
