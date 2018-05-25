@@ -42,13 +42,13 @@ python setup.py install
 
 ```python
 from django.db import models
-import ConstChoices
+from borax import choices
 
 class Student(models.Model):
-    class GenderChoices(ConstChoices.ConstChoices):
-        MALE = ConstChoices.Item(1, 'male')
-        FEMALE = ConstChoices.Item(2, 'female')
-        UNKOWN = ConstChoices.Item(3, 'unkown')
+    class GenderChoices(choices.ConstChoices):
+        MALE = choices.Item(1, 'male')
+        FEMALE = choices.Item(2, 'female')
+        UNKOWN = choices.Item(3, 'unkown')
         
     gender = models.IntergerFIeld(
         choices=GenderChoices,
