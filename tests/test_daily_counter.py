@@ -2,7 +2,7 @@
 
 import unittest
 
-from borax.structures.daily import DailyCounter
+from borax.counters.daily import DailyCounter
 
 
 class DailyCounterTestCase(unittest.TestCase):
