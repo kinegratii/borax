@@ -1,7 +1,12 @@
 # coding=utf8
+from pathlib import Path
+
 from setuptools import setup, find_packages
 
-from borax import __version__, __author__
+about = dict()
+p = Path('borax', '__init__.py')
+with p.open(encoding='utf8') as fp:
+    exec(fp.read(), about)
 
 lib_classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -18,11 +23,11 @@ lib_classifiers = [
 
 setup(
     name='borax',
-    version=__version__,
+    version=about['__version__'],
     packages=find_packages(exclude=['tests']),
     url='https://github.com/kinegratii/borax',
     license='MIT',
-    author=__author__,
+    author='kinegratii',
     author_email='kinegratii@gmail.com',
     classifiers=lib_classifiers,
     description='A util collections for Python3.',
