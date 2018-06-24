@@ -12,8 +12,8 @@ def attr(**kwargs):
     return _inner
 
 
-def action(short_description=None, **kwargs):
-    return attr(short_description=short_description, **kwargs)
+def action(short_description=None, allowed_permissions=None, **kwargs):
+    return attr(short_description=short_description, allowed_permissions=allowed_permissions, **kwargs)
 
 
 def display_field(short_description, admin_order_field=None, **kwargs):
