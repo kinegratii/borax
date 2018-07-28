@@ -1,12 +1,13 @@
 # coding=utf8
-from pathlib import Path
+import pathlib
+import re
 
 from setuptools import setup, find_packages
 
-about = dict()
-p = Path('borax', '__init__.py')
-with p.open(encoding='utf8') as fp:
-    exec(fp.read(), about)
+here = pathlib.Path(__file__).parent
+
+txt = (here / 'borax' / '__init__.py').read_text()
+version = re.findall(r"^__version__ = '([^']+)'\r?$", txt, re.M)[0]
 
 lib_classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -23,7 +24,8 @@ lib_classifiers = [
 
 setup(
     name='borax',
-    version=about['__version__'],
+    version=version,
+    python_requires='>=3.5',
     packages=find_packages(exclude=['tests']),
     url='https://github.com/kinegratii/borax',
     license='MIT',

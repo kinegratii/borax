@@ -33,3 +33,12 @@ git clone https://github.com/kinegratii/borax.git
 cd borax
 python setup.py install
 ```
+
+## 版本
+
+打印 Borax 的版本。
+
+```python
+from borax import __version__
+print(__version__)
+```
