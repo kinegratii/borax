@@ -1,6 +1,7 @@
 - **入门**
   - [快速开始](quickstart)
 - **文档**
+  - [admin_decorators](guides/admin_decorators)
   - [dictionary](guides/alias_dictionary)
   - [choices](guides/choices)
   - [fetch](guides/fetch)

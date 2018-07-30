@@ -1,5 +1,10 @@
 # 更新日志
 
+## v1.1.1
+
+- 适配 Python3.7
+- 新增 `borax.decorators.admin` 模块
+
 ## v1.1.0 (20180525)
 
 - 新增百分比类 `Percentage`
