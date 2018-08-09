@@ -1,10 +1,15 @@
-# this file is derived from lunar project.
+# this file is derived from python-lunardate project.
 #
 # lunar project:
 #   Copyright (C) 1988,1989,1991,1992,2001 Fung F. Lee and Ricky Yeung
 #   Licensed under GPLv2.
 #
-# Copyright (C) 2008 LI Daobing <lidaobing@gmail.com>
+# python-lunardate project:
+#   Copyright (C) 2008 LI Daobing <lidaobing@gmail.com>
+#
+# borax.calendars.lunardate
+#
+#   Copyright (C) 2018 Kinegratii <kinegratii@gmail.com>
 
 
 import datetime
