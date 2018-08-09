@@ -5,6 +5,7 @@
   - [dictionary](guides/alias_dictionary)
   - [choices](guides/choices)
   - [fetch](guides/fetch)
+  - [lunardate](guides/lunardate)
   - [percentage](guides/percentage)
   - [singleton](guides/singleton)
 - **开发**
