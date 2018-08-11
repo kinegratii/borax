@@ -1,17 +1,4 @@
-# this file is derived from python-lunardate project.
-#
-# lunar project:
-#   Copyright (C) 1988,1989,1991,1992,2001 Fung F. Lee and Ricky Yeung
-#   Licensed under GPLv2.
-#
-# python-lunardate project:
-#   Copyright (C) 2008 LI Daobing <lidaobing@gmail.com>
-#
-# borax.calendars.lunardate
-#
-#   Copyright (C) 2018 Kinegratii <kinegratii@gmail.com>
-
-
+# coding=utf8
 import datetime
 
 __all__ = ['LunarDate']
@@ -59,57 +46,61 @@ YEAR_INFOS = [
 ]
 
 
-def yearInfo2yearDay(yearInfo):
-    yearInfo = int(yearInfo)
+def parse_year_days(year_info):
+    """Parse year days from a year info.
+    """
+    year_info = int(year_info)
     res = 29 * 12
 
     leap = False
-    if yearInfo % 16 != 0:
+    if year_info % 16 != 0:
         leap = True
         res += 29
 
-    yearInfo //= 16
+    year_info //= 16
 
     for i in range(12 + leap):
-        if yearInfo % 2 == 1:
+        if year_info % 2 == 1:
             res += 1
-        yearInfo //= 2
+        year_info //= 2
     return res
 
 
-YEAR_DAYS = [yearInfo2yearDay(x) for x in YEAR_INFOS]
+YEAR_DAYS = [parse_year_days(x) for x in YEAR_INFOS]
 
 
-def enumMonth(yearInfo):
-    # info => month, days, isLeapMonth
+def iter_year_month(year_info):
+    """ Iter the month days in a lunar year.
+    """
+    # info => month, days, leap
     months = [(i, 0) for i in range(1, 13)]
-    leapMonth = yearInfo % 16
-    if leapMonth == 0:
+    leap_month = year_info % 16  # The leap month in this year.
+    if leap_month == 0:
         pass
-    elif leapMonth <= 12:
-        months.insert(leapMonth, (leapMonth, 1))
+    elif leap_month <= 12:
+        months.insert(leap_month, (leap_month, 1))
     else:
-        raise ValueError("yearInfo %r mod 16 should in [0, 12]" % yearInfo)
+        raise ValueError("yearInfo %r mod 16 should in [0, 12]" % year_info)
 
-    for month, isLeapMonth in months:
-        if isLeapMonth:
-            days = (yearInfo >> 16) % 2 + 29
+    for month, leap in months:
+        if leap:
+            days = (year_info >> 16) % 2 + 29
         else:
-            days = (yearInfo >> (16 - month)) % 2 + 29
-        yield month, days, isLeapMonth
+            days = (year_info >> (16 - month)) % 2 + 29
+        yield month, days, leap
 
 
 # offset <----> year, day_offset <----> year, month, day, leap
 
 def offset2ymdl(offset):
-    def _calcMonthDay(yearInfo, offset):
-        for month, days, isLeapMonth in enumMonth(yearInfo):
-            if offset < days:
+    def _o2mdl(_year_info, _offset):
+        for _month, _days, _leap in iter_year_month(_year_info):
+            if _offset < _days:
                 break
-            offset -= days
+            _offset -= _days
         else:
             raise ValueError('Out of range.')
-        return month, offset + 1, isLeapMonth
+        return _month, _offset + 1, _leap
 
     offset = int(offset)
 
@@ -119,36 +110,36 @@ def offset2ymdl(offset):
         offset -= yearDay
     else:
         raise ValueError('Out of range')
-    year = 1900 + idx
+    year = _START_LUNAR_YEAR + idx
 
-    yearInfo = YEAR_INFOS[idx]
-    month, day, isLeapMonth = _calcMonthDay(yearInfo, offset)
-    return year, month, day, isLeapMonth
+    year_info = YEAR_INFOS[idx]
+    month, day, leap = _o2mdl(year_info, offset)
+    return year, month, day, leap
 
 
-def ymdl2offset(year, month, day, isLeapMonth):
-    def _calcDays(yearInfo, month, day, isLeapMonth):
-        isLeapMonth = int(isLeapMonth)
+def ymdl2offset(year, month, day, leap):
+    def _mdl2o(_year_info, _month, _day, _leap):
+        _leap = int(_leap)
         res = 0
-        for _month, _days, _isLeapMonth in enumMonth(yearInfo):
-            if (_month, _isLeapMonth) == (month, isLeapMonth):
-                if 1 <= day <= _days:
-                    res += day - 1
+        for _month_, _days_, _leap_ in iter_year_month(_year_info):
+            if (_month_, _leap_) == (_month, _leap):
+                if 1 <= _day <= _days_:
+                    res += _day - 1
                     return res
                 else:
                     raise ValueError("day out of range")
-            res += _days
+            res += _days_
 
         raise ValueError("month out of range")
 
     offset = 0
-    if year < 1900 or year > 2100:
+    if year < _START_LUNAR_YEAR or year > _END_LUNAR_YEAR:
         raise ValueError('year out of range [1900, 2100]')
-    yearIdx = year - 1900
-    for i in range(yearIdx):
+    year_idx = year - _START_LUNAR_YEAR
+    for i in range(year_idx):
         offset += YEAR_DAYS[i]
 
-    offset += _calcDays(YEAR_INFOS[yearIdx], month, day, isLeapMonth)
+    offset += _mdl2o(YEAR_INFOS[year_idx], month, day, leap)
     return offset
 
 
@@ -190,34 +181,34 @@ class LunarDate:
     __repr__ = __str__
 
     @staticmethod
-    def fromSolarDate(year, month, day):
-        solarDate = datetime.date(year, month, day)
-        offset = (solarDate - _START_SOLAR_DATE).days
+    def from_solar_date(year, month, day):
+        solar_date = datetime.date(year, month, day)
+        offset = (solar_date - _START_SOLAR_DATE).days
         y, m, d, l = offset2ymdl(offset)
         return LunarDate(y, m, d, l)
 
-    def toSolarDate(self):
+    def to_solar_date(self):
         offset = ymdl2offset(self.year, self.month, self.day, self.leap)
         return _START_SOLAR_DATE + datetime.timedelta(days=offset)
 
     def __sub__(self, other):
         if isinstance(other, LunarDate):
-            return self.toSolarDate() - other.toSolarDate()
+            return self.to_solar_date() - other.to_solar_date()
         elif isinstance(other, datetime.date):
-            return self.toSolarDate() - other
+            return self.to_solar_date() - other
         elif isinstance(other, datetime.timedelta):
-            res = self.toSolarDate() - other
-            return LunarDate.fromSolarDate(res.year, res.month, res.day)
+            res = self.to_solar_date() - other
+            return LunarDate.from_solar_date(res.year, res.month, res.day)
         raise TypeError
 
     def __rsub__(self, other):
         if isinstance(other, datetime.date):
-            return other - self.toSolarDate()
+            return other - self.to_solar_date()
 
     def __add__(self, other):
         if isinstance(other, datetime.timedelta):
-            res = self.toSolarDate() + other
-            return LunarDate.fromSolarDate(res.year, res.month, res.day)
+            res = self.to_solar_date() + other
+            return LunarDate.from_solar_date(res.year, res.month, res.day)
         raise TypeError
 
     def __radd__(self, other):
@@ -249,7 +240,7 @@ class LunarDate:
     @classmethod
     def today(cls):
         res = datetime.date.today()
-        return cls.fromSolarDate(res.year, res.month, res.day)
+        return cls.from_solar_date(res.year, res.month, res.day)
 
 
 LunarDate.min = LunarDate(1990, 1, 1, 0)

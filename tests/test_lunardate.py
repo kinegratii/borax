@@ -4,7 +4,7 @@ import unittest
 
 from datetime import date, timedelta
 
-from borax.calendars.lunardate import LunarDate, yearInfo2yearDay
+from borax.calendars.lunardate import LunarDate, parse_year_days
 
 
 class LunarDateTestCase(unittest.TestCase):
@@ -16,18 +16,18 @@ class LunarDateTestCase(unittest.TestCase):
         self.assertEqual(True, ld.leap)
 
     def test_convert_datetime(self):
-        dt = LunarDate(1976, 8, 8, 1).toSolarDate()
+        dt = LunarDate(1976, 8, 8, 1).to_solar_date()
         self.assertEqual(date(1976, 10, 1), dt)
-        dt2 = LunarDate.fromSolarDate(2033, 10, 23)
+        dt2 = LunarDate.from_solar_date(2033, 10, 23)
         self.assertTrue(LunarDate(2033, 10, 1, 0), dt2)
 
         # day out of range
         with self.assertRaises(ValueError):
-            LunarDate(2004, 1, 30).toSolarDate()
+            LunarDate(2004, 1, 30).to_solar_date()
 
         # year out of range [1900, 2100]
         with self.assertRaises(ValueError):
-            LunarDate(2101, 1, 1).toSolarDate()
+            LunarDate(2101, 1, 1).to_solar_date()
 
     def test_timedelta(self):
         ld = LunarDate(1976, 8, 8)
@@ -65,9 +65,9 @@ class LunarDateTestCase(unittest.TestCase):
 
 class PrivateMethodsTestCase(unittest.TestCase):
     def test_year_info(self):
-        self.assertEqual(348, yearInfo2yearDay(0))  # no leap month, and every month has 29 days.
-        self.assertEqual(377, yearInfo2yearDay(1))  # 1 leap month, and every month has 29 days.
-        self.assertEqual(360, yearInfo2yearDay((2 ** 12 - 1) * 16))  # no leap month, and every month has 30 days.
-        self.assertEqual(390, yearInfo2yearDay((2 ** 13 - 1) * 16 + 1))  # 1 leap month, and every month has 30 days.
+        self.assertEqual(348, parse_year_days(0))  # no leap month, and every month has 29 days.
+        self.assertEqual(377, parse_year_days(1))  # 1 leap month, and every month has 29 days.
+        self.assertEqual(360, parse_year_days((2 ** 12 - 1) * 16))  # no leap month, and every month has 30 days.
+        self.assertEqual(390, parse_year_days((2 ** 13 - 1) * 16 + 1))  # 1 leap month, and every month has 30 days.
         # 1 leap month, and every normal month has 30 days, and leap month has 29 days.
-        self.assertEqual(389, yearInfo2yearDay((2 ** 12 - 1) * 16 + 1))
+        self.assertEqual(389, parse_year_days((2 ** 12 - 1) * 16 + 1))
