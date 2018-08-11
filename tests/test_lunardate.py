@@ -62,6 +62,11 @@ class LunarDateTestCase(unittest.TestCase):
         with self.assertRaises(TypeError):
             LunarDate.today() >= 5
 
+    def test_immutable_feature(self):
+        ld1 = LunarDate(2018, 6, 1)
+        ld2 = LunarDate(2018, 6, 1)
+        self.assertEqual(1, len({ld1, ld2}))
+
 
 class PrivateMethodsTestCase(unittest.TestCase):
     def test_year_info(self):

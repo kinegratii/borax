@@ -5,7 +5,7 @@ __all__ = ['LunarDate']
 
 _START_SOLAR_DATE = datetime.date(1900, 1, 31)
 _END_SOLAR_DATE = datetime.date(2101, 1, 8)
-_MAX_OFFSET = (_END_SOLAR_DATE - _START_SOLAR_DATE).days
+_MAX_OFFSET = (_END_SOLAR_DATE - _START_SOLAR_DATE).days  # 73391
 _START_LUNAR_YEAR = 1900
 _END_LUNAR_YEAR = 2100
 
@@ -156,8 +156,6 @@ class LunarDate:
         self._offset = offset
         return self
         # TODO Add validate or raise ValueError
-        # TODO dict key, bool context
-        # TODO Add hashCode
 
     @property
     def year(self):
@@ -236,6 +234,9 @@ class LunarDate:
 
     def __ge__(self, other):
         return not self < other
+
+    def __hash__(self):
+        return hash((self.year, self.month, self.day, self.leap))
 
     @classmethod
     def today(cls):
