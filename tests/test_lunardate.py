@@ -1,10 +1,11 @@
 # coding=utf8
 
+import datetime
 import unittest
 
 from datetime import date, timedelta
 
-from borax.calendars.lunardate import LunarDate, parse_year_days
+from borax.calendars.lunardate import LunarDate, parse_year_days, ymdl2offset, offset2ymdl
 
 
 class LunarDateTestCase(unittest.TestCase):
@@ -67,6 +68,11 @@ class LunarDateTestCase(unittest.TestCase):
         ld2 = LunarDate(2018, 6, 1)
         self.assertEqual(1, len({ld1, ld2}))
 
+    def test_term_feature(self):
+        ld = LunarDate(2018, 6, 26)
+        self.assertEqual(datetime.date(2018, 8, 7), ld.to_solar_date())
+        self.assertEqual('立秋', ld.term)
+
 
 class PrivateMethodsTestCase(unittest.TestCase):
     def test_year_info(self):
@@ -76,3 +82,9 @@ class PrivateMethodsTestCase(unittest.TestCase):
         self.assertEqual(390, parse_year_days((2 ** 13 - 1) * 16 + 1))  # 1 leap month, and every month has 30 days.
         # 1 leap month, and every normal month has 30 days, and leap month has 29 days.
         self.assertEqual(389, parse_year_days((2 ** 12 - 1) * 16 + 1))
+
+    def test_ymdl_offset(self):
+        for offset in range(0, 73392):
+            y, m, d, l = offset2ymdl(offset)
+            _offset = ymdl2offset(y, m, d, l)
+            self.assertEqual(_offset, offset)
