@@ -68,10 +68,14 @@ class LunarDateTestCase(unittest.TestCase):
         ld2 = LunarDate(2018, 6, 1)
         self.assertEqual(1, len({ld1, ld2}))
 
-    def test_term_feature(self):
+    def test_term_ganzhi_feature(self):
         ld = LunarDate(2018, 6, 26)
         self.assertEqual(datetime.date(2018, 8, 7), ld.to_solar_date())
+        self.assertEqual(43287, ld._offset)
         self.assertEqual('立秋', ld.term)
+        self.assertEqual('戊戌', ld.gz_year)
+        self.assertEqual('庚申', ld.gz_month)
+        self.assertEqual('辛未', ld.gz_day)
 
 
 class PrivateMethodsTestCase(unittest.TestCase):

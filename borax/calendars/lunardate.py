@@ -9,6 +9,12 @@ _MAX_OFFSET = (_END_SOLAR_DATE - _START_SOLAR_DATE).days  # 73391
 _START_LUNAR_YEAR = 1900
 _END_LUNAR_YEAR = 2100
 
+
+def get_item_cycle(arr, index):
+    l = len(arr)
+    return arr[(index % l + index) % l]
+
+
 YEAR_INFOS = [
     #    /* encoding:
     #               b bbbbbbbbbbbb bbbb
@@ -227,22 +233,32 @@ def get_term(year, n):
     """
     year_idx = year - _START_LUNAR_YEAR
     term_info = TERM_INFO[year_idx]
-    print(term_info)
     values = [str(int(term_info[i:i + 5], 16)) for i in range(0, 30, 5)]
-    print(values)
     term_day_list = []
     for v in values:
         term_day_list.extend([
             int(v[0]), int(v[1:3]), int(v[3]), int(v[4:6])
         ])
-    print(term_day_list)
     return term_day_list[n]
+
+
+# ------ GanZhi ------
+
+GANS = '甲乙丙丁戊己庚辛壬癸'
+ZHIS = '子丑寅卯辰巳午未申酉戌亥'
+
+
+def getGanZhi(offset):
+    """Get n-th(0-based) GanZhi
+    """
+    return GANS[offset % 10] + ZHIS[offset % 12]
 
 
 class LunarDate:
     __slots__ = [
         '_year', '_month', '_day', '_leap',
-        '_offset', '_solar_ymd', '_term'
+        '_offset', '_solar_ymd', '_term',
+        '_gz_year', '_gz_month', '_gz_day'
     ]
 
     def __new__(cls, year, month, day, leap=False):
@@ -253,10 +269,10 @@ class LunarDate:
         self._day = day
         self._leap = leap
         self._offset = offset
+
         solar_date = _START_SOLAR_DATE + datetime.timedelta(days=self._offset)
         self._solar_ymd = solar_date.year, solar_date.month, solar_date.day
-        self._term = self._get_term()
-
+        self._gz_year, self._gz_month, self._gz_day, self._term = self._get_gz_ymd()
         return self
 
     @property
@@ -279,6 +295,42 @@ class LunarDate:
     def term(self):
         return self._term
 
+    @property
+    def gz_year(self):
+        return self._gz_year
+
+    @property
+    def gz_month(self):
+        return self._gz_month
+
+    @property
+    def gz_day(self):
+        return self._gz_day
+
+    def _get_gz_ymd(self):
+        sy, sm, sd = self._solar_ymd
+        # [2100.1.1-2100.1.8] has no term info.
+        if sy < 1900 or sy > 2100:
+            return None, None, None, None
+
+        f_index = 2 * sm - 2
+        s_index = 2 * sm - 2
+        d1 = get_term(sy, f_index)
+        d2 = get_term(sy, s_index)
+        if sd == d1:
+            term = TERMS_CN[f_index]
+        elif sd == d2:
+            term = TERMS_CN[s_index]
+        else:
+            term = None
+        if self.day >= d1:
+            gz_month = getGanZhi((sy - 1900) * 12 + sm + 12)
+        else:
+            gz_month = getGanZhi((sy - 1900) * 12 + sm + 11)
+        gz_year = GANS[self.year % 10 - 4] + ZHIS[self.year % 12 - 4]
+        gz_day = getGanZhi((self._offset + 40) % 60)
+        return gz_year, gz_month, gz_day, term
+
     def _get_term(self):
         y = self._solar_ymd[0]
         if y < 1900 or y > 2100:
@@ -295,6 +347,15 @@ class LunarDate:
             return TERMS_CN[s_index]
         else:
             return None
+
+    def _get_gz_year(self):
+        return GANS[self.year % 10 - 4] + ZHIS[self.year % 12 - 4]
+
+    def _get_gz_month(self):
+        pass
+
+    def _get_gz_day(self):
+        return getGanZhi((self._offset + 40) % 60)
 
     @staticmethod
     def from_solar_date(year, month, day):
