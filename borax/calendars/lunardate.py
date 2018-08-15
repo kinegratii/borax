@@ -377,6 +377,14 @@ class LunarDate:
         offset = ymdl2offset(self.year, self.month, self.day, self.leap)
         return _START_SOLAR_DATE + datetime.timedelta(days=offset)
 
+    def before(self, day_delta=1):
+        y, m, d, l = offset2ymdl(self._offset - day_delta)
+        return LunarDate(y, m, d, l)
+
+    def after(self, day_delta=1):
+        y, m, d, l = offset2ymdl(self._offset + day_delta)
+        return LunarDate(y, m, d, l)
+
     @staticmethod
     def from_solar_date(year, month, day):
         solar_date = datetime.date(year, month, day)
@@ -395,7 +403,6 @@ class LunarDate:
     __repr__ = __str__
 
     def __sub__(self, other):
-        # TODO Improve performance
         if isinstance(other, LunarDate):
             return self.to_solar_date() - other.to_solar_date()
         elif isinstance(other, datetime.date):
