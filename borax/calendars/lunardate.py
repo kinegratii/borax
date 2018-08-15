@@ -254,6 +254,30 @@ def getGanZhi(offset):
     return GANS[offset % 10] + ZHIS[offset % 12]
 
 
+class Display:
+    MONTHS_CN = ['〇', '正', '二', '三', '四', '五', '六', '七', '八', '九', '十', '冬', '腊']
+    TENS = ['初', '十', '廿', '卅']
+    DAYS_CN = ['日', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十']
+
+    @staticmethod
+    def year_cn(year):
+        s = ''.join([Display.MONTHS_CN[int(c)] for c in str(year)])
+        return s.replace('正', '一')
+
+    @staticmethod
+    def month_cn(month):
+        return Display.MONTHS_CN[month]
+
+    @staticmethod
+    def day_cn(day):
+        a, b = divmod(day, 10)
+        if b == 0:  # 10,20,30
+            b = 10
+            if a == 1:  # 10
+                a = 0
+        return Display.TENS[a] + Display.DAYS_CN[b]
+
+
 class LunarDate:
     __slots__ = [
         '_year', '_month', '_day', '_leap',
@@ -331,31 +355,27 @@ class LunarDate:
         gz_day = getGanZhi((self._offset + 40) % 60)
         return gz_year, gz_month, gz_day, term
 
-    def _get_term(self):
-        y = self._solar_ymd[0]
-        if y < 1900 or y > 2100:
-            return None
-        m = self._solar_ymd[1]  # m in [1,12]
-        d = self._solar_ymd[2]
-        f_index = 2 * m - 2
-        s_index = 2 * m - 1
-        fd = get_term(y, f_index)
-        sd = get_term(y, s_index)
-        if fd == d:
-            return TERMS_CN[f_index]
-        elif sd == d:
-            return TERMS_CN[s_index]
-        else:
-            return None
+    @property
+    def cn_year(self):
+        return '{}年'.format(Display.year_cn(self.year))
 
-    def _get_gz_year(self):
-        return GANS[self.year % 10 - 4] + ZHIS[self.year % 12 - 4]
+    @property
+    def cn_month(self):
+        return '{}{}月'.format('闰' if self.leap else '', Display.month_cn(self.month))
 
-    def _get_gz_month(self):
-        pass
+    @property
+    def cn_day(self):
+        return '{}日'.format(Display.day_cn(self.day))
 
-    def _get_gz_day(self):
-        return getGanZhi((self._offset + 40) % 60)
+    def cn_str(self):
+        return '{}{}{}'.format(self.cn_year, self.cn_month, self.cn_day)
+
+    def gz_str(self):
+        return '{}年{}月{}日'.format(self.gz_year, self.gz_month, self.gz_day)
+
+    def to_solar_date(self):
+        offset = ymdl2offset(self.year, self.month, self.day, self.leap)
+        return _START_SOLAR_DATE + datetime.timedelta(days=offset)
 
     @staticmethod
     def from_solar_date(year, month, day):
@@ -368,10 +388,6 @@ class LunarDate:
     def today(cls):
         res = datetime.date.today()
         return cls.from_solar_date(res.year, res.month, res.day)
-
-    def to_solar_date(self):
-        offset = ymdl2offset(self.year, self.month, self.day, self.leap)
-        return _START_SOLAR_DATE + datetime.timedelta(days=offset)
 
     def __str__(self):
         return 'LunarDate(%d, %d, %d, %d)' % (self.year, self.month, self.day, self.leap)
