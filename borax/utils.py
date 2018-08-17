@@ -23,3 +23,8 @@ def chain_getattr(obj, attr, value=None):
         return func_or_value() if hasattr(func_or_value, '__call__') else func_or_value
     except AttributeError:
         return value
+
+
+def get_item_cycle(data, index, start=0):
+    l = len(data)
+    return data[((index - start) % l + l) % l]
