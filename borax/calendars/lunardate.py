@@ -4,8 +4,8 @@ import datetime
 __all__ = ['LunarDate']
 
 _START_SOLAR_DATE = datetime.date(1900, 1, 31)
-_END_SOLAR_DATE = datetime.date(2101, 1, 8)
-_MAX_OFFSET = (_END_SOLAR_DATE - _START_SOLAR_DATE).days  # 73391
+_END_SOLAR_DATE = datetime.date(2101, 1, 28)
+_MAX_OFFSET = (_END_SOLAR_DATE - _START_SOLAR_DATE).days  # 73411 [0, 73411]
 _START_LUNAR_YEAR = 1900
 _END_LUNAR_YEAR = 2100
 
@@ -229,7 +229,7 @@ TERM_INFO = [
 
 
 def get_term(year, n):
-    """Get n-th term of a solar year, with '小寒' as 1st term.
+    """Get n-th (1-24) term of a solar year, with '小寒' as 1st term.
     """
     year_idx = year - _START_LUNAR_YEAR
     term_info = TERM_INFO[year_idx]
@@ -239,25 +239,26 @@ def get_term(year, n):
         term_day_list.extend([
             int(v[0]), int(v[1:3]), int(v[3]), int(v[4:6])
         ])
-    return term_day_list[n]
+    return term_day_list[n - 1]
 
 
 # ------ GanZhi ------
 
 GANS = '甲乙丙丁戊己庚辛壬癸'
 ZHIS = '子丑寅卯辰巳午未申酉戌亥'
+ANIMALS = '鼠牛虎兔龙蛇马羊猴鸡狗猪'
 
 
-def getGanZhi(offset):
+def get_gz_cn(offset):
     """Get n-th(0-based) GanZhi
     """
     return GANS[offset % 10] + ZHIS[offset % 12]
 
 
 class Display:
-    MONTHS_CN = ['〇', '正', '二', '三', '四', '五', '六', '七', '八', '九', '十', '冬', '腊']
-    TENS = ['初', '十', '廿', '卅']
-    DAYS_CN = ['日', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十']
+    MONTHS_CN = '〇正二三四五六七八九十冬腊'
+    TENS = '初十廿卅'
+    DAYS_CN = '日一二三四五六七八九十'
 
     @staticmethod
     def year_cn(year):
@@ -282,7 +283,8 @@ class LunarDate:
     __slots__ = [
         '_year', '_month', '_day', '_leap',
         '_offset', '_solar_ymd', '_term',
-        '_gz_year', '_gz_month', '_gz_day'
+        '_gz_year', '_gz_month', '_gz_day',
+        '_animal'
     ]
 
     def __new__(cls, year, month, day, leap=False):
@@ -316,6 +318,10 @@ class LunarDate:
         return self._leap
 
     @property
+    def offset(self):
+        return self._offset
+
+    @property
     def term(self):
         return self._term
 
@@ -331,28 +337,32 @@ class LunarDate:
     def gz_day(self):
         return self._gz_day
 
+    @property
+    def animal(self):
+        return ANIMALS[self.year % 12 - 4]
+
     def _get_gz_ymd(self):
+        """
+        (sy, sm, sd) -> term / gz_year / gz_month / gz_day
+        """
         sy, sm, sd = self._solar_ymd
         # [2100.1.1-2100.1.8] has no term info.
         if sy < 1900 or sy > 2100:
             return None, None, None, None
 
-        f_index = 2 * sm - 2
-        s_index = 2 * sm - 2
-        d1 = get_term(sy, f_index)
-        d2 = get_term(sy, s_index)
+        d1 = get_term(sy, sm * 2 - 1)
+        d2 = get_term(sy, sm * 2)
         if sd == d1:
-            term = TERMS_CN[f_index]
+            term = TERMS_CN[sm * 2 - 2]
         elif sd == d2:
-            term = TERMS_CN[s_index]
+            term = TERMS_CN[sm * 2 - 1]
         else:
             term = None
-        if self.day >= d1:
-            gz_month = getGanZhi((sy - 1900) * 12 + sm + 12)
-        else:
-            gz_month = getGanZhi((sy - 1900) * 12 + sm + 11)
-        gz_year = GANS[self.year % 10 - 4] + ZHIS[self.year % 12 - 4]
-        gz_day = getGanZhi((self._offset + 40) % 60)
+        gz_month = get_gz_cn((sy - 1900) * 12 + sm + 11)
+        if sd >= d1:
+            gz_month = get_gz_cn((sy - 1900) * 12 + sm + 12)
+        gz_year = GANS[(self.year - 4) % 10] + ZHIS[(self.year - 4) % 12]
+        gz_day = get_gz_cn((self._offset + 40) % 60)
         return gz_year, gz_month, gz_day, term
 
     @property

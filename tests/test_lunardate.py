@@ -5,7 +5,7 @@ import unittest
 
 from datetime import date, timedelta
 
-from borax.calendars.lunardate import LunarDate, parse_year_days, ymdl2offset, offset2ymdl
+from borax.calendars.lunardate import LunarDate, parse_year_days, ymdl2offset, offset2ymdl, _MAX_OFFSET
 
 
 class LunarDateTestCase(unittest.TestCase):
@@ -89,8 +89,19 @@ class PrivateMethodsTestCase(unittest.TestCase):
         # 1 leap month, and every normal month has 30 days, and leap month has 29 days.
         self.assertEqual(389, parse_year_days((2 ** 12 - 1) * 16 + 1))
 
+
+class BenchmarkTestCase(unittest.TestCase):
     def test_ymdl_offset(self):
-        for offset in range(0, 73392):
+        """ offset2ymdl <=> ymdl2offset
+        """
+        for offset in range(0, _MAX_OFFSET + 1):
             y, m, d, l = offset2ymdl(offset)
             _offset = ymdl2offset(y, m, d, l)
             self.assertEqual(_offset, offset)
+
+    def test_edge_dates(self):
+        # Max date
+        self.assertEqual(_MAX_OFFSET, LunarDate.max.offset)
+
+        sd2100_ld = LunarDate.from_solar_date(2100, 12, 31)
+        self.assertEqual('庚申年戊子月丁未日', sd2100_ld.gz_str())
