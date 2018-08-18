@@ -4,7 +4,7 @@
 
 ## 概述
 
-`lunardate` 模块是一个处理中国农历日期的工具库，使用 GPLv3 开源协议发布。主要功能有：
+`lunardate` 模块是一个处理中国农历日期的工具库。主要功能有：
 
 - 支持1900 - 2100 （农历）年的日期表示
 - 支持干支纪年、节气等
@@ -19,7 +19,7 @@
 | offset | 0 | ... | 73383 | 73384 | ... | 73411 |
 | 干支 | 庚午年丙子月壬辰日 | ... | 庚申年戊子月丁未日 | - | ... | - |
 
-本模块的代码是基于 [python-lunardate](https://github.com/lidaobing/python-lunardate) 和 [jjonline/calendar.js](https://github.com/jjonline/calendar.js) 修改和重写。
+本模块的代码是基于 [python-lunardate](https://github.com/lidaobing/python-lunardate) 和 [jjonline/calendar.js](https://github.com/jjonline/calendar.js) 修改和重写，使用 GPLv3 开源协议发布。
 
 ## 创建日期对象
 

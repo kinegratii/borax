@@ -86,7 +86,7 @@ def iter_year_month(year_info):
     elif leap_month <= 12:
         months.insert(leap_month, (leap_month, 1))
     else:
-        raise ValueError("yearInfo %r mod 16 should in [0, 12]" % year_info)
+        raise ValueError("yearInfo 0x{0:x} mod 16 should in [0, 12]".format(year_info))
 
     for month, leap in months:
         if leap:
@@ -339,7 +339,7 @@ class LunarDate:
 
     @property
     def animal(self):
-        return ANIMALS[self.year % 12 - 4]
+        return ANIMALS[(self.year - 4) % 12]
 
     def _get_gz_ymd(self):
         """
