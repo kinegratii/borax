@@ -19,8 +19,21 @@
 | offset | 0 | ... | 73383 | 73384 | ... | 73411 |
 | 干支 | 庚午年丙子月壬辰日 | ... | 庚申年戊子月丁未日 | - | ... | - |
 
-本模块的代码是基于 [python-lunardate](https://github.com/lidaobing/python-lunardate) 和 [jjonline/calendar.js](https://github.com/jjonline/calendar.js) 修改和重写，使用 GPLv3 开源协议发布。
+## 开发
 
+本模块的数据和算法引用自项目 [jjonline/calendar.js](https://github.com/jjonline/calendar.js) ，具体内容包括：
+
+- 1900-2100年农历月份信息
+- 节气数据及其表示方法
+- 干支纪年算法
+
+项目代码是基于 [python-lunardate](https://github.com/lidaobing/python-lunardate) 修改和完善，包括：
+
+- 使用 Python 命名风格
+- 优化代码逻辑
+
+`lunardate` 模块使用 GPLv3 开源协议发布。
+  
 ## 创建日期对象
 
 可以通过以下几种方法创建。

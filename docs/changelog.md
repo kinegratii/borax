@@ -1,10 +1,10 @@
 # 更新日志
 
-## v1.1.2
+## v1.1.2 (20180819)
 
 - 新增农历日期工具模块 `borax.calendars.lunardate`
 
-## v1.1.1 (20170804)
+## v1.1.1 (20180804)
 
 - 适配 Python3.7
 - 新增 `borax.decorators.admin` 模块
