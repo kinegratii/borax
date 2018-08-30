@@ -1,5 +1,10 @@
 # 更新日志
 
+## v1.1.3
+
+- 新增财务金额大写工具 `borax.finance`
+- 新增自定义 JSON 序列化协议
+
 ## v1.1.2 (20180819)
 
 - 新增农历日期工具模块 `borax.calendars.lunardate`
