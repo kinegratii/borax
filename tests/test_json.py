@@ -3,7 +3,7 @@
 import unittest
 import json
 
-from borax.serialize.bjson import BJSONEncoder, EncoderMixin
+from borax.serialize import bjson
 
 
 class Point:
@@ -15,7 +15,7 @@ class Point:
         return [self.x, self.y]
 
 
-class DPoint(EncoderMixin):
+class DPoint(bjson.EncoderMixin):
     def __init__(self, x, y, z):
         self.x = x
         self.y = y
@@ -26,11 +26,16 @@ class DPoint(EncoderMixin):
 
 
 class BJsonTestCase(unittest.TestCase):
-    def test_json_protocol(self):
+    def test_dumps(self):
         obj = {'point': Point(1, 2)}
-        output = json.dumps(obj, cls=BJSONEncoder)
+        output = bjson.dumps(obj)
+        self.assertEqual('{"point": [1, 2]}', output)
+
+    def test_custom_encoder(self):
+        obj = {'point': Point(1, 2)}
+        output = json.dumps(obj, cls=bjson.BJSONEncoder)
         self.assertEqual('{"point": [1, 2]}', output)
 
         obj = {'point': DPoint(1, 2, 3)}
-        output = json.dumps(obj, cls=BJSONEncoder)
+        output = json.dumps(obj, cls=bjson.BJSONEncoder)
         self.assertEqual('{"point": [1, 2, 3]}', output)

@@ -15,3 +15,11 @@ class BJSONEncoder(json.JSONEncoder):
         if hasattr(o, '__json__'):
             return o.__json__()
         return super().default(o)
+
+
+def dumps(obj, **kwargs):
+    return json.dumps(obj, cls=BJSONEncoder, **kwargs)
+
+
+def dump(obj, fp, **kwargs):
+    return json.dump(obj, fp, cls=BJSONEncoder, **kwargs)
