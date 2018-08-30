@@ -2,9 +2,11 @@
   - [快速开始](quickstart)
 - **文档**
   - [admin_decorators](guides/admin_decorators)
-  - [dictionary](guides/alias_dictionary)
+  - [bjson](guides/bjson)
   - [choices](guides/choices)
+  - [dictionary](guides/alias_dictionary)
   - [fetch](guides/fetch)
+  - [finance](guides/finance)
   - [lunardate](guides/lunardate)
   - [percentage](guides/percentage)
   - [singleton](guides/singleton)
