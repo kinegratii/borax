@@ -58,3 +58,7 @@ class Point(object):
 p = LazyObject(Point,args=[1,2])
 print(p.x)
 ```
+
+## 调用
+
+borax 库在函数定义和调用方面，尽可能按照 [PEP3102](https://www.python.org/dev/peps/pep-3102/) 声明函数参数，即某些参数必须以关键字形式传入参数。
