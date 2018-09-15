@@ -10,5 +10,6 @@
   - [lunardate](guides/lunardate)
   - [percentage](guides/percentage)
   - [singleton](guides/singleton)
+  - [tree](guides/tree)
 - **开发**
   - [版本日志](changelog)
