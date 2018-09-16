@@ -1,6 +1,11 @@
 # 更新日志
 
-### v1.1.3 (20180902)
+## v1.1.4 (20180916)
+
+- 新增树形数据模块 `borax.structure.tree`
+- 新增 json 自定义Encoder模块 `borax.serialize.cjson`
+
+## v1.1.3 (20180902)
 
 - 新增财务金额大写工具 `borax.finance`
 - 新增自定义 JSON 序列化协议
