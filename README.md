@@ -20,14 +20,18 @@ Borax 是一个的 Python3 开发工具集合库,涉及到：
 
 Borax 要求 Python 的版本至少为 3.5 以上。
 
-使用 *pip* ：
+1) 使用 *pip* ：
 
 ```shell
 $ pip install borax
+```
+2) 使用 [poetry](https://poetry.eustace.io/) 工具：
 
+```shell
+$ poetry add borax
 ```
 
-或者使用开发代码
+3) 使用开发代码
 
 ```shell
 git clone https://github.com/kinegratii/borax.git

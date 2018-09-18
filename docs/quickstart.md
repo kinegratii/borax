@@ -3,13 +3,20 @@
 
 ## 安装
 
-使用 *pip* ：
+可以通过以下三种方式安装 Borax ：
+
+1) 使用 *pip* ：
 
 ```shell
 $ pip install borax
 ```
+2) 使用 [poetry](https://poetry.eustace.io/) 工具：
 
-或者使用开发代码
+```shell
+$ poetry add borax
+```
+
+3) 使用开发代码
 
 ```shell
 git clone https://github.com/kinegratii/borax.git
