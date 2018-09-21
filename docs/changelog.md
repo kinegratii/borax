@@ -1,5 +1,10 @@
 # 更新日志
 
+## v1.1.5
+
+- 新增 tkinter 异步模块 `borax.ui.aiotk`
+- 新增 tkinter 控件模块 `borax.ui.widgets`
+
 ## v1.1.4 (20180916)
 
 - 新增树形数据模块 `borax.structure.tree`

@@ -19,7 +19,7 @@
 | offset | 0 | ... | 73383 | 73384 | ... | 73411 |
 | 干支 | 庚午年丙子月壬辰日 | ... | 庚申年戊子月丁未日 | - | ... | - |
 
-## 开发
+## 数据引用
 
 本模块的数据和算法引用自项目 [jjonline/calendar.js](https://github.com/jjonline/calendar.js) ，具体内容包括：
 

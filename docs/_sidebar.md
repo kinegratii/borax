@@ -11,5 +11,6 @@
   - [percentage](guides/percentage)
   - [singleton](guides/singleton)
   - [tree](guides/tree)
+  - [ui](guides/ui)
 - **开发**
   - [版本日志](changelog)
