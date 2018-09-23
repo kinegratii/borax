@@ -1,6 +1,6 @@
 # 更新日志
 
-## v1.1.5
+## v1.1.5 (20180923)
 
 - 新增 tkinter 异步模块 `borax.ui.aiotk`
 - 新增 tkinter 控件模块 `borax.ui.widgets`
