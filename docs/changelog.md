@@ -1,5 +1,9 @@
 # 更新日志
 
+## v1.1.6
+
+- 新增 `TableLookup` 模块 `borax.structures.lookup`
+
 ## v1.1.5 (20180923)
 
 - 新增 tkinter 异步模块 `borax.ui.aiotk`

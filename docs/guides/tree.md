@@ -7,7 +7,7 @@
 `tree.pll2cnl` 能够将易于存储的 *Parent线性数组* 转化为 *Children嵌套数组* 形式。
 
 
-ParentLinearList格式：
+Parent线性数组(ParentLinearList)格式：
 ```json
 [
     {"id": 1, "name": "node1", "parent": null},
@@ -19,7 +19,7 @@ ParentLinearList格式：
 ```
 
 
-ChildrenNestedList 格式：
+Children嵌套数组(ChildrenNestedList) 格式：
 
 ```json
 [
@@ -60,8 +60,8 @@ def pll2cnl(
         parent_field='parent',
         root_value=None,
         children_field='children',
+        flat_fields=None,
         extra_fields=None,
-        flat=True,
         extra_key=None
 
 ):
