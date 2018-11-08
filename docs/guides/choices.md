@@ -24,6 +24,37 @@ True
 >>> YearInShoolChoices.is_valid('Et')
 False
 ```
+## 选项定义
+
+在类定义体使用 `<name> = <value>` 的格式定义选项。
+
+名称 name 遵循 Python 命名规范，但需要注意的是以下划线（"_"）开始的变量不视为一个有效的选项。
+
+值 value 支持以下几种形式：
+
+- `choices.Item` 对象
+- 含有2个元素的列表或元组
+- 一个单值对象
+
+在一个 `ConstChoices` 定义中，以下四个语句是等效的：
+
+```
+NS = choices.Item('A', 'A')
+NS = choices.Item('A')
+NS = 'A', 'A'
+NS = 'A'
+```
+
+
+例如上述 `YearInSchoolChoices` 也可以简写为
+
+```python
+class YearInSchoolChoices(choices.ConstChoices):
+    FRESHMAN = 'FR', 'Freshman'
+    SOPHOMORE = 'SO', 'Sophomore'
+    JUNIOR = 'JR', 'Junior'
+    SENIOR = 'SR', 'Senior'
+```
 
 ## 整合到 Django
 

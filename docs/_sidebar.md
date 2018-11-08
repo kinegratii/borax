@@ -4,6 +4,7 @@
   - [admin_decorators](guides/admin_decorators)
   - [bjson](guides/bjson)
   - [choices](guides/choices)
+  - [cjson](guides/cjson)
   - [dictionary](guides/alias_dictionary)
   - [fetch](guides/fetch)
   - [finance](guides/finance)
