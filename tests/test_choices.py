@@ -81,3 +81,24 @@ class OffsetChoicesTestCase(unittest.TestCase):
         self.assertEqual('Up', OffsetChoices.get_value_display((0, -1)))
         self.assertEqual('Left', OffsetChoices.get_value_display((-1, 0)))
         self.assertIsNone(OffsetChoices.get_value_display((0, 0)))
+
+
+# --------- Class Inheritance ----------------------
+
+
+class VerticalChoices(choices.ConstChoices):
+    S = choices.Item('S', 'south')
+    N = choices.Item('N', 'north')
+
+
+class DirectionChoices(VerticalChoices):
+    E = choices.Item('E', 'east')
+    W = choices.Item('W', 'west')
+
+
+class DirectionChoicesTestCase(unittest.TestCase):
+    def test_child_class(self):
+        self.assertEqual(2, len(VerticalChoices.choices))
+        self.assertEqual(4, len(DirectionChoices.choices))
+        expected = [('S', 'south'), ('N', 'north'), ('E', 'east'), ('W', 'west')]
+        self.assertListEqual(expected, DirectionChoices.choices)

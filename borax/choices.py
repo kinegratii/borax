@@ -31,6 +31,11 @@ class ChoicesMetaclass(type):
 
         fields = {}
 
+        parents = [b for b in bases if isinstance(b, ChoicesMetaclass)]
+        for kls in parents:
+            for field_name in kls._fields:
+                fields[field_name] = kls._fields[field_name]
+
         for k, v in attrs.items():
             if k.startswith('_'):
                 continue
@@ -38,16 +43,20 @@ class ChoicesMetaclass(type):
                 fields[k] = v
             elif isinstance(v, (tuple, list)) and len(v) == 2:
                 fields[k] = Item(value=v[0], display=v[1])
-            else:
+            elif isinstance(v, (int, float, str, bytes)):
                 fields[k] = Item(value=v, display=v)
 
         fields = OrderedDict(sorted(fields.items(), key=lambda x: x[1].order))
 
         for field_name in fields:
             val_item = fields[field_name]
-            choices.append((val_item.value, val_item.display))
-            display_lookup[val_item.value] = val_item.display
-            attrs[field_name] = val_item.value
+
+            if isinstance(val_item, Item):
+                choices.append((val_item.value, val_item.display))
+                display_lookup[val_item.value] = val_item.display
+                attrs[field_name] = val_item.value
+            else:
+                choices.append(field_name, val_item.choices)
 
         attrs['_fields'] = fields
         attrs['choices'] = choices
