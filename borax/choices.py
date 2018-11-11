@@ -6,19 +6,17 @@ from collections import OrderedDict
 __all__ = ['Item', 'ConstChoices']
 
 
-class Item(tuple):
-    counter = 0
+class Item:
+    _order = 0
 
-    def __new__(cls, value, display=None):
-        display = display or value
-        return tuple.__new__(cls, (value, display))
-
-    def __init__(self, value, display=None):
-        super(Item, self).__init__()
-        self.value = self[0]
-        self.display = self[1]
-        self.counter = Item.counter
-        Item.counter += 1
+    def __init__(self, value, display=None, order=None):
+        self.value = value
+        self.display = display
+        if order is None:
+            Item._order += 1
+            self.order = Item._order
+        else:
+            self.order = order
 
 
 class ChoicesMetaclass(type):
@@ -27,20 +25,31 @@ class ChoicesMetaclass(type):
         return OrderedDict()
 
     def __new__(cls, name, bases, attrs):
+
         choices = []
         display_lookup = {}
 
+        fields = {}
+
         for k, v in attrs.items():
-            if not k.startswith('_'):
-                if isinstance(v, Item):
-                    item = v
-                elif isinstance(v, (tuple, list)) and len(v) == 2:
-                    item = Item(*v)
-                else:
-                    item = Item(v, v)
-                choices.append(item)
-                display_lookup[item.value] = item.display
-                attrs[k] = item.value
+            if k.startswith('_'):
+                continue
+            if isinstance(v, Item):
+                fields[k] = v
+            elif isinstance(v, (tuple, list)) and len(v) == 2:
+                fields[k] = Item(value=v[0], display=v[1])
+            else:
+                fields[k] = Item(value=v, display=v)
+
+        fields = OrderedDict(sorted(fields.items(), key=lambda x: x[1].order))
+
+        for field_name in fields:
+            val_item = fields[field_name]
+            choices.append((val_item.value, val_item.display))
+            display_lookup[val_item.value] = val_item.display
+            attrs[field_name] = val_item.value
+
+        attrs['_fields'] = fields
         attrs['choices'] = choices
         attrs['display_lookup'] = display_lookup
         return type.__new__(cls, name, bases, attrs)
