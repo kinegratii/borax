@@ -1,8 +1,13 @@
 # 更新日志
 
-## v1.1.6
+## v1.1.6 (20181112)
 
 - 新增 `TableLookup` 模块 `borax.structures.lookup`
+- `choices` 模块
+  - `choices.ConstChoices` 支持类继承
+  - `choices.Item` 支持自定义 order 排序
+- `lookup` 模块
+  - `TableLookup` 支持列表迭代特性
 
 ## v1.1.5 (20180923)
 
@@ -45,7 +50,8 @@
 ## v1.0.1 (20180411)
 
 - 新增 `structure.daily.DailyCounter` 月份统计类
-- `LazyObject` 支持 `args` 和 `kwargs` 参数
+- `lazy` 模块
+  - `LazyObject` 初始化函数支持 `args` 和 `kwargs` 参数
 
 ## v1.0.0 (20180328)
 

@@ -7,7 +7,7 @@ class TableLookup:
     def __init__(self, fields, primary=None):
         self._fields = fields
         self._item_class = collections.namedtuple('Item', fields)
-        self._dataset = {}
+        self._dataset = collections.OrderedDict()
         if primary:
             self.primary = primary
             self._primary_index = fields.find(primary)
@@ -24,3 +24,7 @@ class TableLookup:
 
     def find(self, key, default=None):
         return self._dataset.get(key, default)
+
+    def __iter__(self):
+        for item in self._dataset.values():
+            yield item
