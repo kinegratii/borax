@@ -2,9 +2,9 @@
 
 > 模块： `borax.choices`
 
-## 基本使用
+## 简单示例
 
-继承自 `choices.ConstChoices`, 并使用 `choices.Item` 列出所有的可选项。
+每个可选选项集合都继承自 `choices.ConstChoices`, 并使用 `choices.Item` 列出所有的可选项。
 
 ```python
 from borax import choices
@@ -16,6 +16,8 @@ class YearInSchoolChoices(choices.ConstChoices):
     SENIOR = choices.Item('SR', 'Senior')
 ```
 
+可以直接使用 `YearInShoolChoices.FRESHMAN` 访问该选项具体的值。
+
  ```bash
  >>> YearInShoolChoices.FRESHMAN
 'FR'
@@ -24,19 +26,33 @@ True
 >>> YearInShoolChoices.is_valid('Et')
 False
 ```
-## 选项定义
+
+## 选项(Item)定义
 
 在类定义体使用 `<name> = <value>` 的格式定义选项。
 
 名称 name 遵循 Python 命名规范，但需要注意的是以下划线（"_"）开始的变量不视为一个有效的选项。
 
-值 value 支持以下几种形式：
+值 value 通常为一个 `Item` 对象，定义如下：
 
-- `choices.Item` 对象
+```python
+def __init__(value, display=None, *, order=None):pass
+```
+
+参数说明如下：
+
+- value ： 保存的值，在一个 Choices 中该值是唯一的
+- display ： 可读的文本信息
+- order ：用于升序排列的关键数字
+
+## 简单选项
+
+在某些选项稀少、意义明确的情况下，可以只使用简单的数据类型定义选项，这些形式包括：
+
 - 含有2个元素的列表或元组
-- 一个单值对象
+- 一个单值对象，仅限 `int`，`float`，`str`，`bytes` 四种类型
 
-在一个 `ConstChoices` 定义中，以下四个语句是等效的：
+`ConstChoices` 将自动生成一个新的 `Item` 对象。以下四个语句是等效的：
 
 ```
 NS = choices.Item('A', 'A')
@@ -100,7 +116,7 @@ class Student(models.Model):
 
 ## 方法 API
 
-> 以下所有的方法均为 `ConstChoices` 类方法，
+以下所有的方法均为 `ConstChoices` 类的属性和方法。
 
 - **`ConstChoices.choices`**
 
@@ -115,3 +131,7 @@ class Student(models.Model):
 - **`ConstChoices.get_value_display(value)`**
 
 获取某个选项的文本。
+
+- **`ConstChoices.__iter__()`**
+
+遍历 `ConstChoices.choices`

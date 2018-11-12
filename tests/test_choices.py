@@ -99,6 +99,11 @@ class DirectionChoices(VerticalChoices):
 class DirectionChoicesTestCase(unittest.TestCase):
     def test_child_class(self):
         self.assertEqual(2, len(VerticalChoices.choices))
+        self.assertEqual(2, len(VerticalChoices))
+
         self.assertEqual(4, len(DirectionChoices.choices))
+        self.assertEqual(4, len(DirectionChoices))
+
         expected = [('S', 'south'), ('N', 'north'), ('E', 'east'), ('W', 'west')]
         self.assertListEqual(expected, DirectionChoices.choices)
+        self.assertListEqual(expected, list(DirectionChoices))

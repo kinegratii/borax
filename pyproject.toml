@@ -1,10 +1,8 @@
-# Poetry package information below.
-
 [tool.poetry]
 name = "borax"
-version = "1.1.5"
+version = "1.1.6"
 description = "A util collections for Python3."
-readme = "README.md"
+readme = "long_description.rst"
 authors = ["kinegratii <kinegratii@gmail.com>"]
 homepage = "https://github.com/kinegratii/borax"
 documentation = "https://kinegratii.github.io/borax"

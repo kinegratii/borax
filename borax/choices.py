@@ -9,7 +9,7 @@ __all__ = ['Item', 'ConstChoices']
 class Item:
     _order = 0
 
-    def __init__(self, value, display=None, order=None):
+    def __init__(self, value, display=None, *, order=None):
         self.value = value
         self.display = display
         if order is None:
@@ -20,10 +20,6 @@ class Item:
 
 
 class ChoicesMetaclass(type):
-    @classmethod
-    def __prepare__(mcs, name, bases):
-        return OrderedDict()
-
     def __new__(cls, name, bases, attrs):
 
         choices = []
@@ -56,12 +52,19 @@ class ChoicesMetaclass(type):
                 display_lookup[val_item.value] = val_item.display
                 attrs[field_name] = val_item.value
             else:
-                choices.append(field_name, val_item.choices)
+                choices.append((field_name, val_item.choices))
 
         attrs['_fields'] = fields
         attrs['choices'] = choices
         attrs['display_lookup'] = display_lookup
         return type.__new__(cls, name, bases, attrs)
+
+    def __iter__(self):
+        for item in self.choices:
+            yield item
+
+    def __len__(self):
+        return len(self.choices)
 
 
 class ConstChoices(metaclass=ChoicesMetaclass):
