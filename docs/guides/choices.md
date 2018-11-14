@@ -31,7 +31,10 @@ False
 
 在类定义体使用 `<name> = <value>` 的格式定义选项。
 
-名称 name 遵循 Python 命名规范，但需要注意的是以下划线（"_"）开始的变量不视为一个有效的选项。
+名称 name 遵循 Python 变量命名规范，需要注意的是：
+
+- 以下划线（"_"）开始的变量不视为一个有效的选项
+- 变量名并不是必须使用大写形式
 
 值 value 通常为一个 `Item` 对象，定义如下：
 
@@ -44,6 +47,24 @@ def __init__(value, display=None, *, order=None):pass
 - value ： 保存的值，在一个 Choices 中该值是唯一的
 - display ： 可读的文本信息
 - order ：用于升序排列的关键数字
+
+## 选项复用和继承
+
+可以使用类继承的方式实现选项的复用和重新定制某些选项的属性。
+
+```python
+from borax import choices
+
+class VerticalChoices(choices.ConstChoices):
+    S = choices.Item('S', 'south')
+    N = choices.Item('N', 'north')
+
+
+class DirectionChoices(VerticalChoices):
+    E = choices.Item('E', 'east')
+    W = choices.Item('W', 'west')
+```
+默认情况下，子类的选项在父类选项之后，但可以使用 `order` 属性以调整顺序。
 
 ## 简单选项
 

@@ -4,6 +4,8 @@
 
 `cjson` 是一个基于 [singledispatch](https://docs.python.org/3/library/functools.html#functools.singledispatch) 的json 序列化工具。
 
+一般来说，使用 `cjson.to_serializable.register` 装饰器，为自定义的类绑定一个序列化函数。
+
 
 ```python
 import json
