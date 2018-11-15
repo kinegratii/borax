@@ -96,6 +96,10 @@ class DirectionChoices(VerticalChoices):
     W = choices.Item('W', 'west')
 
 
+class OrderTestChoices(VerticalChoices):
+    N = choices.Item('n', 'North', order=-1)
+
+
 class DirectionChoicesTestCase(unittest.TestCase):
     def test_child_class(self):
         self.assertEqual(2, len(VerticalChoices.choices))
@@ -107,3 +111,9 @@ class DirectionChoicesTestCase(unittest.TestCase):
         expected = [('S', 'south'), ('N', 'north'), ('E', 'east'), ('W', 'west')]
         self.assertListEqual(expected, DirectionChoices.choices)
         self.assertListEqual(expected, list(DirectionChoices))
+
+    def test_item_overwrite(self):
+        self.assertEqual(2, len(OrderTestChoices.choices))
+        self.assertEqual('n', OrderTestChoices.N)
+        self.assertEqual('N', VerticalChoices.choices[1][0])
+        self.assertEqual('n', OrderTestChoices.choices[0][0])

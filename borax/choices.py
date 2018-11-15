@@ -55,9 +55,17 @@ class ChoicesMetaclass(type):
                 choices.append((field_name, val_item.choices))
 
         attrs['_fields'] = fields
-        attrs['choices'] = choices
-        attrs['display_lookup'] = display_lookup
+        attrs['_choices'] = choices
+        attrs['_display_lookup'] = display_lookup
         return type.__new__(cls, name, bases, attrs)
+
+    @property
+    def choices(self):
+        return self._choices
+
+    @property
+    def display_lookup(self):
+        return self._display_lookup
 
     def __iter__(self):
         for item in self.choices:
