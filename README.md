@@ -39,7 +39,7 @@ cd borax
 python setup.py install
 ```
 
-## 模块用法示例
+## 常用模块示例
 
 ### Choices 模块
 
@@ -82,6 +82,22 @@ print(names)
 
 ```
 ['Alice', 'Bob', 'Charlie']
+```
+
+### 农历模块
+
+> 本模块的数据和算法引用自项目 [jjonline/calendar.js](https://github.com/jjonline/calendar.js) 。
+
+获取今天的农历日期
+
+```python
+from borax.calendars.lunardate import LunarDate
+
+print(LunarDate.today()) # LunarDate(2018, 7, 1, 0)
+
+# 公历日期到农历日期
+ld = LunarDate.from_solar_date(2018, 8, 11)
+print(ld) # LunarDate(2018, 7, 1, 0)
 ```
 
 ## 文档

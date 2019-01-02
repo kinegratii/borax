@@ -1,6 +1,6 @@
 # 更新日志
 
-## v1.1.7
+## v1.1.7 (20190102)
 
 - `calendar` 模块
   - 新增 `from borax.calendar import LunarDate` 快捷导入路径
