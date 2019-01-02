@@ -25,6 +25,9 @@ class TableLookup:
     def find(self, key, default=None):
         return self._dataset.get(key, default)
 
+    def data_dict(self, field):
+        return {k: getattr(v, field) for k, v in self._dataset.items()}
+
     def __iter__(self):
         for item in self._dataset.values():
             yield item

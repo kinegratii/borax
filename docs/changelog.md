@@ -1,5 +1,12 @@
 # 更新日志
 
+## v1.1.7
+
+- `calendar` 模块
+  - 新增 `from borax.calendar import LunarDate` 快捷导入路径
+- `lookup` 模块
+  - 新增 `data_dict` 方法
+
 ## v1.1.6 (20181112)
 
 - 新增 `TableLookup` 模块 `borax.structures.lookup`
