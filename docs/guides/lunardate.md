@@ -9,7 +9,18 @@
 - 支持1900 - 2100 （农历）年的日期表示
 - 支持干支纪年、节气等
 
-具体的起止日期如下表：
+
+本模块的数据和算法引用自项目 [jjonline/calendar.js](https://github.com/jjonline/calendar.js) ，具体内容包括：
+
+- 1900-2100年农历月份信息
+- 节气数据及其表示方法
+- 干支纪年算法
+
+项目代码是基于 [python-lunardate](https://github.com/lidaobing/python-lunardate) 修改和完善，使用 GPLv3 开源协议发布。
+
+## 日期范围
+
+`LunarDate` 实例表示一个具体日期，该类可以表示的日期起止范围如下表：
 
 | 项目 | 起始日 | ... | 2100年 | 2101年 | ... | 截止日 |
 | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
@@ -18,21 +29,6 @@
 | offset | 0 | ... | 73383 | 73384 | ... | 73411 |
 | 干支 | 庚午年丙子月壬辰日 | ... | 庚申年戊子月丁未日 | - | ... | - |
 
-## 数据引用
-
-本模块的数据和算法引用自项目 [jjonline/calendar.js](https://github.com/jjonline/calendar.js) ，具体内容包括：
-
-- 1900-2100年农历月份信息
-- 节气数据及其表示方法
-- 干支纪年算法
-
-项目代码是基于 [python-lunardate](https://github.com/lidaobing/python-lunardate) 修改和完善，包括：
-
-- 使用 Python 命名风格
-- 优化代码逻辑
-
-`lunardate` 模块使用 GPLv3 开源协议发布。
-  
 ## 创建日期对象
 
 可以通过以下几种方法创建。
@@ -105,19 +101,13 @@ LunarDate(2100, 12, 29, 0)
 
 一共有三种显示方式：
 
-- 默认表示法(`__str__`)
-- 汉字表示法(`cn_str`)，为了统一字符串长度，日期使用 “廿六” 形式，而不是 “二十六”
-- 干支表示法(`gz_str`)
+| 显示方式 | 调用形式 | 示例 |
+| ------ | ------ | ------ |
+| 默认表示法 | `str(ld)` | LunarDate(2018, 6, 26, False) |
+| 汉字表示法 | `ld.cn_str()` | 2018年六月廿六日 |
+| 干支表示法 | `ld.gz_str()` | 戊戌年庚申月辛未日 |
 
-例子：
-
-```shell
->>>ld = LunarDate(2018, 6, 26, False)
->>>ld.cn_str()
-'2018年六月廿六日'
->>>ld.gz_str()
-'戊戌年庚申月辛未日'
-```
+> 在汉字表示法中，为了统一字符串长度，日期使用 “廿六” 形式，而不是 “二十六”；“十一月”、“十二月”使用“冬月”、“腊月”形式。
 
 ## 公历转化
 
@@ -144,6 +134,7 @@ datetime.date(2018, 8, 7)
 | `LunarDate` | + | `datetime.timedelta` | `LunarDate` |
 | `datetime.timedelta` | + | `LunarDate` | `LunarDate` |
 | `LunarDate` | - | `datetime.timedelta` | `LunarDate` |
+| `datetime.date` | - | `LunarDate` | `datetime.timedelta` |
 | `LunarDate` | - | `datetime.date` | `datetime.timedelta` |
 | `LunarDate` | - | `LunarDate` | `datetime.timedelta` |
 
@@ -160,7 +151,7 @@ timedelta(days=15)
 
 **before/after函数**
 
-返回向前/向后推算 n 天的日期。
+返回向前/向后推算 n 天的日期。n 允许取负值，即 `ld.after(5)` 和 `ld.before(-5)` 返回表示同一个日期的实例。
 
 ```
 >>> ld = LunarDate(2018, 6, 3)
@@ -170,6 +161,19 @@ LunarDate(2018, 6, 6)
 LunarDate(2018, 6, 1)
 ```
 
+**replace函数**
+
+返回一个替换给定值后的日期对象。
+
+函数签名 `replace(self, *, year=None, month=None, day=None, leap=None)` 所有参数必须以关键字形式传入。如果该日期不存在，将抛出 `ValyeError` 异常。
+
+```
+>>>ld = LunarDate(2018, 5, 3)
+>>>ld.replace(year=2019)
+LunarDate(2019, 5, 3, 0)
+>>>ld.replace(leap=True)
+ValueError: month out of range
+```
 
 ## 日期比较
 

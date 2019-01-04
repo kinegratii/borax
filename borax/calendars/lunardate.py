@@ -395,6 +395,17 @@ class LunarDate:
         y, m, d, l = offset2ymdl(self._offset + day_delta)
         return LunarDate(y, m, d, l)
 
+    def replace(self, *, year=None, month=None, day=None, leap=None):
+        if year is None:
+            year = self._year
+        if month is None:
+            month = self._month
+        if day is None:
+            day = self._day
+        if leap is None:
+            leap = self._leap
+        return type(self)(year, month, day, leap)
+
     @staticmethod
     def from_solar_date(year, month, day):
         solar_date = datetime.date(year, month, day)
