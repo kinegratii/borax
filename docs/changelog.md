@@ -1,5 +1,14 @@
 # 更新日志
 
+## v1.1.8
+
+- `calendar` 模块
+  - 新增获取昨日/明日日期的方法
+- `lookup` 模块
+  - 新增 `select_as_dict` 方法，废弃 `data_dict` 方法
+- `loader` 模块
+  - 新增 `load_class` 类加载器
+  
 ## v1.1.7 (20190102)
 
 - `calendar` 模块

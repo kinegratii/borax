@@ -173,7 +173,12 @@ LunarDate(2018, 6, 1)
 
 ## 日期比较
 
-两个 `LunarDate` 对象可以进行比较，比如表达式 `LunarDate(2018, 6, 2) > LunarDate(2018, 6, 14)` 的值为 True 。
+两个 `LunarDate` 对象可以进行比较。
+
+```
+>>>LunarDate(2018, 6, 2) > LunarDate(2018, 6, 14)
+True
+```
 
  `LunarDate` 和 `datetime.date` 的对象无法进行比较，会抛出 `TypeError` 异常。
 
