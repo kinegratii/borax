@@ -407,6 +407,16 @@ class LunarDate:
         res = datetime.date.today()
         return cls.from_solar_date(res.year, res.month, res.day)
 
+    @classmethod
+    def yesterday(cls):
+        sd = datetime.date.today() - datetime.timedelta(days=1)
+        return cls.from_solar_date(sd.year, sd.month, sd.day)
+
+    @classmethod
+    def tomorrow(cls):
+        sd = datetime.date.today() + datetime.timedelta(days=1)
+        return cls.from_solar_date(sd.year, sd.month, sd.day)
+
     def __str__(self):
         return 'LunarDate(%d, %d, %d, %d)' % (self.year, self.month, self.day, self.leap)
 

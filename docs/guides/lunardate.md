@@ -4,11 +4,10 @@
 
 ## 概述
 
-`lunardate` 模块是一个处理中国农历日期的工具库。主要功能有：
+`lunardate` 模块是一个处理中国农历日期的工具库。主要特性有：
 
 - 支持1900 - 2100 （农历）年的日期表示
 - 支持干支纪年、节气等
-- 使用 Typing Hints
 
 具体的起止日期如下表：
 
@@ -40,7 +39,7 @@
 
 **▶ 农历日期**
 
-根据农历年、月、日、闰月标志等4个参数创建一个新对象，这也是完全确定一个农历日期的主键参数。
+依次传入农历年、月、日、闰月标志等4个参数创建一个新对象，其中闰月标志可省略，表示为平月。
 
 ```
 >>>from borax.calendars.lunardate import LunarDate
@@ -60,15 +59,18 @@ LunarDate(2018, 7, 1, 0)
 
 **▶ 特定的日期**
 
-获取今日的农历日期。
+获取今日/昨日/明日的农历日期。
 
 ```shell
->>>ld = LunarDate.today()
->>>ld
+>>>LunarDate.today()
 LunarDate(2018, 7, 1, 0)
+>>>LunarDate.yesterday()
+LunarDate(2018, 6, 29, 0)
+>>>LunarDate.tomorrow()
+LunarDate(2018, 7, 2, 0)
 ```
 
-日期范围的上下限
+`lunardate` 模块可用的日期上下限
 
 ```shell
 >>>LunarDate.min
