@@ -12,34 +12,36 @@
 
 Borax 是一个的 Python3 开发工具集合库,涉及到：
 
- - 设计模式示例
- - 数据结构
- - 常用工具
+ - 设计模式
+ - 数据结构及其实现
+ - 一些简单函数的封装
 
 ## 安装
 
-Borax 要求 Python 的版本至少为 3.5 以上。
-
-1) 使用 *pip* ：
+Borax 要求 Python 的版本至少为 3.5 以上。使用 *pip* ：
 
 ```shell
 $ pip install borax
 ```
-2) 使用 [poetry](https://poetry.eustace.io/) 工具：
 
-```shell
-$ poetry add borax
+## 模块使用示例
+
+### 农历模块
+
+> 本模块的数据和算法引用自项目 [jjonline/calendar.js](https://github.com/jjonline/calendar.js) 。
+
+获取今天的农历日期，日期推算
+
 ```
-
-3) 使用开发代码
-
-```shell
-git clone https://github.com/kinegratii/borax.git
-cd borax
-python setup.py install
+>>>from borax.calendars.lunardate import LunarDate
+>>>LunarDate.today()
+LunarDate(2018, 7, 1, 0)
+>>>ld = LunarDate.from_solar_date(2018, 8, 11)
+>>>ld
+LunarDate(2018, 7, 1, 0)
+>>>ld.after(10)
+LunarDate(2018, 7, 11, 0)
 ```
-
-## 常用模块示例
 
 ### Choices 模块
 
@@ -82,22 +84,6 @@ print(names)
 
 ```
 ['Alice', 'Bob', 'Charlie']
-```
-
-### 农历模块
-
-> 本模块的数据和算法引用自项目 [jjonline/calendar.js](https://github.com/jjonline/calendar.js) 。
-
-获取今天的农历日期
-
-```python
-from borax.calendars.lunardate import LunarDate
-
-print(LunarDate.today()) # LunarDate(2018, 7, 1, 0)
-
-# 公历日期到农历日期
-ld = LunarDate.from_solar_date(2018, 8, 11)
-print(ld) # LunarDate(2018, 7, 1, 0)
 ```
 
 ## 文档
