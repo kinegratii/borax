@@ -1,4 +1,5 @@
 # coding=utf8
+import re
 import datetime
 
 __all__ = ['LunarDate']
@@ -406,6 +407,9 @@ class LunarDate:
             leap = self._leap
         return type(self)(year, month, day, leap)
 
+    def strftime(self, fmt):
+        return Formatter(fmt).format(self)
+
     @staticmethod
     def from_solar_date(year, month, day):
         solar_date = datetime.date(year, month, day)
@@ -483,5 +487,70 @@ class LunarDate:
         return hash((self.year, self.month, self.day, self.leap))
 
 
-LunarDate.min = LunarDate(1990, 1, 1, 0)
-LunarDate.max = LunarDate(2100, 12, 29, 0)
+LunarDate.min = LunarDate(1990, 1, 1, False)
+LunarDate.max = LunarDate(2100, 12, 29, False)
+
+
+class Formatter:
+    """A formatter based on %-fmt .
+    """
+    directives = {
+        '%y': 'year',
+        '%Y': 'cn_year',
+        '%m': 'month',
+        '%l': 'leap',
+        '%L': 'cn_leap',
+        '%M': 'cn_month',
+        '%d': 'day',
+        '%D': 'cn_day',
+        '%a': 'animal',
+        '%t': 'term',
+        '%0': 'gz_year',
+        '%p': 'gz_month',
+        '%q': 'gz_day',
+        '%C': 'cn_str',
+        '%G': 'gz_str'
+    }
+
+    def __init__(self, fmt):
+        self._fields = set({})
+        pattern = re.compile('|'.join(self.directives.keys()))
+        self._fmt = pattern.sub(self.replace_rex, fmt)
+
+    def replace_rex(self, match):
+        field = self.directives[match.group()]
+        self._fields.add(field)
+        return ''.join(['{', field, '}'])
+
+    def format(self, obj):
+        values = {f: self.resolve(obj, f) for f in self._fields}
+        return self._fmt.format(**values)
+
+    def resolve(self, obj, field):
+        try:
+            func = getattr(self, 'get_' + field)
+            return func(obj)
+        except AttributeError:
+            attr = getattr(obj, field)
+            if callable(attr):
+                return attr()
+            else:
+                return attr
+
+    def get_leap(self, obj):
+        return int(obj.leap)
+
+    def get_cn_leap(self, obj):
+        if obj.leap:
+            return '闰'
+        else:
+            return ''
+
+    def get_cn_year(self, obj):
+        return Display.year_cn(obj.year)
+
+    def get_cn_month(self, obj):
+        return Display.month_cn(obj.month)
+
+    def get_cn_day(self, obj):
+        return Display.day_cn(obj.day)

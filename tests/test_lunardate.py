@@ -105,3 +105,19 @@ class BenchmarkTestCase(unittest.TestCase):
 
         sd2100_ld = LunarDate.from_solar_date(2100, 12, 31)
         self.assertEqual('庚申年戊子月丁未日', sd2100_ld.gz_str())
+
+
+class FormatterTestCase(unittest.TestCase):
+    def test_valid_format(self):
+        ld = LunarDate(2018, 4, 3)
+        self.assertEqual('2018-4-3', ld.strftime('%y-%m-%d'))
+        self.assertEqual('二〇一八', ld.strftime('%Y'))
+        self.assertEqual('2018%c', ld.strftime('%y%c'))  # Just ignore %c, no raise error
+
+        ld2 = LunarDate(2018, 11, 23)
+        self.assertEqual('二〇一八/冬/廿三', ld2.strftime('%Y/%M/%D'))
+
+        ld3 = LunarDate(2017, 6, 3, 1)
+        self.assertEqual('61', ld3.strftime('%m%l'))
+        self.assertEqual('闰六', ld3.strftime('%L%M'))
+        self.assertEqual(ld3.gz_str(), ld3.strftime('%G'))
