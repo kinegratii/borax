@@ -1,10 +1,11 @@
 # 更新日志
 
-## v1.1.8
+## v1.2.0
 
 - `calendar` 模块
   - 新增获取昨日/明日日期的方法
   - 新增 `replace` 函数
+  - 新增格式化函数 `strftime`
 - `lookup` 模块
   - 新增 `select_as_dict` 方法，废弃 `data_dict` 方法
 - `loader` 模块

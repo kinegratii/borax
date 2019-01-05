@@ -145,7 +145,7 @@ datetime.date(2018, 8, 7)
 **▶ 加减操作符**
 
 
-`LunarDate` 支持和 `datetime.timedelta` 进行加减计算。
+`LunarDate` 支持和 `datetime.timedelta` 或 `datetime.date` 进行加减计算。
 
 
 | 左操作数类型 | 操作符 | 右操作数类型 | 结果类型 |
@@ -175,9 +175,11 @@ timedelta(days=15)
 ```
 >>> ld = LunarDate(2018, 6, 3)
 >>>ld.after(3)
-LunarDate(2018, 6, 6)
+LunarDate(2018, 6, 6, 0)
 >>>ld.before(2)
-LunarDate(2018, 6, 1)
+LunarDate(2018, 6, 1, 0)
+>>>ld.after(-2)
+LunarDate(2018, 6, 1, 0)
 ```
 
 **replace函数**
@@ -196,13 +198,11 @@ ValueError: month out of range
 
 ## 日期比较
 
-两个 `LunarDate` 对象可以进行比较。
+`LunarDate` 支持和 `datetime.date` 对象进行比较，对象所代表的日期更新其“数值”更大。
 
 ```
 >>>LunarDate(2018, 6, 2) > LunarDate(2018, 6, 14)
+False
+>>>LunarDate(2018, 6, 2) > date(2018, 6, 2)
 True
 ```
-
- `LunarDate` 和 `datetime.date` 的对象无法进行比较，会抛出 `TypeError` 异常。
-
-

@@ -473,8 +473,6 @@ class LunarDate:
             raise TypeError("can't compare LunarDate to %s" % (type(other).__name__,))
 
     def __le__(self, other):
-        # needed because the default implementation tries equality first,
-        # and that does not throw a type error
         return self < other or self == other
 
     def __gt__(self, other):
