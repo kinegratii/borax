@@ -112,7 +112,7 @@ LunarDate(2100, 12, 29, 0)
 
 > v1.2.0 新增。
 
-`LunarDate.strftime` 提供了通过格式描述符来自定义显示日期字符串。在“属性”一节中已经列出所有属性的格式描述符。
+`LunarDate.strftime` 提供了通过格式描述符(Directive)来自定义显示日期字符串。在“属性”一节中已经列出所有属性的格式描述符。
 
 - 描述符长度为2，由"%"紧跟一个字母组成
 - '%l' 将闰月标志格式化为数字，如“0”、“1”
@@ -184,9 +184,9 @@ LunarDate(2018, 6, 1, 0)
 
 **replace函数**
 
-返回一个替换给定值后的日期对象。
+`replace(self, *, year=None, month=None, day=None, leap=None)`
 
-函数签名 `replace(self, *, year=None, month=None, day=None, leap=None)` 所有参数必须以关键字形式传入。如果该日期不存在，将抛出 `ValyeError` 异常。
+返回一个替换给定值后的日期对象。所有参数必须以关键字形式传入。如果该日期不存在，将抛出 `ValyeError` 异常。
 
 ```
 >>>ld = LunarDate(2018, 5, 3)
@@ -206,3 +206,8 @@ False
 >>>LunarDate(2018, 6, 2) > date(2018, 6, 2)
 True
 ```
+
+## 参考资料
+
+- [香港天文台农历信息](http://www.hko.gov.hk/gts/time/conversion.htm)
+- [农历维基词条](https://en.wikipedia.org/wiki/Chinese_calendar)
