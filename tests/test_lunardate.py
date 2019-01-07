@@ -121,3 +121,6 @@ class FormatterTestCase(unittest.TestCase):
         self.assertEqual('61', ld3.strftime('%m%l'))
         self.assertEqual('闰六', ld3.strftime('%L%M'))
         self.assertEqual(ld3.gz_str(), ld3.strftime('%G'))
+
+        self.assertEqual('%y', ld3.strftime('%%y'))
+        self.assertEqual('%2017', ld3.strftime('%%%y'))

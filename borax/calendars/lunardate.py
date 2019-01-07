@@ -506,7 +506,8 @@ class Formatter:
         '%p': 'gz_month',
         '%q': 'gz_day',
         '%C': 'cn_str',
-        '%G': 'gz_str'
+        '%G': 'gz_str',
+        '%%': '%'
     }
 
     def __init__(self, fmt):
@@ -515,7 +516,10 @@ class Formatter:
         self._fmt = pattern.sub(self.replace_rex, fmt)
 
     def replace_rex(self, match):
-        field = self.directives[match.group()]
+        directive = match.group()
+        if directive == '%%':
+            return '%'
+        field = self.directives[directive]
         self._fields.add(field)
         return ''.join(['{', field, '}'])
 
