@@ -385,8 +385,7 @@ class LunarDate:
         return '{}年{}月{}日'.format(self.gz_year, self.gz_month, self.gz_day)
 
     def to_solar_date(self):
-        offset = ymdl2offset(self.year, self.month, self.day, self.leap)
-        return _START_SOLAR_DATE + datetime.timedelta(days=offset)
+        return _START_SOLAR_DATE + datetime.timedelta(days=self.offset)
 
     def before(self, day_delta=1):
         y, m, d, l = offset2ymdl(self._offset - day_delta)
@@ -410,12 +409,12 @@ class LunarDate:
     def strftime(self, fmt):
         return Formatter(fmt).format(self)
 
-    @staticmethod
-    def from_solar_date(year, month, day):
+    @classmethod
+    def from_solar_date(cls, year, month, day):
         solar_date = datetime.date(year, month, day)
         offset = (solar_date - _START_SOLAR_DATE).days
         y, m, d, l = offset2ymdl(offset)
-        return LunarDate(y, m, d, l)
+        return cls(y, m, d, l)
 
     @classmethod
     def today(cls):

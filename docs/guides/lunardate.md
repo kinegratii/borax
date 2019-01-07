@@ -1,10 +1,10 @@
 # lunardate 模块
 
-> 模块： `borax.calendars.lunardate`
+> 模块： `borax.calendars.lunardate`  协议：GPLv3
 
 ## 概述
 
-`lunardate` 模块是一个处理中国农历日期的工具库。支持1900 - 2100 （农历）年范围的日期、干支纪、节气等历法信息。
+`lunardate` 模块是一个处理中国农历日期的工具库。支持1900 - 2100 农历年范围的日期、干支纪年、节气等历法信息。
 
 
 本模块的数据和算法引用自项目 [jjonline/calendar.js](https://github.com/jjonline/calendar.js) ，具体内容包括：
@@ -12,8 +12,6 @@
 - 1900-2100年农历月份信息
 - 节气数据及其表示方法
 - 干支纪年算法
-
-项目代码是基于 [python-lunardate](https://github.com/lidaobing/python-lunardate) 修改和完善，使用 GPLv3 开源协议发布。
 
 ## 日期范围
 
@@ -84,6 +82,7 @@ LunarDate(2100, 12, 29, 0)
 | month | `int` | 农历月 | 6 | %m |
 | day | `int` | 农历日 | 26 | %d |
 | leap | `bool` | 是否闰月 | False | %l |
+| offset | `int` | 距下限的偏移量 | 43287 | - |
 | term | `str` 或 `None` | 节气名称 | 立秋 | %t |
 | cn_year | `str` | 中文年 | 二〇一八年 | %Y |
 | cn_month | `str` | 中文月 | 六月 | %M |
@@ -108,11 +107,11 @@ LunarDate(2100, 12, 29, 0)
 
 在汉字表示法中，为了统一字符串长度，日期使用 “廿六” 形式，而不是 “二十六”；“十一月”、“十二月”使用“冬月”、“腊月”形式。
 
-### 自定义
+### 格式符描述
 
 > v1.2.0 新增。
 
-`LunarDate.strftime` 提供了通过格式描述符(Directive)来自定义显示日期字符串。在“属性”一节中已经列出所有属性的格式描述符。
+`LunarDate.strftime(fmt)` 提供了通过格式描述符(Directive)来自定义显示日期字符串。在“属性”一节中已经列出所有属性的格式描述符。
 
 - 描述符长度为2，由"%"紧跟一个字母组成
 - '%l' 将闰月标志格式化为数字，如“0”、“1”
@@ -211,3 +210,5 @@ True
 
 - [香港天文台农历信息](http://www.hko.gov.hk/gts/time/conversion.htm)
 - [农历维基词条](https://en.wikipedia.org/wiki/Chinese_calendar)
+- [jjonline/calendar.js](https://github.com/jjonline/calendar.js)
+- [lidaobing/python-lunardate](https://github.com/lidaobing/python-lunardate)
