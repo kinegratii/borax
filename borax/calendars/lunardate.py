@@ -10,25 +10,7 @@ _MAX_OFFSET = (_END_SOLAR_DATE - _START_SOLAR_DATE).days  # 73411 [0, 73411]
 _START_LUNAR_YEAR = 1900
 _END_LUNAR_YEAR = 2100
 
-
-def get_item_cycle(arr, index):
-    l = len(arr)
-    return arr[(index % l + index) % l]
-
-
 YEAR_INFOS = [
-    #    /* encoding:
-    #               b bbbbbbbbbbbb bbbb
-    #       bit#    1 111111000000 0000
-    #               6 543210987654 3210
-    #               . ............ ....
-    #       month#    000000000111
-    #               M 123456789012   L
-    #
-    #    b_j = 1 for long month, b_j = 0 for short month
-    #    L is the leap month of the year if 1<=L<=12; NO leap month if L = 0.
-    #    The leap month (if exists) is long one iff M = 1.
-    #    */
     0x04bd8, 0x04ae0, 0x0a570, 0x054d5, 0x0d260, 0x0d950, 0x16554, 0x056a0, 0x09ad0, 0x055d2,  # 1900 - 1909
     0x04ae0, 0x0a5b6, 0x0a4d0, 0x0d250, 0x1d255, 0x0b540, 0x0d6a0, 0x0ada2, 0x095b0, 0x14977,  # 1910 - 1919
     0x04970, 0x0a4b0, 0x0b4b5, 0x06a50, 0x06d40, 0x1ab54, 0x02b60, 0x09570, 0x052f2, 0x04970,  # 1920 - 1929

@@ -33,6 +33,23 @@ python setup.py install
 
 ## Modules Usage
 
+### lunardate
+
+> The dataset and algorithm is referenced from [jjonline/calendar.js](https://github.com/jjonline/calendar.js).
+
+Get the date instance of today.
+
+```
+>>>from borax.calendars.lunardate import LunarDate
+>>>LunarDate.today()
+LunarDate(2018, 7, 1, 0)
+>>>ld = LunarDate.from_solar_date(2018, 8, 11)
+>>>ld
+LunarDate(2018, 7, 1, 0)
+>>>ld.after(10)
+LunarDate(2018, 7, 11, 0)
+```
+
 ### Choices
 
 Use `choices` in django models.
@@ -88,7 +105,7 @@ See [online document](https://kinegratii.github.io/borax) for more detail, which
 ```
 The MIT License (MIT)
 
-Copyright (c) 2015-2018 kinegratii
+Copyright (c) 2015-2019 kinegratii
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
