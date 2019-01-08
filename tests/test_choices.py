@@ -12,6 +12,8 @@ class Demo1Field(choices.ConstChoices):
     c = 3, 'SSS'
     D = 5
     _E = 6, 'ES'
+    F = 8
+    G = choices.Item(10)
 
 
 class FieldChoiceTestCase(unittest.TestCase):
@@ -31,7 +33,9 @@ class FieldChoiceTestCase(unittest.TestCase):
     def test_get_display(self):
         self.assertEqual('VER', Demo1Field.get_value_display(1))
         self.assertIsNone(Demo1Field.get_value_display(4))
-        self.assertEqual(5, Demo1Field.get_value_display(5))
+        self.assertEqual('5', Demo1Field.get_value_display(5))
+        self.assertEqual('8', Demo1Field.get_value_display(8))
+        self.assertEqual('10', Demo1Field.get_value_display(10))
 
 
 class GenderChoices(choices.ConstChoices):

@@ -11,7 +11,10 @@ class Item:
 
     def __init__(self, value, display=None, *, order=None):
         self.value = value
-        self.display = display
+        if display is None:
+            self.display = str(value)
+        else:
+            self.display = str(display)
         if order is None:
             Item._order += 1
             self.order = Item._order

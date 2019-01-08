@@ -1,5 +1,10 @@
 # 更新日志
 
+## v1.1.9
+
+- `choices` 模块
+  - 修正`Item.default` 未设置的bug
+
 ## v1.1.8 (20190108)
 
 - `calendar` 模块
