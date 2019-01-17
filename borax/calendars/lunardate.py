@@ -477,10 +477,12 @@ class Formatter:
         '%y': 'year',
         '%Y': 'cn_year',
         '%m': 'month',
+        '%A': 'padding_month',
         '%l': 'leap',
         '%L': 'cn_leap',
         '%M': 'cn_month',
         '%d': 'day',
+        '%B': 'padding_day',
         '%D': 'cn_day',
         '%a': 'animal',
         '%t': 'term',
@@ -520,6 +522,8 @@ class Formatter:
             else:
                 return attr
 
+    # Custom values
+
     def get_leap(self, obj):
         return int(obj.leap)
 
@@ -537,3 +541,9 @@ class Formatter:
 
     def get_cn_day(self, obj):
         return Display.day_cn(obj.day)
+
+    def get_padding_month(self, obj):
+        return '{0:02d}'.format(obj.month)
+
+    def get_padding_day(self, obj):
+        return '{0:02d}'.format(obj.day)
