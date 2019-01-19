@@ -227,30 +227,24 @@ def get_term(year, n):
 
 # ------ GanZhi ------
 
-GANS = '甲乙丙丁戊己庚辛壬癸'
-ZHIS = '子丑寅卯辰巳午未申酉戌亥'
-ANIMALS = '鼠牛虎兔龙蛇马羊猴鸡狗猪'
 
-
-def get_gz_cn(offset):
-    """Get n-th(0-based) GanZhi
-    """
-    return GANS[offset % 10] + ZHIS[offset % 12]
-
-
-class Display:
+class TextUtils:
     MONTHS_CN = '〇正二三四五六七八九十冬腊'
     TENS = '初十廿卅'
     DAYS_CN = '日一二三四五六七八九十'
 
+    GANS = '甲乙丙丁戊己庚辛壬癸'
+    ZHIS = '子丑寅卯辰巳午未申酉戌亥'
+    ANIMALS = '鼠牛虎兔龙蛇马羊猴鸡狗猪'
+
     @staticmethod
     def year_cn(year):
-        s = ''.join([Display.MONTHS_CN[int(c)] for c in str(year)])
+        s = ''.join([TextUtils.MONTHS_CN[int(c)] for c in str(year)])
         return s.replace('正', '一')
 
     @staticmethod
     def month_cn(month):
-        return Display.MONTHS_CN[month]
+        return TextUtils.MONTHS_CN[month]
 
     @staticmethod
     def day_cn(day):
@@ -259,7 +253,13 @@ class Display:
             b = 10
             if a == 1:  # 10
                 a = 0
-        return Display.TENS[a] + Display.DAYS_CN[b]
+        return TextUtils.TENS[a] + TextUtils.DAYS_CN[b]
+
+    @staticmethod
+    def get_gz_cn(offset):
+        """Get n-th(0-based) GanZhi
+        """
+        return TextUtils.GANS[offset % 10] + TextUtils.ZHIS[offset % 12]
 
 
 class LunarDate:
@@ -322,7 +322,7 @@ class LunarDate:
 
     @property
     def animal(self):
-        return ANIMALS[(self.year - 4) % 12]
+        return TextUtils.ANIMALS[(self.year - 4) % 12]
 
     def _get_gz_ymd(self):
         """
@@ -341,24 +341,24 @@ class LunarDate:
             term = TERMS_CN[sm * 2 - 1]
         else:
             term = None
-        gz_month = get_gz_cn((sy - 1900) * 12 + sm + 11)
+        gz_month = TextUtils.get_gz_cn((sy - 1900) * 12 + sm + 11)
         if sd >= d1:
-            gz_month = get_gz_cn((sy - 1900) * 12 + sm + 12)
-        gz_year = GANS[(self.year - 4) % 10] + ZHIS[(self.year - 4) % 12]
-        gz_day = get_gz_cn((self._offset + 40) % 60)
+            gz_month = TextUtils.get_gz_cn((sy - 1900) * 12 + sm + 12)
+        gz_year = TextUtils.GANS[(self.year - 4) % 10] + TextUtils.ZHIS[(self.year - 4) % 12]
+        gz_day = TextUtils.get_gz_cn((self._offset + 40) % 60)
         return gz_year, gz_month, gz_day, term
 
     @property
     def cn_year(self):
-        return '{}年'.format(Display.year_cn(self.year))
+        return '{}年'.format(TextUtils.year_cn(self.year))
 
     @property
     def cn_month(self):
-        return '{}{}月'.format('闰' if self.leap else '', Display.month_cn(self.month))
+        return '{}{}月'.format('闰' if self.leap else '', TextUtils.month_cn(self.month))
 
     @property
     def cn_day(self):
-        return '{}日'.format(Display.day_cn(self.day))
+        return '{}日'.format(TextUtils.day_cn(self.day))
 
     def cn_str(self):
         return '{}{}{}'.format(self.cn_year, self.cn_month, self.cn_day)
@@ -534,13 +534,13 @@ class Formatter:
             return ''
 
     def get_cn_year(self, obj):
-        return Display.year_cn(obj.year)
+        return TextUtils.year_cn(obj.year)
 
     def get_cn_month(self, obj):
-        return Display.month_cn(obj.month)
+        return TextUtils.month_cn(obj.month)
 
     def get_cn_day(self, obj):
-        return Display.day_cn(obj.day)
+        return TextUtils.day_cn(obj.day)
 
     def get_padding_month(self, obj):
         return '{0:02d}'.format(obj.month)
