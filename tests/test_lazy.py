@@ -37,4 +37,4 @@ class LazyObjectTestCase(unittest.TestCase):
         p = LazyObject(MockPoint, kwargs={'x': 1, 'y': 2})
         delattr(p, 'x')
         with self.assertRaises(AttributeError):
-            c = p.x
+            print(p.x)

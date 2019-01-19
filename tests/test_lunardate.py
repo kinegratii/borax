@@ -95,8 +95,8 @@ class BenchmarkTestCase(unittest.TestCase):
         """ offset2ymdl <=> ymdl2offset
         """
         for offset in range(0, _MAX_OFFSET + 1):
-            y, m, d, l = offset2ymdl(offset)
-            _offset = ymdl2offset(y, m, d, l)
+            y, m, d, leap = offset2ymdl(offset)
+            _offset = ymdl2offset(y, m, d, leap)
             self.assertEqual(_offset, offset)
 
     def test_edge_dates(self):

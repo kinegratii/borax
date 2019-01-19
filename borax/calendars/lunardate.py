@@ -370,12 +370,12 @@ class LunarDate:
         return _START_SOLAR_DATE + datetime.timedelta(days=self.offset)
 
     def before(self, day_delta=1):
-        y, m, d, l = offset2ymdl(self._offset - day_delta)
-        return LunarDate(y, m, d, l)
+        y, m, d, leap = offset2ymdl(self._offset - day_delta)
+        return LunarDate(y, m, d, leap)
 
     def after(self, day_delta=1):
-        y, m, d, l = offset2ymdl(self._offset + day_delta)
-        return LunarDate(y, m, d, l)
+        y, m, d, leap = offset2ymdl(self._offset + day_delta)
+        return LunarDate(y, m, d, leap)
 
     def replace(self, *, year=None, month=None, day=None, leap=None):
         if year is None:
@@ -395,8 +395,8 @@ class LunarDate:
     def from_solar_date(cls, year, month, day):
         solar_date = datetime.date(year, month, day)
         offset = (solar_date - _START_SOLAR_DATE).days
-        y, m, d, l = offset2ymdl(offset)
-        return cls(y, m, d, l)
+        y, m, d, leap = offset2ymdl(offset)
+        return cls(y, m, d, leap)
 
     @classmethod
     def today(cls):

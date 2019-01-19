@@ -26,5 +26,5 @@ def chain_getattr(obj, attr, value=None):
 
 
 def get_item_cycle(data, index, start=0):
-    l = len(data)
-    return data[((index - start) % l + l) % l]
+    length = len(data)
+    return data[((index - start) % length + length) % length]
