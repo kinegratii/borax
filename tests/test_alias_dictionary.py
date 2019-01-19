@@ -61,4 +61,4 @@ class AliasDictionaryTestCase(TestCase):
         ad = AliasDictionary(demo_data['data'], demo_data['alias'])
         for key, value, aliases in ad.get_available_items():
             if key == 'a':
-                self.assertListEqual(['A', 'A1'], aliases)
+                self.assertSetEqual({'A', 'A1'}, set(aliases))
