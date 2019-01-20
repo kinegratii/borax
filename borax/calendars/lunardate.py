@@ -58,7 +58,7 @@ def parse_year_days(year_info):
 YEAR_DAYS = [parse_year_days(x) for x in YEAR_INFOS]
 
 
-def iter_year_month(year_info):
+def _iter_year_month(year_info):
     """ Iter the month days in a lunar year.
     """
     # info => month, days, leap
@@ -79,11 +79,35 @@ def iter_year_month(year_info):
         yield month, days, leap
 
 
+class LCalendars:
+    """A public API for lunar calendar.
+    """
+
+    @staticmethod
+    def iter_year_month(year):
+        if year < _START_LUNAR_YEAR or year > _END_LUNAR_YEAR:
+            raise ValueError('year out of range [1900, 2100]')
+        return _iter_year_month(YEAR_INFOS[year - _START_LUNAR_YEAR])
+
+    @staticmethod
+    def ndays(year, month=None, leap=False):
+        if year < _START_LUNAR_YEAR or year > _END_LUNAR_YEAR:
+            raise ValueError('year out of range [1900, 2100]')
+        if month is None:
+            return YEAR_DAYS[year - _START_LUNAR_YEAR]
+        leap = int(bool(leap))
+        for _month, _days, _leap in LCalendars.iter_year_month(year):
+            if (_month, _leap) == (month, leap):
+                return _days
+        else:
+            raise ValueError('Invalid month for the year {}'.format(year))
+
+
 # offset <----> year, day_offset <----> year, month, day, leap
 
 def offset2ymdl(offset):
     def _o2mdl(_year_info, _offset):
-        for _month, _days, _leap in iter_year_month(_year_info):
+        for _month, _days, _leap in _iter_year_month(_year_info):
             if _offset < _days:
                 break
             _offset -= _days
@@ -110,7 +134,7 @@ def ymdl2offset(year, month, day, leap):
     def _mdl2o(_year_info, _month, _day, _leap):
         _leap = int(_leap)
         res = 0
-        for _month_, _days_, _leap_ in iter_year_month(_year_info):
+        for _month_, _days_, _leap_ in _iter_year_month(_year_info):
             if (_month_, _leap_) == (_month, _leap):
                 if 1 <= _day <= _days_:
                     res += _day - 1

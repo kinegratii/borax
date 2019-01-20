@@ -2,10 +2,9 @@
 
 import datetime
 import unittest
-
 from datetime import date, timedelta
 
-from borax.calendars.lunardate import LunarDate, parse_year_days, ymdl2offset, offset2ymdl, _MAX_OFFSET
+from borax.calendars.lunardate import LunarDate, parse_year_days, _MAX_OFFSET, LCalendars
 
 
 class LunarDateTestCase(unittest.TestCase):
@@ -118,3 +117,14 @@ class FormatterTestCase(unittest.TestCase):
         self.assertEqual('%2017', ld3.strftime('%%%y'))
         self.assertEqual('2017631', ld3.strftime('%y%m%d%l'))
         self.assertEqual('201706031', ld3.strftime('%y%A%B%l'))
+
+
+class LCalendarTestCase(unittest.TestCase):
+    def test_ndays(self):
+        self.assertEqual(354, LCalendars.ndays(2018))
+        self.assertEqual(30, LCalendars.ndays(2018, 12))
+        self.assertEqual(30, LCalendars.ndays(2017, 6, 1))
+        with self.assertRaises(ValueError):
+            LCalendars.ndays(2017, 7, 1)
+        with self.assertRaises(ValueError):
+            LCalendars.ndays(2017, 13)

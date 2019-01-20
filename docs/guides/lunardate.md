@@ -212,6 +212,41 @@ False
 True
 ```
 
+## LCalendars工具接口
+
+`LCalendars` 提供了一系列的工具方法。
+
+- **LCalendars.ndays(year, month=None, leap=False)**
+
+返回X年或者X年X月的天数；如输入的年月不存在，将抛出 `ValueError` 异常。
+例子：
+
+```
+>>>from borax.calendars.lunardate import LCalendars
+>>>LCalendars.ndays(2018)
+354
+>>>LCalendars.ndays(2018, 12)
+30
+>>>LCalendars.ndays(2017, 6, 1)
+30
+>>>LCalendars.ndays(2200)
+ValueError: year out of range [1900, 2100]
+>>>LCalendars.ndays(2017, 7, 1)
+ValueError: Invalid month for the year 2017
+```
+- **LCalendars.iter_year_month(year)**
+
+迭代X年的月份信息，元素返回 *(月份, 该月的天数, 闰月标记)* 的元祖。
+
+例子：
+
+```
+>>>from borax.calendars.lunardate import LCalendars
+>>>list(LCalendars.iter_year_month(2017))
+[(1, 29, 0), (2, 30, 0), (3, 29, 0), (4, 30, 0), (5, 29, 0), (6, 29, 0), (6, 30, 1), (7, 29, 0), (8, 30, 0), (9, 29, 0), (10, 30, 0), (11, 30, 0), (12, 30, 0)]
+```
+
+
 ## 参考资料
 
 - [香港天文台农历信息](http://www.hko.gov.hk/gts/time/conversion.htm)
