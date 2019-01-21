@@ -4,7 +4,7 @@
 [![PyPI](https://img.shields.io/pypi/v/borax.svg)](https://pypi.org/project/borax) 
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/borax.svg)](https://pypi.org/project/borax)
 [![PyPI - Status](https://img.shields.io/pypi/status/borax.svg)](https://github.com/kinegratii/borax)
-
+[![Build Status](https://travis-ci.org/kinegratii/borax.svg?branch=master)](https://travis-ci.org/kinegratii/borax)
 
 
 

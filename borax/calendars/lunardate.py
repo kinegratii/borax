@@ -4,11 +4,21 @@ import datetime
 
 __all__ = ['LunarDate']
 
+#  Constants
+
+MIN_LUNAR_YEAR = 1900
+MAX_LUNAR_YEAR = 2100
+
 _START_SOLAR_DATE = datetime.date(1900, 1, 31)
 _END_SOLAR_DATE = datetime.date(2101, 1, 28)
-_MAX_OFFSET = (_END_SOLAR_DATE - _START_SOLAR_DATE).days  # 73411 [0, 73411]
-_START_LUNAR_YEAR = 1900
-_END_LUNAR_YEAR = 2100
+
+MAX_OFFSET = (_END_SOLAR_DATE - _START_SOLAR_DATE).days  # 73411 [0, 73411]
+
+
+def _check_year_range(year):
+    if year < MIN_LUNAR_YEAR or year > MAX_LUNAR_YEAR:
+        raise ValueError('year out of range [1900, 2100]')
+
 
 YEAR_INFOS = [
     0x04bd8, 0x04ae0, 0x0a570, 0x054d5, 0x0d260, 0x0d950, 0x16554, 0x056a0, 0x09ad0, 0x055d2,  # 1900 - 1909
@@ -85,16 +95,14 @@ class LCalendars:
 
     @staticmethod
     def iter_year_month(year):
-        if year < _START_LUNAR_YEAR or year > _END_LUNAR_YEAR:
-            raise ValueError('year out of range [1900, 2100]')
-        return _iter_year_month(YEAR_INFOS[year - _START_LUNAR_YEAR])
+        _check_year_range(year)
+        return _iter_year_month(YEAR_INFOS[year - MIN_LUNAR_YEAR])
 
     @staticmethod
     def ndays(year, month=None, leap=False):
-        if year < _START_LUNAR_YEAR or year > _END_LUNAR_YEAR:
-            raise ValueError('year out of range [1900, 2100]')
+        _check_year_range(year)
         if month is None:
-            return YEAR_DAYS[year - _START_LUNAR_YEAR]
+            return YEAR_DAYS[year - MIN_LUNAR_YEAR]
         leap = int(bool(leap))
         for _month, _days, _leap in LCalendars.iter_year_month(year):
             if (_month, _leap) == (month, leap):
@@ -117,13 +125,13 @@ def offset2ymdl(offset):
 
     offset = int(offset)
 
-    for idx, yearDay in enumerate(YEAR_DAYS):
-        if offset < yearDay:
+    for idx, year_day in enumerate(YEAR_DAYS):
+        if offset < year_day:
             break
-        offset -= yearDay
+        offset -= year_day
     else:
         raise ValueError('Out of range')
-    year = _START_LUNAR_YEAR + idx
+    year = MIN_LUNAR_YEAR + idx
 
     year_info = YEAR_INFOS[idx]
     month, day, leap = _o2mdl(year_info, offset)
@@ -146,12 +154,10 @@ def ymdl2offset(year, month, day, leap):
         raise ValueError("month out of range")
 
     offset = 0
-    if year < _START_LUNAR_YEAR or year > _END_LUNAR_YEAR:
-        raise ValueError('year out of range [1900, 2100]')
-    year_idx = year - _START_LUNAR_YEAR
+    _check_year_range(year)
+    year_idx = year - MIN_LUNAR_YEAR
     for i in range(year_idx):
         offset += YEAR_DAYS[i]
-
     offset += _mdl2o(YEAR_INFOS[year_idx], month, day, leap)
     return offset
 
@@ -159,10 +165,8 @@ def ymdl2offset(year, month, day, leap):
 # ------ Term Info ------
 
 TERMS_CN = [
-    "小寒", "大寒", "立春", "雨水", "惊蛰", "春分",
-    "清明", "谷雨", "立夏", "小满", "芒种", "夏至",
-    "小暑", "大暑", "立秋", "处暑", "白露", "秋分",
-    "寒露", "霜降", "立冬", "小雪", "大雪", "冬至"
+    "小寒", "大寒", "立春", "雨水", "惊蛰", "春分", "清明", "谷雨", "立夏", "小满", "芒种", "夏至",
+    "小暑", "大暑", "立秋", "处暑", "白露", "秋分", "寒露", "霜降", "立冬", "小雪", "大雪", "冬至"
 ]
 TERM_INFO = [
     '9778397bd097c36b0b6fc9274c91aa', '97b6b97bd19801ec9210c965cc920e', '97bcf97c3598082c95f8c965cc920f',
@@ -238,7 +242,7 @@ TERM_INFO = [
 def get_term(year, n):
     """Get n-th (1-24) term of a solar year, with '小寒' as 1st term.
     """
-    year_idx = year - _START_LUNAR_YEAR
+    year_idx = year - MIN_LUNAR_YEAR
     term_info = TERM_INFO[year_idx]
     values = [str(int(term_info[i:i + 5], 16)) for i in range(0, 30, 5)]
     term_day_list = []
@@ -249,7 +253,7 @@ def get_term(year, n):
     return term_day_list[n - 1]
 
 
-# ------ GanZhi ------
+# ------ Stems and Branches ------
 
 
 class TextUtils:
@@ -257,8 +261,8 @@ class TextUtils:
     TENS = '初十廿卅'
     DAYS_CN = '日一二三四五六七八九十'
 
-    GANS = '甲乙丙丁戊己庚辛壬癸'
-    ZHIS = '子丑寅卯辰巳午未申酉戌亥'
+    STEMS = '甲乙丙丁戊己庚辛壬癸'
+    BRANCHES = '子丑寅卯辰巳午未申酉戌亥'
     ANIMALS = '鼠牛虎兔龙蛇马羊猴鸡狗猪'
 
     @staticmethod
@@ -283,7 +287,7 @@ class TextUtils:
     def get_gz_cn(offset):
         """Get n-th(0-based) GanZhi
         """
-        return TextUtils.GANS[offset % 10] + TextUtils.ZHIS[offset % 12]
+        return TextUtils.STEMS[offset % 10] + TextUtils.BRANCHES[offset % 12]
 
 
 class LunarDate:
@@ -353,7 +357,7 @@ class LunarDate:
         (sy, sm, sd) -> term / gz_year / gz_month / gz_day
         """
         sy, sm, sd = self._solar_ymd
-        # [2100.1.1-2100.1.8] has no term info.
+        # [2101.1.1-2100.1.28] has no term info.
         if sy < 1900 or sy > 2100:
             return None, None, None, None
 
@@ -368,7 +372,7 @@ class LunarDate:
         gz_month = TextUtils.get_gz_cn((sy - 1900) * 12 + sm + 11)
         if sd >= d1:
             gz_month = TextUtils.get_gz_cn((sy - 1900) * 12 + sm + 12)
-        gz_year = TextUtils.GANS[(self.year - 4) % 10] + TextUtils.ZHIS[(self.year - 4) % 12]
+        gz_year = TextUtils.STEMS[(self.year - 4) % 10] + TextUtils.BRANCHES[(self.year - 4) % 12]
         gz_day = TextUtils.get_gz_cn((self._offset + 40) % 60)
         return gz_year, gz_month, gz_day, term
 
@@ -414,6 +418,13 @@ class LunarDate:
 
     def strftime(self, fmt):
         return Formatter(fmt).format(self)
+
+    def __format__(self, fmt):
+        if not isinstance(fmt, str):
+            raise TypeError("must be str, not %s" % type(fmt).__name__)
+        if len(fmt) != 0:
+            return self.strftime(fmt)
+        return str(self)
 
     @classmethod
     def from_solar_date(cls, year, month, day):

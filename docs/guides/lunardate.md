@@ -212,6 +212,18 @@ False
 True
 ```
 
+## 常量定义
+
+`lunardate` 提供了下列的模块级常量。 
+
+- **lunardate.MIN_LUNAR_YEAR**
+
+农历可表示的最大年份，值为 2100 。
+
+- **lunardate.MAX_LUNAR_YEAR**
+
+农历可表示的最小年份，值为 1900 。
+
 ## LCalendars工具接口
 
 `LCalendars` 提供了一系列的工具方法。

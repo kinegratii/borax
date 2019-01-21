@@ -4,7 +4,7 @@ import datetime
 import unittest
 from datetime import date, timedelta
 
-from borax.calendars.lunardate import LunarDate, parse_year_days, _MAX_OFFSET, LCalendars
+from borax.calendars.lunardate import LunarDate, parse_year_days, MAX_OFFSET, LCalendars
 
 
 class LunarDateTestCase(unittest.TestCase):
@@ -92,7 +92,7 @@ class PrivateMethodsTestCase(unittest.TestCase):
 class BenchmarkTestCase(unittest.TestCase):
     def test_edge_dates(self):
         # Max date
-        self.assertEqual(_MAX_OFFSET, LunarDate.max.offset)
+        self.assertEqual(MAX_OFFSET, LunarDate.max.offset)
 
         sd2100_ld = LunarDate.from_solar_date(2100, 12, 31)
         self.assertEqual('庚申年戊子月丁未日', sd2100_ld.gz_str())
