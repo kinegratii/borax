@@ -6,6 +6,7 @@
   - 重构节气/干支信息
   - 新增 `LCalendars` 工具接口
   - 新增`%A`、`%B` 字符串描述符
+  - 新增 [Typing Hint](https://docs.python.org/3/library/typing.html) 支持
 - 新增 travis 构建
   
 ## v1.1.9 (20190113)

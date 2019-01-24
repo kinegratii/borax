@@ -2,7 +2,13 @@
 import re
 import datetime
 
+from typing import Optional, Iterator, Tuple, Union
+
 __all__ = ['LunarDate', 'SolarTermAndStemBranch', 'LCalendars']
+
+# Typing
+
+Leap = Union[int, bool]
 
 #  Constants
 
@@ -94,12 +100,12 @@ class LCalendars:
     """
 
     @staticmethod
-    def iter_year_month(year):
+    def iter_year_month(year: int) -> Iterator[Tuple[int, int, int]]:
         _check_year_range(year)
         return _iter_year_month(YEAR_INFOS[year - MIN_LUNAR_YEAR])
 
     @staticmethod
-    def ndays(year, month=None, leap=False):
+    def ndays(year: int, month: Optional[int] = None, leap: Leap = False) -> int:
         _check_year_range(year)
         if month is None:
             return YEAR_DAYS[year - MIN_LUNAR_YEAR]
@@ -259,16 +265,16 @@ class TextUtils:
     ANIMALS = '鼠牛虎兔龙蛇马羊猴鸡狗猪'
 
     @staticmethod
-    def year_cn(year):
+    def year_cn(year: int) -> str:
         s = ''.join([TextUtils.MONTHS_CN[int(c)] for c in str(year)])
         return s.replace('正', '一')
 
     @staticmethod
-    def month_cn(month):
+    def month_cn(month: int) -> str:
         return TextUtils.MONTHS_CN[month]
 
     @staticmethod
-    def day_cn(day):
+    def day_cn(day: int) -> str:
         a, b = divmod(day, 10)
         if b == 0:  # 10,20,30
             b = 10
@@ -277,7 +283,7 @@ class TextUtils:
         return TextUtils.TENS[a] + TextUtils.DAYS_CN[b]
 
     @staticmethod
-    def get_gz_cn(offset):
+    def get_gz_cn(offset: int) -> str:
         """Get n-th(0-based) GanZhi
         """
         return TextUtils.STEMS[offset % 10] + TextUtils.BRANCHES[offset % 12]
@@ -291,7 +297,7 @@ class LunarDate:
         '_animal'
     ]
 
-    def __new__(cls, year, month, day, leap=False):
+    def __new__(cls, year: int, month: int, day: int, leap: Leap = False):
         self = object.__new__(cls)
         offset = ymdl2offset(year, month, day, leap)
         self._year = year
@@ -306,43 +312,43 @@ class LunarDate:
         return self
 
     @property
-    def year(self):
+    def year(self) -> int:
         return self._year
 
     @property
-    def month(self):
+    def month(self) -> int:
         return self._month
 
     @property
-    def day(self):
+    def day(self) -> int:
         return self._day
 
     @property
-    def leap(self):
+    def leap(self) -> bool:
         return self._leap
 
     @property
-    def offset(self):
+    def offset(self) -> int:
         return self._offset
 
     @property
-    def term(self):
+    def term(self) -> str:
         return self._term
 
     @property
-    def gz_year(self):
+    def gz_year(self) -> str:
         return self._gz_year
 
     @property
-    def gz_month(self):
+    def gz_month(self) -> str:
         return self._gz_month
 
     @property
-    def gz_day(self):
+    def gz_day(self) -> str:
         return self._gz_day
 
     @property
-    def animal(self):
+    def animal(self) -> str:
         return TextUtils.ANIMALS[(self.year - 4) % 12]
 
     def _get_gz_ymd(self):
@@ -364,35 +370,36 @@ class LunarDate:
         return gz_year, gz_month, gz_day, term_name
 
     @property
-    def cn_year(self):
+    def cn_year(self) -> str:
         return '{}年'.format(TextUtils.year_cn(self.year))
 
     @property
-    def cn_month(self):
+    def cn_month(self) -> str:
         return '{}{}月'.format('闰' if self.leap else '', TextUtils.month_cn(self.month))
 
     @property
-    def cn_day(self):
+    def cn_day(self) -> str:
         return '{}日'.format(TextUtils.day_cn(self.day))
 
-    def cn_str(self):
+    def cn_str(self) -> str:
         return '{}{}{}'.format(self.cn_year, self.cn_month, self.cn_day)
 
-    def gz_str(self):
+    def gz_str(self) -> str:
         return '{}年{}月{}日'.format(self.gz_year, self.gz_month, self.gz_day)
 
-    def to_solar_date(self):
+    def to_solar_date(self) -> datetime.date:
         return _START_SOLAR_DATE + datetime.timedelta(days=self.offset)
 
-    def before(self, day_delta=1):
+    def before(self, day_delta: int = 1) -> 'LunarDate':
         y, m, d, leap = offset2ymdl(self._offset - day_delta)
         return LunarDate(y, m, d, leap)
 
-    def after(self, day_delta=1):
+    def after(self, day_delta: int = 1) -> 'LunarDate':
         y, m, d, leap = offset2ymdl(self._offset + day_delta)
         return LunarDate(y, m, d, leap)
 
-    def replace(self, *, year=None, month=None, day=None, leap=None):
+    def replace(self, *, year: Optional[int] = None, month: Optional[int] = None, day: Optional[int] = None,
+                leap: Optional[Leap] = None):
         if year is None:
             year = self._year
         if month is None:
@@ -403,7 +410,7 @@ class LunarDate:
             leap = self._leap
         return type(self)(year, month, day, leap)
 
-    def strftime(self, fmt):
+    def strftime(self, fmt: str) -> str:
         return Formatter(fmt).format(self)
 
     def __format__(self, fmt):
@@ -414,24 +421,24 @@ class LunarDate:
         return str(self)
 
     @classmethod
-    def from_solar_date(cls, year, month, day):
+    def from_solar_date(cls, year: int, month: int, day: int) -> 'LunarDate':
         solar_date = datetime.date(year, month, day)
         offset = (solar_date - _START_SOLAR_DATE).days
         y, m, d, leap = offset2ymdl(offset)
         return cls(y, m, d, leap)
 
     @classmethod
-    def today(cls):
+    def today(cls) -> 'LunarDate':
         res = datetime.date.today()
         return cls.from_solar_date(res.year, res.month, res.day)
 
     @classmethod
-    def yesterday(cls):
+    def yesterday(cls) -> 'LunarDate':
         sd = datetime.date.today() - datetime.timedelta(days=1)
         return cls.from_solar_date(sd.year, sd.month, sd.day)
 
     @classmethod
-    def tomorrow(cls):
+    def tomorrow(cls) -> 'LunarDate':
         sd = datetime.date.today() + datetime.timedelta(days=1)
         return cls.from_solar_date(sd.year, sd.month, sd.day)
 
@@ -529,7 +536,7 @@ class Formatter:
         self._fields.add(field)
         return ''.join(['{', field, '}'])
 
-    def format(self, obj):
+    def format(self, obj: LunarDate) -> str:
         values = {f: self.resolve(obj, f) for f in self._fields}
         return self._fmt.format(**values)
 
