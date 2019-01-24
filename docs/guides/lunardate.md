@@ -13,6 +13,18 @@
 - 节气数据及其表示方法
 - 干支纪年算法
 
+## 常量定义
+
+`lunardate` 提供了下列的模块级常量。 
+
+- **lunardate.MIN_LUNAR_YEAR**
+
+农历可表示的最大年份，值为 2100 。
+
+- **lunardate.MAX_LUNAR_YEAR**
+
+农历可表示的最小年份，值为 1900 。
+
 ## 日期范围
 
 `LunarDate` 实例表示一个具体日期，该类可以表示的日期起止范围如下表：
@@ -211,18 +223,6 @@ False
 >>>LunarDate(2018, 6, 2) > date(2018, 6, 2)
 True
 ```
-
-## 常量定义
-
-`lunardate` 提供了下列的模块级常量。 
-
-- **lunardate.MIN_LUNAR_YEAR**
-
-农历可表示的最大年份，值为 2100 。
-
-- **lunardate.MAX_LUNAR_YEAR**
-
-农历可表示的最小年份，值为 1900 。
 
 ## LCalendars工具接口
 

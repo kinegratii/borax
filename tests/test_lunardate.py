@@ -77,6 +77,8 @@ class LunarDateTestCase(unittest.TestCase):
         self.assertEqual('辛未', ld.gz_day)
         self.assertEqual('二〇一八年六月廿六日', ld.cn_str())
         self.assertEqual('戊戌年庚申月辛未日', ld.gz_str())
+        ld1 = LunarDate(2018, 12, 20)
+        self.assertEqual('戊戌', ld1.gz_year)
 
 
 class PrivateMethodsTestCase(unittest.TestCase):
