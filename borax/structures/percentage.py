@@ -43,3 +43,11 @@ class Percentage:
             prefix + 'percent_display': self.percent_display,
             prefix + 'display': self.display
         }
+
+    def generate(self, char_total=100):
+        char_completed = int(self.percent * char_total)
+        return '|{0}{1}| {2:.2f}%'.format(
+            '▇' * char_completed,
+            '░' * (char_total - char_completed),
+            self.percent * 100
+        )
