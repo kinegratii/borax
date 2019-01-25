@@ -1,6 +1,9 @@
 # coding=utf8
 
 import re
+from decimal import Decimal
+
+from typing import Union
 
 RULES = [
     (r'零角零分$', '整'),
@@ -13,7 +16,7 @@ RULES = [
 ]
 
 
-def financial_amount_capital(num):
+def financial_amount_capital(num: Union[int, float, Decimal, str]) -> str:
     units = '仟佰拾亿仟佰拾万仟佰拾元角分'
     digits = '零壹贰叁肆伍陆柒捌玖'
 

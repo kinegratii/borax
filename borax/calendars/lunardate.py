@@ -4,7 +4,7 @@ import datetime
 
 from typing import Optional, Iterator, Tuple, Union
 
-__all__ = ['LunarDate', 'SolarTermAndStemBranch', 'LCalendars']
+__all__ = ['LunarDate', 'LCalendars']
 
 # Typing
 
