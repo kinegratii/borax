@@ -78,7 +78,7 @@ class LunarDateTestCase(unittest.TestCase):
         self.assertEqual('戊戌', ld.gz_year)
         self.assertEqual('庚申', ld.gz_month)
         self.assertEqual('辛未', ld.gz_day)
-        self.assertEqual('二〇一八年六月廿六日', ld.cn_str())
+        self.assertEqual('二〇一八年六月廿六', ld.cn_str())
         self.assertEqual('戊戌年庚申月辛未日', ld.gz_str())
 
         ld1 = LunarDate(2018, 12, 20)
@@ -86,7 +86,7 @@ class LunarDateTestCase(unittest.TestCase):
         self.assertEqual('狗', ld.animal)
 
         ld2 = LunarDate(2018, 12, 10)
-        self.assertEqual('初十日', ld2.cn_day)
+        self.assertEqual('初十', ld2.cn_day)
 
     def test_new_date(self):
         ld = LunarDate(2018, 12, 10)

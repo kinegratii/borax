@@ -379,7 +379,7 @@ class LunarDate:
 
     @property
     def cn_day(self) -> str:
-        return '{}日'.format(TextUtils.day_cn(self.day))
+        return '{}'.format(TextUtils.day_cn(self.day))
 
     def cn_str(self) -> str:
         return '{}{}{}'.format(self.cn_year, self.cn_month, self.cn_day)
@@ -423,7 +423,11 @@ class LunarDate:
     @classmethod
     def from_solar_date(cls, year: int, month: int, day: int) -> 'LunarDate':
         solar_date = datetime.date(year, month, day)
-        offset = (solar_date - _START_SOLAR_DATE).days
+        return cls.from_solar(solar_date)
+
+    @classmethod
+    def from_solar(cls, date_obj: datetime.date) -> 'LunarDate':
+        offset = (date_obj - _START_SOLAR_DATE).days
         y, m, d, leap = offset2ymdl(offset)
         return cls(y, m, d, leap)
 
@@ -523,7 +527,7 @@ class Formatter:
         '%%': '%'
     }
 
-    def __init__(self, fmt):
+    def __init__(self, fmt: str):
         self._fields = set({})
         pattern = re.compile('|'.join(self.directives.keys()))
         self._fmt = pattern.sub(self.replace_rex, fmt)
