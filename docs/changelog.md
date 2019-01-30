@@ -3,7 +3,8 @@
 ## unreleased
 
 > 部分模块新增 [Typing Hint](https://docs.python.org/3/library/typing.html) 支持
-
+- `calendars.mixed` & `calendars.festivals` 模块
+  - 支持节日查找
 - `lunardate` 模块
   - 使用新版节气数据存储方式
   - 新增 `LCalendars` 工具接口

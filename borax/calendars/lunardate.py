@@ -116,6 +116,20 @@ class LCalendars:
         else:
             raise ValueError('Invalid month for the year {}'.format(year))
 
+    @staticmethod
+    def create_solar_date(year: int, term_index: Optional[int] = None,
+                          term_name: Optional[str] = None) -> datetime.date:
+        if term_name:
+            term_index = TERMS_CN.index(term_name)
+        _check_year_range(year)
+        if term_index % 2 == 0:
+            month = term_index // 2 + 1
+        else:
+            month = (term_index + 1) // 2
+        days = TermUtils.parse_term_days(year)
+        day = days[term_index]
+        return datetime.date(year, month, day)
+
 
 # offset <----> year, day_offset <----> year, month, day, leap
 
@@ -230,26 +244,33 @@ TERM_INFO = [
 ]
 
 
-def get_term_info(year, month, day):
-    """Parse solar term and stem-branch year/month/day from a solar date.
-    (sy, sm, sd) => (term, next_gz_month)
-    """
-    value_offset = [0, 15]
-    year_index = year - MIN_LUNAR_YEAR
-    days = [int(c) + value_offset[i % 2] for i, c in enumerate(TERM_INFO[year_index])]
-    term_index1 = 2 * (month - 1)
-    term_index2 = 2 * (month - 1) + 1
-    day1 = days[term_index1]
-    day2 = days[term_index2]
-    if day == day1:
-        term_name = TERMS_CN[term_index1]
-    elif day == day2:
-        term_name = TERMS_CN[term_index2]
-    else:
-        term_name = None
+class TermUtils:
+    @staticmethod
+    def parse_term_days(year):
+        value_offset = [0, 15]
+        year_index = year - 1900
+        days = [int(c) + value_offset[i % 2] for i, c in enumerate(TERM_INFO[year_index])]
+        return days
 
-    next_gz_month = day >= day1
-    return term_name, next_gz_month
+    @staticmethod
+    def get_term_info(year, month, day):
+        """Parse solar term and stem-branch year/month/day from a solar date.
+        (sy, sm, sd) => (term, next_gz_month)
+        """
+        days = TermUtils.parse_term_days(year)
+        term_index1 = 2 * (month - 1)
+        term_index2 = 2 * (month - 1) + 1
+        day1 = days[term_index1]
+        day2 = days[term_index2]
+        if day == day1:
+            term_name = TERMS_CN[term_index1]
+        elif day == day2:
+            term_name = TERMS_CN[term_index2]
+        else:
+            term_name = None
+
+        next_gz_month = day >= day1
+        return term_name, next_gz_month
 
 
 # ------ Stems and Branches ------
@@ -359,7 +380,7 @@ class LunarDate:
         # [2101.1.1-2100.1.28] has no term info.
         if sy < 1900 or sy > 2100:
             return None, None, None, None
-        term_name, next_gz_month = get_term_info(sy, sm, sd)
+        term_name, next_gz_month = TermUtils.get_term_info(sy, sm, sd)
         s_offset = (datetime.date(sy, sm, sd) - _START_SOLAR_DATE).days
         gz_year = TextUtils.STEMS[(self.year - 4) % 10] + TextUtils.BRANCHES[(self.year - 4) % 12]
         if next_gz_month:

@@ -229,7 +229,7 @@ True
 
 `LCalendars` 提供了一系列的工具方法。
 
-- **LCalendars.ndays(year, month=None, leap=False)**
+- **LCalendars.ndays(year: int, month: Optional[int] = None, leap: Leap = False) -> int**
 
 返回X年或者X年X月的天数；如输入的年月不存在，将抛出 `ValueError` 异常。
 例子：
@@ -247,7 +247,7 @@ ValueError: year out of range [1900, 2100]
 >>>LCalendars.ndays(2017, 7, 1)
 ValueError: Invalid month for the year 2017
 ```
-- **LCalendars.iter_year_month(year)**
+- **LCalendars.iter_year_month(year: int) -> Iterator[Tuple[int, int, int]]**
 
 迭代X年的月份信息，元素返回 *(月份, 该月的天数, 闰月标记)* 的元祖。
 
@@ -257,6 +257,17 @@ ValueError: Invalid month for the year 2017
 >>>from borax.calendars.lunardate import LCalendars
 >>>list(LCalendars.iter_year_month(2017))
 [(1, 29, 0), (2, 30, 0), (3, 29, 0), (4, 30, 0), (5, 29, 0), (6, 29, 0), (6, 30, 1), (7, 29, 0), (8, 30, 0), (9, 29, 0), (10, 30, 0), (11, 30, 0), (12, 30, 0)]
+```
+
+- **LCalendars.create_solar_date(year: int, term_index: Optional[int] = None, term_name: Optional[str] = None) -> datetime.date**
+
+根据节气名称或者序号获取对应的公历日期对象(`dateitime.date`)。`term_index` 和 `term_name` 只需传入一个参数，
+
+`term_index` 取值为 0-23 。其中 小寒的序号为0，立春的序号为2，...冬至的序号为23。
+
+```
+>>>LCalendars.create_solar_date(2019, term_name='清明')
+2019-04-05
 ```
 
 
