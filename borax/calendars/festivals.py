@@ -125,7 +125,7 @@ class LunarSchema(DateSchema):
         return super().match(date_obj)
 
     def _resolve(self, year):
-        return LunarDate(year, self.month, self.day)
+        return LunarDate(year, self.month, self.day, self.leap)
 
 
 class WeekSchema(DateSchema):
