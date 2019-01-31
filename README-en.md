@@ -100,6 +100,14 @@ Output
 
 See [online document](https://kinegratii.github.io/borax) for more detail, which is powered by [docsify](https://docsify.js.org/) .
 
+## Development Features
+
+- [x] [Typing Hints](https://www.python.org/dev/peps/pep-0484/)
+- [x] [Flake8 Code Style](http://flake8.pycqa.org/en/latest/)
+- [x] [nose](https://pypi.org/project/nose/)
+- [x] [Travis CI](https://travis-ci.org)
+- [x] [Docsify](https://docsify.js.org)
+
 ## License
 
 This project is issued with MIT License, see LICENSE file for more detail.

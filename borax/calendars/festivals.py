@@ -5,7 +5,7 @@ from pathlib import Path
 import calendar
 import re
 from datetime import date
-from typing import Union, List, Iterator, Tuple
+from typing import Union, List, Iterator, Tuple, Optional
 
 from borax.calendars.lunardate import LunarDate, LCalendars
 
@@ -35,6 +35,7 @@ class DateSchema:
         self._ignore_year = kwargs.get('ignore_year', True)
         self._schema = kwargs.get('schema', None)
         self.name = kwargs.get('name')
+        self.raw = kwargs.get('raw')
         for k, v in kwargs.items():
             setattr(self, k, v)
 
@@ -48,7 +49,13 @@ class DateSchema:
         date_obj = self._normalize(date_obj)
         return (self.resolve(date_obj.year) - date_obj).days == 0
 
-    def countdown(self, date_obj: MDate = None) -> int:
+    def delta(self, date_obj: Optional[MDate] = None) -> int:
+        if date_obj is None:
+            date_obj = self.date_class.today()
+        date_obj = self._normalize(date_obj)
+        return (self.resolve() - date_obj).days
+
+    def countdown(self, date_obj: Optional[MDate] = None) -> int:
         if date_obj is None:
             date_obj = self.date_class.today()
         return self._countdown(self._normalize(date_obj))
@@ -198,14 +205,14 @@ class DateSchemaFactory:
     ]
 
     @staticmethod
-    def from_string(src: str, **kwargs) -> DateSchema:
+    def from_string(raw: str, **kwargs) -> DateSchema:
         for regex, cls in DateSchemaFactory.LOOKUP:
-            m = regex.match(src)
+            m = regex.match(raw)
             if m:
                 kw = {k: int(v) for k, v in m.groupdict().items()}
                 return cls(**kw, **kwargs)
         else:
-            raise ValueError('Unable to match any schema for {}'.format(src))
+            raise ValueError('Unable to match any schema for {}'.format(raw))
 
 
 # -------------------- Festival Dataset  ---------------------------------
@@ -216,7 +223,7 @@ def read_dataset():
         reader = csv.DictReader(f, fieldnames=field_names)
         for row in reader:
             try:
-                yield DateSchemaFactory.from_string(src=row['src'], name=row['name'])
+                yield DateSchemaFactory.from_string(raw=row['src'], name=row['name'])
             except ValueError:
                 continue
 

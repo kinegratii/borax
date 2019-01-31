@@ -3,9 +3,13 @@ python:
   - "3.5"
   - "3.6"
   - "3.7-dev"
+branches:
+  only:
+  - master
+  - develop
+  - /^release-.*$/
 install:
   - pip install -r requirements_dev.txt
 script:
   - nosetests --with-coverage --cover-package borax
   - flake8 borax tests
-  - coverage
