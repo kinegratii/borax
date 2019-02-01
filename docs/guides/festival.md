@@ -5,7 +5,7 @@
 ## 常用节日函数
 
 
-- `iter_festival_countdown(countdown:int, today:Union[date, LunarDate]） -> Iterator[int, List]`
+- `iter_festival_countdown(countdown:Optional[int]=None, today:Union[date, LunarDate]） -> Iterator[int, List]`
 
 计算节日距离某一日期还有多少天，结果按倒计天数分组。
 

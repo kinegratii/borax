@@ -51,7 +51,7 @@ class DateSchema:
 
     def delta(self, date_obj: Optional[MDate] = None) -> int:
         if date_obj is None:
-            date_obj = self.date_class.today()
+            date_obj = self._get_date_class().today()
         date_obj = self._normalize(date_obj)
         return (self.resolve() - date_obj).days
 
@@ -234,13 +234,13 @@ def get_festival(name: str) -> DateSchema:
             return schema
 
 
-def iter_festival_countdown(countdown: int, date_obj: MDate = None) -> Iterator[Tuple[int, List]]:
+def iter_festival_countdown(countdown: Optional[int] = None, date_obj: MDate = None) -> Iterator[Tuple[int, List]]:
     """Return countdown of festivals.
     """
     festival_names = defaultdict(list)
     for schema in read_dataset():
         _offset = schema.countdown(date_obj)
-        if _offset <= countdown:
+        if countdown is None or _offset <= countdown:
             festival_names[_offset].append(schema.name)
     for offset in sorted(festival_names.keys()):
         yield offset, festival_names[offset]

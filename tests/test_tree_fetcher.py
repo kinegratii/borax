@@ -49,3 +49,20 @@ class TreeFetcherTestCase(unittest.TestCase):
         self.assertEqual('B', children_list1[0]['children'][0]['name'])
 
         self.assertSequenceEqual(children_list, children_list1)
+
+        with self.assertRaises(ValueError):
+            pll2cnl(source, extra_key='parent')
+        with self.assertRaises(ValueError):
+            pll2cnl(source, flat_fields=['parent'])
+        with self.assertRaises(ValueError):
+            pll2cnl(source, flat_fields=['foo'])
+
+    def test_forward_reference(self):
+        source = [
+            {'id': 0, 'name': 'A', 'parent': None},
+            {'id': 1, 'name': 'B', 'parent': 3},
+            {'id': 2, 'name': 'C', 'parent': 0},
+            {'id': 3, 'name': 'D', 'parent': 0},
+        ]
+        data = pll2cnl(source)
+        self.assertIsNotNone(data)

@@ -27,9 +27,9 @@ class DPoint(bjson.EncoderMixin):
 
 class BJsonTestCase(unittest.TestCase):
     def test_dumps(self):
-        obj = {'point': Point(1, 2)}
+        obj = {'point': Point(1, 2), 'a': 4}
         output = bjson.dumps(obj)
-        self.assertEqual('{"point": [1, 2]}', output)
+        self.assertEqual('{"point": [1, 2], "a": 4}', output)
 
     def test_custom_encoder(self):
         obj = {'point': Point(1, 2)}
