@@ -44,12 +44,6 @@ class OffsetChoices(choices.ConstChoices):
 
 ```python
 from borax.choices import ConstChoices, Item
-
-class OffsetChoices(ConstChoices):
-    up = Item((0, -1), 'Up')
-    down = Item((0, 1), 'Down')
-    left = Item((-1, 0), 'Left')
-    right = Item((0, 1), 'Right')
 ```
 
 在某些情况下，也可以直接导入模块的 *类(Class)* 或 *变量(Variate)*。
@@ -66,6 +60,14 @@ p = LazyObject(Point,args=[1,2])
 print(p.x)
 ```
 
-## 调用
+## 函数
 
 borax 库在函数定义和调用方面，尽可能按照 [PEP3102](https://www.python.org/dev/peps/pep-3102/) 声明函数参数，即某些参数必须以关键字形式传入参数。
+
+```
+borax.choices.Items(value, display=None, *, order=None)
+```
+
+## 类型标注
+
+从 v1.2.0 开始，部分模块支持 [Typing Hint](https://docs.python.org/3/library/typing.html) 。

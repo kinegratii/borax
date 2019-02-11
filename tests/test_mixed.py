@@ -77,3 +77,27 @@ class FuzzyTestCaseTest(unittest.TestCase):
         self.assertEqual(1, (LunarDate(2019, 1, 1) - dls.resolve(2018)).days)
         schema = get_festival('元旦')
         self.assertTrue(schema.match(date(2019, 1, 1)))
+
+
+class ReverseTestCase(unittest.TestCase):
+    def test_solar_february(self):
+        ss = SolarSchema(year=2018, month=2, day=1, reverse=1)
+        self.assertTrue(ss.match(date(2018, 2, 28)))
+
+        with self.assertRaises(ValueError):
+            SolarSchema(month=2, day=1, reverse=1)
+
+
+class LeapIgnoreTestCase(unittest.TestCase):
+    def test_match(self):
+        ls = LunarSchema(month=6, day=1)
+        self.assertTrue(ls.match(LunarDate(2017, 6, 1, 0)))
+        self.assertTrue(ls.match(LunarDate(2017, 6, 1, 1)))
+
+        ls1 = LunarSchema(month=6, day=1, ignore_leap=0)
+        self.assertTrue(ls1.match(LunarDate(2017, 6, 1, 0)))
+        self.assertFalse(ls1.match(LunarDate(2017, 6, 1, 1)))
+
+        ls2 = LunarSchema(month=6, day=1, leap=1, ignore_leap=0)
+        self.assertFalse(ls2.match(LunarDate(2017, 6, 1, 0)))
+        self.assertTrue(ls2.match(LunarDate(2017, 6, 1, 1)))

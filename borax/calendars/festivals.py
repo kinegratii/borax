@@ -11,6 +11,9 @@ from borax.calendars.lunardate import LunarDate, LCalendars
 
 MDate = Union[date, LunarDate]
 
+# Const values for date schema parameters
+YEAR_ANY = 0
+
 
 def date2mixed(date_obj):
     if isinstance(date_obj, date):
@@ -41,7 +44,7 @@ class DateSchema:
 
     @property
     def fuzzy(self):
-        return self.year == 0
+        return self.year == YEAR_ANY
 
     # --------------------------  API  -----------------------------------
 
@@ -99,14 +102,20 @@ class DateSchema:
 class SolarSchema(DateSchema):
     date_class = date
 
-    def __init__(self, month, day, year=0, reverse=0, **kwargs):
+    def __init__(self, month, day, year=YEAR_ANY, reverse=0, **kwargs):
         self.year = year
         self.month = month
         self.day = day
         self._reverse = reverse
+        if self._reverse == 1 and self.year == YEAR_ANY and self.month == 2:
+            raise ValueError('Unable resolve date for February without a specified year.')
         super().__init__(**kwargs)
 
+    def _check_day(self, year):
+        pass
+
     def _resolve(self, year):
+
         if self._reverse == 0:
             day = self.day
         else:
@@ -117,7 +126,7 @@ class SolarSchema(DateSchema):
 class LunarSchema(DateSchema):
     date_class = LunarDate
 
-    def __init__(self, month, day, year=0, leap=0, ignore_leap=1, **kwargs):
+    def __init__(self, month, day, year=YEAR_ANY, leap=0, ignore_leap=1, **kwargs):
         self.year = year
         self.month = month
         self.day = day
@@ -138,7 +147,7 @@ class LunarSchema(DateSchema):
 class WeekSchema(DateSchema):
     date_class = date
 
-    def __init__(self, year, month, index, week, **kwargs):
+    def __init__(self, month, index, week, year=YEAR_ANY, **kwargs):
         self.year = year
         self.month = month
         self.index = index
@@ -166,7 +175,7 @@ class WeekSchema(DateSchema):
 class DayLunarSchema(DateSchema):
     date_class = LunarDate
 
-    def __init__(self, month, day, year=0, reverse=0, **kwargs):
+    def __init__(self, month, day, year=YEAR_ANY, reverse=0, **kwargs):
         self.year = year
         self.month = month
         self.day = day
@@ -184,7 +193,7 @@ class DayLunarSchema(DateSchema):
 class TermSchema(DateSchema):
     date_class = date
 
-    def __init__(self, index, year=None, **kwargs):
+    def __init__(self, index, year=YEAR_ANY, **kwargs):
         self.year = year
         self.index = index
         super().__init__(**kwargs)
