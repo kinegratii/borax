@@ -1,7 +1,12 @@
 - **入门**
   - [快速开始](quickstart)
-- **文档**
+- **Borax.Calendar**
+  - [农历](guides/lunardate)
+  - [节日<sup style="color:red">(新)<sup>](guides/festival)
+- **Borax.Pattern**
+  - [单例模式](guides/singleton)
   - [选项Choices](guides/choices)
+- **文档**
   - [字典](guides/alias_dictionary)
   - [树形结构](guides/tree)
   - [百分比](guides/percentage)
@@ -10,10 +15,6 @@
   - [bjson](guides/bjson)
   - [cjson](guides/cjson)
   - [财务工具](guides/finance)
-  - [单例模式](guides/singleton)
   - [Tkinter界面](guides/ui)
-- **Borax.Calendar**
-  - [农历](guides/lunardate)
-  - [节日<sup style="color:red">(新)<sup>](guides/festival)
 - **开发**
   - [版本日志](changelog)

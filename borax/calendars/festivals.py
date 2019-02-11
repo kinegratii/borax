@@ -7,7 +7,7 @@ import re
 from datetime import date
 from typing import Union, List, Iterator, Tuple, Optional
 
-from borax.calendars.lunardate import LunarDate, LCalendars
+from borax.calendars.lunardate import LunarDate, LCalendars, TERMS_CN
 
 MDate = Union[date, LunarDate]
 
@@ -241,6 +241,11 @@ def get_festival(name: str) -> DateSchema:
     for schema in read_dataset():
         if schema.name == name:
             return schema
+
+
+def get_term(name: str) -> TermSchema:
+    index = TERMS_CN.index(name)
+    return TermSchema(index)
 
 
 def iter_festival_countdown(countdown: Optional[int] = None, date_obj: MDate = None) -> Iterator[Tuple[int, List]]:
