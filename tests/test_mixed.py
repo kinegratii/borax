@@ -101,3 +101,7 @@ class LeapIgnoreTestCase(unittest.TestCase):
         ls2 = LunarSchema(month=6, day=1, leap=1, ignore_leap=0)
         self.assertFalse(ls2.match(LunarDate(2017, 6, 1, 0)))
         self.assertTrue(ls2.match(LunarDate(2017, 6, 1, 1)))
+
+    def test_leap_countdown(self):
+        ls = LunarSchema(month=6, day=1)
+        ls.delta(LunarDate(2017, 6, 27))

@@ -56,14 +56,14 @@ class DateSchema:
         if date_obj is None:
             date_obj = self._get_date_class().today()
         date_obj = self._normalize(date_obj)
-        return (self.resolve() - date_obj).days
+        return (self.resolve(date_obj.year) - date_obj).days
 
     def countdown(self, date_obj: Optional[MDate] = None) -> int:
         if date_obj is None:
             date_obj = self.date_class.today()
         return self._countdown(self._normalize(date_obj))
 
-    def resolve(self, year=0):
+    def resolve(self, year=YEAR_ANY):
         year = year or self.year
         if year:
             return self._resolve(year)

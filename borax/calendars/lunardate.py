@@ -100,6 +100,11 @@ class LCalendars:
     """
 
     @staticmethod
+    def is_leap_month(year: int, month: int) -> bool:
+        _check_year_range(year)
+        return YEAR_INFOS[year - MIN_LUNAR_YEAR] % 16 == month
+
+    @staticmethod
     def iter_year_month(year: int) -> Iterator[Tuple[int, int, int]]:
         _check_year_range(year)
         return _iter_year_month(YEAR_INFOS[year - MIN_LUNAR_YEAR])
