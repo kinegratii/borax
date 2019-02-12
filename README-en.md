@@ -14,8 +14,6 @@ Borax is a utils collections for python3 development, which contains some common
 
 ## Installation
 
-Borax requires Python3.5+ .
-
 Use *pip* :
 
 ```shell

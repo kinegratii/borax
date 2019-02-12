@@ -65,3 +65,19 @@ def trim_iterable(iterable, limit, split=None):
     if join:
         result = split.join(result)
     return result
+
+
+def chunks(iterable, n):
+    """Yield successive n-sized chunks from iterable object. https://stackoverflow.com/a/312464 """
+    for i in range(0, len(iterable), n):
+        yield iterable[i:i + n]
+
+
+def flatten(iterable):
+    """flat a iterable. https://stackoverflow.com/a/2158532
+    """
+    for el in iterable:
+        if isinstance(el, collections.Iterable) and not isinstance(el, (str, bytes)):
+            yield from flatten(el)
+        else:
+            yield el
