@@ -18,13 +18,13 @@ Borax 是一个的 Python3 开发工具集合库,涉及到：
 
 ## 安装
 
-Borax 要求 Python 的版本至少为 3.5 以上。使用 *pip* ：
+使用 *pip* ：
 
 ```shell
 $ pip install borax
 ```
 
-## 模块使用示例
+## 使用示例
 
 ### 农历模块
 
@@ -89,6 +89,14 @@ print(names)
 ## 文档
 
 在线文档托管在 [https://kinegratii.github.io/borax](https://kinegratii.github.io/borax) ，由 [docsify](https://docsify.js.org/) 构建。
+
+## 开发特性和规范
+
+- [x] [Typing Hints](https://www.python.org/dev/peps/pep-0484/)
+- [x] [Flake8 Code Style](http://flake8.pycqa.org/en/latest/)
+- [x] [nose](https://pypi.org/project/nose/)
+- [x] [Travis CI](https://travis-ci.org)
+- [x] [Docsify](https://docsify.js.org)
 
 ## 开源协议
 

@@ -29,6 +29,9 @@ class LunarDateTestCase(unittest.TestCase):
         with self.assertRaises(ValueError):
             LunarDate(2101, 1, 1).to_solar_date()
 
+        with self.assertRaises(ValueError):
+            LunarDate(2019, 1, 1, 1).to_solar_date()
+
     def test_timedelta(self):
         ld = LunarDate(1976, 8, 8)
         sd = date(2008, 1, 1)
@@ -75,10 +78,20 @@ class LunarDateTestCase(unittest.TestCase):
         self.assertEqual('戊戌', ld.gz_year)
         self.assertEqual('庚申', ld.gz_month)
         self.assertEqual('辛未', ld.gz_day)
-        self.assertEqual('二〇一八年六月廿六日', ld.cn_str())
+        self.assertEqual('二〇一八年六月廿六', ld.cn_str())
         self.assertEqual('戊戌年庚申月辛未日', ld.gz_str())
+
         ld1 = LunarDate(2018, 12, 20)
         self.assertEqual('戊戌', ld1.gz_year)
+        self.assertEqual('狗', ld.animal)
+
+        ld2 = LunarDate(2018, 12, 10)
+        self.assertEqual('初十', ld2.cn_day)
+
+    def test_new_date(self):
+        ld = LunarDate(2018, 12, 10)
+        ld1 = ld.replace(year=2017, month=6, day=23, leap=1)
+        self.assertEqual(2017, ld1.year)
 
 
 class PrivateMethodsTestCase(unittest.TestCase):
@@ -130,3 +143,7 @@ class LCalendarTestCase(unittest.TestCase):
             LCalendars.ndays(2017, 7, 1)
         with self.assertRaises(ValueError):
             LCalendars.ndays(2017, 13)
+
+    def test_leap_check(self):
+        self.assertTrue(LCalendars.is_leap_month(2017, 6))
+        self.assertFalse(LCalendars.is_leap_month(2017, 7))

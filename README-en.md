@@ -14,8 +14,6 @@ Borax is a utils collections for python3 development, which contains some common
 
 ## Installation
 
-Borax requires Python3.5+ .
-
 Use *pip* :
 
 ```shell
@@ -99,6 +97,14 @@ Output
 ## Document
 
 See [online document](https://kinegratii.github.io/borax) for more detail, which is powered by [docsify](https://docsify.js.org/) .
+
+## Development Features
+
+- [x] [Typing Hints](https://www.python.org/dev/peps/pep-0484/)
+- [x] [Flake8 Code Style](http://flake8.pycqa.org/en/latest/)
+- [x] [nose](https://pypi.org/project/nose/)
+- [x] [Travis CI](https://travis-ci.org)
+- [x] [Docsify](https://docsify.js.org)
 
 ## License
 

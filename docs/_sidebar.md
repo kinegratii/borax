@@ -1,17 +1,20 @@
 - **入门**
   - [快速开始](quickstart)
+- **Borax.Calendar**
+  - [农历](guides/lunardate)
+  - [节日<sup style="color:red">(新)<sup>](guides/festival)
+- **Borax.Pattern**
+  - [单例模式](guides/singleton)
+  - [选项Choices](guides/choices)
 - **文档**
-  - [admin_decorators](guides/admin_decorators)
+  - [字典](guides/alias_dictionary)
+  - [树形结构](guides/tree)
+  - [百分比](guides/percentage)
+  - [数据拾取](guides/fetch)
+  - [Django-Admin装饰器](guides/admin_decorators)
   - [bjson](guides/bjson)
-  - [choices](guides/choices)
   - [cjson](guides/cjson)
-  - [dictionary](guides/alias_dictionary)
-  - [fetch](guides/fetch)
-  - [finance](guides/finance)
-  - [lunardate](guides/lunardate)
-  - [percentage](guides/percentage)
-  - [singleton](guides/singleton)
-  - [tree](guides/tree)
-  - [ui](guides/ui)
+  - [财务工具](guides/finance)
+  - [Tkinter界面](guides/ui)
 - **开发**
   - [版本日志](changelog)

@@ -1,12 +1,14 @@
 # 更新日志
 
-## v1.1.10
+## v1.2.0 (20190213)
 
+> 部分模块新增 [Typing Hint](https://docs.python.org/3/library/typing.html) 支持
+- `calendars.festivals` 模块
+  - 支持节日查找
 - `lunardate` 模块
-  - 重构节气/干支信息
+  - 使用新版节气数据存储方式
   - 新增 `LCalendars` 工具接口
   - 新增`%A`、`%B` 字符串描述符
-  - 新增 [Typing Hint](https://docs.python.org/3/library/typing.html) 支持
 - 新增 travis 构建
   
 ## v1.1.9 (20190113)

@@ -10,8 +10,9 @@
 本模块的数据和算法引用自项目 [jjonline/calendar.js](https://github.com/jjonline/calendar.js) ，具体内容包括：
 
 - 1900-2100年农历月份信息
-- 节气数据及其表示方法
 - 干支纪年算法
+
+关于本模块的更多资料可参考文章 [《Borax-Lunar开发笔记》](https://kinegratii.github.io/2019/01/05/lunardate-module/)。
 
 ## 常量定义
 
@@ -32,7 +33,7 @@
 | 项目 | 起始日 | ... | 2100年 | 2101年 | ... | 截止日 |
 | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
 | 公历 | 1990年1月31日 | ... | 2100年12月31日 | 2101年1月1日 | ... | 2101年1月28日 |
-| 农历 | 1900年正月初一日 | ... | 2100年十二月初一日 | 2100年十二月初二日 | ... | 2100年十二月二十九日 |
+| 农历 | 1900年正月初一 | ... | 2100年十二月初一 | 2100年十二月初二 | ... | 2100年十二月廿九 |
 | offset | 0 | ... | 73383 | 73384 | ... | 73411 |
 | 干支 | 庚午年丙子月壬辰日 | ... | 庚申年戊子月丁未日 | - | ... | - |
 
@@ -96,7 +97,7 @@ LunarDate(2100, 12, 29, 0)
 | term | `str` 或 `None` | 节气名称 | 立秋 | %t | |
 | cn_year | `str` | 中文年 | 二〇一八年 | %Y | (2) |
 | cn_month | `str` | 中文月 | 六月 | %M | (2) |
-| cn_day | `str` | 中文日 | 廿六日 | %D | (2) |
+| cn_day | `str` | 中文日 | 廿六 | %D | (2) |
 | gz_year | `str` | 干支年份 | 戊戌 | %o | |
 | gz_month | `str` | 干支月份 | 庚申 | %p | |
 | gz_day | `str` | 干支日 | 辛未 | %q | |
@@ -116,7 +117,7 @@ LunarDate(2100, 12, 29, 0)
 | 显示方式 | 调用形式 | 示例 | 格式描述符 |
 | ------ | ------ | ------ | ------ |
 | 默认表示法 | `str(ld)` | LunarDate(2018, 6, 26, False) | - |
-| 汉字表示法 | `ld.cn_str()` | 2018年六月廿六日 | %C |
+| 汉字表示法 | `ld.cn_str()` | 2018年六月廿六 | %C |
 | 干支表示法 | `ld.gz_str()` | 戊戌年庚申月辛未日 | %G |
 
 在汉字表示法中，为了统一字符串长度，日期使用 “廿六” 形式，而不是 “二十六”；“十一月”、“十二月”使用“冬月”、“腊月”形式。
@@ -228,7 +229,7 @@ True
 
 `LCalendars` 提供了一系列的工具方法。
 
-- **LCalendars.ndays(year, month=None, leap=False)**
+- **LCalendars.ndays(year: int, month: Optional[int] = None, leap: Leap = False) -> int**
 
 返回X年或者X年X月的天数；如输入的年月不存在，将抛出 `ValueError` 异常。
 例子：
@@ -246,7 +247,7 @@ ValueError: year out of range [1900, 2100]
 >>>LCalendars.ndays(2017, 7, 1)
 ValueError: Invalid month for the year 2017
 ```
-- **LCalendars.iter_year_month(year)**
+- **LCalendars.iter_year_month(year: int) -> Iterator[Tuple[int, int, int]]**
 
 迭代X年的月份信息，元素返回 *(月份, 该月的天数, 闰月标记)* 的元祖。
 
@@ -256,6 +257,17 @@ ValueError: Invalid month for the year 2017
 >>>from borax.calendars.lunardate import LCalendars
 >>>list(LCalendars.iter_year_month(2017))
 [(1, 29, 0), (2, 30, 0), (3, 29, 0), (4, 30, 0), (5, 29, 0), (6, 29, 0), (6, 30, 1), (7, 29, 0), (8, 30, 0), (9, 29, 0), (10, 30, 0), (11, 30, 0), (12, 30, 0)]
+```
+
+- **LCalendars.create_solar_date(year: int, term_index: Optional[int] = None, term_name: Optional[str] = None) -> datetime.date**
+
+根据节气名称或者序号获取对应的公历日期对象(`dateitime.date`)。`term_index` 和 `term_name` 只需传入一个参数，
+
+`term_index` 取值为 0-23 。其中 小寒的序号为0，立春的序号为2，...冬至的序号为23。
+
+```
+>>>LCalendars.create_solar_date(2019, term_name='清明')
+2019-04-05
 ```
 
 

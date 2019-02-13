@@ -11,7 +11,7 @@ class TableLookup:
         self._dataset = collections.OrderedDict()
         if primary:
             self.primary = primary
-            self._primary_index = fields.find(primary)
+            self._primary_index = fields.index(primary)
         else:
             self.primary = fields[0]
             self._primary_index = 0
