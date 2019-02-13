@@ -1,6 +1,6 @@
 # 更新日志
 
-## unreleased
+## v1.2.0 (20190213)
 
 > 部分模块新增 [Typing Hint](https://docs.python.org/3/library/typing.html) 支持
 - `calendars.festivals` 模块
