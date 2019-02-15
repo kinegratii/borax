@@ -73,14 +73,7 @@ class DateSchema:
 
     def _normalize(self, date_obj):
         date_class = self._get_date_class()
-        if not isinstance(date_obj, (date, LunarDate)):
-            raise TypeError('Unsupported type: {}'.format(date_obj.__class__.__name__))
-        if isinstance(date_obj, date_class):
-            return date_obj
-        if isinstance(date_class, date):
-            return date_obj.to_solar_date()
-        else:
-            return LunarDate.from_solar(date_obj)
+        return LCalendars.cast_date(date_obj, date_class)
 
     # Interfaces in the subclasses
 

@@ -1,4 +1,4 @@
-# Borax
+# Borax- python3 development util collections
 
 
 [![PyPI](https://img.shields.io/pypi/v/borax.svg)](https://pypi.org/project/borax) 
@@ -8,13 +8,11 @@
 
 
 
-## Overview
+## Overview & Installation
 
 Borax is a utils collections for python3 development, which contains some common data structures and the implementation of design patterns.
 
-## Installation
-
-Use *pip* :
+Use *pip* to install the package:
 
 ```shell
 $ pip install borax

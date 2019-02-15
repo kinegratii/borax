@@ -4,6 +4,15 @@ from functools import reduce
 import collections
 
 
+def _resolve_value(val, args=None, kwargs=None):
+    if callable(val):
+        args = args or []
+        kwargs = kwargs or {}
+        return val(*args, **kwargs)
+    else:
+        return val
+
+
 def force_iterable(obj):
     if not isinstance(obj, collections.Iterable) or isinstance(obj, str):
         return [obj]
@@ -19,8 +28,7 @@ def chain_getattr(obj, attr, value=None):
     """Get chain attribute for an object.
     """
     try:
-        func_or_value = safe_chain_getattr(obj, attr)
-        return func_or_value() if hasattr(func_or_value, '__call__') else func_or_value
+        return _resolve_value(safe_chain_getattr(obj, attr))
     except AttributeError:
         return value
 

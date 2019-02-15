@@ -135,6 +135,22 @@ class LCalendars:
         day = days[term_index]
         return datetime.date(year, month, day)
 
+    @staticmethod
+    def cast_date(date_obj, target_class):
+        if not isinstance(date_obj, (datetime.date, LunarDate)):
+            raise TypeError('Unsupported type: {}'.format(date_obj.__class__.__name__))
+        if isinstance(date_obj, target_class):
+            return date_obj
+        if isinstance(date_obj, LunarDate):
+            return date_obj.to_solar_date()
+        else:
+            return LunarDate.from_solar(date_obj)
+
+    @staticmethod
+    def delta(date1, date2):
+        date2 = LCalendars.cast_date(date2, type(date1))
+        return (date2 - date1).days
+
 
 # offset <----> year, day_offset <----> year, month, day, leap
 
