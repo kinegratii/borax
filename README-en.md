@@ -39,31 +39,74 @@ Get the date instance of today.
 >>>from borax.calendars.lunardate import LunarDate
 >>>LunarDate.today()
 LunarDate(2018, 7, 1, 0)
+```
+
+Convert a solar date to the lunar date.
+
+```
 >>>ld = LunarDate.from_solar_date(2018, 8, 11)
 >>>ld
 LunarDate(2018, 7, 1, 0)
+```
+
+Return the lunar date after 10 days.
+
+```
 >>>ld.after(10)
 LunarDate(2018, 7, 11, 0)
 ```
 
-### Choices
+### Festivals
 
-Use `choices` in django models.
+How many days away from spring festival.
 
-```python
-from django.db import models
-from borax import choices
+```
+>>>from borax.calendars.festivals import get_festival
+>>>festival = get_festival('春节')
+>>>festival.countdown()
+7
+```
 
-class GenderChoices(choices.ConstChoices):
-    MALE = choices.Item(1, 'male')
-    FEMALE = choices.Item(2, 'female')
-    UNKOWN = choices.Item(3, 'unkown')
-    
-class Student(models.Model):        
-    gender = models.IntergerFIeld(
-        choices=GenderChoices,
-        default=GenderChoices.UNKOWN
-    )
+How many days away from my birth day.
+
+```
+>>>from borax.calendars.festivals import LunarSchema
+>>>ls = LunarSchema(month=11, day=1)
+>>>ls.countdown()
+285
+```
+
+How many days away from Chinese New Year's Eve
+```
+>>>from borax.calendars.festivals import DayLunarSchema
+>>>dls = DayLunarSchema(month=12, day=1, reverse=1)
+>>>dls.countdown()
+344
+```
+
+### Financial Capital Numbers
+
+Convert amount to financial capital numbers.
+
+```
+>>> from borax.finance import financial_amount_capital
+>>> financial_amount_capital(100000000)
+'壹亿元整'
+>>>financial_amount_capital(4578442.23)
+'肆佰伍拾柒万捌仟肆佰肆拾贰元贰角叁分'
+>>>financial_amount_capital(107000.53)
+壹拾万柒仟元伍角叁分
+```
+
+### Singleton
+
+```
+>>>from borax.patterns.singleton import MetaSingleton
+>>>class SingletonM(metaclass=MetaSingleton):pass
+>>>a = SingletonM()
+>>>b = SingletonM()
+>>>id(a) == id(b)
+True
 ```
 
 ### Fetch
