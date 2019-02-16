@@ -1,11 +1,16 @@
 # 更新日志
 
+## unreleased
+
+- `calendars.lunardate` 模块
+  - 新增 `weekday` 方法
+
 ## v1.2.0 (20190213)
 
 > 部分模块新增 [Typing Hint](https://docs.python.org/3/library/typing.html) 支持
 - `calendars.festivals` 模块
   - 支持节日查找
-- `lunardate` 模块
+- `calendars.lunardate` 模块
   - 使用新版节气数据存储方式
   - 新增 `LCalendars` 工具接口
   - 新增`%A`、`%B` 字符串描述符

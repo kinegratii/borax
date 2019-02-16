@@ -423,6 +423,9 @@ class LunarDate:
     def cn_day(self) -> str:
         return '{}'.format(TextUtils.day_cn(self.day))
 
+    def weekday(self):
+        return (self.offset + 2) % 7
+
     def cn_str(self) -> str:
         return '{}{}{}'.format(self.cn_year, self.cn_month, self.cn_day)
 
