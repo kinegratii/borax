@@ -142,3 +142,10 @@ print(names)
 ## 开源协议
 
 MIT License (MIT)
+
+## 捐赠
+
+如果你觉得这个项目帮助到了你，你可以帮作者们买一杯咖啡表示感谢！
+
+![donation-wechat](docs/images/donation-wechat.png)
+
