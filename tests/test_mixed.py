@@ -55,6 +55,9 @@ class MixedDateTestCase(unittest.TestCase):
         ss1 = SolarSchema(year=2019, month=4, day=1, reverse=1)
         self.assertEqual(29, ss1.countdown(date(2019, 4, 1)))
 
+        ss2 = SolarSchema(month=6, day=24)
+        self.assertEqual(202, ss2.countdown(date(2007, 12, 5)))
+
     def test_countdown_lunar(self):
         ls = LunarSchema(year=0, month=4, day=2)
         self.assertEqual(1, ls.countdown(LunarDate(2019, 4, 1)))

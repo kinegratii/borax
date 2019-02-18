@@ -32,6 +32,12 @@ class LunarDateTestCase(unittest.TestCase):
         with self.assertRaises(ValueError):
             LunarDate(2019, 1, 1, 1).to_solar_date()
 
+    def test_solar_and_lunar(self):
+        ld = LunarDate.today()
+        sd = ld.to_solar_date()
+        self.assertEqual(ld.weekday(), sd.weekday())
+        self.assertEqual(ld.isoweekday(), sd.isoweekday())
+
     def test_timedelta(self):
         ld = LunarDate(1976, 8, 8)
         sd = date(2008, 1, 1)

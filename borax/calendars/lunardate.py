@@ -426,6 +426,9 @@ class LunarDate:
     def weekday(self):
         return (self.offset + 2) % 7
 
+    def isoweekday(self):
+        return (self.offset + 3) % 7
+
     def cn_str(self) -> str:
         return '{}{}{}'.format(self.cn_year, self.cn_month, self.cn_day)
 

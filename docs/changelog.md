@@ -3,7 +3,7 @@
 ## unreleased
 
 - `calendars.lunardate` 模块
-  - 新增 `weekday` 方法
+  - 新增 `weekday` 和 `isoweekday` 方法
 - 新增 `borax.structures.proxy` 模块
 - `trim_iterable` 新增前缀、后缀字符串
 
