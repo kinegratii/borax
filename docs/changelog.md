@@ -4,6 +4,8 @@
 
 - `calendars.lunardate` 模块
   - 新增 `weekday` 方法
+- 新增 `borax.structures.proxy` 模块
+- `trim_iterable` 新增前缀、后缀字符串
 
 ## v1.2.0 (20190213)
 

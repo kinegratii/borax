@@ -49,7 +49,7 @@ def firstof(iterable, func=None, default=None):
     return default
 
 
-def trim_iterable(iterable, limit, split=None):
+def trim_iterable(iterable, limit, *, split=None, prefix='', postfix=''):
     """trim the list to make total length no more than limit.If split specified,a string is return.
     :return:
     """
@@ -62,6 +62,7 @@ def trim_iterable(iterable, limit, split=None):
     result = []
     rl = 0
     for element in iterable:
+        element = prefix + element + postfix
         el = len(element)
         if len(result) > 0:
             el += sl
