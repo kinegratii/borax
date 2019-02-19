@@ -550,7 +550,7 @@ class LunarDate:
         return hash((self.year, self.month, self.day, self.leap))
 
 
-LunarDate.min = LunarDate(1990, 1, 1, False)
+LunarDate.min = LunarDate(1900, 1, 1, False)
 LunarDate.max = LunarDate(2100, 12, 29, False)
 
 
@@ -592,7 +592,10 @@ class Formatter:
         return ''.join(['{', field, '}'])
 
     def format(self, obj: LunarDate) -> str:
-        values = {f: self.resolve(obj, f) for f in self._fields}
+        def xstr(s):
+            return '' if s is None else str(s)
+
+        values = {f: xstr(self.resolve(obj, f)) for f in self._fields}
         return self._fmt.format(**values)
 
     def resolve(self, obj, field):

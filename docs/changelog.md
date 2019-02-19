@@ -5,6 +5,7 @@
 - `calendars.lunardate` 模块
   - 新增 `weekday` 和 `isoweekday` 方法
   - 补充公历2101年日期的干支、节气信息
+  - 修正无节气的日期格式化的bug
 - 新增 `borax.structures.proxy` 模块
 - `trim_iterable` 新增前缀、后缀字符串
 
