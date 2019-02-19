@@ -26,7 +26,9 @@ $ pip install borax
 
 ### 中国农历日期
 
-> 本模块的数据和算法引用自项目 [jjonline/calendar.js](https://github.com/jjonline/calendar.js) 。
+一个支持1900-2100年的农历日期工具库。
+
+> 本模块的数据和算法参考自项目 [jjonline/calendar.js](https://github.com/jjonline/calendar.js) 。
 
 获取今天的农历日期（农历2018年七月初一）
 

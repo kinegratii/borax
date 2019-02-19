@@ -15,10 +15,10 @@ Leap = Union[int, bool]
 MIN_LUNAR_YEAR = 1900
 MAX_LUNAR_YEAR = 2100
 
-_START_SOLAR_DATE = datetime.date(1900, 1, 31)
-_END_SOLAR_DATE = datetime.date(2101, 1, 28)
+MIN_SOLAR_DATE = datetime.date(1900, 1, 31)
+MAX_SOLAR_DATE = datetime.date(2101, 1, 28)
 
-MAX_OFFSET = (_END_SOLAR_DATE - _START_SOLAR_DATE).days  # 73411 [0, 73411]
+MAX_OFFSET = 73411  # (MAX_SOLAR_DATE - MIN_SOLAR_DATE).days
 
 
 def _check_year_range(year):
@@ -338,26 +338,14 @@ class TextUtils:
 
 
 class LunarDate:
-    __slots__ = [
-        '_year', '_month', '_day', '_leap',
-        '_offset', '_solar_ymd', '_term',
-        '_gz_year', '_gz_month', '_gz_day',
-        '_animal'
-    ]
-
-    def __new__(cls, year: int, month: int, day: int, leap: Leap = False):
-        self = object.__new__(cls)
+    def __init__(self, year: int, month: int, day: int, leap: Leap = False):
         offset = ymdl2offset(year, month, day, leap)
         self._year = year
         self._month = month
         self._day = day
         self._leap = leap
         self._offset = offset
-
-        solar_date = _START_SOLAR_DATE + datetime.timedelta(days=self._offset)
-        self._solar_ymd = solar_date.year, solar_date.month, solar_date.day
         self._gz_year, self._gz_month, self._gz_day, self._term = self._get_gz_ymd()
-        return self
 
     @property
     def year(self) -> int:
@@ -403,8 +391,9 @@ class LunarDate:
         """
         (sy, sm, sd) -> term / gz_year / gz_month / gz_day
         """
-        sy, sm, sd = self._solar_ymd
-        s_offset = (datetime.date(sy, sm, sd) - _START_SOLAR_DATE).days
+        solar_date = MIN_SOLAR_DATE + datetime.timedelta(days=self._offset)
+        sy, sm, sd = solar_date.year, solar_date.month, solar_date.day
+        s_offset = (datetime.date(sy, sm, sd) - MIN_SOLAR_DATE).days
         gz_year = TextUtils.STEMS[(self.year - 4) % 10] + TextUtils.BRANCHES[(self.year - 4) % 12]
         gz_day = TextUtils.get_gz_cn((s_offset + 40) % 60)
         term_name, next_gz_month = TermUtils.get_term_info(sy, sm, sd)
@@ -439,7 +428,7 @@ class LunarDate:
         return '{}年{}月{}日'.format(self.gz_year, self.gz_month, self.gz_day)
 
     def to_solar_date(self) -> datetime.date:
-        return _START_SOLAR_DATE + datetime.timedelta(days=self.offset)
+        return MIN_SOLAR_DATE + datetime.timedelta(days=self.offset)
 
     def before(self, day_delta: int = 1) -> 'LunarDate':
         y, m, d, leap = offset2ymdl(self._offset - day_delta)
@@ -478,7 +467,7 @@ class LunarDate:
 
     @classmethod
     def from_solar(cls, date_obj: datetime.date) -> 'LunarDate':
-        offset = (date_obj - _START_SOLAR_DATE).days
+        offset = (date_obj - MIN_SOLAR_DATE).days
         y, m, d, leap = offset2ymdl(offset)
         return cls(y, m, d, leap)
 

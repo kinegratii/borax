@@ -1,13 +1,11 @@
 # coding=utf8
 
 import unittest
-import datetime
-from datetime import date, timedelta
 
 from borax.calendars.lunardate import (
-    LunarDate, parse_year_days, MAX_OFFSET,
-    LCalendars, YEAR_DAYS, _START_SOLAR_DATE,
-    _END_SOLAR_DATE
+    LunarDate, MAX_OFFSET,
+    YEAR_DAYS, MIN_SOLAR_DATE,
+    MAX_SOLAR_DATE
 )
 
 
@@ -18,8 +16,8 @@ class BenchmarkTestCase(unittest.TestCase):
         self.assertEqual(MAX_OFFSET, (LunarDate.max - LunarDate.min).days)
         self.assertEqual(MAX_OFFSET + 1, sum(YEAR_DAYS))
 
-        self.assertEqual(0, (LunarDate.min - _START_SOLAR_DATE).days)
-        self.assertEqual(0, (LunarDate.max - _END_SOLAR_DATE).days)
+        self.assertEqual(0, (LunarDate.min - MIN_SOLAR_DATE).days)
+        self.assertEqual(0, (LunarDate.max - MAX_SOLAR_DATE).days)
 
         sd2100_ld = LunarDate.from_solar_date(2100, 12, 31)
         self.assertEqual('庚申年戊子月丁未日', sd2100_ld.gz_str())
