@@ -26,6 +26,7 @@ def _check_year_range(year):
         raise ValueError('year out of range [1900, 2100]')
 
 
+# lunar year 1900~2100
 YEAR_INFOS = [
     0x04bd8, 0x04ae0, 0x0a570, 0x054d5, 0x0d260, 0x0d950, 0x16554, 0x056a0, 0x09ad0, 0x055d2,  # 1900 - 1909
     0x04ae0, 0x0a5b6, 0x0a4d0, 0x0d250, 0x1d255, 0x0b540, 0x0d6a0, 0x0ada2, 0x095b0, 0x14977,  # 1910 - 1919
@@ -210,6 +211,7 @@ TERMS_CN = [
     "小暑", "大暑", "立秋", "处暑", "白露", "秋分", "寒露", "霜降", "立冬", "小雪", "大雪", "冬至"
 ]
 
+# solar year 1900~2100
 TERM_INFO = [
     '654466556667788888998877', '664466566767888989998887', '665466666777898989998888', '665577667777899999998888',
     '765566556667788888998877', '664466566767888989998887', '665466666767898989998888', '665577667777899999998888',
@@ -277,8 +279,12 @@ class TermUtils:
     def get_term_info(year, month, day):
         """Parse solar term and stem-branch year/month/day from a solar date.
         (sy, sm, sd) => (term, next_gz_month)
+        term for year 2101,:2101.1.5(初六) 小寒 2101.1.20(廿一) 大寒
         """
-        days = TermUtils.parse_term_days(year)
+        if year == 2101:
+            days = [5, 20]
+        else:
+            days = TermUtils.parse_term_days(year)
         term_index1 = 2 * (month - 1)
         term_index2 = 2 * (month - 1) + 1
         day1 = days[term_index1]
@@ -398,17 +404,14 @@ class LunarDate:
         (sy, sm, sd) -> term / gz_year / gz_month / gz_day
         """
         sy, sm, sd = self._solar_ymd
-        # [2101.1.1-2100.1.28] has no term info.
-        if sy < 1900 or sy > 2100:
-            return None, None, None, None
-        term_name, next_gz_month = TermUtils.get_term_info(sy, sm, sd)
         s_offset = (datetime.date(sy, sm, sd) - _START_SOLAR_DATE).days
         gz_year = TextUtils.STEMS[(self.year - 4) % 10] + TextUtils.BRANCHES[(self.year - 4) % 12]
+        gz_day = TextUtils.get_gz_cn((s_offset + 40) % 60)
+        term_name, next_gz_month = TermUtils.get_term_info(sy, sm, sd)
         if next_gz_month:
             gz_month = TextUtils.get_gz_cn((sy - 1900) * 12 + sm + 12)
         else:
             gz_month = TextUtils.get_gz_cn((sy - 1900) * 12 + sm + 11)
-        gz_day = TextUtils.get_gz_cn((s_offset + 40) % 60)
         return gz_year, gz_month, gz_day, term_name
 
     @property
