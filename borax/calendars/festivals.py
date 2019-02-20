@@ -100,19 +100,16 @@ class SolarSchema(DateSchema):
         self.month = month
         self.day = day
         self._reverse = reverse
-        if self._reverse == 1 and self.year == YEAR_ANY and self.month == 2:
-            raise ValueError('Unable resolve date for February without a specified year.')
+        # if self._reverse == 1 and self.year == YEAR_ANY and self.month == 2:
+        #     raise ValueError('Unable resolve date for February without a specified year.')
         super().__init__(**kwargs)
-
-    def _check_day(self, year):
-        pass
 
     def _resolve(self, year):
 
         if self._reverse == 0:
             day = self.day
         else:
-            day = calendar.monthrange(self.year, self.month)[1] - self.day + 1
+            day = calendar.monthrange(year, self.month)[1] - self.day + 1
         return date(year, self.month, day)
 
 

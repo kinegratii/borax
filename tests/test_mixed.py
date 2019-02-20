@@ -87,8 +87,9 @@ class ReverseTestCase(unittest.TestCase):
         ss = SolarSchema(year=2018, month=2, day=1, reverse=1)
         self.assertTrue(ss.match(date(2018, 2, 28)))
 
-        with self.assertRaises(ValueError):
-            SolarSchema(month=2, day=1, reverse=1)
+        ss1 = SolarSchema(month=2, day=1, reverse=1)
+        self.assertTrue(ss.match(date(2018, 2, 28)))
+        self.assertEqual(27, ss.delta(date(2020, 2, 2)))
 
 
 class LeapIgnoreTestCase(unittest.TestCase):
