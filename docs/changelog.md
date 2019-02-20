@@ -3,6 +3,7 @@
 ## unreleased
 
 - `calendars.lunardate` 模块
+  - 重新修订农历信息，通过微软数据源的验证
   - 新增 `weekday` 和 `isoweekday` 方法
   - 补充公历2101年日期的干支、节气信息
   - 修正无节气的日期格式化的bug
@@ -12,6 +13,7 @@
 ## v1.2.0 (20190213)
 
 > 部分模块新增 [Typing Hint](https://docs.python.org/3/library/typing.html) 支持
+
 - `calendars.festivals` 模块
   - 支持节日查找
 - `calendars.lunardate` 模块
