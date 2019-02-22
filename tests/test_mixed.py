@@ -38,6 +38,12 @@ class MixedDateTestCase(unittest.TestCase):
         sd = LunarDate(2017, 6, 14).to_solar_date()
         self.assertTrue(md2.match(sd))
 
+        md3 = DateSchemaFactory.from_string('106140')
+        self.assertTrue(md3.match(LunarDate(2017, 6, 14)))
+        self.assertTrue(md3.match(LunarDate(2017, 6, 14, 1)))
+        sd = LunarDate(2017, 6, 14).to_solar_date()
+        self.assertTrue(md3.match(sd))
+
     def test_countdown_week(self):
         ws = WeekSchema(year=2019, month=5, index=2, week=6)
         self.assertTrue(ws.match(date(2019, 5, 12)))

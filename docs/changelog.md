@@ -8,6 +8,8 @@
   - 补充公历2101年日期的干支、节气信息
   - 修正无节气的日期格式化的bug
 - `calendars.festivals` 模块
+  - 新增 `FestivalFactory` ，支持节日分组分类
+  - 支持省略年份的字符表达式
   - 修正 `SolarSchema` 二月倒数序号形式解析的bug
 - 新增 `borax.structures.proxy` 模块
 - `trim_iterable` 新增前缀、后缀字符串

@@ -194,12 +194,12 @@ class TermSchema(DateSchema):
 class DateSchemaFactory:
     LOOKUP = [
         # 公历
-        [re.compile(r'^(?P<schema>0)(?P<year>\d{4})(?P<month>\d{2})(?P<day>\d{2})(?P<reverse>[01])$'), SolarSchema],
+        [re.compile(r'^(?P<schema>0)(?P<year>\d{4})?(?P<month>\d{2})(?P<day>\d{2})(?P<reverse>[01])$'), SolarSchema],
         # 农历
-        [re.compile(r'^(?P<schema>1)(?P<year>\d{4})(?P<month>\d{2})(?P<day>\d{2})(?P<leap>[01])$'), LunarSchema],
-        [re.compile(r'^(?P<schema>2)(?P<year>\d{4})(?P<month>\d{2})(?P<index>\d{2})(?P<week>[0-6])$'), WeekSchema],
-        [re.compile(r'^(?P<schema>3)(?P<year>\d{4})(?P<month>\d{2})(?P<day>\d{2})(?P<reverse>[01])$'), DayLunarSchema],
-        [re.compile(r'^(?P<schema>4)(?P<year>\d{4})00(?P<index>\d{2})0$'), TermSchema],
+        [re.compile(r'^(?P<schema>1)(?P<year>\d{4})?(?P<month>\d{2})(?P<day>\d{2})(?P<leap>[01])$'), LunarSchema],
+        [re.compile(r'^(?P<schema>2)(?P<year>\d{4})?(?P<month>\d{2})(?P<index>\d{2})(?P<week>[0-6])$'), WeekSchema],
+        [re.compile(r'^(?P<schema>3)(?P<year>\d{4})?(?P<month>\d{2})(?P<day>\d{2})(?P<reverse>[01])$'), DayLunarSchema],
+        [re.compile(r'^(?P<schema>4)(?P<year>\d{4})?00(?P<index>\d{2})0$'), TermSchema],
     ]
 
     @staticmethod
@@ -207,7 +207,7 @@ class DateSchemaFactory:
         for regex, cls in DateSchemaFactory.LOOKUP:
             m = regex.match(raw)
             if m:
-                kw = {k: int(v) for k, v in m.groupdict().items()}
+                kw = {k: int(v) for k, v in m.groupdict().items() if v is not None}
                 return cls(**kw, **kwargs)
         else:
             raise ValueError('Unable to match any schema for {}'.format(raw))
