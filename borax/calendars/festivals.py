@@ -10,6 +10,7 @@ from typing import Union, List, Iterator, Tuple, Optional
 from borax.calendars.lunardate import LunarDate, LCalendars, TERMS_CN
 
 MDate = Union[date, LunarDate]
+FestivalCountdownIterable = Iterator[Tuple[int, List]]
 
 # Const values for date schema parameters
 YEAR_ANY = 0
@@ -63,7 +64,7 @@ class DateSchema:
             date_obj = self.date_class.today()
         return self._countdown(self._normalize(date_obj))
 
-    def resolve(self, year=YEAR_ANY):
+    def resolve(self, year: int = YEAR_ANY) -> MDate:
         year = year or self.year
         if year:
             return self._resolve(year)
@@ -100,8 +101,6 @@ class SolarSchema(DateSchema):
         self.month = month
         self.day = day
         self._reverse = reverse
-        # if self._reverse == 1 and self.year == YEAR_ANY and self.month == 2:
-        #     raise ValueError('Unable resolve date for February without a specified year.')
         super().__init__(**kwargs)
 
     def _resolve(self, year):
@@ -215,10 +214,41 @@ class DateSchemaFactory:
 
 
 # -------------------- Festival Dataset  ---------------------------------
-def read_dataset():
+LANG_FILES = {
+    'zh-Hans': 'FestivalData.txt'
+}
+
+
+class FestivalFactory:
+    """A container including a collection of festivals group by language or file.
+    """
+
+    def __init__(self, *, lang=None, file_path=None):
+        if lang:
+            file_path = Path(__file__).parent / LANG_FILES.get(lang)
+        if isinstance(file_path, str):
+            file_path = Path(file_path)
+        self._schema_list = list(read_dataset(file_path))
+
+    def get_festival(self, name: str) -> DateSchema:
+        for schema in self._schema_list:
+            if schema.name == name:
+                return schema
+
+    def iter_festival_countdown(self, countdown: Optional[int] = None,
+                                date_obj: MDate = None) -> FestivalCountdownIterable:
+        festival_names = defaultdict(list)
+        for schema in self._schema_list:
+            _offset = schema.countdown(date_obj)
+            if countdown is None or _offset <= countdown:
+                festival_names[_offset].append(schema.name)
+        for offset in sorted(festival_names.keys()):
+            yield offset, festival_names[offset]
+
+
+def read_dataset(file_path=None):
     field_names = ['src', 'name']
-    data_file = Path(__file__).parent / 'FestivalData.txt'
-    with data_file.open(encoding='utf8') as f:
+    with file_path.open(encoding='utf8') as f:
         reader = csv.DictReader(f, fieldnames=field_names)
         for row in reader:
             try:
@@ -227,10 +257,9 @@ def read_dataset():
                 continue
 
 
-def get_festival(name: str) -> DateSchema:
-    for schema in read_dataset():
-        if schema.name == name:
-            return schema
+def get_festival(name: str, lang: str = 'zh-Hans') -> DateSchema:
+    factory = FestivalFactory(lang=lang)
+    return factory.get_festival(name)
 
 
 def get_term(name: str) -> TermSchema:
@@ -238,13 +267,9 @@ def get_term(name: str) -> TermSchema:
     return TermSchema(index)
 
 
-def iter_festival_countdown(countdown: Optional[int] = None, date_obj: MDate = None) -> Iterator[Tuple[int, List]]:
+def iter_festival_countdown(countdown: Optional[int] = None, date_obj: MDate = None,
+                            lang: str = 'zh-Hans') -> FestivalCountdownIterable:
     """Return countdown of festivals.
     """
-    festival_names = defaultdict(list)
-    for schema in read_dataset():
-        _offset = schema.countdown(date_obj)
-        if countdown is None or _offset <= countdown:
-            festival_names[_offset].append(schema.name)
-    for offset in sorted(festival_names.keys()):
-        yield offset, festival_names[offset]
+    factory = FestivalFactory(lang=lang)
+    return factory.iter_festival_countdown(countdown, date_obj)
