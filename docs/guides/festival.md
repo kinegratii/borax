@@ -147,7 +147,34 @@ LunarDate(2019, 4, 2)
 
 ## 序列化和存储
 
-`DateSchema` 实现了 `Encoder` 的接口，支持不同形式节日的混合存储。
+`DateSchema` 实现了 `Encoder` 的接口，可以在 `DateSchema` 和字符串之间进行转换， 支持不同形式节日的混合存储。
+
+节日编码字符串有长短两种形式。长编码字符串的长度为10，包含了年份字段；短编码字符串长度为6。
+
+```
+DateSchema    ====(encode)====>    RawString
+
+RawString     ====(decode)====>    DateSchema
+```
+
+- **DateSchema.encode(short: bool = True) -> str**
+
+转化为编码字符串，这是一个实例方法。
+
+- classmethod **DateSchema.decode(raw) -> DateSchema**
+
+根据编码字符串创建模式对象，这是一个类方法。
+
+
+例子：
+
+```python
+from datetime import date
+from borax.calendars.festivals import SolarSchema
+
+ss = SolarSchema.decode('0000012310')
+print(ss.match(date(2018, 12, 31))) # True
+```
 
 ## 节日计算工具(FestivalFactory)
 

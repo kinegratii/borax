@@ -1,6 +1,6 @@
 # 更新日志
 
-## unreleased
+## v1.3.0a1
 
 - `calendars.lunardate` 模块
   - 重新修订农历信息，通过微软数据源的验证
@@ -8,6 +8,7 @@
   - 补充公历2101年日期的干支、节气信息
   - 修正无节气的日期格式化的bug
 - `calendars.festivals` 模块
+  - 新增 `encode` / `decode` 方法，支持序列化
   - 新增 `FestivalFactory` ，支持节日分组分类
   - 支持省略年份的字符表达式
   - 修正 `SolarSchema` 二月倒数序号形式解析的bug

@@ -3,6 +3,7 @@
 - **Borax.Calendar**
   - [农历](guides/lunardate)
   - [节日<sup style="color:red">(新)<sup>](guides/festival)
+  - [生日<sup style="color:red">(新)<sup>](guides/birthday)
 - **Borax.Pattern**
   - [单例模式](guides/singleton)
   - [选项Choices](guides/choices)
