@@ -1,10 +1,9 @@
 # coding=utf8
+import calendar
 import csv
 from collections import defaultdict
-from pathlib import Path
-import calendar
-import re
 from datetime import date
+from pathlib import Path
 from typing import Union, List, Iterator, Tuple, Optional
 
 from borax.calendars.lunardate import LunarDate, LCalendars, TERMS_CN
@@ -30,7 +29,72 @@ def mixed2date(src):
     return ds.resolve()
 
 
-class DateSchema:
+# -------- Schema Meta --------
+
+class Field:
+    def __init__(self, name=None, length=None, required=True):
+        # length -> digit
+        self.name = name
+        self.length = length
+        if self.name:
+            self.fmt = '{' + '0' + ':0' + str(length) + 'd}'
+            self.value = None
+        else:
+            self.fmt = None
+            self.value = '0' * length
+        self.required = required
+
+    def resolve(self, value=None, short=False):
+        if self.name:
+            if short and not self.required:
+                return ''  # Short Field
+            else:
+                return self.fmt.format(value)  # Full Field
+        else:
+            return self.value  # Const
+
+    def __str__(self):
+        if self.name:
+            return '<Field:{}>'.format(self.name)
+        else:
+            return '<Const:{}>'.format(self.value)
+
+
+f_schema = Field(name='schema', length=1)
+f_year = Field(name='year', length=4, required=False)
+f_month = Field(name='month', length=2)
+f_day = Field(name='day', length=2)
+f_reverse = Field(name='reverse', length=1)
+f_index = Field(name='index', length=2)
+
+
+class SchemaMixin:
+    fields = []
+
+    @classmethod
+    def decode(cls, raw, short=False):
+        i = 0
+        data = {}
+        for field in cls.fields:
+            if short and not field.required:
+                continue
+            if field.name:
+                data[field.name] = int(raw[i:i + field.length])
+            i += field.length
+        return cls(**data)
+
+    def encode(self, short=False):
+        ds = []
+        for field in self.fields:
+            if field.name:
+                value = getattr(self, field.name)
+            else:
+                value = None
+            ds.append(field.resolve(value, short))
+        return ''.join(ds)
+
+
+class DateSchema(SchemaMixin):
     date_class = None
 
     def __init__(self, *args, **kwargs):
@@ -65,10 +129,28 @@ class DateSchema:
         return self._countdown(self._normalize(date_obj))
 
     def resolve(self, year: int = YEAR_ANY) -> MDate:
+        """Return the date object in the solar / lunar year.
+        :param year:
+        :return:
+        """
         year = year or self.year
         if year:
             return self._resolve(year)
         raise ValueError('Unable resolve the date without a specified year.')
+
+    def resolve_solar(self, year: int) -> date:
+        """Return the date object in a solar year.
+        :param year:
+        :return:
+        """
+        if self.date_class == date:
+            return self.resolve(year)
+        else:
+            solar_date = LCalendars.cast_date(self.resolve(year), date)
+            offset = solar_date.year - year
+            if offset:
+                solar_date = LCalendars.cast_date(self.resolve(year - offset), date)
+            return solar_date
 
     # --------------------  Internal Methods  -------------------------------
 
@@ -95,17 +177,18 @@ class DateSchema:
 
 class SolarSchema(DateSchema):
     date_class = date
+    fields = [f_schema, f_year, f_month, f_day, f_reverse]
 
     def __init__(self, month, day, year=YEAR_ANY, reverse=0, **kwargs):
         self.year = year
         self.month = month
         self.day = day
-        self._reverse = reverse
+        self.reverse = reverse
         super().__init__(**kwargs)
 
     def _resolve(self, year):
 
-        if self._reverse == 0:
+        if self.reverse == 0:
             day = self.day
         else:
             day = calendar.monthrange(year, self.month)[1] - self.day + 1
@@ -114,6 +197,7 @@ class SolarSchema(DateSchema):
 
 class LunarSchema(DateSchema):
     date_class = LunarDate
+    fields = [f_schema, f_year, f_month, f_day, Field(name='leap', length=1)]
 
     def __init__(self, month, day, year=YEAR_ANY, leap=0, ignore_leap=1, **kwargs):
         self.year = year
@@ -135,6 +219,7 @@ class LunarSchema(DateSchema):
 
 class WeekSchema(DateSchema):
     date_class = date
+    fields = [f_schema, f_year, f_month, f_index, Field(name='week', length=1)]
 
     def __init__(self, month, index, week, year=YEAR_ANY, **kwargs):
         self.year = year
@@ -163,6 +248,7 @@ class WeekSchema(DateSchema):
 
 class DayLunarSchema(DateSchema):
     date_class = LunarDate
+    fields = [f_schema, f_year, f_month, f_day, f_reverse]
 
     def __init__(self, month, day, year=YEAR_ANY, reverse=0, **kwargs):
         self.year = year
@@ -181,6 +267,7 @@ class DayLunarSchema(DateSchema):
 
 class TermSchema(DateSchema):
     date_class = date
+    fields = [f_year, Field(name=None, length=2), f_index, Field(name=None, length=1)]
 
     def __init__(self, index, year=YEAR_ANY, **kwargs):
         self.year = year
@@ -192,25 +279,29 @@ class TermSchema(DateSchema):
 
 
 class DateSchemaFactory:
-    LOOKUP = [
-        # 公历
-        [re.compile(r'^(?P<schema>0)(?P<year>\d{4})?(?P<month>\d{2})(?P<day>\d{2})(?P<reverse>[01])$'), SolarSchema],
-        # 农历
-        [re.compile(r'^(?P<schema>1)(?P<year>\d{4})?(?P<month>\d{2})(?P<day>\d{2})(?P<leap>[01])$'), LunarSchema],
-        [re.compile(r'^(?P<schema>2)(?P<year>\d{4})?(?P<month>\d{2})(?P<index>\d{2})(?P<week>[0-6])$'), WeekSchema],
-        [re.compile(r'^(?P<schema>3)(?P<year>\d{4})?(?P<month>\d{2})(?P<day>\d{2})(?P<reverse>[01])$'), DayLunarSchema],
-        [re.compile(r'^(?P<schema>4)(?P<year>\d{4})?00(?P<index>\d{2})0$'), TermSchema],
-    ]
+    schema_dict = {
+        0: SolarSchema,
+        1: LunarSchema,
+        2: WeekSchema,
+        3: DayLunarSchema,
+        4: TermSchema
+    }
 
-    @staticmethod
-    def from_string(raw: str, **kwargs) -> DateSchema:
-        for regex, cls in DateSchemaFactory.LOOKUP:
-            m = regex.match(raw)
-            if m:
-                kw = {k: int(v) for k, v in m.groupdict().items() if v is not None}
-                return cls(**kw, **kwargs)
+    @classmethod
+    def from_string(cls, raw, **kwargs):
+        lg = len(raw)
+        if lg == 10:
+            short = False
+        elif lg == 6:
+            short = True
         else:
-            raise ValueError('Unable to match any schema for {}'.format(raw))
+            raise ValueError('Invalid length')
+        schema_code = int(raw[0])
+        schema_class = cls.schema_dict.get(schema_code)
+        schema = schema_class.decode(raw, short)
+        for k, v in kwargs.items():
+            setattr(schema, k, v)
+        return schema
 
 
 # -------------------- Festival Dataset  ---------------------------------
@@ -228,7 +319,17 @@ class FestivalFactory:
             file_path = Path(__file__).parent / LANG_FILES.get(lang)
         if isinstance(file_path, str):
             file_path = Path(file_path)
-        self._schema_list = list(read_dataset(file_path))
+        if file_path:
+            self._schema_list = list(read_dataset(file_path))
+        else:
+            self._schema_list = []
+
+    def add_festivals(self, festivals):
+        self._schema_list.extend(festivals)
+
+    def iter_festivals(self):
+        for festival in self._schema_list:
+            yield festival
 
     def get_festival(self, name: str) -> DateSchema:
         for schema in self._schema_list:
@@ -256,6 +357,8 @@ def read_dataset(file_path=None):
             except ValueError:
                 continue
 
+
+# ---------- Shortcuts Method ----------
 
 def get_festival(name: str, lang: str = 'zh-Hans') -> DateSchema:
     factory = FestivalFactory(lang=lang)
