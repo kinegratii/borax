@@ -148,6 +148,6 @@ class LCalendarTestCase(unittest.TestCase):
     def test_delta(self):
         sd = date(2018, 12, 1)
 
-        self.assertEqual(1, LCalendars.delta(sd, date(2018, 12, 2)))
-        self.assertEqual(1, LCalendars.delta(LunarDate.from_solar(sd), date(2018, 12, 2)))
-        self.assertEqual(4, LCalendars.delta(LunarDate(2018, 1, 2), LunarDate(2018, 1, 6)))
+        self.assertEqual(-1, LCalendars.delta(sd, date(2018, 12, 2)))
+        self.assertEqual(-1, LCalendars.delta(LunarDate.from_solar(sd), date(2018, 12, 2)))
+        self.assertEqual(4, LCalendars.delta(LunarDate(2018, 1, 6), LunarDate(2018, 1, 2)))

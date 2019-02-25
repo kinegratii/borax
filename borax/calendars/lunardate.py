@@ -150,7 +150,7 @@ class LCalendars:
     @staticmethod
     def delta(date1, date2):
         date2 = LCalendars.cast_date(date2, type(date1))
-        return (date2 - date1).days
+        return (date1 - date2).days
 
 
 # offset <----> year, day_offset <----> year, month, day, leap
@@ -492,6 +492,10 @@ class LunarDate:
     __repr__ = __str__
 
     def __sub__(self, other):
+        """This is the basic method for comparable feature.
+        :param other: a instance of LunarDate / date / timedelta
+        :return:
+        """
         if isinstance(other, LunarDate):
             return self.to_solar_date() - other.to_solar_date()
         elif isinstance(other, datetime.date):
@@ -514,12 +518,6 @@ class LunarDate:
     def __radd__(self, other):
         return self + other
 
-    def __eq__(self, other):
-        if not isinstance(other, LunarDate):
-            return False
-
-        return self - other == datetime.timedelta(0)
-
     def __lt__(self, other):
         try:
             return self - other < datetime.timedelta(0)
@@ -535,8 +533,20 @@ class LunarDate:
     def __ge__(self, other):
         return not self < other
 
+    def __key(self):
+        return self.year, self.month, self.day, self.leap
+
     def __hash__(self):
-        return hash((self.year, self.month, self.day, self.leap))
+        return hash(self.__key())
+
+    def __eq__(self, other):
+        return isinstance(self, type(other)) and self.__key() == other.__key()
+
+    def __getstate__(self):
+        return self.__key()
+
+    def __setstate__(self, state):
+        self._year, self._month, self._day, self._leap = state
 
 
 LunarDate.min = LunarDate(1900, 1, 1, False)

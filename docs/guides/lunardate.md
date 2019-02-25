@@ -234,6 +234,25 @@ False
 True
 ```
 
+## 序列化
+
+`LunarDate` 对象支持 pickle 序列化。
+
+```python
+import pickle
+from borax.calendars.lunardate import LunarDate
+
+
+ld = LunarDate.today()
+with open('data.pickle', 'wb') as f:
+    pickle.dump(ld, f)
+
+with open('data.pickle', 'rb') as f:
+    l2 = pickle.load(f)
+    print(l2) # LunarDate(2018, 7, 24, 0)
+
+```
+
 ## LCalendars工具接口
 
 `LCalendars` 提供了一系列的工具方法。
@@ -278,6 +297,10 @@ ValueError: Invalid month for the year 2017
 >>>LCalendars.create_solar_date(2019, term_name='清明')
 2019-04-05
 ```
+
+- **LCalendars.delta(date1:MDate, date2:MDate) -> int**
+
+计算两个日期相隔的天数，即 `(date1 - date2).days`。
 
 
 ## 参考资料

@@ -111,6 +111,15 @@ class DateSchema(SchemaMixin):
     def fuzzy(self):
         return self.year == YEAR_ANY
 
+    def __key(self):
+        return list(map(int, self.encode()))
+
+    def __hash__(self):
+        return hash(self.__key())
+
+    def __eq__(self, other):
+        return isinstance(self, type(other)) and self.__key() == other.__key()
+
     # --------------------------  API  -----------------------------------
 
     def match(self, date_obj: MDate) -> bool:

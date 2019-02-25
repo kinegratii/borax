@@ -3,7 +3,7 @@ from datetime import date
 import unittest
 
 from borax.calendars.lunardate import LunarDate
-from borax.calendars.age import nominal_age, actual_age_solar, actual_age_lunar
+from borax.calendars.birthday import nominal_age, actual_age_solar, actual_age_lunar
 
 
 class NominalAgeTestCase(unittest.TestCase):
