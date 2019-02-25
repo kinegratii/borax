@@ -6,7 +6,10 @@ from datetime import date
 from pathlib import Path
 from typing import Union, List, Iterator, Tuple, Optional
 
-from borax.calendars.lunardate import LunarDate, LCalendars, TERMS_CN
+from .lunardate import LunarDate, LCalendars, TERMS_CN
+from .store import (
+    Field, EncoderMixin, f_year, f_month, f_day, f_leap, f_index, f_reverse, f_schema
+)
 
 MDate = Union[date, LunarDate]
 FestivalCountdownIterable = Iterator[Tuple[int, List]]
@@ -31,70 +34,8 @@ def mixed2date(src):
 
 # -------- Schema Meta --------
 
-class Field:
-    def __init__(self, name=None, length=None, required=True):
-        # length -> digit
-        self.name = name
-        self.length = length
-        if self.name:
-            self.fmt = '{' + '0' + ':0' + str(length) + 'd}'
-            self.value = None
-        else:
-            self.fmt = None
-            self.value = '0' * length
-        self.required = required
 
-    def resolve(self, value=None, short=False):
-        if self.name:
-            if short and not self.required:
-                return ''  # Short Field
-            else:
-                return self.fmt.format(value)  # Full Field
-        else:
-            return self.value  # Const
-
-    def __str__(self):
-        if self.name:
-            return '<Field:{}>'.format(self.name)
-        else:
-            return '<Const:{}>'.format(self.value)
-
-
-f_schema = Field(name='schema', length=1)
-f_year = Field(name='year', length=4, required=False)
-f_month = Field(name='month', length=2)
-f_day = Field(name='day', length=2)
-f_reverse = Field(name='reverse', length=1)
-f_index = Field(name='index', length=2)
-
-
-class SchemaMixin:
-    fields = []
-
-    @classmethod
-    def decode(cls, raw, short=False):
-        i = 0
-        data = {}
-        for field in cls.fields:
-            if short and not field.required:
-                continue
-            if field.name:
-                data[field.name] = int(raw[i:i + field.length])
-            i += field.length
-        return cls(**data)
-
-    def encode(self, short=False):
-        ds = []
-        for field in self.fields:
-            if field.name:
-                value = getattr(self, field.name)
-            else:
-                value = None
-            ds.append(field.resolve(value, short))
-        return ''.join(ds)
-
-
-class DateSchema(SchemaMixin):
+class DateSchema(EncoderMixin):
     date_class = None
 
     def __init__(self, *args, **kwargs):
@@ -206,7 +147,7 @@ class SolarSchema(DateSchema):
 
 class LunarSchema(DateSchema):
     date_class = LunarDate
-    fields = [f_schema, f_year, f_month, f_day, Field(name='leap', length=1)]
+    fields = [f_schema, f_year, f_month, f_day, f_leap]
 
     def __init__(self, month, day, year=YEAR_ANY, leap=0, ignore_leap=1, **kwargs):
         self.year = year

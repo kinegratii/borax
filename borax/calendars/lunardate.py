@@ -1,6 +1,9 @@
 # coding=utf8
 import re
 import datetime
+from .store import (
+    EncoderMixin, f_year, f_month, f_day, f_leap
+)
 
 from typing import Optional, Iterator, Tuple, Union
 
@@ -337,7 +340,9 @@ class TextUtils:
         return TextUtils.STEMS[offset % 10] + TextUtils.BRANCHES[offset % 12]
 
 
-class LunarDate:
+class LunarDate(EncoderMixin):
+    fields = [f_year, f_month, f_day, f_leap]
+
     def __init__(self, year: int, month: int, day: int, leap: Leap = False):
         offset = ymdl2offset(year, month, day, leap)
         self._year = year

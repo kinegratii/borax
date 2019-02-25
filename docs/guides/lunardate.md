@@ -234,7 +234,9 @@ False
 True
 ```
 
-## 序列化
+## 序列化与存储
+
+### pickle协议支持
 
 `LunarDate` 对象支持 pickle 序列化。
 
@@ -250,6 +252,44 @@ with open('data.pickle', 'wb') as f:
 with open('data.pickle', 'rb') as f:
     l2 = pickle.load(f)
     print(l2) # LunarDate(2018, 7, 24, 0)
+
+```
+
+### sqlite3自定义字段
+
+`LunarDate` 继承自 `store.EncoderMixin` 接口，为 sqlite3 自定义字段提供支持，更多细节参考 [sqlite3文档](https://docs.python.org/3.7/library/sqlite3.html#converting-sqlite-values-to-custom-python-types)。
+
+下面是一个简单的例子：
+
+```python
+import sqlite3
+
+from borax.calendars.lunardate import LunarDate
+
+
+def adapt_lunardate(ld):
+    return ld.encode()
+
+sqlite3.register_adapter(LunarDate, adapt_lunardate)
+sqlite3.register_converter("lunardate", LunarDate.decode)
+
+con = sqlite3.connect(":memory:", detect_types=sqlite3.PARSE_DECLTYPES)
+cur = con.cursor()
+cur.execute('CREATE TABLE member (pid INT AUTO_INCREMENT PRIMARY KEY,birthday lunardate);')
+
+ld = LunarDate(2018, 5, 3)
+cur.execute("INSERT INTO member(birthday) VALUES (?)", (ld,))
+
+cur.execute("SELECT pid, birthday FROM member;")
+my_birthday = cur.fetchone()[1]
+
+cur.close()
+con.close()
+
+print(my_birthday.year) # 2018
+print(my_birthday.month) # 5
+print(my_birthday.day) # 3
+print(my_birthday.leap) # 0
 
 ```
 
