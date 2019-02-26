@@ -18,23 +18,6 @@ FestivalCountdownIterable = Iterator[Tuple[int, List]]
 YEAR_ANY = 0
 
 
-def date2mixed(date_obj):
-    if isinstance(date_obj, date):
-        return date_obj.strftime('0%Y%m%d0')
-    elif isinstance(date_obj, LunarDate):
-        return date_obj.strftime('1%y%A%B%l')
-    else:
-        raise TypeError('Unsupported type: {}'.format(date_obj.__class__.__name__))
-
-
-def mixed2date(src):
-    ds = DateSchemaFactory.from_string(src)
-    return ds.resolve()
-
-
-# -------- Schema Meta --------
-
-
 class DateSchema(EncoderMixin):
     date_class = None
 

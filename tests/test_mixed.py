@@ -3,23 +3,12 @@
 import unittest
 from datetime import date
 
-from borax.calendars.festivals import (date2mixed, mixed2date, SolarSchema, LunarSchema, WeekSchema,
+from borax.calendars.festivals import (SolarSchema, LunarSchema, WeekSchema,
                                        TermSchema, DayLunarSchema, get_festival, DateSchemaFactory)
 from borax.calendars.lunardate import LunarDate
 
 
 class MixedDateTestCase(unittest.TestCase):
-    def test_convert(self):
-        self.assertEqual(date(2018, 2, 3), mixed2date('0201802030'))
-        self.assertEqual(LunarDate(2017, 6, 4), mixed2date('1201706040'))
-        self.assertEqual(LunarDate(2017, 6, 20, 1), mixed2date('1201706201'))
-
-        self.assertEqual('0201802030', date2mixed(date(2018, 2, 3)))
-        self.assertEqual('1201706040', date2mixed(LunarDate(2017, 6, 4)))
-        self.assertEqual('1201706201', date2mixed(LunarDate(2017, 6, 20, 1)))
-        with self.assertRaises(TypeError):
-            date2mixed(2)
-
     def test_match(self):
         md = SolarSchema(year=0, month=2, day=14)
         self.assertTrue(md.match(date(2019, 2, 14)))

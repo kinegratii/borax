@@ -55,23 +55,24 @@ YEAR_INFOS = [
 ]
 
 
+def _parse_leap(year_info):
+    leap_month = year_info % 16
+    if leap_month == 0:
+        leap_days = 0
+    elif leap_month <= 12:
+        leap_days = (year_info >> 16) % 2 + 29
+    else:
+        raise ValueError("yearInfo 0x{0:x} mod 16 should in [0, 12]".format(year_info))
+    return leap_month, leap_days
+
+
 def parse_year_days(year_info):
     """Parse year days from a year info.
     """
-    year_info = int(year_info)
-    res = 29 * 12
-
-    leap = False
-    if year_info % 16 != 0:
-        leap = True
-        res += 29
-
-    year_info //= 16
-
-    for i in range(12 + leap):
-        if year_info % 2 == 1:
-            res += 1
-        year_info //= 2
+    leap_month, leap_days = _parse_leap(year_info)
+    res = leap_days
+    for month in range(1, 13):
+        res += (year_info >> (16 - month)) % 2 + 29
     return res
 
 
@@ -82,18 +83,14 @@ def _iter_year_month(year_info):
     """ Iter the month days in a lunar year.
     """
     # info => month, days, leap
-    months = [(i, 0) for i in range(1, 13)]
-    leap_month = year_info % 16  # The leap month in this year.
-    if leap_month == 0:
-        pass
-    elif leap_month <= 12:
-        months.insert(leap_month, (leap_month, 1))
-    else:
-        raise ValueError("yearInfo 0x{0:x} mod 16 should in [0, 12]".format(year_info))
 
+    leap_month, leap_days = _parse_leap(year_info)
+    months = [(i, 0) for i in range(1, 13)]
+    if leap_month > 0:
+        months.insert(leap_month, (leap_month, 1))
     for month, leap in months:
         if leap:
-            days = (year_info >> 16) % 2 + 29
+            days = leap_days
         else:
             days = (year_info >> (16 - month)) % 2 + 29
         yield month, days, leap

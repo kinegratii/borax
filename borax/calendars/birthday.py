@@ -1,7 +1,7 @@
 # coding=utf8
 from datetime import date
 
-from borax.calendars.lunardate import LunarDate, LCalendars
+from .lunardate import LunarDate, LCalendars
 
 
 def nominal_age(birthday, today=None):

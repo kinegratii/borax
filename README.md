@@ -105,17 +105,6 @@ LunarDate(2018, 7, 11, 0)
 壹拾万柒仟元伍角叁分
 ```
 
-### 单例模式
-
-```
->>>from borax.patterns.singleton import MetaSingleton
->>>class SingletonM(metaclass=MetaSingleton):pass
->>>a = SingletonM()
->>>b = SingletonM()
->>>id(a) == id(b)
-True
-```
-
 ### 数据拾取
 
 从数据序列中选择一个或多个字段的数据。
