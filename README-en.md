@@ -33,20 +33,19 @@ python setup.py install
 
 > The dataset and algorithm is referenced from [jjonline/calendar.js](https://github.com/jjonline/calendar.js).
 
-Get the date instance of today.
+```python
+from borax.calendars.lunardate import LunarDate
 
-```
->>>from borax.calendars.lunardate import LunarDate
->>>LunarDate.today()
-LunarDate(2018, 7, 1, 0)
-```
+# Get the date instance of today.
+print(LunarDate.today()) # LunarDate(2018, 7, 1, 0)
 
-Convert a solar date to the lunar date.
+# Convert a solar date to the lunar date.
+ld = LunarDate.from_solar_date(2018, 8, 11)
+print(ld) # LunarDate(2018, 7, 1, 0)
 
-```
->>>ld = LunarDate.from_solar_date(2018, 8, 11)
->>>ld
-LunarDate(2018, 7, 1, 0)
+# Return the lunar date after 10 days.
+
+print(ld.after(10)) # LunarDate(2018, 7, 11, 0)
 ```
 
 Return the lunar date after 10 days.
@@ -58,30 +57,19 @@ LunarDate(2018, 7, 11, 0)
 
 ### Festivals
 
-How many days away from spring festival.
+How many days away from spring festival,my birth day,Chinese New Year's Eve.
 
-```
->>>from borax.calendars.festivals import get_festival
->>>festival = get_festival('春节')
->>>festival.countdown()
-7
-```
+```python
+from borax.calendars.festivals import get_festival, LunarSchema, DayLunarSchema
 
-How many days away from my birth day.
+festival = get_festival('春节')
+print(festival.countdown()) # 7
 
-```
->>>from borax.calendars.festivals import LunarSchema
->>>ls = LunarSchema(month=11, day=1)
->>>ls.countdown()
-285
-```
+ls = LunarSchema(month=11, day=1)
+print(ls.countdown()) # 285
 
-How many days away from Chinese New Year's Eve
-```
->>>from borax.calendars.festivals import DayLunarSchema
->>>dls = DayLunarSchema(month=12, day=1, reverse=1)
->>>dls.countdown()
-344
+dls = DayLunarSchema(month=12, day=1, reverse=1)
+print(dls.countdown()) # 344
 ```
 
 ### Financial Capital Numbers

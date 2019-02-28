@@ -6,6 +6,7 @@ Borax is a utils collections for python3 development, which contains some common
 Package & Module
 ++++++++++++++++
 
+- `borax.calendars` : A Chinese lunar calendar package, which contains lunar,festivals, birthday.
 - `borax.choices` : choices a enhance module using class-style define for const choices.
 - `borax.fetch` : A function sets for fetch the values of some axises.
 - `borax.structures` : A useful data structure for dictionary/list/set .

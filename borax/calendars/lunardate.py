@@ -1,6 +1,8 @@
 # coding=utf8
 import re
 import datetime
+import warnings
+
 from .store import (
     EncoderMixin, f_year, f_month, f_day, f_leap
 )
@@ -102,8 +104,15 @@ class LCalendars:
 
     @staticmethod
     def is_leap_month(year: int, month: int) -> bool:
+        warnings.warn('This method is deprecated, use LCalendars.leap_month instead.', DeprecationWarning)
         _check_year_range(year)
         return YEAR_INFOS[year - MIN_LUNAR_YEAR] % 16 == month
+
+    @staticmethod
+    def leap_month(year: int) -> int:
+        _check_year_range(year)
+        leap_month, _ = _parse_leap(YEAR_INFOS[year - MIN_LUNAR_YEAR])
+        return leap_month
 
     @staticmethod
     def iter_year_month(year: int) -> Iterator[Tuple[int, int, int]]:

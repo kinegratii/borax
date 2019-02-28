@@ -30,65 +30,46 @@ $ pip install borax
 
 > 本模块的数据和算法参考自项目 [jjonline/calendar.js](https://github.com/jjonline/calendar.js) 。
 
-获取今天的农历日期（农历2018年七月初一）
+创建日期，日期推算
 
-```
->>>from borax.calendars.lunardate import LunarDate
->>>LunarDate.today()
-LunarDate(2018, 7, 1, 0)
-```
+```python
+from borax.calendars.lunardate import LunarDate
 
-将公历日期转化为农历日期
+# 获取今天的农历日期（农历2018年七月初一）
+print(LunarDate.today()) # LunarDate(2018, 7, 1, 0)
 
-```
->>>ld = LunarDate.from_solar_date(2018, 8, 11)
->>>ld
-LunarDate(2018, 7, 1, 0)
-```
+# 将公历日期转化为农历日期
+ld = LunarDate.from_solar_date(2018, 8, 11)
+print(ld) # LunarDate(2018, 7, 1, 0)
 
-日期推算，返回10天后的农历日期
+# 日期推算，返回10天后的农历日期
 
-```
->>>ld.after(10)
-LunarDate(2018, 7, 11, 0)
+print(ld.after(10)) # LunarDate(2018, 7, 11, 0)
 ```
 
 格式化字符串
 
-```
->>>today = LunarDate.today()
->>>today.strftime（'%Y-%M-%D')
-'二〇一八-六-廿六'
->>>today.strftime('今天的干支表示法为：%G')
-'今天的干支表示法为：戊戌年庚申月辛未日'
+```python
+today = LunarDate.today()
+print(today.strftime('%Y-%M-%D')) # '二〇一八-六-廿六'
+print(today.strftime('今天的干支表示法为：%G')) # '今天的干支表示法为：戊戌年庚申月辛未日'
 ```
 
 ### 国内外节日
 
-计算距离“春节”还有多少天
+分别计算距离 “春节”、生日（十一月初一）、“除夕（农历十二月的最后一天）” 还有多少天
 
-```
->>>from borax.calendars.festivals import get_festival
->>>festival = get_festival('春节')
->>>festival.countdown()
-7
-```
+```python
+from borax.calendars.festivals import get_festival, LunarSchema, DayLunarSchema
 
-计算距离生日（十一月初一）还有多少天
+festival = get_festival('春节')
+print(festival.countdown()) # 7
 
-```
->>>from borax.calendars.festivals import LunarSchema
->>>ls = LunarSchema(month=11, day=1)
->>>ls.countdown()
-285
-```
+ls = LunarSchema(month=11, day=1)
+print(ls.countdown()) # 285
 
-计算距离“除夕（农历十二月的最后一天）”还有多少天
-```
->>>from borax.calendars.festivals import DayLunarSchema
->>>dls = DayLunarSchema(month=12, day=1, reverse=1)
->>>dls.countdown()
-344
+dls = DayLunarSchema(month=12, day=1, reverse=1)
+print(dls.countdown()) # 344
 ```
 
 ### 大写金额
@@ -119,13 +100,7 @@ objects = [
 ]
 
 names = fetch(objects, 'name')
-print(names)
-```
-
-输出
-
-```
-['Alice', 'Bob', 'Charlie']
+print(names) # ['Alice', 'Bob', 'Charlie']
 ```
 
 ## 文档

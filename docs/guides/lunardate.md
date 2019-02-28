@@ -297,6 +297,14 @@ print(my_birthday.leap) # 0
 
 `LCalendars` 提供了一系列的工具方法。
 
+- **LCalendars.leap_month(year: int) -> int**
+
+返回 year 年的闰月月份，范围为 [0,12] ，0 表示该年无闰月。
+
+- **LCalendars.is_leap_month(year: int, month: int) -> bool**
+
+判断 year 年 month 月是否为闰月。该方法已废弃，可使用 `LCalendars.leap_month(year) == month` 表达式代替。
+
 - **LCalendars.ndays(year: int, month: Optional[int] = None, leap: Leap = False) -> int**
 
 返回X年或者X年X月的天数；如输入的年月不存在，将抛出 `ValueError` 异常。
