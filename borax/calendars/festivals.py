@@ -20,6 +20,7 @@ YEAR_ANY = 0
 
 class DateSchema(EncoderMixin):
     date_class = None
+    schema = None
 
     def __init__(self, *args, **kwargs):
         """Any subclass MUST call this initial in its own initial.
@@ -43,6 +44,9 @@ class DateSchema(EncoderMixin):
 
     def __eq__(self, other):
         return isinstance(self, type(other)) and self.__key() == other.__key()
+
+    def __str__(self):
+        return '<{}: {}>'.format(self.__class__.__name__, self.encode())
 
     # --------------------------  API  -----------------------------------
 
@@ -110,6 +114,7 @@ class DateSchema(EncoderMixin):
 
 class SolarSchema(DateSchema):
     date_class = date
+    schema = 0
     fields = [f_schema, f_year, f_month, f_day, f_reverse]
 
     def __init__(self, month, day, year=YEAR_ANY, reverse=0, **kwargs):
@@ -130,6 +135,7 @@ class SolarSchema(DateSchema):
 
 class LunarSchema(DateSchema):
     date_class = LunarDate
+    schema = 1
     fields = [f_schema, f_year, f_month, f_day, f_leap]
 
     def __init__(self, month, day, year=YEAR_ANY, leap=0, ignore_leap=1, **kwargs):
@@ -152,6 +158,7 @@ class LunarSchema(DateSchema):
 
 class WeekSchema(DateSchema):
     date_class = date
+    schema = 2
     fields = [f_schema, f_year, f_month, f_index, Field(name='week', length=1)]
 
     def __init__(self, month, index, week, year=YEAR_ANY, **kwargs):
@@ -167,13 +174,15 @@ class WeekSchema(DateSchema):
 
     @staticmethod
     def week_day(year: int, month: int, index: int, week: int) -> int:
-        i = 0
-        cal = calendar.Calendar()
-        for d, w in cal.itermonthdays2(year, month):
-            if d != 0 and w == week:
-                i += 1
-                if i == index:
-                    return d
+        w, ndays = calendar.monthrange(year, month)
+        if week >= w:
+            d0 = week - w + 1
+        else:
+            d0 = 8 - (w - week)
+        d = d0 + 7 * (index - 1)
+        if not (1 <= d <= ndays):
+            raise ValueError('Invalid day for this month.')
+        return d
 
     def __hash__(self):
         return hash((self.year, self.month, self.index, self.week))
@@ -181,6 +190,7 @@ class WeekSchema(DateSchema):
 
 class DayLunarSchema(DateSchema):
     date_class = LunarDate
+    schema = 3
     fields = [f_schema, f_year, f_month, f_day, f_reverse]
 
     def __init__(self, month, day, year=YEAR_ANY, reverse=0, **kwargs):
@@ -200,6 +210,7 @@ class DayLunarSchema(DateSchema):
 
 class TermSchema(DateSchema):
     date_class = date
+    schema = 4
     fields = [f_year, Field(name=None, length=2), f_index, Field(name=None, length=1)]
 
     def __init__(self, index, year=YEAR_ANY, **kwargs):
@@ -228,7 +239,7 @@ class DateSchemaFactory:
         elif lg == 6:
             short = True
         else:
-            raise ValueError('Invalid length')
+            raise ValueError('Length expects 6 or 10, but {} got'.format(lg))
         schema_code = int(raw[0])
         schema_class = cls.schema_dict.get(schema_code)
         schema = schema_class.decode(raw, short)
