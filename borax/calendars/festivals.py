@@ -247,6 +247,10 @@ class DateSchemaFactory:
             setattr(schema, k, v)
         return schema
 
+    @classmethod
+    def decode(cls, raw):
+        return cls.from_string(raw)
+
 
 # -------------------- Festival Dataset  ---------------------------------
 LANG_FILES = {

@@ -1,5 +1,6 @@
 # coding=utf8
 """ DateSchema adapters for sqlite3
+Store as bytes instead of str due to lead-zero-string, like "0199902040".
 """
 import sqlite3
 
@@ -11,7 +12,7 @@ def adapt_schema(festival):
 
 
 def convert_(raw):
-    return DateSchemaFactory.from_string(raw.decode())
+    return DateSchemaFactory.decode(raw.decode())
 
 
 sqlite3.register_adapter(DateSchema, adapt_schema)
