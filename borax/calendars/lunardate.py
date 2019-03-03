@@ -426,6 +426,13 @@ class LunarDate(EncoderMixin):
     def cn_day(self) -> str:
         return '{}'.format(TextUtils.day_cn(self.day))
 
+    @property
+    def cn_day_calendar(self) -> str:
+        if self.day == 1:
+            return self.cn_month
+        else:
+            return self.cn_day
+
     def weekday(self):
         return (self.offset + 2) % 7
 
@@ -578,6 +585,7 @@ class Formatter:
         '%d': 'day',
         '%B': 'padding_day',
         '%D': 'cn_day',
+        '%F': 'cn_day_calendar',
         '%a': 'animal',
         '%t': 'term',
         '%0': 'gz_year',
