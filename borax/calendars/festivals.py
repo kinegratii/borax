@@ -211,7 +211,7 @@ class DayLunarSchema(DateSchema):
 class TermSchema(DateSchema):
     date_class = date
     schema = 4
-    fields = [f_year, Field(name=None, length=2), f_index, Field(name=None, length=1)]
+    fields = [f_schema, f_year, Field(name=None, length=2), f_index, Field(name=None, length=1)]
 
     def __init__(self, index, year=YEAR_ANY, **kwargs):
         self.year = year
@@ -283,6 +283,9 @@ class FestivalFactory:
         for schema in self._schema_list:
             if schema.name == name:
                 return schema
+
+    def get_festival_names(self, date_obj: MDate) -> list:
+        return [schema.name for schema in self._schema_list if schema.match(date_obj)]
 
     def iter_festival_countdown(self, countdown: Optional[int] = None,
                                 date_obj: MDate = None) -> FestivalCountdownIterable:
