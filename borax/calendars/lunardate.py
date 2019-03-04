@@ -588,7 +588,7 @@ class Formatter:
         '%F': 'cn_day_calendar',
         '%a': 'animal',
         '%t': 'term',
-        '%0': 'gz_year',
+        '%o': 'gz_year',
         '%p': 'gz_month',
         '%q': 'gz_day',
         '%C': 'cn_str',
