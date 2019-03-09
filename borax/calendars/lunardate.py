@@ -1,6 +1,11 @@
 # coding=utf8
 import re
 import datetime
+import warnings
+
+from .store import (
+    EncoderMixin, f_year, f_month, f_day, f_leap
+)
 
 from typing import Optional, Iterator, Tuple, Union
 
@@ -15,10 +20,10 @@ Leap = Union[int, bool]
 MIN_LUNAR_YEAR = 1900
 MAX_LUNAR_YEAR = 2100
 
-_START_SOLAR_DATE = datetime.date(1900, 1, 31)
-_END_SOLAR_DATE = datetime.date(2101, 1, 28)
+MIN_SOLAR_DATE = datetime.date(1900, 1, 31)
+MAX_SOLAR_DATE = datetime.date(2101, 1, 28)
 
-MAX_OFFSET = (_END_SOLAR_DATE - _START_SOLAR_DATE).days  # 73411 [0, 73411]
+MAX_OFFSET = 73411  # (MAX_SOLAR_DATE - MIN_SOLAR_DATE).days
 
 
 def _check_year_range(year):
@@ -26,48 +31,50 @@ def _check_year_range(year):
         raise ValueError('year out of range [1900, 2100]')
 
 
+# lunar year 1900~2100
 YEAR_INFOS = [
     0x04bd8, 0x04ae0, 0x0a570, 0x054d5, 0x0d260, 0x0d950, 0x16554, 0x056a0, 0x09ad0, 0x055d2,  # 1900 - 1909
     0x04ae0, 0x0a5b6, 0x0a4d0, 0x0d250, 0x1d255, 0x0b540, 0x0d6a0, 0x0ada2, 0x095b0, 0x14977,  # 1910 - 1919
     0x04970, 0x0a4b0, 0x0b4b5, 0x06a50, 0x06d40, 0x1ab54, 0x02b60, 0x09570, 0x052f2, 0x04970,  # 1920 - 1929
-    0x06566, 0x0d4a0, 0x0ea50, 0x06e95, 0x05ad0, 0x02b60, 0x186e3, 0x092e0, 0x1c8d7, 0x0c950,  # 1930 - 1939
+    0x06566, 0x0d4a0, 0x0ea50, 0x16a95, 0x05ad0, 0x02b60, 0x186e3, 0x092e0, 0x1c8d7, 0x0c950,  # 1930 - 1939
     0x0d4a0, 0x1d8a6, 0x0b550, 0x056a0, 0x1a5b4, 0x025d0, 0x092d0, 0x0d2b2, 0x0a950, 0x0b557,  # 1940 - 1949
     0x06ca0, 0x0b550, 0x15355, 0x04da0, 0x0a5b0, 0x14573, 0x052b0, 0x0a9a8, 0x0e950, 0x06aa0,  # 1950 - 1959
     0x0aea6, 0x0ab50, 0x04b60, 0x0aae4, 0x0a570, 0x05260, 0x0f263, 0x0d950, 0x05b57, 0x056a0,  # 1960 - 1969
     0x096d0, 0x04dd5, 0x04ad0, 0x0a4d0, 0x0d4d4, 0x0d250, 0x0d558, 0x0b540, 0x0b6a0, 0x195a6,  # 1970 - 1979
     0x095b0, 0x049b0, 0x0a974, 0x0a4b0, 0x0b27a, 0x06a50, 0x06d40, 0x0af46, 0x0ab60, 0x09570,  # 1980 - 1989
-    0x04af5, 0x04970, 0x064b0, 0x074a3, 0x0ea50, 0x06b58, 0x055c0, 0x0ab60, 0x096d5, 0x092e0,  # 1990 - 1999
+    0x04af5, 0x04970, 0x064b0, 0x074a3, 0x0ea50, 0x06b58, 0x05ac0, 0x0ab60, 0x096d5, 0x092e0,  # 1990 - 1999
     0x0c960, 0x0d954, 0x0d4a0, 0x0da50, 0x07552, 0x056a0, 0x0abb7, 0x025d0, 0x092d0, 0x0cab5,  # 2000 - 2009
     0x0a950, 0x0b4a0, 0x0baa4, 0x0ad50, 0x055d9, 0x04ba0, 0x0a5b0, 0x15176, 0x052b0, 0x0a930,  # 2010 - 2019
     0x07954, 0x06aa0, 0x0ad50, 0x05b52, 0x04b60, 0x0a6e6, 0x0a4e0, 0x0d260, 0x0ea65, 0x0d530,  # 2020 - 2029
     0x05aa0, 0x076a3, 0x096d0, 0x04afb, 0x04ad0, 0x0a4d0, 0x1d0b6, 0x0d250, 0x0d520, 0x0dd45,  # 2030 - 2039
     0x0b5a0, 0x056d0, 0x055b2, 0x049b0, 0x0a577, 0x0a4b0, 0x0aa50, 0x1b255, 0x06d20, 0x0ada0,  # 2040 - 2049
     0x14b63, 0x09370, 0x049f8, 0x04970, 0x064b0, 0x168a6, 0x0ea50, 0x06b20, 0x1a6c4, 0x0aae0,  # 2050 - 2059
-    0x0a2e0, 0x0d2e3, 0x0c960, 0x0d557, 0x0d4a0, 0x0da50, 0x05d55, 0x056a0, 0x0a6d0, 0x055d4,  # 2060 - 2069
+    0x092e0, 0x0d2e3, 0x0c960, 0x0d557, 0x0d4a0, 0x0da50, 0x05d55, 0x056a0, 0x0a6d0, 0x055d4,  # 2060 - 2069
     0x052d0, 0x0a9b8, 0x0a950, 0x0b4a0, 0x0b6a6, 0x0ad50, 0x055a0, 0x0aba4, 0x0a5b0, 0x052b0,  # 2070 - 2079
-    0x0b273, 0x06930, 0x07337, 0x06aa0, 0x0ad50, 0x14b55, 0x04b60, 0x0a570, 0x054e4, 0x0d160,  # 2080 - 2089
-    0x0e968, 0x0d520, 0x0daa0, 0x16aa6, 0x056d0, 0x04ae0, 0x0a9d4, 0x0a2d0, 0x0d150, 0x0f252,  # 2090 - 2099
+    0x0b273, 0x06930, 0x07337, 0x06aa0, 0x0ad50, 0x14b55, 0x04b60, 0x0a570, 0x054e4, 0x0d260,  # 2080 - 2089
+    0x0e968, 0x0d520, 0x0daa0, 0x16aa6, 0x056d0, 0x04ae0, 0x0a9d4, 0x0a4d0, 0x0d150, 0x0f252,  # 2090 - 2099
     0x0d520
 ]
+
+
+def _parse_leap(year_info):
+    leap_month = year_info % 16
+    if leap_month == 0:
+        leap_days = 0
+    elif leap_month <= 12:
+        leap_days = (year_info >> 16) % 2 + 29
+    else:
+        raise ValueError("yearInfo 0x{0:x} mod 16 should in [0, 12]".format(year_info))
+    return leap_month, leap_days
 
 
 def parse_year_days(year_info):
     """Parse year days from a year info.
     """
-    year_info = int(year_info)
-    res = 29 * 12
-
-    leap = False
-    if year_info % 16 != 0:
-        leap = True
-        res += 29
-
-    year_info //= 16
-
-    for i in range(12 + leap):
-        if year_info % 2 == 1:
-            res += 1
-        year_info //= 2
+    leap_month, leap_days = _parse_leap(year_info)
+    res = leap_days
+    for month in range(1, 13):
+        res += (year_info >> (16 - month)) % 2 + 29
     return res
 
 
@@ -78,18 +85,14 @@ def _iter_year_month(year_info):
     """ Iter the month days in a lunar year.
     """
     # info => month, days, leap
-    months = [(i, 0) for i in range(1, 13)]
-    leap_month = year_info % 16  # The leap month in this year.
-    if leap_month == 0:
-        pass
-    elif leap_month <= 12:
-        months.insert(leap_month, (leap_month, 1))
-    else:
-        raise ValueError("yearInfo 0x{0:x} mod 16 should in [0, 12]".format(year_info))
 
+    leap_month, leap_days = _parse_leap(year_info)
+    months = [(i, 0) for i in range(1, 13)]
+    if leap_month > 0:
+        months.insert(leap_month, (leap_month, 1))
     for month, leap in months:
         if leap:
-            days = (year_info >> 16) % 2 + 29
+            days = leap_days
         else:
             days = (year_info >> (16 - month)) % 2 + 29
         yield month, days, leap
@@ -101,8 +104,15 @@ class LCalendars:
 
     @staticmethod
     def is_leap_month(year: int, month: int) -> bool:
+        warnings.warn('This method is deprecated, use LCalendars.leap_month instead.', DeprecationWarning)
         _check_year_range(year)
         return YEAR_INFOS[year - MIN_LUNAR_YEAR] % 16 == month
+
+    @staticmethod
+    def leap_month(year: int) -> int:
+        _check_year_range(year)
+        leap_month, _ = _parse_leap(YEAR_INFOS[year - MIN_LUNAR_YEAR])
+        return leap_month
 
     @staticmethod
     def iter_year_month(year: int) -> Iterator[Tuple[int, int, int]]:
@@ -134,6 +144,22 @@ class LCalendars:
         days = TermUtils.parse_term_days(year)
         day = days[term_index]
         return datetime.date(year, month, day)
+
+    @staticmethod
+    def cast_date(date_obj, target_class):
+        if not isinstance(date_obj, (datetime.date, LunarDate)):
+            raise TypeError('Unsupported type: {}'.format(date_obj.__class__.__name__))
+        if isinstance(date_obj, target_class):
+            return date_obj
+        if isinstance(date_obj, LunarDate):
+            return date_obj.to_solar_date()
+        else:
+            return LunarDate.from_solar(date_obj)
+
+    @staticmethod
+    def delta(date1, date2):
+        date2 = LCalendars.cast_date(date2, type(date1))
+        return (date1 - date2).days
 
 
 # offset <----> year, day_offset <----> year, month, day, leap
@@ -194,6 +220,7 @@ TERMS_CN = [
     "小暑", "大暑", "立秋", "处暑", "白露", "秋分", "寒露", "霜降", "立冬", "小雪", "大雪", "冬至"
 ]
 
+# solar year 1900~2100
 TERM_INFO = [
     '654466556667788888998877', '664466566767888989998887', '665466666777898989998888', '665577667777899999998888',
     '765566556667788888998877', '664466566767888989998887', '665466666767898989998888', '665577667777899999998888',
@@ -261,8 +288,12 @@ class TermUtils:
     def get_term_info(year, month, day):
         """Parse solar term and stem-branch year/month/day from a solar date.
         (sy, sm, sd) => (term, next_gz_month)
+        term for year 2101,:2101.1.5(初六) 小寒 2101.1.20(廿一) 大寒
         """
-        days = TermUtils.parse_term_days(year)
+        if year == 2101:
+            days = [5, 20]
+        else:
+            days = TermUtils.parse_term_days(year)
         term_index1 = 2 * (month - 1)
         term_index2 = 2 * (month - 1) + 1
         day1 = days[term_index1]
@@ -315,27 +346,17 @@ class TextUtils:
         return TextUtils.STEMS[offset % 10] + TextUtils.BRANCHES[offset % 12]
 
 
-class LunarDate:
-    __slots__ = [
-        '_year', '_month', '_day', '_leap',
-        '_offset', '_solar_ymd', '_term',
-        '_gz_year', '_gz_month', '_gz_day',
-        '_animal'
-    ]
+class LunarDate(EncoderMixin):
+    fields = [f_year, f_month, f_day, f_leap]
 
-    def __new__(cls, year: int, month: int, day: int, leap: Leap = False):
-        self = object.__new__(cls)
+    def __init__(self, year: int, month: int, day: int, leap: Leap = False):
         offset = ymdl2offset(year, month, day, leap)
         self._year = year
         self._month = month
         self._day = day
         self._leap = leap
         self._offset = offset
-
-        solar_date = _START_SOLAR_DATE + datetime.timedelta(days=self._offset)
-        self._solar_ymd = solar_date.year, solar_date.month, solar_date.day
         self._gz_year, self._gz_month, self._gz_day, self._term = self._get_gz_ymd()
-        return self
 
     @property
     def year(self) -> int:
@@ -381,18 +402,16 @@ class LunarDate:
         """
         (sy, sm, sd) -> term / gz_year / gz_month / gz_day
         """
-        sy, sm, sd = self._solar_ymd
-        # [2101.1.1-2100.1.28] has no term info.
-        if sy < 1900 or sy > 2100:
-            return None, None, None, None
-        term_name, next_gz_month = TermUtils.get_term_info(sy, sm, sd)
-        s_offset = (datetime.date(sy, sm, sd) - _START_SOLAR_DATE).days
+        solar_date = MIN_SOLAR_DATE + datetime.timedelta(days=self._offset)
+        sy, sm, sd = solar_date.year, solar_date.month, solar_date.day
+        s_offset = (datetime.date(sy, sm, sd) - MIN_SOLAR_DATE).days
         gz_year = TextUtils.STEMS[(self.year - 4) % 10] + TextUtils.BRANCHES[(self.year - 4) % 12]
+        gz_day = TextUtils.get_gz_cn((s_offset + 40) % 60)
+        term_name, next_gz_month = TermUtils.get_term_info(sy, sm, sd)
         if next_gz_month:
             gz_month = TextUtils.get_gz_cn((sy - 1900) * 12 + sm + 12)
         else:
             gz_month = TextUtils.get_gz_cn((sy - 1900) * 12 + sm + 11)
-        gz_day = TextUtils.get_gz_cn((s_offset + 40) % 60)
         return gz_year, gz_month, gz_day, term_name
 
     @property
@@ -407,6 +426,19 @@ class LunarDate:
     def cn_day(self) -> str:
         return '{}'.format(TextUtils.day_cn(self.day))
 
+    @property
+    def cn_day_calendar(self) -> str:
+        if self.day == 1:
+            return self.cn_month
+        else:
+            return self.cn_day
+
+    def weekday(self):
+        return (self.offset + 2) % 7
+
+    def isoweekday(self):
+        return (self.offset + 3) % 7 or 7
+
     def cn_str(self) -> str:
         return '{}{}{}'.format(self.cn_year, self.cn_month, self.cn_day)
 
@@ -414,7 +446,7 @@ class LunarDate:
         return '{}年{}月{}日'.format(self.gz_year, self.gz_month, self.gz_day)
 
     def to_solar_date(self) -> datetime.date:
-        return _START_SOLAR_DATE + datetime.timedelta(days=self.offset)
+        return MIN_SOLAR_DATE + datetime.timedelta(days=self.offset)
 
     def before(self, day_delta: int = 1) -> 'LunarDate':
         y, m, d, leap = offset2ymdl(self._offset - day_delta)
@@ -453,7 +485,7 @@ class LunarDate:
 
     @classmethod
     def from_solar(cls, date_obj: datetime.date) -> 'LunarDate':
-        offset = (date_obj - _START_SOLAR_DATE).days
+        offset = (date_obj - MIN_SOLAR_DATE).days
         y, m, d, leap = offset2ymdl(offset)
         return cls(y, m, d, leap)
 
@@ -478,6 +510,10 @@ class LunarDate:
     __repr__ = __str__
 
     def __sub__(self, other):
+        """This is the basic method for comparable feature.
+        :param other: a instance of LunarDate / date / timedelta
+        :return:
+        """
         if isinstance(other, LunarDate):
             return self.to_solar_date() - other.to_solar_date()
         elif isinstance(other, datetime.date):
@@ -500,12 +536,6 @@ class LunarDate:
     def __radd__(self, other):
         return self + other
 
-    def __eq__(self, other):
-        if not isinstance(other, LunarDate):
-            return False
-
-        return self - other == datetime.timedelta(0)
-
     def __lt__(self, other):
         try:
             return self - other < datetime.timedelta(0)
@@ -521,11 +551,23 @@ class LunarDate:
     def __ge__(self, other):
         return not self < other
 
+    def __key(self):
+        return self.year, self.month, self.day, self.leap
+
     def __hash__(self):
-        return hash((self.year, self.month, self.day, self.leap))
+        return hash(self.__key())
+
+    def __eq__(self, other):
+        return isinstance(self, type(other)) and self.__key() == other.__key()
+
+    def __getstate__(self):
+        return self.__key()
+
+    def __setstate__(self, state):
+        self._year, self._month, self._day, self._leap = state
 
 
-LunarDate.min = LunarDate(1990, 1, 1, False)
+LunarDate.min = LunarDate(1900, 1, 1, False)
 LunarDate.max = LunarDate(2100, 12, 29, False)
 
 
@@ -543,9 +585,10 @@ class Formatter:
         '%d': 'day',
         '%B': 'padding_day',
         '%D': 'cn_day',
+        '%F': 'cn_day_calendar',
         '%a': 'animal',
         '%t': 'term',
-        '%0': 'gz_year',
+        '%o': 'gz_year',
         '%p': 'gz_month',
         '%q': 'gz_day',
         '%C': 'cn_str',
@@ -567,7 +610,10 @@ class Formatter:
         return ''.join(['{', field, '}'])
 
     def format(self, obj: LunarDate) -> str:
-        values = {f: self.resolve(obj, f) for f in self._fields}
+        def xstr(s):
+            return '' if s is None else str(s)
+
+        values = {f: xstr(self.resolve(obj, f)) for f in self._fields}
         return self._fmt.format(**values)
 
     def resolve(self, obj, field):

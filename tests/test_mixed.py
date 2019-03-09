@@ -3,23 +3,12 @@
 import unittest
 from datetime import date
 
+from borax.calendars.festivals import (SolarSchema, LunarSchema, WeekSchema,
+                                       TermSchema, DayLunarSchema, get_festival, DateSchemaFactory)
 from borax.calendars.lunardate import LunarDate
-from borax.calendars.festivals import (date2mixed, mixed2date, SolarSchema, LunarSchema, WeekSchema,
-                                       DateSchemaFactory, TermSchema, DayLunarSchema, get_festival)
 
 
 class MixedDateTestCase(unittest.TestCase):
-    def test_convert(self):
-        self.assertEqual(date(2018, 2, 3), mixed2date('0201802030'))
-        self.assertEqual(LunarDate(2017, 6, 4), mixed2date('1201706040'))
-        self.assertEqual(LunarDate(2017, 6, 20, 1), mixed2date('1201706201'))
-
-        self.assertEqual('0201802030', date2mixed(date(2018, 2, 3)))
-        self.assertEqual('1201706040', date2mixed(LunarDate(2017, 6, 4)))
-        self.assertEqual('1201706201', date2mixed(LunarDate(2017, 6, 20, 1)))
-        with self.assertRaises(TypeError):
-            date2mixed(2)
-
     def test_match(self):
         md = SolarSchema(year=0, month=2, day=14)
         self.assertTrue(md.match(date(2019, 2, 14)))
@@ -31,12 +20,6 @@ class MixedDateTestCase(unittest.TestCase):
 
         with self.assertRaises(TypeError):
             md1.match(2)
-
-        md2 = DateSchemaFactory.from_string('1000006140')
-        self.assertTrue(md2.match(LunarDate(2017, 6, 14)))
-        self.assertTrue(md2.match(LunarDate(2017, 6, 14, 1)))
-        sd = LunarDate(2017, 6, 14).to_solar_date()
-        self.assertTrue(md2.match(sd))
 
     def test_countdown_week(self):
         ws = WeekSchema(year=2019, month=5, index=2, week=6)
@@ -54,6 +37,9 @@ class MixedDateTestCase(unittest.TestCase):
 
         ss1 = SolarSchema(year=2019, month=4, day=1, reverse=1)
         self.assertEqual(29, ss1.countdown(date(2019, 4, 1)))
+
+        ss2 = SolarSchema(month=6, day=24)
+        self.assertEqual(202, ss2.countdown(date(2007, 12, 5)))
 
     def test_countdown_lunar(self):
         ls = LunarSchema(year=0, month=4, day=2)
@@ -84,8 +70,9 @@ class ReverseTestCase(unittest.TestCase):
         ss = SolarSchema(year=2018, month=2, day=1, reverse=1)
         self.assertTrue(ss.match(date(2018, 2, 28)))
 
-        with self.assertRaises(ValueError):
-            SolarSchema(month=2, day=1, reverse=1)
+        ss1 = SolarSchema(month=2, day=1, reverse=1)
+        self.assertTrue(ss1.match(date(2018, 2, 28)))
+        self.assertEqual(27, ss1.delta(date(2020, 2, 2)))
 
 
 class LeapIgnoreTestCase(unittest.TestCase):
@@ -105,3 +92,33 @@ class LeapIgnoreTestCase(unittest.TestCase):
     def test_leap_countdown(self):
         ls = LunarSchema(month=6, day=1)
         ls.delta(LunarDate(2017, 6, 27))
+
+
+class SchemaEncoderTestCase(unittest.TestCase):
+    def test_encode(self):
+        ss = SolarSchema.decode('0000012310')
+        self.assertEqual(12, ss.month)
+        self.assertEqual(31, ss.day)
+        self.assertEqual(0, ss.reverse)
+        self.assertEqual('0000012310', ss.encode())
+        self.assertEqual('012310', ss.encode(short=True))
+
+        ss1 = DateSchemaFactory.from_string('0000012310')
+        self.assertEqual(12, ss1.month)
+        self.assertEqual(31, ss1.day)
+        self.assertEqual(0, ss1.reverse)
+        self.assertEqual('0000012310', ss1.encode())
+        self.assertEqual('012310', ss1.encode(short=True))
+
+    def test_schema_factory(self):
+        md2 = DateSchemaFactory.from_string('1000006140')
+        self.assertTrue(md2.match(LunarDate(2017, 6, 14)))
+        self.assertTrue(md2.match(LunarDate(2017, 6, 14, 1)))
+        sd = LunarDate(2017, 6, 14).to_solar_date()
+        self.assertTrue(md2.match(sd))
+
+        md3 = DateSchemaFactory.from_string('106140')
+        self.assertTrue(md3.match(LunarDate(2017, 6, 14)))
+        self.assertTrue(md3.match(LunarDate(2017, 6, 14, 1)))
+        sd = LunarDate(2017, 6, 14).to_solar_date()
+        self.assertTrue(md3.match(sd))

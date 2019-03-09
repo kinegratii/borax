@@ -26,6 +26,18 @@
 
 农历可表示的最小年份，值为 1900 。
 
+- **lunardate.MIN_SOLAR_DATE**
+
+农历可表示的日期下限，值为 `datetime.date(1900, 1, 31)`，日期同 `LunarDate.min`。
+
+- **lunardate.MAX_SOLAR_DATE**
+
+农历可表示的日期下限，值为 `datetime.date(2101, 1, 28)`，日期同 `LunarDate.max`。
+
+- **lunardate.MAX_OFFSET**
+
+农历日期的最大偏移量，值为73411。
+
 ## 日期范围
 
 `LunarDate` 实例表示一个具体日期，该类可以表示的日期起止范围如下表：
@@ -33,9 +45,9 @@
 | 项目 | 起始日 | ... | 2100年 | 2101年 | ... | 截止日 |
 | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
 | 公历 | 1990年1月31日 | ... | 2100年12月31日 | 2101年1月1日 | ... | 2101年1月28日 |
-| 农历 | 1900年正月初一 | ... | 2100年十二月初一 | 2100年十二月初二 | ... | 2100年十二月廿九 |
+| 农历 | 1900年正月初一 | ... | 2100年腊月初一 | 2100年腊月初二 | ... | 2100年腊月廿九 |
 | offset | 0 | ... | 73383 | 73384 | ... | 73411 |
-| 干支 | 庚午年丙子月壬辰日 | ... | 庚申年戊子月丁未日 | - | ... | - |
+| 干支 | 庚午年丙子月壬辰日 | ... | 庚申年戊子月丁未日 | 庚申年戊子月戊申日 | ... | 庚申年己丑月乙亥日 |
 
 ## 创建日期对象
 
@@ -83,7 +95,9 @@ LunarDate(1990, 1, 1, 0)
 LunarDate(2100, 12, 29, 0)
 ```
 
-## 属性
+## 属性和显示
+
+### 属性表
 
 和公历日期对象 `datetime.date` 类似，`LunarDate` 是不可变对象(Immutable Object)，可以作为字典的键值。全部属性如下表（以 `LunarDate(2018, 6, 26, False)` 为例）：
 
@@ -104,37 +118,22 @@ LunarDate(2100, 12, 29, 0)
 | animal | `str` | 年生肖 | 狗 | %a | |
 | - | `str` | 两位数字的月份 | 06 | %A | |
 | - | `str` | 两位数字的日期 | 26 | %B | |
-
-*v1.1.10* 新增 `%A`、`%B` 描述符。
-
-
-## 格式化显示
-
-### 内置方法
-
-一共有三种显示方式：
-
-| 显示方式 | 调用形式 | 示例 | 格式描述符 |
-| ------ | ------ | ------ | ------ |
-| 默认表示法 | `str(ld)` | LunarDate(2018, 6, 26, False) | - |
-| 汉字表示法 | `ld.cn_str()` | 2018年六月廿六 | %C |
-| 干支表示法 | `ld.gz_str()` | 戊戌年庚申月辛未日 | %G |
-
-在汉字表示法中，为了统一字符串长度，日期使用 “廿六” 形式，而不是 “二十六”；“十一月”、“十二月”使用“冬月”、“腊月”形式。
-
-### 格式符描述
-
-> v1.2.0 新增。
-
-
-- **LunarDate.strftime(fmt)** 
-
-`strftime`通过描述符(Directive)格式化给定的日期字符串。在“属性”一节中已经列出所有属性的格式描述符。
+| cn_day_calendar | `str` | 用于日历显示的中文日 | 26 | %F | v1.3.0新增 (3) |
+| `str(ld)` | `str` | 默认表示法 | LunarDate(2018, 6, 26, False) | - |  |
+| `ld.cn_str()` | `str` | 汉字表示法 | 2018年六月廿六 | %C |  |
+| `ld.gz_str()` | `str` | 干支表示法 | 戊戌年庚申月辛未日 | %G |  |
 
 备注信息：
 
 - (1) '%l' 将闰月标志格式化为数字，如“0”、“1”
 - (2) '%Y'、'%M'、'%D' 三个中文名称不包含“年”、“月”、“日”后缀汉字
+- (3) '%F' 将“初一”改为相应的中文月份，如“七月”、“闰六”、“冬月”、“闰冬”。
+
+### 格式化
+
+- **LunarDate.strftime(fmt)** 
+
+`strftime`通过描述符(Directive)格式化给定的日期字符串。在“属性”一节中已经列出所有属性的格式描述符。
 
 例子：
 
@@ -225,9 +224,76 @@ False
 True
 ```
 
+## 序列化与存储
+
+### pickle协议支持
+
+`LunarDate` 对象支持 pickle 序列化。
+
+```python
+import pickle
+from borax.calendars.lunardate import LunarDate
+
+
+ld = LunarDate.today()
+with open('data.pickle', 'wb') as f:
+    pickle.dump(ld, f)
+
+with open('data.pickle', 'rb') as f:
+    l2 = pickle.load(f)
+    print(l2) # LunarDate(2018, 7, 24, 0)
+
+```
+
+### sqlite3自定义字段
+
+`LunarDate` 继承自 `store.EncoderMixin` 接口，为 sqlite3 自定义字段提供支持，更多细节参考 [sqlite3文档](https://docs.python.org/3.7/library/sqlite3.html#converting-sqlite-values-to-custom-python-types)。
+
+下面是一个简单的例子：
+
+```python
+import sqlite3
+
+from borax.calendars.lunardate import LunarDate
+
+
+def adapt_lunardate(ld):
+    return ld.encode()
+
+sqlite3.register_adapter(LunarDate, adapt_lunardate)
+sqlite3.register_converter("lunardate", LunarDate.decode)
+
+con = sqlite3.connect(":memory:", detect_types=sqlite3.PARSE_DECLTYPES)
+cur = con.cursor()
+cur.execute('CREATE TABLE member (pid INT AUTO_INCREMENT PRIMARY KEY,birthday lunardate);')
+
+ld = LunarDate(2018, 5, 3)
+cur.execute("INSERT INTO member(birthday) VALUES (?)", (ld,))
+
+cur.execute("SELECT pid, birthday FROM member;")
+my_birthday = cur.fetchone()[1]
+
+cur.close()
+con.close()
+
+print(my_birthday.year) # 2018
+print(my_birthday.month) # 5
+print(my_birthday.day) # 3
+print(my_birthday.leap) # 0
+
+```
+
 ## LCalendars工具接口
 
 `LCalendars` 提供了一系列的工具方法。
+
+- **LCalendars.leap_month(year: int) -> int**
+
+返回 year 年的闰月月份，范围为 [0,12] ，0 表示该年无闰月。
+
+- **LCalendars.is_leap_month(year: int, month: int) -> bool**
+
+判断 year 年 month 月是否为闰月。该方法已废弃，可使用 `LCalendars.leap_month(year) == month` 表达式代替。
 
 - **LCalendars.ndays(year: int, month: Optional[int] = None, leap: Leap = False) -> int**
 
@@ -269,6 +335,10 @@ ValueError: Invalid month for the year 2017
 >>>LCalendars.create_solar_date(2019, term_name='清明')
 2019-04-05
 ```
+
+- **LCalendars.delta(date1:MDate, date2:MDate) -> int**
+
+计算两个日期相隔的天数，即 `(date1 - date2).days`。
 
 
 ## 参考资料

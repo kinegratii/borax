@@ -1,11 +1,31 @@
 # 更新日志
 
+## v1.3.0 (20190309)
+
+- `calendars.lunardate` 模块
+  - 重新修订农历信息，通过微软数据源的验证
+  - 新增 `weekday` 和 `isoweekday` 方法
+  - 补充公历2101年日期的干支、节气信息
+  - 修正无节气的日期格式化的bug
+  - 新增 sqlte3 自定义字段支持
+  - 新增 `%F` 字符串描述符
+- `calendars.festivals` 模块
+  - 新增 `encode` / `decode` 方法，支持序列化
+  - 新增 `FestivalFactory` ，支持节日分组分类
+  - 支持省略年份的字符表达式
+  - 修正 `SolarSchema` 二月倒数序号形式解析的bug
+- `calendars.birthday` 模块
+  - 新增虚岁/周岁的计算函数
+- 新增 `borax.structures.proxy` 模块
+- `trim_iterable` 新增前缀、后缀字符串
+
 ## v1.2.0 (20190213)
 
 > 部分模块新增 [Typing Hint](https://docs.python.org/3/library/typing.html) 支持
+
 - `calendars.festivals` 模块
   - 支持节日查找
-- `lunardate` 模块
+- `calendars.lunardate` 模块
   - 使用新版节气数据存储方式
   - 新增 `LCalendars` 工具接口
   - 新增`%A`、`%B` 字符串描述符

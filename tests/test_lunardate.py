@@ -4,7 +4,7 @@ import datetime
 import unittest
 from datetime import date, timedelta
 
-from borax.calendars.lunardate import LunarDate, parse_year_days, MAX_OFFSET, LCalendars
+from borax.calendars.lunardate import LunarDate, parse_year_days, LCalendars
 
 
 class LunarDateTestCase(unittest.TestCase):
@@ -31,6 +31,12 @@ class LunarDateTestCase(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             LunarDate(2019, 1, 1, 1).to_solar_date()
+
+    def test_solar_and_lunar(self):
+        ld = LunarDate.today()
+        sd = ld.to_solar_date()
+        self.assertEqual(ld.weekday(), sd.weekday())
+        self.assertEqual(ld.isoweekday(), sd.isoweekday())
 
     def test_timedelta(self):
         ld = LunarDate(1976, 8, 8)
@@ -104,15 +110,6 @@ class PrivateMethodsTestCase(unittest.TestCase):
         self.assertEqual(389, parse_year_days((2 ** 12 - 1) * 16 + 1))
 
 
-class BenchmarkTestCase(unittest.TestCase):
-    def test_edge_dates(self):
-        # Max date
-        self.assertEqual(MAX_OFFSET, LunarDate.max.offset)
-
-        sd2100_ld = LunarDate.from_solar_date(2100, 12, 31)
-        self.assertEqual('庚申年戊子月丁未日', sd2100_ld.gz_str())
-
-
 class FormatterTestCase(unittest.TestCase):
     def test_valid_format(self):
         ld = LunarDate(2018, 4, 3)
@@ -147,3 +144,12 @@ class LCalendarTestCase(unittest.TestCase):
     def test_leap_check(self):
         self.assertTrue(LCalendars.is_leap_month(2017, 6))
         self.assertFalse(LCalendars.is_leap_month(2017, 7))
+        self.assertTrue(LCalendars.leap_month(2017) == 6)
+        self.assertFalse(LCalendars.leap_month(2017) == 7)
+
+    def test_delta(self):
+        sd = date(2018, 12, 1)
+
+        self.assertEqual(-1, LCalendars.delta(sd, date(2018, 12, 2)))
+        self.assertEqual(-1, LCalendars.delta(LunarDate.from_solar(sd), date(2018, 12, 2)))
+        self.assertEqual(4, LCalendars.delta(LunarDate(2018, 1, 6), LunarDate(2018, 1, 2)))

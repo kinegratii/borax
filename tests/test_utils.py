@@ -39,6 +39,12 @@ class StringTrimTestCase(unittest.TestCase):
         result = trim_iterable(elements, 9, split='/')
         self.assertEqual('1212', result)
 
+        result = trim_iterable(elements, 18, split='', prefix='X')
+        self.assertEqual('X1212X34343X783454', result)
+
+        result = trim_iterable(elements, 18, split='-', prefix='X')
+        self.assertEqual('X1212-X34343', result)
+
 
 class FirstofTestCase(unittest.TestCase):
     def test_first_of(self):
