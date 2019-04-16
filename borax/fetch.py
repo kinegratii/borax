@@ -2,9 +2,8 @@
 """
 fetch is a enhance module with fetch. And adjust the parameter order of calling to fit the habit.
 """
-import operator
-from itertools import tee
 from functools import partial
+from itertools import tee
 
 __all__ = ['fetch', 'ifetch', 'fetch_single', 'ifetch_multiple', 'ifetch_single']
 
