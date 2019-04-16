@@ -1,5 +1,11 @@
 # 更新日志
 
+## v1.3.1 (20190416)
+
+- `fetch` 模块
+  - 新增 `fetch_as_dict` 函数
+  - 新增 `bget` 接口
+
 ## v1.3.0 (20190309)
 
 - `calendars.lunardate` 模块

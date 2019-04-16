@@ -2,9 +2,8 @@
 """
 fetch is a enhance module with fetch. And adjust the parameter order of calling to fit the habit.
 """
-import operator
-from itertools import tee
 from functools import partial
+from itertools import tee
 
 __all__ = ['fetch', 'ifetch', 'fetch_single', 'ifetch_multiple', 'ifetch_single']
 
@@ -14,6 +13,22 @@ class Empty(object):
 
 
 EMPTY = Empty()
+
+
+def bget(obj, key, default=Empty):
+    try:
+        return getattr(obj, key)
+    except AttributeError:
+        pass
+
+    try:
+        return obj[key]
+    except KeyError:
+        pass
+    if default is not EMPTY:
+        return default
+
+    raise ValueError('Item %r has no attr or key for %r' % (obj, key))
 
 
 def ifetch_single(iterable, key, default=EMPTY, getter=None):
@@ -26,22 +41,7 @@ def ifetch_single(iterable, key, default=EMPTY, getter=None):
             custom_getter = partial(getter, key=key)
             return custom_getter(item)
         else:
-            try:
-                attrgetter = operator.attrgetter(key)
-                return attrgetter(item)
-            except AttributeError:
-                pass
-
-            try:
-                itemgetter = operator.itemgetter(key)
-                return itemgetter(item)
-            except KeyError:
-                pass
-
-            if default is not EMPTY:
-                return default
-
-            raise ValueError('Item %r has no attr or key for %r' % (item, key))
+            return partial(bget, key=key, default=default)(item)
 
     return map(_getter, iterable)
 
@@ -70,3 +70,7 @@ def ifetch(iterable, key, *keys, default=EMPTY, defaults=None, getter=None):
 
 def fetch(iterable, key, *keys, default=EMPTY, defaults=None, getter=None):
     return list(ifetch(iterable, key, *keys, default=default, defaults=defaults, getter=getter))
+
+
+def fetch_as_dict(data, key_field, value_value):
+    return dict([(bget(item, key_field), bget(item, value_value)) for item in data])

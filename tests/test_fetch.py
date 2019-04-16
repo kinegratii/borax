@@ -3,7 +3,7 @@
 
 import unittest
 
-from borax.fetch import fetch, fetch_single, ifetch_multiple
+from borax.fetch import fetch, fetch_single, ifetch_multiple, fetch_as_dict
 
 DICT_LIST_DATA = [
     {'id': 282, 'name': 'Alice', 'age': 30, 'sex': 'female'},
@@ -62,3 +62,14 @@ class FetchCustomGetterTestCase(unittest.TestCase):
         names, ages = fetch(DICT_LIST_DATA, 'name', 'age', getter=lambda item, key: item.get(key))
         self.assertListEqual(names, ['Alice', 'Bob', 'Charlie'])
         self.assertListEqual(ages, [30, 56, 56])
+
+
+class FetchAsDictTestCase(unittest.TestCase):
+    def test_fetch_as_dict(self):
+        objects = [
+            {'id': 282, 'name': 'Alice', 'age': 30},
+            {'id': 217, 'name': 'Bob', 'age': 56},
+            {'id': 328, 'name': 'Charlie', 'age': 56},
+        ]
+        data_dict = fetch_as_dict(objects, 'id', 'name')
+        self.assertDictEqual({282: 'Alice', 217: 'Bob', 328: 'Charlie'}, data_dict)
