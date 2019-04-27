@@ -1,5 +1,10 @@
 # 更新日志
 
+## v1.4.0
+
+- `counters.serials` 模块
+  - 新增序列号生成器 `SerialGenerator`
+
 ## v1.3.1 (20190416)
 
 - `fetch` 模块
