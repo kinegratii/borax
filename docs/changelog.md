@@ -4,6 +4,8 @@
 
 - `counters.serials` 模块
   - 新增序列号生成器 `SerialGenerator`
+- `borax-cli` 命令行工具
+  - 新增 `mpi` 命令 
 
 ## v1.3.1 (20190416)
 
