@@ -2,14 +2,17 @@
 
 ## v1.4.0
 
+> 本版本调整了若干个模块组织结构。
+
 - `counters.serials` 模块
   - 新增序列号生成器 `SerialGenerator`
 - `borax-cli` 命令行工具
   - 新增 `mpi` 命令
 - `borax.utils` 模块
   - 新增 `camel2snake`、`snake2camel` 方法
-- `borax.environments` 模块
+- `borax.system` 模块
   - 新增检查可执行文件 `check_path_variables`
+  - `borax.loader.load_class` 移至本模块
 - `borax.decorators.admin` 模块
   - 废弃本模块
 

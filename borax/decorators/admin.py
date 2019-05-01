@@ -1,6 +1,9 @@
 # coding=utf8
+import warnings
 
 __all__ = ['attr', 'action', 'display_field']
+
+warnings.warn('This module is deprecated, use nickel.admin_utils.decorators instead.', DeprecationWarning)
 
 
 def attr(**kwargs):

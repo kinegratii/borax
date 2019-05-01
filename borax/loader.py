@@ -1,6 +1,8 @@
 # coding=utf8
 
-import sys
+import warnings
+
+from .system import load_class as _load_class
 
 
 def load_class(s):
@@ -8,7 +10,5 @@ def load_class(s):
     :param s: the full path of the class
     :return:
     """
-    path, class_ = s.rsplit('.', 1)
-    __import__(path)
-    mod = sys.modules[path]
-    return getattr(mod, class_)
+    warnings.warn('This method is deprecated. Use `borax.system.load_class` instead .', DeprecationWarning)
+    return _load_class(s)

@@ -1,5 +1,17 @@
 # coding=utf8
 import os
+import sys
+
+
+def load_class(s):
+    """Import a class
+    :param s: the full path of the class
+    :return:
+    """
+    path, class_ = s.rsplit('.', 1)
+    __import__(path)
+    mod = sys.modules[path]
+    return getattr(mod, class_)
 
 
 def check_path_variables(execute_filename):
