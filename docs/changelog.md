@@ -8,6 +8,10 @@
   - 新增 `mpi` 命令
 - `borax.utils` 模块
   - 新增 `camel2snake`、`snake2camel` 方法
+- `borax.environments` 模块
+  - 新增检查可执行文件 `check_path_variables`
+- `borax.decorators.admin` 模块
+  - 废弃本模块
 
 ## v1.3.1 (20190416)
 
