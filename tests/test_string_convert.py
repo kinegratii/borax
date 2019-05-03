@@ -2,7 +2,7 @@
 
 import unittest
 
-from borax.utils import camel2snake, snake2camel
+from borax.strings import camel2snake, snake2camel
 
 FIXTURES = [
     ('HelloWord', 'hello_word'),

@@ -8,7 +8,7 @@
   - 新增序列号生成器 `SerialGenerator`
 - `borax-cli` 命令行工具
   - 新增 `mpi` 命令
-- `borax.utils` 模块
+- `borax.strings` 模块
   - 新增 `camel2snake`、`snake2camel` 方法
 - `borax.system` 模块
   - 新增检查可执行文件 `check_path_variables`
