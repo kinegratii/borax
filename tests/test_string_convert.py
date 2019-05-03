@@ -2,7 +2,7 @@
 
 import unittest
 
-from borax.strings import camel2snake, snake2camel
+from borax.strings import camel2snake, snake2camel, get_percentage_display
 
 FIXTURES = [
     ('HelloWord', 'hello_word'),
@@ -19,3 +19,9 @@ class StringConvertTestCase(unittest.TestCase):
             with self.subTest(cs=cs, ss=ss):
                 self.assertEqual(cs, snake2camel(ss))
                 self.assertEqual(ss, camel2snake(cs))
+
+
+class PercentageStringTestCase(unittest.TestCase):
+    def test_convert(self):
+        self.assertEqual('100.00%', get_percentage_display(1, places=2))
+        self.assertEqual('56.23%', get_percentage_display(0.5623))

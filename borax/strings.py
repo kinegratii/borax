@@ -10,3 +10,8 @@ def camel2snake(s):
 def snake2camel(s):
     snake_to_camel_regex = r"(?:^|_)(.)"
     return re.sub(snake_to_camel_regex, lambda m: m.group(1).upper(), s)
+
+
+def get_percentage_display(value, places=2):
+    fmt = '{0:. f}%'.replace(' ', str(places))
+    return fmt.format(value * 100)
