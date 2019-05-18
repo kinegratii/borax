@@ -10,6 +10,7 @@
   - 新增 `mpi` 命令
 - `borax.strings` 模块
   - 新增 `camel2snake`、`snake2camel` 方法
+  - 新增 `SafeString` 类
 - `borax.system` 模块
   - 新增检查可执行文件 `check_path_variables`
   - `borax.loader.load_class` 移至本模块
