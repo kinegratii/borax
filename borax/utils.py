@@ -90,5 +90,3 @@ def flatten(iterable):
             yield from flatten(el)
         else:
             yield el
-
-
