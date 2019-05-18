@@ -1,6 +1,6 @@
 # 更新日志
 
-## v1.4.0
+## v1.4.0 (20190519)
 
 > 本版本调整了若干个模块组织结构。
 
@@ -10,7 +10,9 @@
   - 新增 `mpi` 命令
 - `borax.strings` 模块
   - 新增 `camel2snake`、`snake2camel` 方法
-  - 新增 `SafeString` 类
+- `borax.htmls` 模块
+  - 新增 `HTMLString` 类
+  - 新增 `html_tag` 生成器
 - `borax.system` 模块
   - 新增检查可执行文件 `check_path_variables`
   - `borax.loader.load_class` 移至本模块
