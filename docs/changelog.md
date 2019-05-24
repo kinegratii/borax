@@ -1,5 +1,24 @@
 # 更新日志
 
+## v1.4.0 (20190519)
+
+> 本版本调整了若干个模块组织结构。
+
+- `counters.serials` 模块
+  - 新增序列号生成器 `SerialGenerator`
+- `borax-cli` 命令行工具
+  - 新增 `mpi` 命令
+- `borax.strings` 模块
+  - 新增 `camel2snake`、`snake2camel` 方法
+- `borax.htmls` 模块
+  - 新增 `HTMLString` 类
+  - 新增 `html_tag` 生成器
+- `borax.system` 模块
+  - 新增检查可执行文件 `check_path_variables`
+  - `borax.loader.load_class` 移至本模块
+- `borax.decorators.admin` 模块
+  - 废弃本模块
+
 ## v1.3.1 (20190416)
 
 - `fetch` 模块

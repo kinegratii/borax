@@ -1,7 +1,7 @@
 # coding=utf8
 
-from functools import reduce
 import collections
+from functools import reduce
 
 
 def _resolve_value(val, args=None, kwargs=None):

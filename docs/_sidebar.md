@@ -10,6 +10,7 @@
 - **文档**
   - [字典](guides/alias_dictionary)
   - [树形结构](guides/tree)
+  - [序列号生成器<sup style="color:red">(新)<sup>](guides/serial_generator)
   - [百分比](guides/percentage)
   - [数据拾取](guides/fetch)
   - [Django-Admin装饰器](guides/admin_decorators)
