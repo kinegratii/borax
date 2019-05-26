@@ -30,7 +30,13 @@ def check_path_variables(execute_filename):
     return False
 
 
-def rotate_filename(filename: str, time_fmt: str = '', sep: str = '_', now=None, **kwargs):
+SUFFIX_DT = '%Y%m%d%H%M%S'
+SUFFIX_DT_UNDERLINE = '%Y_%m_%d_%H_%M_%S'
+SUFFIX_DATE = '%Y%m%d'
+SUFFIX_DATE_UNDERLINE = '%Y_%m_%d'
+
+
+def rotate_filename(filename: str, time_fmt: str = SUFFIX_DT, sep: str = '_', now=None, **kwargs):
     """ Rotate filename or filepath with datetime string as suffix.
     :param filename:
     :param time_fmt:

@@ -6,7 +6,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 from borax.strings import camel2snake, snake2camel, get_percentage_display
-from borax.system import rotate_filename
+from borax.system import rotate_filename, SUFFIX_DT_UNDERLINE
 
 FIXTURES = [
     ('HelloWord', 'hello_word'),
@@ -60,14 +60,14 @@ class FilenameRotateTestCase(unittest.TestCase):
         )
 
     def test_with_one_datetime(self):
-        now = datetime(2019, 5, 23)
+        now = datetime(2019, 5, 23, 10, 22, 23)
         self.assertEqual(
-            'demo_20190523.docx',
-            rotate_filename('demo.docx', time_fmt='%Y%m%d', now=now)
+            'demo_20190523102223.docx',
+            rotate_filename('demo.docx', now=now)
         )
         self.assertEqual(
-            'demo-2019_05_23.docx',
-            rotate_filename('demo.docx', time_fmt='%Y_%m_%d', sep='-', now=now)
+            'demo-2019_05_23_10_22_23.docx',
+            rotate_filename('demo.docx', time_fmt=SUFFIX_DT_UNDERLINE, sep='-', now=now)
         )
 
         self.assertEqual(
