@@ -10,7 +10,7 @@ def generate_serials(upper: int, num: int = 1, lower: int = 0, serials: Iterable
 
     el = len(exist_set)
     if el + num > upper - lower:
-        raise ValueError('Can not generate {} serials in [(), {}].'.format(num, lower, upper))
+        raise ValueError('Can not generate {} serials in [{}, {}].'.format(num, lower, upper))
 
     if el == 0:
         gen = range(lower, upper)
