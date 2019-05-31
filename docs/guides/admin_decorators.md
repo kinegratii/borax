@@ -2,6 +2,8 @@
 
 > 模块： `borax.decorators.admin`
 
+> 本模块已废弃，将在 v2.0 移除。
+
 ## attr
 
 函数签名
