@@ -56,7 +56,7 @@ class StringSerialGenerator(SerialGenerator):
     def __init__(self, prefix: str, digits: int = 2):
         self._prefix = prefix
         self._digits = digits
-        super().__init__(lower=0, upper=10 ** 2 - 1)
+        super().__init__(lower=0, upper=10 ** digits - 1)
 
     def generate(self, num: int) -> List[str]:
         res = super().generate(num)
