@@ -1,5 +1,10 @@
 # 更新日志
 
+## v1.4.2
+
+- `counters.serials` 模块
+  - `StringSerialGenerator` 支持2/8/10/16进制格式
+  
 ## v1.4.1 (20190602)
 
 - `borax.system` 模块

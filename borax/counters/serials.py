@@ -53,10 +53,15 @@ class SerialGenerator:
 
 
 class StringSerialGenerator(SerialGenerator):
-    def __init__(self, prefix: str, digits: int = 2):
+    def __init__(self, prefix: str, digits: int = 2, base: int = 10):
         self._prefix = prefix
         self._digits = digits
-        super().__init__(lower=0, upper=10 ** digits - 1)
+        num_fmt = {2: 'b', 8: 'o', 10: 'd', 16: 'x'}
+        if base not in num_fmt:
+            raise ValueError('Invalid base value {}.Choices are: 2, 8, 10, 16'.format(base))
+        self._num_fmt = '{{0:0{0}{1}}}'.format(digits, num_fmt[base])
+        self._base = base
+        super().__init__(lower=0, upper=self._base ** digits - 1)
 
     def generate(self, num: int) -> List[str]:
         res = super().generate(num)
@@ -71,8 +76,7 @@ class StringSerialGenerator(SerialGenerator):
         super().remove(elements)
 
     def _parse_serial(self, element: str) -> int:
-        return int(element[-self._digits:])
+        return int(element[-self._digits:], self._base)
 
     def _convert(self, serial: int) -> str:
-        fmt = '{:0' + str(self._digits) + 'd}'
-        return self._prefix + fmt.format(serial)
+        return self._prefix + self._num_fmt.format(serial)
