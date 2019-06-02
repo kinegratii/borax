@@ -10,7 +10,7 @@ def generate_serials(upper: int, num: int = 1, lower: int = 0, serials: Iterable
 
     el = len(exist_set)
     if el + num > upper - lower:
-        raise ValueError('Can not generate {} serials in [(), {}].'.format(num, lower, upper))
+        raise ValueError('Can not generate {} serials in [{}, {}].'.format(num, lower, upper))
 
     if el == 0:
         gen = range(lower, upper)
@@ -56,7 +56,7 @@ class StringSerialGenerator(SerialGenerator):
     def __init__(self, prefix: str, digits: int = 2):
         self._prefix = prefix
         self._digits = digits
-        super().__init__(lower=0, upper=10 ** 2 - 1)
+        super().__init__(lower=0, upper=10 ** digits - 1)
 
     def generate(self, num: int) -> List[str]:
         res = super().generate(num)

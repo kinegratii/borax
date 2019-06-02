@@ -6,10 +6,34 @@
 
 ## 背景
 
+
 从整数范围分别生成若干个可用序列号。支持：
 
 - 数字或字符串格式
 - 多线程
+
+[场景示例] 在业务系统中，设备序列号是唯一的，由“GZ” + 4位数字组成，也就是可用范围为 GZ0000 - GZ9999。当每次添加设备使，函数 `generate_serials` 能够生成未被使用的序列号。
+
+比如某一时刻数据库设备数据如下：
+
+| ID | 序列号 |
+| ------ | ------ |
+| 1 | GZ0000 |
+| 2 | GZ0001 |
+| 45 | GZ0044 |
+| 46 | GZ0045 |
+
+接下去可用的三个序列号依次为 GZ0046、GZ0047、GZ0048 。
+
+使用代码如下：
+
+```python
+from borax.counters.serials import StringSerialGenerator
+
+ssg = StringSerialGenerator('GZ', digits=4)
+ssg.add(['GZ0000', 'GZ0001', 'GZ0044', 'GZ0045'])
+ssg.generate(3)
+```
 
 
 ## API

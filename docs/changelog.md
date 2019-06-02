@@ -1,5 +1,12 @@
 # 更新日志
 
+## v1.4.1 (20190602)
+
+- `borax.system` 模块
+  - 新增 `rotate_filename` 文件名转换函数
+- `counters.serials` 模块
+  - 修正 `generate_serials` 异常提示错误
+
 ## v1.4.0 (20190519)
 
 > 本版本调整了若干个模块组织结构。
