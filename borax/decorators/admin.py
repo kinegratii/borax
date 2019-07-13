@@ -1,7 +1,7 @@
 # coding=utf8
 import warnings
 
-__all__ = ['attr', 'action', 'display_field']
+__all__ = ['attr', 'admin_action', 'action', 'display_field']
 
 warnings.warn('This module is deprecated, use nickel.admin_utils.decorators instead.', DeprecationWarning)
 
@@ -15,9 +15,17 @@ def attr(**kwargs):
     return _inner
 
 
-def action(short_description=None, allowed_permissions=None, **kwargs):
-    return attr(short_description=short_description, allowed_permissions=allowed_permissions, **kwargs)
+def admin_action(short_description=None, allowed_permissions=None, **kwargs):
+    if allowed_permissions is not None:
+        kwargs.update({'allowed_permissions': allowed_permissions})
+    return attr(short_description=short_description, **kwargs)
+
+
+# Old name alias
+action = admin_action
 
 
 def display_field(short_description, admin_order_field=None, **kwargs):
-    return attr(short_description=short_description, admin_order_field=admin_order_field, **kwargs)
+    if admin_order_field is not None:
+        kwargs.update({'admin_order_field': admin_order_field})
+    return attr(short_description=short_description, **kwargs)
