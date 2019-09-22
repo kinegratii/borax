@@ -40,3 +40,15 @@ class StringSerialGeneratorTestCase(unittest.TestCase):
         ssg.add(['GCZ0004'])
         res = ssg.generate(2)
         self.assertListEqual(['GCZ0005', 'GCZ0006'], res)
+
+    def test_hex_serial(self):
+        ssg = StringSerialGenerator(prefix='ff', digits=2, base=16)
+        res = ssg.generate(2)
+        self.assertListEqual(['ff00', 'ff01'], res)
+        ssg.add(['ff0b'])
+        res = ssg.generate(1)
+        self.assertListEqual(['ff0c'], res)
+
+    def test_error_base(self):
+        with self.assertRaises(ValueError):
+            StringSerialGenerator(prefix='CC', digits=2, base=3)
