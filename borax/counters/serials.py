@@ -39,6 +39,9 @@ class SerialGenerator:
         self.__add_serials(result)
         return result
 
+    def generate_next_one(self) -> int:
+        return self.generate(1)[0]
+
     def __add_serials(self, serials: Iterable[int]) -> None:
         for serial in serials:
             self._data_set.add(serial)
@@ -66,6 +69,9 @@ class StringSerialGenerator(SerialGenerator):
     def generate(self, num: int) -> List[str]:
         res = super().generate(num)
         return list(map(self._convert, res))
+
+    def generate_next_one(self) -> str:
+        return self.generate(1)[0]
 
     def add(self, elements: List[str]) -> None:
         elements = map(self._parse_serial, elements)

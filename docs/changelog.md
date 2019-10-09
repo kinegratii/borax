@@ -5,6 +5,8 @@
 - 新增 windows/linux 换行符转换 `FileEndingUtils`
 - 移除 `borax.loader`
 - 移除 `borax.decorators.admin`
+- `borax.counters.serials`
+  - 新增 `SerialGenerator.generate_next_one` 方法
 
 ## v1.4.2 (20190717)
 
