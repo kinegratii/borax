@@ -5,9 +5,10 @@
 - 新增 windows/linux 换行符转换 `FileEndingUtils`
 - 移除 `borax.loader`
 - 移除 `borax.decorators.admin`
-- `borax.counters.serials`
+- `borax.counters.serials` 模块
   - 新增 `SerialGenerator.generate_next_one` 方法
-
+- `borax.finance` 模块
+  - `financial_amount_capital` 新增上下限检查
 ## v1.4.2 (20190717)
 
 - `counters.serials` 模块
