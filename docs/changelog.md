@@ -5,6 +5,8 @@
 - 新增 windows/linux 换行符转换 `FileEndingUtils`
 - 移除 `borax.loader`
 - 移除 `borax.decorators.admin`
+- `borax.structures` 模块
+  - 移除 `TableLookup.data_dict`  方法
 - `borax.counters.serials` 模块
   - 新增 `SerialGenerator.generate_next_one` 方法
 - `borax.finance` 模块

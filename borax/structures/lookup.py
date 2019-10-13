@@ -26,10 +26,6 @@ class TableLookup:
     def find(self, key, default=None):
         return self._dataset.get(key, default)
 
-    def data_dict(self, field):
-        warnings.warn("'data_dict' method is deprecated, use 'select_as_dict' instead.", DeprecationWarning)
-        return self.select_as_dict(field)
-
     def select_as_dict(self, field):
         return {k: getattr(v, field) for k, v in self._dataset.items()}
 
