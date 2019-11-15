@@ -54,6 +54,7 @@ class FieldChoiceTestCase(unittest.TestCase):
         self.assertEqual('f', Demo1Field.get_value_display(8))
         self.assertEqual('G', Demo1Field.get_value_display(10))
 
+
 class FieldChoicesNewAttrTestCase(unittest.TestCase):
     def test_text(self):
         self.assertListEqual(

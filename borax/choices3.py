@@ -47,6 +47,8 @@ class BChoicesMeta(type):
             elif isinstance(v, (int, float, str, bytes)):
                 fields[k] = BItem(v, k.lower())
 
+        # FIXME unordered dict for python3.5
+
         fields = OrderedDict(sorted(fields.items(), key=lambda x: x[1].order))
         for field_name, item in fields.items():
             attrs[field_name] = item

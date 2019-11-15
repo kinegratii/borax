@@ -1,7 +1,6 @@
 # coding=utf8
 
 import collections
-import warnings
 
 
 class TableLookup:
