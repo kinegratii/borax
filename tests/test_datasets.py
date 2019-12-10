@@ -3,10 +3,10 @@
 
 import unittest
 
-from borax.datasets import join_one
+from borax.join_ import join_one
 
 
-class shortcutMethodTestCase(unittest.TestCase):
+class ShortcutMethodTestCase(unittest.TestCase):
     def test_join_one(self):
         data_list = [
             {"id": 1, "name": ""},
