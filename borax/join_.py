@@ -1,7 +1,7 @@
 # coding=utf8
 
 
-def join_one(data_list, values, from_, as_):
+def join_one(data_list, values, from_, as_, default=None):
     if isinstance(values, (list, tuple)):
         values = dict(values)
     if not isinstance(values, dict):
@@ -11,7 +11,9 @@ def join_one(data_list, values, from_, as_):
             val = item[from_]
             if val in values:
                 ref_val = values[val]
-                item[as_] = ref_val
+            else:
+                ref_val = default
+            item[as_] = ref_val
     return data_list
 
 
