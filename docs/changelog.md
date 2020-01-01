@@ -1,6 +1,11 @@
 # 更新日志
 
-## v3.0.0 （20191115）
+## v3.1.0
+
+- 新增 `borax.join_` 模块
+- `join_one`、`join` 新增 default 参数
+
+## v3.0.0 (20191125)
 
 - `borax.strings` 模块
   -  新增 windows/linux 换行符转换 `FileEndingUtils`

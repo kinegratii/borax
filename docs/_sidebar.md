@@ -2,15 +2,17 @@
   - [快速开始](quickstart)
 - **Borax.Calendar**
   - [农历](guides/lunardate)
-  - [节日<sup style="color:red">(新)<sup>](guides/festival)
-  - [生日<sup style="color:red">(新)<sup>](guides/birthday)
+  - [节日](guides/festival)
+  - [生日](guides/birthday)
 - **Borax.Pattern**
   - [单例模式](guides/singleton)
   - [选项Choices](guides/choices)
+- **Borax.Datasets**
+  - [数据连接(Join)<sup style="color:red">(新)<sup>](guides/join)
 - **文档**
   - [字典](guides/alias_dictionary)
   - [树形结构](guides/tree)
-  - [序列号生成器<sup style="color:red">(新)<sup>](guides/serial_generator)
+  - [序列号生成器](guides/serial_generator)
   - [百分比](guides/percentage)
   - [数据拾取](guides/fetch)
   - [Django-Admin装饰器](guides/admin_decorators)

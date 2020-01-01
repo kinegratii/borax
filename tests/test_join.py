@@ -3,7 +3,7 @@
 import copy
 import unittest
 
-from borax.join_ import join_one
+from borax.join_ import join_one, join
 
 catalogs_dict = {
     1: 'Python',
@@ -52,3 +52,11 @@ class JoinOneTestCase(unittest.TestCase):
         catalog_books = join_one(book_data, cur_catalogs_dict, from_='catalog', as_='catalog_name', default='[未知分类]')
         self.assertTrue(all(['catalog_name' in book for book in catalog_books]))
         self.assertEqual('[未知分类]', catalog_books[2]['catalog_name'])
+
+
+class JoinTestCase(unittest.TestCase):
+    def test_as_kwargs(self):
+        book_data = copy.deepcopy(books)
+        catalog_books = join(book_data, catalogs_list, from_='catalog', to_='id', as_kwargs={'name': 'catalog_name'})
+        self.assertTrue(all(['catalog_name' in book for book in catalog_books]))
+        self.assertEqual('Java', catalog_books[1]['catalog_name'])

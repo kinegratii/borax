@@ -104,3 +104,5 @@ ENV/
 
 node_modules
 *.code-workspace
+
+demo.py
