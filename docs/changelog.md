@@ -1,9 +1,10 @@
 # 更新日志
 
-## v3.1.0
+## v3.0.1
 
 - 新增 `borax.join_` 模块
-- `join_one`、`join` 新增 default 参数
+- `join_one` 新增 default 参数
+- 修正农历闰月转平月错误的BUG
 
 ## v3.0.0 (20191125)
 
