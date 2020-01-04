@@ -1,7 +1,7 @@
 # coding=utf8
 
 
-from borax.join_ import join_one, join
+from borax.datasets.join_ import join_one, join
 
 
 class DictDataset:

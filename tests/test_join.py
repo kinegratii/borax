@@ -3,7 +3,7 @@
 import copy
 import unittest
 
-from borax.join_ import join_one, join
+from borax.datasets.join_ import join_one, join
 
 catalogs_dict = {
     1: 'Python',

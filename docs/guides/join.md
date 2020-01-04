@@ -1,6 +1,6 @@
 # join 模块
 
-> 模块 `borax.join_`
+> 模块 `borax.datasets.join_`
 
 本模块实现了类似于数据库的 JOIN 数据列表操作，从另一个数据集获取某一个或几个列的值。
 

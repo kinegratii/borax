@@ -1,10 +1,12 @@
 # 更新日志
 
-## v3.0.1
+## v3.1.0
 
-- 新增 `borax.join_` 模块
-- `join_one` 新增 default 参数
-- 修正农历闰月转平月错误的BUG
+- `datasets` 包
+  - 新增 `borax.datasets。join_` 模块
+  - `join_one` 新增 default 参数
+- `calendars.lunardate` 模块
+  - 修正农历闰月转平月错误的BUG ([#11](https://github.com/kinegratii/borax/issues/11))
 
 ## v3.0.0 (20191125)
 
