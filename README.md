@@ -10,7 +10,7 @@
 
 ## 概述 & 安装
 
-Borax 是一个的 Python3 开发工具集合库,涉及到：
+Borax 是一个 Python3 开发工具集合库,涉及到：
 
  - 设计模式
  - 数据结构及其实现
@@ -111,7 +111,7 @@ print(names) # ['Alice', 'Bob', 'Charlie']
 
 - [x] [Typing Hints](https://www.python.org/dev/peps/pep-0484/)
 - [x] [Flake8 Code Style](http://flake8.pycqa.org/en/latest/)
-- [x] [nose](https://pypi.org/project/nose/)
+- [x] [nose2](https://pypi.org/project/nose2/)
 - [x] [Travis CI](https://travis-ci.org)
 - [x] [Docsify](https://docsify.js.org)
 

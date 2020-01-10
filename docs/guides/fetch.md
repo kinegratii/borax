@@ -1,10 +1,12 @@
 # Fetch 模块
 
-> 模块：`borax.fetch`
+> 模块：`borax.datasets.fetch` 
+
+> 引用路径：`borax.fetch`
 
 ## 函数接口
 
-`borax.fetch` 模块实现了从数据列表按照指定的一个或多个属性/键选取数据。
+`borax.datasets.fetch` 模块实现了从数据列表按照指定的一个或多个属性/键选取数据。
 
 `fetch` 模块包含了以下几个函数：
 
@@ -31,7 +33,7 @@
 从 `objects` 数据获取 `name` 的数据。
 
 ```python
-from borax.fetch import fetch
+from borax.datasets.fetch import fetch
 
 objects = [
     {'id': 282, 'name': 'Alice', 'age': 30},
@@ -54,7 +56,7 @@ print(names)
 从 `objects` 数据获取 `name` 和 `age` 的数据。
 
 ```python
-from borax.fetch import fetch
+from borax.datasets.fetch import fetch
 
 objects = [
     {'id': 282, 'name': 'Alice', 'age': 30},
@@ -79,7 +81,7 @@ print(ages)
 当 `iterable` 数据列表缺少某个属性/键，可以通过指定 `default` 或 `defaults` 参数提供默认值。
 
 ```python
-from borax.fetch import fetch
+from borax.datasets.fetch import fetch
 
 objects = [
     {'id': 282, 'name': 'Alice', 'age': 30, 'gender': 'female'},
@@ -113,7 +115,7 @@ Demo for multiple default values
 除了上述的键值访问方式，`fetch` 函数还内置属性访问的获取方式。
 
 ```python
-from borax.fetch import fetch
+from borax.datasets.fetch import fetch
 
 class Point:
     def __init__(self, x, y, z):
@@ -163,7 +165,7 @@ getter 需满足下列的几个条件：
 例子：
 
 ```python
-from borax.fetch import fetch
+from borax.datasets.fetch import fetch
 
 
 class Point:

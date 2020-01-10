@@ -131,7 +131,7 @@ See [online document](https://kinegratii.github.io/borax) for more detail, which
 
 - [x] [Typing Hints](https://www.python.org/dev/peps/pep-0484/)
 - [x] [Flake8 Code Style](http://flake8.pycqa.org/en/latest/)
-- [x] [nose](https://pypi.org/project/nose/)
+- [x] [nose2](https://pypi.org/project/nose2/)
 - [x] [Travis CI](https://travis-ci.org)
 - [x] [Docsify](https://docsify.js.org)
 
