@@ -2,11 +2,16 @@
 
 ## v3.1.0
 
+> 新增 Python3.8构建
+
 - `datasets` 包
-  - 新增 `borax.datasets。join_` 模块
+  - 新增 `borax.datasets.fetch`
+  - 新增 `borax.datasets.join_` 模块
   - `join_one` 新增 default 参数
 - `calendars.lunardate` 模块
   - 修正农历闰月转平月错误的BUG ([#11](https://github.com/kinegratii/borax/issues/11))
+- `borax.fetch` 模块
+  - 本模块被标记为 PendingDeprecationWarning ，将在V3.3移除
 
 ## v3.0.0 (20191125)
 
@@ -20,7 +25,6 @@
   - `financial_amount_capital` 新增上下限检查
 - 移除 `borax.loader`
 - 移除 `borax.decorators.admin`
-- 新增 Python3.8构建支持
 
 ## v1.4.2 (20190717)
 

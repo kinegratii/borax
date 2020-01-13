@@ -15,7 +15,6 @@
   - [序列号生成器](guides/serial_generator)
   - [百分比](guides/percentage)
   - [数据拾取](guides/fetch)
-  - [Django-Admin装饰器](guides/admin_decorators)
   - [bjson](guides/bjson)
   - [cjson](guides/cjson)
   - [财务工具](guides/finance)
