@@ -149,7 +149,12 @@ class LunarSchema(DateSchema):
     def match(self, date_obj):
         date_obj = self._normalize(date_obj)
         if self._ignore_leap and date_obj.leap == 1:
-            date_obj = date_obj.replace(leap=0)
+            try:
+                date_obj = date_obj.replace(leap=0)
+            except ValueError:
+                if date_obj.day == 30:  # leap month has 30 days and normal one has 29 days
+                    return False
+                raise
         return super().match(date_obj)
 
     def _resolve(self, year):
