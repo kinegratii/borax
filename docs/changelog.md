@@ -6,6 +6,8 @@
 - `borax.structures.percentage` 模块
   - 新增 `format_percentage` 函数
   - 当 total 为 0 ，显示为 `'-'` ，而不是 `'0.00%'`
+- `borax.fetch` 模块
+  - 本模块被标记为 DeprecationWarning ，将在V3.3移除
 
 ## v3.1.0 (20200118)
 
