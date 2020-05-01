@@ -1,6 +1,13 @@
 # 更新日志
 
-## v3.1.0
+## v3.2.0
+
+- 新增 `borax.calendars.utils` 模块
+- `borax.structures.percentage` 模块
+  - 新增 `format_percentage` 函数
+  - 当 total 为 0 ，显示为 `'-'` ，而不是 `'0.00%'`
+
+## v3.1.0 (20200118)
 
 > 新增 Python3.8构建
 
