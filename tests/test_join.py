@@ -3,13 +3,14 @@
 import copy
 import unittest
 
-from borax.datasets.join_ import join_one, join
+from borax.datasets.join_ import join_one, old_join_one, join
 
 catalogs_dict = {
     1: 'Python',
     2: 'Java',
     3: '软件工程'
 }
+catalog_choices = [(1, 'Python'), (2, 'Java'), (3, '软件工程')]
 catalogs_list = [
     {'id': 1, 'name': 'Python'},
     {'id': 2, 'name': 'Java'},
@@ -25,9 +26,23 @@ books = [
 
 
 class JoinOneTestCase(unittest.TestCase):
-    def test_join_one(self):
+    def test_with_dict(self):
         book_data = copy.deepcopy(books)
-        catalog_books = join_one(book_data, catalogs_dict, from_='catalog', as_='catalog_name')
+        catalog_books = old_join_one(book_data, catalogs_dict, from_='catalog', as_='catalog_name')
+        self.assertTrue(all(['catalog_name' in book for book in catalog_books]))
+        self.assertEqual('Java', catalog_books[1]['catalog_name'])
+
+        catalog_books = join_one(book_data, catalogs_dict, on='catalog', select_as='catalog_name')
+        self.assertTrue(all(['catalog_name' in book for book in catalog_books]))
+        self.assertEqual('Java', catalog_books[1]['catalog_name'])
+
+    def test_with_choices(self):
+        book_data = copy.deepcopy(books)
+        catalog_books = old_join_one(book_data, catalog_choices, from_='catalog', as_='catalog_name')
+        self.assertTrue(all(['catalog_name' in book for book in catalog_books]))
+        self.assertEqual('Java', catalog_books[1]['catalog_name'])
+
+        catalog_books = join_one(book_data, catalog_choices, on='catalog', select_as='catalog_name')
         self.assertTrue(all(['catalog_name' in book for book in catalog_books]))
         self.assertEqual('Java', catalog_books[1]['catalog_name'])
 
@@ -38,7 +53,11 @@ class JoinOneTestCase(unittest.TestCase):
             2: 'Java'
         }
 
-        catalog_books = join_one(book_data, cur_catalogs_dict, from_='catalog', as_='catalog_name')
+        catalog_books = join_one(book_data, cur_catalogs_dict, on='catalog', select_as='catalog_name')
+        self.assertTrue(all(['catalog_name' in book for book in catalog_books]))
+        self.assertEqual(None, catalog_books[2]['catalog_name'])
+
+        catalog_books = old_join_one(book_data, cur_catalogs_dict, from_='catalog', as_='catalog_name')
         self.assertTrue(all(['catalog_name' in book for book in catalog_books]))
         self.assertEqual(None, catalog_books[2]['catalog_name'])
 
@@ -48,8 +67,13 @@ class JoinOneTestCase(unittest.TestCase):
             1: 'Python',
             2: 'Java'
         }
+        catalog_books = join_one(book_data, cur_catalogs_dict, on='catalog', select_as='catalog_name',
+                                 default='[未知分类]')
+        self.assertTrue(all(['catalog_name' in book for book in catalog_books]))
+        self.assertEqual('[未知分类]', catalog_books[2]['catalog_name'])
 
-        catalog_books = join_one(book_data, cur_catalogs_dict, from_='catalog', as_='catalog_name', default='[未知分类]')
+        catalog_books = old_join_one(book_data, cur_catalogs_dict, from_='catalog', as_='catalog_name',
+                                     default='[未知分类]')
         self.assertTrue(all(['catalog_name' in book for book in catalog_books]))
         self.assertEqual('[未知分类]', catalog_books[2]['catalog_name'])
 

@@ -1,7 +1,30 @@
 # coding=utf8
 
+import operator
 
-def join_one(data_list, values, from_, as_, default=None):
+
+def join_one(ldata, rdata, on, select_as, default=None):
+    if isinstance(rdata, (list, tuple)):
+        rdata = dict(rdata)
+    if not isinstance(rdata, dict):
+        raise TypeError("Unsupported Type for values param.")
+
+    if isinstance(on, str):
+        lic = operator.itemgetter(on)
+    elif callable(on):
+        lic = on
+    else:
+        raise TypeError('str or callable only supported for on param. ')
+
+    for litem in ldata:
+        if not (isinstance(on, str) and on not in litem):
+            lv = lic(litem)
+            rvv = rdata.get(lv, default)
+            litem[select_as] = rvv
+    return ldata
+
+
+def old_join_one(data_list, values, from_, as_, default=None):
     if isinstance(values, (list, tuple)):
         values = dict(values)
     if not isinstance(values, dict):
