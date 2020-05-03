@@ -39,7 +39,7 @@ def _sf(val):
             return tuple(val[0:3])
 
 
-def _parse_on(val):
+def _of(val):
     if isinstance(val, str):
         return (val, val),
     if isinstance(val, (list, tuple)):
@@ -54,7 +54,7 @@ def _parse_on(val):
 
 def join(ldata, rdata, on, select_as):
     if isinstance(on, (list, tuple, str)):
-        lfields, rfields = zip(*_parse_on(on))
+        lfields, rfields = zip(*_of(on))
         on_callback = lambda _li, _ri: operator.itemgetter(*lfields)(_li) == operator.itemgetter(*rfields)(_ri)
     elif callable(on):
         on_callback = on

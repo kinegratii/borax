@@ -28,9 +28,11 @@ from borax.datasets.join_ import old_join as join, old_join_one as join_one
 
 ## 概述
 
-本模块实现了类似于数据库的 JOIN 数据列表操作，从另一个数据集获取某一个或几个列的值。
+本模块实现了类似于数据库的 LEFT JOIN 数据列表操作，从另一个数据集获取某一个或几个列的值，加到当前数据集中。
 
-> 本模块的 *join_* 函数将会修改传入的列表数据，如需不影响原有数据，可以提前复制一份数据。
+> **关于LEFT JOIN** ：LEFT JOIN返回左表的全部行和右表满足ON条件的行，如果左表的行在右表中没有匹配，那么这一行右表中对应数据用NULL代替。
+
+本模块的 *join_* 函数将会修改传入的列表数据，如需不影响原有数据，可以提前复制一份数据。
 
 本模块示例所用的数据描述如下：
 
@@ -108,7 +110,7 @@ join_one(books, catalog_dict, on='catalog', select_as='catalog_name')
 
 ### join
 
-*`join(ldata, rdata, on, select_as, defaults=None)`*
+*`join(ldata, rdata, on, select_as)`*
 
 实现左、右数据集的连接。
 
@@ -117,12 +119,12 @@ join_one(books, catalog_dict, on='catalog', select_as='catalog_name')
 | ldata     | List[Dict]                                | 左边数据集                       |
 | rdata     | List[Dict]                                | 右边数据集                       |
 | on        | str / Tuple[Union[str, tuple]] / Callable | 使用左边的连接字段，支持回调函数 |
-| select_as | str                                       | 右边数据在结果的字段名称         |
-| default   | Any                                       | 右边数据集找不到时的默认值       |
+| select_as | str / List[Tuple]                         | 右边数据在结果的字段名称         |
 
 备注：
 
-- 当`on` 参数为函数时，定义如下 ，返回是否匹配。
+- 和 `join` 相比，没有显示的 defaults 参数，默认值可以在 `select_as` 参数中配置。
+- 当`on` 参数为回调函数时，定义如下 ，返回是否匹配。
 
 ```python
 def on_callback(litem:dict, ritem:dict) -> bool:
@@ -158,9 +160,23 @@ on = ('x',)
 on = (('x', 'x'),)
 ```
 
+- `select_as` 采用配置型参数，标准格式为：
 
+```python
+(
+    (<right_key>, <left_key>, <default_value>),
+    (<right_key>, <left_key>, # 省略默认值
+    (<right_key>,),
+     <right_key>,
+    ...
+)
+```
 
+元组元素的三个值分别表示右边数据字段名称、左边数据字段名称、默认值。和 `on` 参数类似，也可以依次省略后面两个内容。
 
+如果只选择一个字段，也可以省略外层的元组符号，直接使用字符串即可。
+
+## 旧版API
 
 
 ### old_join_one
