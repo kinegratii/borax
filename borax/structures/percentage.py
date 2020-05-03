@@ -38,10 +38,12 @@ class Percentage:
 
     @property
     def percent_display(self) -> str:
+        """percent format string like '12.34%' """
         return format_percentage(self.completed, self.total, places=self._places, null_val=self._null_val)
 
     @property
     def display(self) -> str:
+        """return a fractor like '34 / 100'"""
         return self._display_fmt.format(completed=self.completed, total=self.total)
 
     def as_dict(self, prefix='') -> dict:

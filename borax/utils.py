@@ -90,3 +90,12 @@ def flatten(iterable):
             yield from flatten(el)
         else:
             yield el
+
+
+def force_list(val, sep=','):
+    if isinstance(val, (list, set, tuple)):
+        return val
+    elif isinstance(val, str):
+        return val.split(sep)
+    else:
+        return val,
