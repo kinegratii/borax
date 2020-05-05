@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "borax"
-version = "3.0.1"
+version = "3.2.0"
 description = "A util collections for Python3."
 readme = "long_description.rst"
 authors = ["kinegratii <kinegratii@gmail.com>"]

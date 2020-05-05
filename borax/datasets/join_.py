@@ -30,10 +30,10 @@ def _sf(val):
     if isinstance(val, str):
         return val, val, None
     elif isinstance(val, (list, tuple)):
-        l = len(val)
-        if l == 1:
+        le = len(val)
+        if le == 1:
             return val[0], val[0], None
-        elif l == 2:
+        elif le == 2:
             return val[0], val[1], None
         else:
             return tuple(val[0:3])
@@ -55,7 +55,9 @@ def _of(val):
 def join(ldata, rdata, on, select_as):
     if isinstance(on, (list, tuple, str)):
         lfields, rfields = zip(*_of(on))
-        on_callback = lambda _li, _ri: operator.itemgetter(*lfields)(_li) == operator.itemgetter(*rfields)(_ri)
+
+        def on_callback(_li, _ri):
+            return operator.itemgetter(*lfields)(_li) == operator.itemgetter(*rfields)(_ri)
     elif callable(on):
         on_callback = on
     else:

@@ -14,5 +14,5 @@ class LastDayTestCase(unittest.TestCase):
         self.assertEqual(date(2020, 2, 29), get_last_day_of_this_month(2020, 2))
 
     def test_fist_day_of_week(self):
-        self.assertEqual(date(2020, 2, 24), get_fist_day_of_year_week(2020, 9))
+        self.assertEqual(date(2020, 2, 24), get_fist_day_of_year_week(2020, 8))
         self.assertEqual(date(2020, 1, 6), get_fist_day_of_year_week(2020, 1))

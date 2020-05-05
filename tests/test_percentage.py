@@ -35,7 +35,7 @@ class PercentTestCase(unittest.TestCase):
             'total': 0,
             'completed': 34,
             'percent': 0,
-            'percent_display': '0.00%',
+            'percent_display': '-',
             'display': '34 / 0'
         }, p.as_dict())
 
