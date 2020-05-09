@@ -2,6 +2,8 @@
 
 import operator
 
+__all__ = ['join_one', 'join', 'old_join_one', 'old_join']
+
 
 def join_one(ldata, rdata, on, select_as, default=None):
     if isinstance(rdata, (list, tuple)):
@@ -24,37 +26,54 @@ def join_one(ldata, rdata, on, select_as, default=None):
     return ldata
 
 
-def _sf(val):
-    """Build a SelectField from val
-    """
-    if isinstance(val, str):
-        return val, val, None
-    elif isinstance(val, (list, tuple)):
-        le = len(val)
-        if le == 1:
-            return val[0], val[0], None
-        elif le == 2:
-            return val[0], val[1], None
+CLAUSE_SINGLE_TYPES = (str, tuple)
+
+
+class OnClause(tuple):
+    def __new__(self, lkey, rkey=None):
+        rkey = rkey or lkey
+        return tuple.__new__(OnClause, (lkey, rkey))
+
+    @classmethod
+    def from_val(cls, val):
+        cm = val.__class__.__name__
+        if cm == "OnClause":
+            return val
+        elif cm == "str":
+            return cls(val, val)
+        elif cm == "tuple":
+            return cls(*val[:2])
         else:
-            return tuple(val[0:3])
+            raise TypeError("Cannot build OnClause from a {} object.".format(cm))
 
 
-def _of(val):
-    if isinstance(val, str):
-        return (val, val),
-    if isinstance(val, (list, tuple)):
-        def _ep(_v):
-            if isinstance(_v, str):
-                return _v, _v
-            else:
-                return _v
+class SelectClause(tuple):
+    def __new__(self, rkey, lkey=None, default=None):
+        lkey = lkey or rkey
+        return tuple().__new__(SelectClause, (rkey, lkey, default))
 
-        return tuple(map(_ep, val))
+    @classmethod
+    def from_val(cls, val):
+        cm = val.__class__.__name__
+        if cm == "SelectClause":
+            return val
+        elif cm == "str":
+            return cls(val, val, None)
+        elif cm == "tuple":
+            return cls(*val[:3])
+        else:
+            raise TypeError("Cannot build SelectClause from a {} object.".format(cm))
+
+
+OC = OnClause
+SC = SelectClause
 
 
 def join(ldata, rdata, on, select_as):
-    if isinstance(on, (list, tuple, str)):
-        lfields, rfields = zip(*_of(on))
+    if isinstance(on, CLAUSE_SINGLE_TYPES):
+        on = [on]
+    if isinstance(on, list):
+        lfields, rfields = zip(*list(map(OnClause.from_val, on)))
 
         def on_callback(_li, _ri):
             return operator.itemgetter(*lfields)(_li) == operator.itemgetter(*rfields)(_ri)
@@ -63,9 +82,9 @@ def join(ldata, rdata, on, select_as):
     else:
         raise TypeError('str or callable only supported for on param. ')
 
-    if isinstance(select_as, str):
-        select_as = select_as,
-    sf_list = list(map(_sf, select_as))
+    if isinstance(select_as, CLAUSE_SINGLE_TYPES):
+        select_as = [select_as]
+    sf_list = list(map(SelectClause.from_val, select_as))
 
     def _pick_data(_item, _sfs):
         result = {}
