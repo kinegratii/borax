@@ -6,7 +6,7 @@
 
 ## 重要说明
 
-从V3.2.0开始，我们重写 `join` 和 `join_one` ，原有的函数分别重命名为 `old_join` 和 `old_join_one` ，主要变化：
+从V3.2.0开始，我们重写 `join` 和 `join_one` ，原有的函数分别重命名为 `old_join` 和 `old_join_one` ，主要变化如下：
 
 - 使用符合SQL的参数命名，比如 on、select_as 等。
 - 原有比较分散的参数进行合并。
@@ -32,7 +32,7 @@ from borax.datasets.join_ import old_join as join, old_join_one as join_one
 
 > **关于LEFT JOIN** ：LEFT JOIN返回左表的全部行和右表满足ON条件的行，如果左表的行在右表中没有匹配，那么这一行右表中对应数据用NULL代替。
 
-本模块的 *join_* 函数将会修改传入的列表数据，如需不影响原有数据，可以提前复制一份数据。
+本模块的 join_ 函数将会修改传入的列表join_数据，如需不影响原有数据，可以提前复制一份数据。
 
 本模块示例所用的数据描述如下：
 
@@ -67,6 +67,33 @@ catalogs_list = [
     {'id': 3, 'name': '软件工程'},
 ]
 ```
+
+## 配置类
+
+`join_` 模块定义了两个配置类，分别用于定义 `join` 函数的 `on` 和 `select_as` 参数。
+
+- `OC` 是 `OnClause` 的类别名，`SC` 是 `SelectClause` 的类别名。
+- OnClause和SelectClause均继承自 tuple 。
+- `from_val` 类方法可以将一个标准类型（包括 str、tuple，不支持list）的对象转化成对应的 Clause 类。
+
+### OnClause/OC
+
+*`OnClause(lkey, rkey=None)`*
+
+表示 on 表达式的条件，一个 `OnClause` 表示一个等值条件。
+
+- lkey：条件的左值字段。
+- rkey：条件的右值字段。
+
+### SelectClause/SC
+
+*`SelectClause(rkey, lkey=None, default=None)`*
+
+表示 select表达式的字段定义，一个 `SelectClause` 表示一个字段。
+
+- rkey：右边数据的字段。
+- lkey：加入左边数据的命名的命名字段，如果不提供，默认和 rkey一致。
+- default：在右边数据找不到时使用该默认值。
 
 ## API
 
@@ -114,67 +141,87 @@ join_one(books, catalog_dict, on='catalog', select_as='catalog_name')
 
 实现左、右数据集的连接。
 
-| 参数      | 类型                                      | 说明                             |
-| --------- | ----------------------------------------- | -------------------------------- |
-| ldata     | List[Dict]                                | 左边数据集                       |
-| rdata     | List[Dict]                                | 右边数据集                       |
-| on        | str / Tuple[Union[str, tuple]] / Callable | 使用左边的连接字段，支持回调函数 |
-| select_as | str / List[Tuple]                         | 右边数据在结果的字段名称         |
+| 参数      | 类型                      | 说明                             |
+| --------- | ------------------------- | -------------------------------- |
+| ldata     | List[Dict]                | 左边数据集                       |
+| rdata     | List[Dict]                | 右边数据集                       |
+| on        | List[OnClause] / callback | 使用左边的连接字段，支持回调函数 |
+| select_as | str / List[SelectClause]  | 右边数据在结果的字段名称         |
 
 备注：
 
-- 和 `join` 相比，没有显示的 defaults 参数，默认值可以在 `select_as` 参数中配置。
-- 当`on` 参数为回调函数时，定义如下 ，返回是否匹配。
+- 和 `join` 相比，没有显式的 defaults 参数，默认值可以在 `select_as` 参数中配置。
+
+#### on参数
+
+on支持以下几种参数方式：
+
+- 回调函数。定义如下 ，返回是否匹配。
 
 ```python
 def on_callback(litem:dict, ritem:dict) -> bool:
     pass
 ```
 
-- 当 `on` 为字段配置时，其类型为 `Tuple[Union[str, Tuple]]`。 该定义了一个元组，元组的每个元素又是由2个字符串组成的元组。通用格式如下：
+注意：如果在右边数据有多条记录匹配时，只会使用第一次成功匹配的记录。
+
+- 标准配置：当 `on` 为字段配置时，其类型为 `List[OnClause]`。 该定义了一个由若干个 OnClause 对象组成的列表。注意这里的列表（list）不能使用元组（tuple）代替。通用格式如下：
 
 ```python
-  (
-      (<left_item.key1>, <right_item.key1>),
-      (<left_item.key2>, <right_item.key2>),
+  [
+     OnClause('lkey1', 'rkey1'),
+     OnClause('lkey2', 'rkey2'),
       # ...
-  )
+  ]
 ```
 
-  表示 `left_item.key1=right.item.key1&left_item.key2=right.item.key2`。
+  表示 `left_item.lkey1=right_item.rkey1&left_item.lkey2=right_item.rkey2`。
 
-当某一个条件左右两边的key相同时，内部的元组可以省略为一个字符串。
+- 简易配置。当含有以下条件时，可以不显式定义 `OnClause` 对象，由程序自动转化为对应的 `OnClause`对象，。
 
-```python
-# 以下两种方式是相同的。
-on = (('x', 'x'), ('y', 'y'))
+   (1) 当某一个等值条件左右两边的key相同。
 
-on = ('x', 'y')
-```
-
-当只有一个条件时，还可以继续省略外层的元组，只定义一个字符串即可。以下三种是等效的。
+   (2) 只有一个等值条件，可以省略外面的 `[]` 列表符号。
 
 ```python
+# 以下三种方式是相同的。
+on = [('x', 'x'), ('y', 'y')]
+on = ['x', 'y']
+on = [OnClause('x', 'x'), OnClause('y', 'y')]
+
+# 以下三种方式是等效的。
 on = 'x'
-on = ('x',)
-on = (('x', 'x'),)
+on = OnClause('x', 'x')
+on = [OnClause('x', 'x')]
 ```
 
-- `select_as` 采用配置型参数，标准格式为：
+下列的三种方式也是等效的，注意和上面 `on = ['x', 'y']` 的区别。
 
 ```python
-(
-    (<right_key>, <left_key>, <default_value>),
-    (<right_key>, <left_key>, # 省略默认值
-    (<right_key>,),
-     <right_key>,
-    ...
-)
+on = （'x', 'y'）
+on = OnClause('x', 'y')
+on = [OnClause('x', 'y')]
+```
+
+#### select_as参数
+
+- 标准配置：其类型为 `List[SelectClause]`。 该定义了一个由若干个 SelectClause 对象组成的列表。注意这里的列表（list）不能使用元组（tuple）代替。通用格式如下：
+
+```python
+[
+    SelectClause(<right_key>, <left_key>, <default_value>),
+    SelectClause(<right_key>, <left_key>, # 省略默认值
+    SelectClause <right_key>,),
+ ]
 ```
 
 元组元素的三个值分别表示右边数据字段名称、左边数据字段名称、默认值。和 `on` 参数类似，也可以依次省略后面两个内容。
 
-如果只选择一个字段，也可以省略外层的元组符号，直接使用字符串即可。
+- 简易配置。当含有以下条件时，可以不显式定义 `SelectClause` 对象，由程序自动转化为对应的 `SelectClause`对象。
+
+ (1) 当某一个选择条件lkey和default使用默认值时。
+
+ (2) 只有一个选择条件，可以省略外面的 `[]` 列表符号。
 
 ## 旧版API
 
