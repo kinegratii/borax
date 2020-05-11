@@ -1,6 +1,21 @@
 # 更新日志
 
-## v3.1.0
+## v3.2.0 (20200510)
+
+> 本版本重写 `borax.datasets.join_` 模块，接口引入重大变更，详情查看 [join模块](guides/join) 。
+
+- `borax.datasets.join_`模块
+  - 重写 `join` 和 `join_one` 函数，原有的重命名为 `old_join` 和 `old_join_one`
+  - 原有的 `old_*` 将在V4.0版本移除。
+- 新增 `borax.calendars.utils` 模块
+- `borax.structures.percentage` 模块
+  - 新增 `format_percentage` 函数
+  - 类 `Percentage` 新增 `fraction_display` 属性
+  - 当 total 为 0 ，显示为 `'-'` ，而不是 `'0.00%'`
+- `borax.fetch` 模块
+  - 本模块被标记为 DeprecationWarning ，将在V3.3移除
+
+## v3.1.0 (20200118)
 
 > 新增 Python3.8构建
 

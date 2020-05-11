@@ -29,13 +29,13 @@ class PercentTestCase(unittest.TestCase):
         self.assertEqual(0, p.total)
         self.assertEqual(34, p.completed)
         self.assertAlmostEqual(0, p.percent)
-        self.assertEqual('0.00%', p.percent_display)
+        self.assertEqual('-', p.percent_display)
         self.assertEqual('34 / 0', p.display)
         self.assertDictEqual({
             'total': 0,
             'completed': 34,
             'percent': 0,
-            'percent_display': '0.00%',
+            'percent_display': '-',
             'display': '34 / 0'
         }, p.as_dict())
 

@@ -1,19 +1,27 @@
 # coding=utf8
 
 
+def format_percentage(numerator: int, denominator: int, *, places: int = 2, null_val: str = '-') -> str:
+    if denominator == 0:
+        return null_val
+    percent_fmt = '{0:. f}%'.replace(' ', str(places))
+    val = round(numerator / denominator, places + 2)
+    return percent_fmt.format(val * 100)
+
+
 class Percentage:
     """
     Percentage(completed=0, total=100, places=2,)
     """
 
     def __init__(self, *, total: int = 100, completed: int = 0, places: int = 2,
-                 display_fmt: str = '{completed} / {total}'):
+                 display_fmt: str = '{completed} / {total}', null_val: str = '-'):
         self.total = total
         self.completed = completed
         self._display_fmt = display_fmt
         self._places = places
         # string.format will fails here
-        self._percent_fmt = '{0:. f}%'.replace(' ', str(self._places))
+        self._null_val = null_val
 
     def increase(self, value: int = 1) -> None:
         self.completed += value
@@ -30,11 +38,18 @@ class Percentage:
 
     @property
     def percent_display(self) -> str:
-        return self._percent_fmt.format(self.percent * 100)
+        """percent format string like '12.34%' """
+        return format_percentage(self.completed, self.total, places=self._places, null_val=self._null_val)
+
+    @property
+    def fraction_display(self):
+        """return a fractor like '34 / 100'"""
+        return self._display_fmt.format(completed=self.completed, total=self.total)
 
     @property
     def display(self) -> str:
-        return self._display_fmt.format(completed=self.completed, total=self.total)
+        """old alias name for fraction_display'"""
+        return self.fraction_display
 
     def as_dict(self, prefix='') -> dict:
         return {
@@ -52,3 +67,6 @@ class Percentage:
             '░' * (char_total - char_completed),
             self.percent * 100
         )
+
+    def __str__(self):
+        return '<Percentage:{} {}>'.format(self.display, self.percent_display)
