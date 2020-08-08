@@ -22,7 +22,7 @@ def financial_amount_capital(num: Union[int, float, Decimal, str]) -> str:
     units = '仟佰拾亿仟佰拾万仟佰拾元角分'
     digits = '零壹贰叁肆伍陆柒捌玖'
     if isinstance(num, str):
-        _n = int(num)
+        _n = Decimal(num)
     else:
         _n = num
     if _n < 0 or _n >= MAX_VALUE_LIMIT:
