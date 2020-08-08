@@ -105,7 +105,7 @@ A function sets for fetch the values of some axises.
 Get list values from dict list.
 
 ```python
-from borax.fetch import fetch
+from borax.datasets.fetch import fetch
 
 objects = [
     {'id': 282, 'name': 'Alice', 'age': 30},

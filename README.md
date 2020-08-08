@@ -91,7 +91,7 @@ print(dls.countdown()) # 344
 从数据序列中选择一个或多个字段的数据。
 
 ```python
-from borax.fetch import fetch
+from borax.datasets.fetch import fetch
 
 objects = [
     {'id': 282, 'name': 'Alice', 'age': 30},
