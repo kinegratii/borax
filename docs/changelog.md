@@ -1,5 +1,12 @@
 # 更新日志
 
+## v3.3.0
+
+- 移除 `borax.fetch` 模块
+- `borax.numbers` 模块 (+)
+- `borax.finance` 模块
+  - 修正小数使用字符串时 `financial_amount_capital` 错误的BUG
+
 ## v3.2.0 (20200510)
 
 > 本版本重写 `borax.datasets.join_` 模块，接口引入重大变更，详情查看 [join模块](guides/join) 。

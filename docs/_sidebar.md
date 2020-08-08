@@ -17,7 +17,7 @@
   - [数据拾取](guides/fetch)
   - [bjson](guides/bjson)
   - [cjson](guides/cjson)
-  - [财务工具](guides/finance)
+  - [数字模块](guides/numbers)
   - [Tkinter界面](guides/ui)
 - **开发**
   - [版本日志](changelog)

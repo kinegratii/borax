@@ -77,12 +77,12 @@ print(dls.countdown()) # 344
 将金额转化为符合标准的大写数字。
 
 ```
->>> from borax.finance import financial_amount_capital
->>> financial_amount_capital(100000000)
+>>> from borax.numbers import FinanceNumbers
+>>> FinanceNumbers.to_capital_str(100000000)
 '壹亿元整'
->>>financial_amount_capital(4578442.23)
+>>>FinanceNumbers.to_capital_str(4578442.23)
 '肆佰伍拾柒万捌仟肆佰肆拾贰元贰角叁分'
->>>financial_amount_capital(107000.53)
+>>>FinanceNumbers.to_capital_str(107000.53)
 壹拾万柒仟元伍角叁分
 ```
 
@@ -105,7 +105,12 @@ print(names) # ['Alice', 'Bob', 'Charlie']
 
 ## 文档
 
-在线文档托管在 [https://kinegratii.github.io/borax](https://kinegratii.github.io/borax) ，由 [docsify](https://docsify.js.org/) 构建。
+文档由 [docsify](https://docsify.js.org/) 构建。
+
+| 源 | 网址 |
+| ---- | ---- |
+| github | [https://kinegratii.github.io/borax](https://kinegratii.github.io/borax) | 
+| gitee | [https://kinegratii.gitee.io/borax](https://kinegratii.gitee.io/borax) |
 
 ## 开发特性和规范
 
