@@ -37,6 +37,7 @@ def __init__(self, *, total=100, completed=0, places=2, display_fmt='{completed}
 | completed | int | 完成数目 |
 | places | int | 百分比的小数点，如 place=2，时显示为 34.56% |
 | display_fmt | string | 显示格式字符串，可用变量：total, completed |
+| null_val | string | 空值的字符串形式 |
 
 ### 数据属性
 
