@@ -1,4 +1,4 @@
-# Borax - Python常用工具包
+# Borax - Python3工具集合包
 
 
 [![PyPI](https://img.shields.io/pypi/v/borax.svg)](https://pypi.org/project/borax) 
@@ -12,12 +12,12 @@
 
 Borax 是一个的 Python3 开发工具集合库,涉及到：
 
- - 设计模式示例
+ - 设计模式
  - 数据结构
 
 ## 安装
 
-Borax 要求 Python 的版本至少为 3.5 以上。可以通过以下三种方式安装 Borax ：
+Borax 要求 Python 的版本至少为 3.5 以上。可以通过以下两种方式安装 Borax ：
 
 1) 使用 *pip* ：
 
@@ -29,15 +29,6 @@ $ pip install borax
 ```shell
 $ poetry add borax
 ```
-
-3) 使用开发代码
-
-```shell
-git clone https://github.com/kinegratii/borax.git
-cd borax
-python setup.py install
-```
-
 
 ## 版本
 

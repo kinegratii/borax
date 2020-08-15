@@ -2,6 +2,8 @@
 
 > 模块：`borax.numbers`
 
+> Added in V3.3.0
+
 ## 中文数字
 
 ```python

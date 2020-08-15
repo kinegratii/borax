@@ -10,7 +10,6 @@
 - **Borax.Datasets**
   - [数据连接(Join)<sup style="color:red">(新)<sup>](guides/join)
 - **文档**
-  - [字典](guides/alias_dictionary)
   - [树形结构](guides/tree)
   - [序列号生成器](guides/serial_generator)
   - [百分比](guides/percentage)
