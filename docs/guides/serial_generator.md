@@ -50,7 +50,7 @@ def generate_serials(upper: int, num: int = 1, lower: int = 0, serials: Iterable
 参数：
 
 - upper：整数范围的上限，不包含此数。
-- lower：整数范围的下限，包含次数。
+- lower：整数范围的下限，包含此数。
 - num：分配ID的数量。
 - serials：已经存在的ID，集合、列表类型。
 

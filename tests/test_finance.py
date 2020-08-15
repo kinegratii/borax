@@ -18,6 +18,7 @@ class CapitalNumber(unittest.TestCase):
     def test_decimal(self):
         self.assertEqual('肆元伍角零分', financial_amount_capital(decimal.Decimal(4.50)))
         self.assertEqual('壹拾万柒仟元伍角叁分', financial_amount_capital(decimal.Decimal('107000.53')))
+        self.assertEqual('壹拾万柒仟元伍角叁分', financial_amount_capital('107000.53'))
 
     def test_valid_range(self):
         with self.assertRaises(ValueError):

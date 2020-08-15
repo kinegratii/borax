@@ -77,12 +77,12 @@ print(dls.countdown()) # 344
 将金额转化为符合标准的大写数字。
 
 ```
->>> from borax.finance import financial_amount_capital
->>> financial_amount_capital(100000000)
+>>> from borax.numbers import FinanceNumbers
+>>> FinanceNumbers.to_capital_str(100000000)
 '壹亿元整'
->>>financial_amount_capital(4578442.23)
+>>>FinanceNumbers.to_capital_str(4578442.23)
 '肆佰伍拾柒万捌仟肆佰肆拾贰元贰角叁分'
->>>financial_amount_capital(107000.53)
+>>>FinanceNumbers.to_capital_str(107000.53)
 壹拾万柒仟元伍角叁分
 ```
 
@@ -91,7 +91,7 @@ print(dls.countdown()) # 344
 从数据序列中选择一个或多个字段的数据。
 
 ```python
-from borax.fetch import fetch
+from borax.datasets.fetch import fetch
 
 objects = [
     {'id': 282, 'name': 'Alice', 'age': 30},
@@ -105,7 +105,12 @@ print(names) # ['Alice', 'Bob', 'Charlie']
 
 ## 文档
 
-在线文档托管在 [https://kinegratii.github.io/borax](https://kinegratii.github.io/borax) ，由 [docsify](https://docsify.js.org/) 构建。
+文档由 [docsify](https://docsify.js.org/) 构建。
+
+| 源 | 网址 |
+| ---- | ---- |
+| github | [https://kinegratii.github.io/borax](https://kinegratii.github.io/borax) | 
+| gitee | [https://kinegratii.gitee.io/borax](https://kinegratii.gitee.io/borax) |
 
 ## 开发特性和规范
 
@@ -117,7 +122,28 @@ print(names) # ['Alice', 'Bob', 'Charlie']
 
 ## 开源协议
 
-MIT License (MIT)
+```
+The MIT License (MIT)
+
+Copyright (c) 2015-2020 kinegratii
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+```
 
 ## 捐赠
 

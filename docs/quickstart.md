@@ -3,7 +3,7 @@
 
 ## 安装
 
-可以通过以下三种方式安装 Borax ：
+可以通过以下两种方式安装 Borax ：
 
 1) 使用 *pip* ：
 
@@ -14,14 +14,6 @@ $ pip install borax
 
 ```shell
 $ poetry add borax
-```
-
-3) 使用开发代码
-
-```shell
-git clone https://github.com/kinegratii/borax.git
-cd borax
-python setup.py install
 ```
 
 ## 导入

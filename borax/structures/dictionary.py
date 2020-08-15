@@ -53,3 +53,21 @@ class AliasDictionary:
         for key, value in self._data.items():
             aliases = [k for k, v in self._aliases.items() if v == key]
             yield key, value, aliases
+
+
+class AttributeDict(dict):
+    def __getattr__(self, key):
+        try:
+            return self[key]
+        except KeyError:
+            # to conform with __getattr__ spec
+            raise AttributeError(key)
+
+    def __setattr__(self, key, value):
+        self[key] = value
+
+    def first(self, *names):
+        for name in names:
+            value = self.get(name)
+            if value:
+                return value

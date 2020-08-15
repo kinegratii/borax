@@ -3,7 +3,7 @@
 
 import unittest
 
-from borax.fetch import fetch, fetch_single, ifetch_multiple, fetch_as_dict
+from borax.datasets.fetch import fetch, fetch_single, ifetch_multiple, fetch_as_dict
 
 DICT_LIST_DATA = [
     {'id': 282, 'name': 'Alice', 'age': 30, 'sex': 'female'},

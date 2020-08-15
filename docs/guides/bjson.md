@@ -2,6 +2,10 @@
 
 > 模块：`borax.serialize.bjson`
 
+
+
+## 使用方法
+
 bjson 模块实现了一个自定义的 JSONEncoder ，支持通过 `__json__` 方法 encode 自定义对象。
 
 例子：
@@ -44,3 +48,11 @@ json.dumps(obj, cls=bjson.BJSONEncoder)
 bjson.dumps(obj)
 ```
 
+
+
+## API
+
+- `borax.bjson.dumps(obj, **kwargs)` 
+- `borax.bjson.dumps(obj, fp, **kwargs)` 
+
+和 `json` 模块功能相同，使用 `BJSONEncoder` 编码器。

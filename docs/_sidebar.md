@@ -10,14 +10,13 @@
 - **Borax.Datasets**
   - [数据连接(Join)<sup style="color:red">(新)<sup>](guides/join)
 - **文档**
-  - [字典](guides/alias_dictionary)
   - [树形结构](guides/tree)
   - [序列号生成器](guides/serial_generator)
   - [百分比](guides/percentage)
   - [数据拾取](guides/fetch)
   - [bjson](guides/bjson)
   - [cjson](guides/cjson)
-  - [财务工具](guides/finance)
+  - [数字模块](guides/numbers)
   - [Tkinter界面](guides/ui)
 - **开发**
   - [版本日志](changelog)

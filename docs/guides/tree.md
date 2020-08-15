@@ -1,6 +1,8 @@
 # tree 模块
 
-> 模块： `borax.structure.tree` (v1.1.4+)
+> 模块： `borax.structure.tree`
+
+> Added in V1.1.4
 
 ## 功能
 
@@ -106,7 +108,7 @@ def pll2cnl(
 }
 ```
 
-例如对于配置 extra_key=extra&extra_fields=name ，上述节点将输出为以下格式：
+例如对于配置 `{"extra_key": "extra", extra_fields":"name"}` ，上述节点将输出为以下格式：
 
 ```json
 {

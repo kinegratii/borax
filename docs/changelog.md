@@ -1,5 +1,19 @@
 # 更新日志
 
+## v3.3.0 (20200815)
+
+- 移除 `borax.fetch` 模块
+- `borax.datasets.join_` 模块
+  -  `old_join` 和 `old_join_one` 标记为 PendingDeprecationWarning  ，将在 V3.5移除
+- `borax.runtime` 模块
+- `borax.numbers` 模块 (+)
+  - 新增 `ChineseNumbers` 类
+  - 新增 `finaceNumbers` 类，由 `borax.finace` 模块转化
+- `borax.finance` 模块
+  - 修正小数使用字符串时 `financial_amount_capital` 错误的BUG
+  - 本模块被标记为 `PendingDeprecationWarning` ，将在V3.5移除
+- 移除 `borax.structures.dic` 模块
+
 ## v3.2.0 (20200510)
 
 > 本版本重写 `borax.datasets.join_` 模块，接口引入重大变更，详情查看 [join模块](guides/join) 。

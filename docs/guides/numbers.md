@@ -1,10 +1,23 @@
-# Finance 模块
+# numbers 模块
 
-> 模块：`borax.finance`
+> 模块：`borax.numbers`
+
+> Added in V3.3.0
+
+## 中文数字
+
+```python
+
+from borax.numbers import ChineseNumbers
+
+print(ChineseNumbers.to_chinese_number(204)) # 二百零四
+
+```
+
+
+## 财务大写金额
 
 finance 提供了一系列的此物财务金融工具。
-
-## 大写金额
 
 ### 规范依据
 
@@ -31,7 +44,7 @@ finance 提供了一系列的此物财务金融工具。
 将数字转化为财务大写金额的字符串，函数签名：
 
 ```python
-def financial_amount_capital(num: Union[int, float, Decimal, str]) -> str:  pass
+to_capital_str(num: Union[int, float, Decimal, str]) -> str
 ```
 
 输入值可以为以下几种类型：
@@ -43,11 +56,11 @@ def financial_amount_capital(num: Union[int, float, Decimal, str]) -> str:  pass
 例子：
 
 ```
->>> from borax.finance import financial_amount_capital
->>> financial_amount_capital(100000000)
+>>> from borax.numbers import FinanceNumbers
+>>> FinanceNumbers.to_capital_str(100000000)
 '壹亿元整'
->>>financial_amount_capital(4578442.23)
+>>>FinanceNumbers.to_capital_str(4578442.23)
 '肆佰伍拾柒万捌仟肆佰肆拾贰元贰角叁分'
->>>financial_amount_capital(107000.53)
+>>>FinanceNumbers.to_capital_str(107000.53)
 壹拾万柒仟元伍角叁分
 ```
