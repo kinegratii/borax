@@ -35,5 +35,5 @@ setup(
     author='kinegratii',
     author_email='kinegratii@gmail.com',
     classifiers=lib_classifiers,
-    description='A util collections for Python3.',
+    description='A tool collections for Python3.',
 )
