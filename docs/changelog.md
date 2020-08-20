@@ -1,5 +1,11 @@
 # 更新日志
 
+## v3.3.1
+
+- `borax.structures.dictionary` 模块
+  - 类 `AttrDict` 新增别名 `AD`
+- 重新组织Borax文档
+
 ## v3.3.0 (20200815)
 
 - 移除 `borax.fetch` 模块

@@ -7,34 +7,33 @@
 
 
 
+Borax 是一个Python3工具集合包。
 
-## 概述
 
-Borax 是一个的 Python3 开发工具集合库,涉及到：
 
- - 设计模式
- - 数据结构
+## 基本信息
 
-## 安装
+| -            | -                                   |
+| ------------ | ----------------------------------- |
+| 主代码仓库   | https://github.com/kinegratii/borax |
+| 代码仓库镜像 | https://gitee.net/kinegratii/borax  |
+| 文档         | https://kinegratii.github.io/borax  |
+| 文档镜像     | https://kinegratii/gitee.io/borax   |
 
-Borax 要求 Python 的版本至少为 3.5 以上。可以通过以下两种方式安装 Borax ：
 
-1) 使用 *pip* ：
 
-```shell
-$ pip install borax
-```
-2) 使用 [poetry](https://poetry.eustace.io/) 工具：
+## 开始(Quickstart)
 
-```shell
-$ poetry add borax
-```
+- **入门**:  [快速开始](quickstart)
 
-## 版本
+## 包和模块(Packages&Modules)
 
-打印 Borax 的版本。
+- **Borax.DataStructures**:  [树形结构](guides/tree) | [bjson](guides/bjson) | [cjson](guides/cjson) |  [百分比](guides/percentage)
+- **Borax.Calendar**:  [农历](guides/lunardate) | [节日](guides/festival) | [生日](guides/birthday)
+- **Borax.Pattern**: [单例模式](guides/singleton) | [选项Choices](guides/choices)
+- **Borax.Datasets**: [数据连接(Join)<sup style="color:red">New!<sup>](guides/join)
+- **其他**: [序列号生成器](guides/serial_generator) | [数据拾取](guides/fetch)  |[数字模块 <sup style="color:red">New!<sup>](guides/numbers) |[Tkinter界面](guides/ui)
 
-```python
-from borax import __version__
-print(__version__)
-```
+## 开发(Development)
+
+- **项目开发**:  [版本日志](changelog) | [技术文档](develope/develope)
