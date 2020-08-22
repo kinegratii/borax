@@ -3,6 +3,8 @@ import os
 import sys
 from datetime import datetime
 
+from borax.constants import DatetimeFormat
+
 
 def load_class(s):
     """Import a class
@@ -29,14 +31,14 @@ def check_path_variables(execute_filename):
             return True
     return False
 
-
+# These constants has been deprecated.
 SUFFIX_DT = '%Y%m%d%H%M%S'
 SUFFIX_DT_UNDERLINE = '%Y_%m_%d_%H_%M_%S'
 SUFFIX_DATE = '%Y%m%d'
 SUFFIX_DATE_UNDERLINE = '%Y_%m_%d'
 
 
-def rotate_filename(filename: str, time_fmt: str = SUFFIX_DT, sep: str = '_', now=None, **kwargs):
+def rotate_filename(filename: str, time_fmt: str = DatetimeFormat.SUFFIX_DT, sep: str = '_', now=None, **kwargs):
     """ Rotate filename or filepath with datetime string as suffix.
     :param filename:
     :param time_fmt:
