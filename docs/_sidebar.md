@@ -4,7 +4,7 @@
   - [树形结构](guides/tree)
   - [bjson](guides/bjson)
   - [cjson](guides/cjson)
-  - [百分比](guides/percentage)
+  - [百分数](guides/percentage)
 - **● Borax.Calendar**
   - [农历](guides/lunardate)
   - [节日](guides/festival)
