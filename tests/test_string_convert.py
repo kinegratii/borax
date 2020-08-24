@@ -4,7 +4,6 @@ from datetime import datetime
 
 import unittest
 from unittest.mock import Mock, patch
-from nose2.tools.params import params
 
 from borax.strings import camel2snake, snake2camel, get_percentage_display
 from borax.system import rotate_filename, SUFFIX_DT_UNDERLINE
@@ -19,10 +18,11 @@ FIXTURES = [
 
 
 class StringConvertTestCase(unittest.TestCase):
-    @params(*FIXTURES)
-    def test_all(self, cs, ss):
-        self.assertEqual(cs, snake2camel(ss))
-        self.assertEqual(ss, camel2snake(cs))
+    def test_all(self):
+        for cs, ss in FIXTURES:
+            with self.subTest(cs=cs, ss=ss):
+                self.assertEqual(cs, snake2camel(ss))
+                self.assertEqual(ss, camel2snake(cs))
 
 
 class PercentageStringTestCase(unittest.TestCase):
