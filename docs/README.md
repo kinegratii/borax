@@ -1,4 +1,4 @@
-# Borax - Python3工具集合包
+# Borax - Python3工具集合库
 
 
 [![PyPI](https://img.shields.io/pypi/v/borax.svg)](https://pypi.org/project/borax) 
@@ -7,7 +7,9 @@
 
 
 
-Borax 是一个Python3工具集合包。
+Borax 是一个Python3工具集合库。
+
+ 本文档未开启版本化，所有内容都是基于最新版本，函数和类签名的变化请参见各自的文档说明。
 
 ## 开始(Quickstart)
 
@@ -18,8 +20,8 @@ Borax 是一个Python3工具集合包。
 - **Borax.DataStructures**:  [树形结构](guides/tree) | [bjson](guides/bjson) | [cjson](guides/cjson) |  [百分数](guides/percentage)
 - **Borax.Calendar**:  [农历](guides/lunardate) | [节日](guides/festival) | [生日](guides/birthday)
 - **Borax.Pattern**: [单例模式](guides/singleton) | [选项Choices](guides/choices)
-- **Borax.Datasets**: [数据连接(Join)](guides/join)
-- **其他**: [序列号生成器](guides/serial_generator) | [数据拾取](guides/fetch)  |[数字模块](guides/numbers) | [Tkinter界面](guides/ui)
+- **Borax.Datasets**: [数据连接(Join)](guides/join) | [数据拾取](guides/fetch) 
+- **其他**: [序列号生成器](guides/serial_generator)  |[数字模块](guides/numbers) | [Tkinter界面](guides/ui)
 
 ## 开发(Development)
 

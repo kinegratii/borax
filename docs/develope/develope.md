@@ -14,9 +14,11 @@
 
 > Flake8工具：http://flake8.pycqa.org/en/latest/
 
-## 测试框架 - nose2
+## 测试框架
 
 > 主页：https://pypi.org/project/nose2/
+
+从v3.3.1 开始，测试用例全部使用标准的 unittest 代码，支持 unittest / nose / nose2 / pytest 等测试框架。
 
 ## 持续构建 - Travis CI
 

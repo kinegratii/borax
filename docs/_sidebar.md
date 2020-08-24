@@ -14,9 +14,9 @@
   - [选项Choices](guides/choices)
 - **● Borax.Datasets**
   - [数据连接(Join)<sup style="color:red">New!<sup>](guides/join)
+  - [数据拾取](guides/fetch)
 - **● 其他**
   - [序列号生成器](guides/serial_generator)
-  - [数据拾取](guides/fetch)
   - [数字模块 <sup style="color:red">New!<sup>](guides/numbers)
   - [Tkinter界面](guides/ui)
 - **● 项目开发**
