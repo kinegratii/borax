@@ -1,6 +1,6 @@
 # coding=utf8
 
-import collections
+import collections.abc
 from functools import reduce
 
 
@@ -14,7 +14,7 @@ def _resolve_value(val, args=None, kwargs=None):
 
 
 def force_iterable(obj):
-    if not isinstance(obj, collections.Iterable) or isinstance(obj, str):
+    if not isinstance(obj, collections.abc.Iterable) or isinstance(obj, str):
         return [obj]
     return obj
 

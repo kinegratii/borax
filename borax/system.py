@@ -31,6 +31,7 @@ def check_path_variables(execute_filename):
             return True
     return False
 
+
 # These constants has been deprecated.
 SUFFIX_DT = '%Y%m%d%H%M%S'
 SUFFIX_DT_UNDERLINE = '%Y_%m_%d_%H_%M_%S'
