@@ -207,7 +207,7 @@ class MyChoices(choices.Choices):
 | MyChoices.choices           | `(...)`       | `(...)`            |      |
 | MyChoices.GREEN             | `'g'`         | `<Enum MyChoices>` |      |
 | MyChoices['GREEN']          | -             | `<Enum MyChoices>` |      |
-| MyChoices.is_valid          | OK            | -                  |      |
+| MyChoices.is_valid('g')     | True          | -                  |      |
 | MyChoices.GREEN.name        | -             | `'g'`              |      |
 | MyChoices.GREEN.label       | -             | `'green'`          |      |
 | MyChoices.GREEN.value       | -             | -                  |      |
