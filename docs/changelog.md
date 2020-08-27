@@ -1,5 +1,15 @@
 # 更新日志
 
+## v3.3.1 (20200827)
+
+- `borax.structures.dictionary` 模块
+  - 类 `AttrDict` 新增别名 `AD`
+- 构建部署
+  - 修正因stacklevel 设置错误导致 `DeprecatedWarning` 无法正确提示的BUG
+  - 参数化测试改用 `unittest.TestCase.subTest`
+  - 支持 unittest / nose / nose2 / pytest 测试框架
+  - 重新组织Borax文档
+
 ## v3.3.0 (20200815)
 
 - 移除 `borax.fetch` 模块

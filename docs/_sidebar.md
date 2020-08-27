@@ -1,22 +1,24 @@
-- **入门**
+- **● 入门**
   - [快速开始](quickstart)
-- **Borax.Calendar**
+- **● Borax.DataStructures**
+  - [树形结构](guides/tree)
+  - [bjson](guides/bjson)
+  - [cjson](guides/cjson)
+  - [百分数](guides/percentage)
+- **● Borax.Calendar**
   - [农历](guides/lunardate)
   - [节日](guides/festival)
   - [生日](guides/birthday)
-- **Borax.Pattern**
+- **● Borax.Pattern**
   - [单例模式](guides/singleton)
   - [选项Choices](guides/choices)
-- **Borax.Datasets**
-  - [数据连接(Join)<sup style="color:red">(新)<sup>](guides/join)
-- **文档**
-  - [树形结构](guides/tree)
-  - [序列号生成器](guides/serial_generator)
-  - [百分比](guides/percentage)
+- **● Borax.Datasets**
+  - [数据连接(Join)<sup style="color:red">New!<sup>](guides/join)
   - [数据拾取](guides/fetch)
-  - [bjson](guides/bjson)
-  - [cjson](guides/cjson)
-  - [数字模块](guides/numbers)
+- **● 其他**
+  - [序列号生成器](guides/serial_generator)
+  - [数字模块 <sup style="color:red">New!<sup>](guides/numbers)
   - [Tkinter界面](guides/ui)
-- **开发**
+- **● 项目开发**
   - [版本日志](changelog)
+  - [技术文档](develope/develope)

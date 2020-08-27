@@ -104,7 +104,7 @@ class LCalendars:
 
     @staticmethod
     def is_leap_month(year: int, month: int) -> bool:
-        warnings.warn('This method is deprecated, use LCalendars.leap_month instead.', DeprecationWarning)
+        warnings.warn('This method is deprecated, use LCalendars.leap_month instead.', DeprecationWarning, stacklevel=2)
         _check_year_range(year)
         return YEAR_INFOS[year - MIN_LUNAR_YEAR] % 16 == month
 

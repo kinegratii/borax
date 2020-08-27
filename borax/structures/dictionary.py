@@ -71,3 +71,6 @@ class AttributeDict(dict):
             value = self.get(name)
             if value:
                 return value
+
+
+AD = AttributeDict

@@ -41,14 +41,6 @@ Children嵌套数组(ChildrenNestedList) 格式：
 ]
 ```
 
-## 应用场景
-
-可作为相关插件的远程数据构建工具，包括：
-
-- [jqTree](http://mbraak.github.io/jqTree/)
-- [jsTree](https://www.jstree.com/)
-- [ECharts 旭日图/矩形树图/树图](http://echarts.baidu.com/)
-
 ## API
 
 该模块只有一个函数 pll2cnl ，函数签名
@@ -118,4 +110,12 @@ def pll2cnl(
     }
 }
 ```
+
+## 应用场景
+
+可作为相关插件的远程数据构建工具，包括：
+
+- [jqTree](http://mbraak.github.io/jqTree/)
+- [jsTree](https://www.jstree.com/)
+- [ECharts 旭日图/矩形树图/树图](http://echarts.baidu.com/)
 
