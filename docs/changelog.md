@@ -1,8 +1,6 @@
 # 更新日志
 
-## v3.3.1
-
-> 本版本重写了文档的部分章节。
+## v3.3.1 (20200827)
 
 - `borax.structures.dictionary` 模块
   - 类 `AttrDict` 新增别名 `AD`
