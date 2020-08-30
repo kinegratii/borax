@@ -433,10 +433,10 @@ class LunarDate(EncoderMixin):
         else:
             return self.cn_day
 
-    def weekday(self):
+    def weekday(self) -> int:
         return (self.offset + 2) % 7
 
-    def isoweekday(self):
+    def isoweekday(self) -> int:
         return (self.offset + 3) % 7 or 7
 
     def cn_str(self) -> str:
@@ -629,26 +629,29 @@ class Formatter:
 
     # Custom values
 
-    def get_leap(self, obj):
-        return int(obj.leap)
+    def get_term(self, obj: LunarDate) -> str:
+        return obj.term or '-'
 
-    def get_cn_leap(self, obj):
+    def get_leap(self, obj: LunarDate) -> str:
+        return str(int(obj.leap))
+
+    def get_cn_leap(self, obj: LunarDate) -> str:
         if obj.leap:
             return '闰'
         else:
             return ''
 
-    def get_cn_year(self, obj):
+    def get_cn_year(self, obj: LunarDate) -> str:
         return TextUtils.year_cn(obj.year)
 
-    def get_cn_month(self, obj):
+    def get_cn_month(self, obj: LunarDate) -> str:
         return TextUtils.month_cn(obj.month)
 
-    def get_cn_day(self, obj):
+    def get_cn_day(self, obj: LunarDate) -> str:
         return TextUtils.day_cn(obj.day)
 
-    def get_padding_month(self, obj):
+    def get_padding_month(self, obj: LunarDate) -> str:
         return '{0:02d}'.format(obj.month)
 
-    def get_padding_day(self, obj):
+    def get_padding_day(self, obj: LunarDate) -> str:
         return '{0:02d}'.format(obj.day)

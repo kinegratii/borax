@@ -130,6 +130,10 @@ class FormatterTestCase(unittest.TestCase):
         self.assertEqual('2017631', ld3.strftime('%y%m%d%l'))
         self.assertEqual('201706031', ld3.strftime('%y%A%B%l'))
 
+    def test_term(self):
+        ld = LunarDate(2020, 3, 23)
+        self.assertEqual('tem:-', ld.strftime('tem:%t'))
+
 
 class LCalendarTestCase(unittest.TestCase):
     def test_ndays(self):
