@@ -4,7 +4,7 @@ import datetime
 import unittest
 from datetime import date, timedelta
 
-from borax.calendars.lunardate import LunarDate, parse_year_days, LCalendars
+from borax.calendars.lunardate import LunarDate, parse_year_days, LCalendars, InvalidLunarDateError
 
 
 class LunarDateTestCase(unittest.TestCase):
@@ -22,14 +22,14 @@ class LunarDateTestCase(unittest.TestCase):
         self.assertTrue(LunarDate(2033, 10, 1, 0), dt2)
 
         # day out of range
-        with self.assertRaises(ValueError):
+        with self.assertRaises(InvalidLunarDateError):
             LunarDate(2004, 1, 30).to_solar_date()
 
         # year out of range [1900, 2100]
-        with self.assertRaises(ValueError):
+        with self.assertRaises(InvalidLunarDateError):
             LunarDate(2101, 1, 1).to_solar_date()
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(InvalidLunarDateError):
             LunarDate(2019, 1, 1, 1).to_solar_date()
 
     def test_solar_and_lunar(self):

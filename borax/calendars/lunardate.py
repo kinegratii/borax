@@ -11,6 +11,13 @@ from typing import Optional, Iterator, Tuple, Union
 
 __all__ = ['LunarDate', 'LCalendars']
 
+
+# Exception
+
+class InvalidLunarDateError(ValueError):
+    pass
+
+
 # Typing
 
 Leap = Union[int, bool]
@@ -28,7 +35,7 @@ MAX_OFFSET = 73411  # (MAX_SOLAR_DATE - MIN_SOLAR_DATE).days
 
 def _check_year_range(year):
     if year < MIN_LUNAR_YEAR or year > MAX_LUNAR_YEAR:
-        raise ValueError('year out of range [1900, 2100]')
+        raise InvalidLunarDateError('[year={}]: Year must be in the range [1900, 2100]'.format(year))
 
 
 # lunar year 1900~2100
@@ -129,7 +136,7 @@ class LCalendars:
             if (_month, _leap) == (month, leap):
                 return _days
         else:
-            raise ValueError('Invalid month for the year {}'.format(year))
+            raise InvalidLunarDateError('[year={},month={},leap={}]: Invalid month.'.format(year, month, leap))
 
     @staticmethod
     def create_solar_date(year: int, term_index: Optional[int] = None,
@@ -164,7 +171,7 @@ class LCalendars:
 
 # offset <----> year, day_offset <----> year, month, day, leap
 
-def offset2ymdl(offset):
+def offset2ymdl(offset: int) -> Tuple[int, int, int, Leap]:
     def _o2mdl(_year_info, _offset):
         for _month, _days, _leap in _iter_year_month(_year_info):
             if _offset < _days:
@@ -199,10 +206,11 @@ def ymdl2offset(year, month, day, leap):
                     res += _day - 1
                     return res
                 else:
-                    raise ValueError("day out of range")
+                    raise InvalidLunarDateError(
+                        "[year={},month={},day={},leap={}]:Invalid day".format(year, month, day, leap))
             res += _days_
 
-        raise ValueError("month out of range")
+        raise InvalidLunarDateError('[year={},month={},leap={}]: Invalid month.'.format(year, month, leap))
 
     offset = 0
     _check_year_range(year)

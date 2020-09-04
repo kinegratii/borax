@@ -1,5 +1,13 @@
 # 更新日志
 
+## v3.3.2
+
+- `borax.calendars` 
+  - 修正农历平月日期 `%t` 格式化显示的BUG
+  - 新增 `InvalidLunarDateError` 异常类
+- 构建部署
+  - 升级依赖包版本
+
 ## v3.3.1 (20200827)
 
 - `borax.structures.dictionary` 模块
@@ -12,7 +20,6 @@
 
 ## v3.3.0 (20200815)
 
-- 移除 `borax.fetch` 模块
 - `borax.datasets.join_` 模块
   -  `old_join` 和 `old_join_one` 标记为 PendingDeprecationWarning  ，将在 V3.5移除
 - `borax.runtime` 模块
@@ -22,7 +29,9 @@
 - `borax.finance` 模块
   - 修正小数使用字符串时 `financial_amount_capital` 错误的BUG
   - 本模块被标记为 `PendingDeprecationWarning` ，将在V3.5移除
-- 移除 `borax.structures.dic` 模块
+- 被移除模块
+  -  `borax.structures.dic`
+  -  `borax.fetch` 
 
 ## v3.2.0 (20200510)
 
