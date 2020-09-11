@@ -6,7 +6,7 @@ from decimal import Decimal
 
 from typing import Union
 
-MAX_VALUE_LIMIT = 1000000000000
+MAX_VALUE_LIMIT = 1000000000000 # 10^12
 
 
 class ChineseNumbers:

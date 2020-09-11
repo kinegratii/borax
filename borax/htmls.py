@@ -31,7 +31,7 @@ class HTMLString(str):
         return rv
 
 
-def html_params(**kwargs):
+def html_params(**kwargs) -> str:
     params = []
     for k, v in sorted(kwargs.items()):
         if k in ('class_', 'class__', 'for_'):

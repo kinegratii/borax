@@ -17,7 +17,7 @@ def load_class(s):
     return getattr(mod, class_)
 
 
-def check_path_variables(execute_filename):
+def check_path_variables(execute_filename: str) -> bool:
     try:
         user_paths = os.environ['PYTHONPATH'].split(os.pathsep)
     except KeyError:
@@ -39,7 +39,7 @@ SUFFIX_DATE = '%Y%m%d'
 SUFFIX_DATE_UNDERLINE = '%Y_%m_%d'
 
 
-def rotate_filename(filename: str, time_fmt: str = DatetimeFormat.SUFFIX_DT, sep: str = '_', now=None, **kwargs):
+def rotate_filename(filename: str, time_fmt: str = DatetimeFormat.SUFFIX_DT, sep: str = '_', now=None, **kwargs) -> str:
     """ Rotate filename or filepath with datetime string as suffix.
     :param filename:
     :param time_fmt:

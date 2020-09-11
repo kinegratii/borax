@@ -9,7 +9,7 @@ from .store import (
 
 from typing import Optional, Iterator, Tuple, Union
 
-__all__ = ['LunarDate', 'LCalendars']
+__all__ = ['LunarDate', 'LCalendars', 'InvalidLunarDateError']
 
 
 # Exception
