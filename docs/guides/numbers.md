@@ -4,6 +4,14 @@
 
 > Added in V3.3.0
 
+## 常量定义
+
+`numbers` 提供了下列的模块级常量。 
+
+- **numbers.MAX_VALUE_LIMIT**
+
+本模块可以处理的数字上限，值为 `1_0000_0000_0000` （一万亿，10^12） 。 超过该值将抛出 `ValueError` 异常。
+
 ## 中文数字
 
 ```python
@@ -17,7 +25,7 @@ print(ChineseNumbers.to_chinese_number(204)) # 二百零四
 
 ## 财务大写金额
 
-finance 提供了一系列的此物财务金融工具。
+finance 提供了一系列的财务金融工具。
 
 ### 规范依据
 

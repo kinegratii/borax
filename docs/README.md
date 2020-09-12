@@ -17,11 +17,12 @@ Borax 是一个Python3工具集合库。
 
 ## 话题(Topics)
 
-- **Borax.DataStructures**:  [树形结构](guides/tree) | [bjson](guides/bjson) | [cjson](guides/cjson) |  [百分数](guides/percentage)
 - **Borax.Calendar**:  [农历](guides/lunardate) | [节日](guides/festival) | [生日](guides/birthday)
-- **Borax.Pattern**: [单例模式](guides/singleton) | [选项Choices](guides/choices)
 - **Borax.Datasets**: [数据连接(Join)](guides/join) | [数据拾取](guides/fetch) 
-- **其他**: [序列号生成器](guides/serial_generator)  |[数字模块](guides/numbers) | [Tkinter界面](guides/ui)
+- **Borax.DataStructures**:  [树形结构](guides/tree) | [bjson](guides/bjson) | [cjson](guides/cjson) 
+- **Borax.Numbers:**: [中文数字](guides/numbers) |  [百分数](guides/percentage)
+- **Borax.Pattern**: [单例模式](guides/singleton) | [选项Choices](guides/choices)
+- **其他**: [序列号生成器](guides/serial_generator)  | [Tkinter界面](guides/ui)
 
 ## 开发(Development)
 

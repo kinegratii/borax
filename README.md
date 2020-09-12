@@ -24,7 +24,7 @@ $ pip install borax
 
 ## 使用示例
 
-### 中国农历日期
+### Borax.LunarDate: 中国农历日期
 
 一个支持1900-2100年的农历日期工具库。
 
@@ -55,7 +55,7 @@ print(today.strftime('%Y-%M-%D')) # '二〇一八-六-廿六'
 print(today.strftime('今天的干支表示法为：%G')) # '今天的干支表示法为：戊戌年庚申月辛未日'
 ```
 
-### 国内外节日
+### Borax.Festival: 国内外节日
 
 分别计算距离 “春节”、生日（十一月初一）、“除夕（农历十二月的最后一天）” 还有多少天
 
@@ -72,7 +72,7 @@ dls = DayLunarSchema(month=12, day=1, reverse=1)
 print(dls.countdown()) # 344
 ```
 
-### 大写金额
+### Borax.Numbers: 中文数字处理
 
 将金额转化为符合标准的大写数字。
 
@@ -86,7 +86,7 @@ print(dls.countdown()) # 344
 壹拾万柒仟元伍角叁分
 ```
 
-### 数据拾取
+### Borax.Datasets: 数据拾取
 
 从数据序列中选择一个或多个字段的数据。
 
@@ -109,7 +109,7 @@ print(names) # ['Alice', 'Bob', 'Charlie']
 
 | 源 | 网址 |
 | ---- | ---- |
-| github | [https://kinegratii.github.io/borax](https://kinegratii.github.io/borax) | 
+| github | [https://kinegratii.github.io/borax](https://kinegratii.github.io/borax) |
 | gitee | [https://kinegratii.gitee.io/borax](https://kinegratii.gitee.io/borax) |
 
 ## 开发特性和规范

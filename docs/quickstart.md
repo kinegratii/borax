@@ -18,7 +18,7 @@ $ poetry add borax
 
 ## 导入
 
-一般来说， 作为功能的代码基本组织形式，建议导入 *包(Package)* 和 *模块(Module)* 。
+一般来说， 作为功能的代码基本组织形式，建议导入 包(Package) 和  模块(Module) 。
 
 例如，导入 `choices`：
 
@@ -32,13 +32,7 @@ class OffsetChoices(choices.ConstChoices):
     right = choices.Item((0, 1), 'Right')
 ```
 
-不建议使用以下导入方式
-
-```python
-from borax.choices import ConstChoices, Item
-```
-
-在某些情况下，也可以直接导入模块的 *类(Class)* 或 *变量(Variate)*。
+在某些情况下，也可以直接导入模块的 类(Class) 或 变量(Variate)。
 
 ```python
 from borax.patterns.lazy import LazyObject
