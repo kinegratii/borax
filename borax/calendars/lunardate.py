@@ -424,11 +424,11 @@ class LunarDate(EncoderMixin):
 
     @property
     def cn_year(self) -> str:
-        return '{}年'.format(TextUtils.year_cn(self.year))
+        return '{}'.format(TextUtils.year_cn(self.year))
 
     @property
     def cn_month(self) -> str:
-        return '{}{}月'.format('闰' if self.leap else '', TextUtils.month_cn(self.month))
+        return '{}'.format(TextUtils.month_cn(self.month))
 
     @property
     def cn_day(self) -> str:
@@ -448,7 +448,8 @@ class LunarDate(EncoderMixin):
         return (self.offset + 3) % 7 or 7
 
     def cn_str(self) -> str:
-        return '{}{}{}'.format(self.cn_year, self.cn_month, self.cn_day)
+        lm = '闰' if self.leap else ''
+        return '{}年{}{}月{}'.format(self.cn_year, lm, self.cn_month, self.cn_day)
 
     def gz_str(self) -> str:
         return '{}年{}月{}日'.format(self.gz_year, self.gz_month, self.gz_day)
