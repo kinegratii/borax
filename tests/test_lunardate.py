@@ -149,6 +149,9 @@ class LCalendarTestCase(unittest.TestCase):
     def test_leap_check(self):
         self.assertTrue(LCalendars.leap_month(2017) == 6)
         self.assertFalse(LCalendars.leap_month(2017) == 7)
+        self.assertIn(2017, LCalendars.get_leap_years(6))
+        self.assertIn(2017, LCalendars.get_leap_years())
+        self.assertEqual(0, len(LCalendars.get_leap_years(14)))
 
     def test_delta(self):
         sd = date(2018, 12, 1)

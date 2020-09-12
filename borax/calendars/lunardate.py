@@ -139,6 +139,15 @@ class LCalendars:
             raise InvalidLunarDateError('[year={},month={},leap={}]: Invalid month.'.format(year, month, leap))
 
     @staticmethod
+    def get_leap_years(month: int = 0) -> tuple:
+        res = []
+        for yoffset, yinfo in enumerate(YEAR_INFOS):
+            leap_month = yinfo % 16
+            if leap_month > 0 and (month == 0 or leap_month == month):
+                res.append(MIN_LUNAR_YEAR + yoffset)
+        return tuple(res)
+
+    @staticmethod
     def create_solar_date(year: int, term_index: Optional[int] = None,
                           term_name: Optional[str] = None) -> datetime.date:
         if term_name:
