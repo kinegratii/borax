@@ -119,6 +119,7 @@ class FormatterTestCase(unittest.TestCase):
 
         ld2 = LunarDate(2018, 11, 23)
         self.assertEqual('二〇一八/冬/廿三', ld2.strftime('%Y/%M/%D'))
+        self.assertEqual('二〇一八/十一/廿三', ld2.strftime('%Y/%N/%D'))
 
         ld3 = LunarDate(2017, 6, 3, 1)
         self.assertEqual('61', ld3.strftime('%m%l'))

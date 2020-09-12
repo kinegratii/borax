@@ -435,6 +435,15 @@ class LunarDate(EncoderMixin):
         return '{}'.format(TextUtils.day_cn(self.day))
 
     @property
+    def cn_leap(self) -> str:
+        return '闰' if self.leap else ''
+
+    @property
+    def cn_month_num(self) -> str:
+        mstr = self.cn_month
+        return {'冬': '十一', '腊': '十二'}.get(mstr, mstr)
+
+    @property
     def cn_day_calendar(self) -> str:
         if self.day == 1:
             return self.cn_month
@@ -448,8 +457,7 @@ class LunarDate(EncoderMixin):
         return (self.offset + 3) % 7 or 7
 
     def cn_str(self) -> str:
-        lm = '闰' if self.leap else ''
-        return '{}年{}{}月{}'.format(self.cn_year, lm, self.cn_month, self.cn_day)
+        return '{}年{}{}月{}'.format(self.cn_year, self.cn_leap, self.cn_month, self.cn_day)
 
     def gz_str(self) -> str:
         return '{}年{}月{}日'.format(self.gz_year, self.gz_month, self.gz_day)
@@ -602,6 +610,7 @@ class Formatter:
         '%q': 'gz_day',
         '%C': 'cn_str',
         '%G': 'gz_str',
+        '%N': 'cn_month_num',
         '%%': '%'
     }
 
@@ -649,15 +658,6 @@ class Formatter:
             return '闰'
         else:
             return ''
-
-    def get_cn_year(self, obj: LunarDate) -> str:
-        return TextUtils.year_cn(obj.year)
-
-    def get_cn_month(self, obj: LunarDate) -> str:
-        return TextUtils.month_cn(obj.month)
-
-    def get_cn_day(self, obj: LunarDate) -> str:
-        return TextUtils.day_cn(obj.day)
 
     def get_padding_month(self, obj: LunarDate) -> str:
         return '{0:02d}'.format(obj.month)
