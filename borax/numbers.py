@@ -6,7 +6,7 @@ from decimal import Decimal
 
 from typing import Union
 
-MAX_VALUE_LIMIT = 1000000000000 # 10^12
+MAX_VALUE_LIMIT = 1000000000000  # 10^12
 
 
 class ChineseNumbers:
@@ -16,12 +16,12 @@ class ChineseNumbers:
         (r'零{2,}', '零'),
         (r'零([亿|万])', r'\g<1>'),
         (r'亿零{0,3}万', '亿'),
-        (r'零 ', ''),
+        (r'零_', ''),
     ]
 
     @staticmethod
-    def to_chinese_number(num: Union[int, str]) -> str:
-        units = '千百十亿千百十万千百十 '
+    def measure_number(num: Union[int, str]) -> str:
+        units = '千百十亿千百十万千百十_'
         digits = '零一二三四五六七八九'
         if isinstance(num, str):
             _n = int(num)
@@ -38,8 +38,16 @@ class ChineseNumbers:
             o = re.sub(p, d, o)
         if 10 <= _n < 20:
             o.replace('一十', '十')
+        return o.strip('_')
 
-        return o
+    @staticmethod
+    def order_number(num: Union[int, str]) -> str:
+        val = ChineseNumbers.measure_number(num)
+        return val.replace('零', '〇')
+
+    @staticmethod
+    def to_chinese_number(num: Union[int, str]) -> str:
+        return ChineseNumbers.measure_number(num)
 
 
 class FinanceNumbers:

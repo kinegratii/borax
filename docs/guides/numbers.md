@@ -14,11 +14,40 @@
 
 ## 中文数字
 
-```python
+> Add in v3.4.0
 
+`ChineseNumbers` 类将整数转化为对应的中文小写数字。
+
+根据《出版物上数字用法(GB/T-15835-2011)》的规定，汉字 “零” 和 “〇” 是有严格的使用场景。
+
+```
+阿拉伯数字“0”有“零”和“〇”两种汉字书写形式。一个数字用作计量时，其中“0”的汉字书写形式为“零”，用作编号时，“0”的汉字书写形式为“〇”。
+
+　示例：“3052（个）”的汉字数字形式为“三千零五十二”（不写为“三千〇五十二”）
+
+“95.06”的汉字数字形式为“九十五点零六”（不写为“九十五点〇六”）
+
+“公元2012（年）”的汉字数字形式为“二〇一二”（不写为“二零一二”）
+
+---- 出版物上数字用法(GB/T-15835-2011)
+```
+
+基于该标准,Borax v3.4 引入了中文数字的 *计量* 和 *编号* 两种不同用法，对于数字 “0” 使用不同的中文汉字描述。
+
+| 函数                             | 0的中文汉字 | 备注         |
+| -------------------------------- | ----------- | ------------ |
+| ChineseNumbers.to_chinese_number | 零          | 计量数字 |
+| ChineseNumbers.measure_number    | 零          | 计量数字     |
+| ChineseNumbers.order_number      | 〇          | 编号数字     |
+ 
+
+
+```python
 from borax.numbers import ChineseNumbers
 
 print(ChineseNumbers.to_chinese_number(204)) # 二百零四
+print(ChineseNumbers.measure_number(204)) # 二百零四
+print(ChineseNumbers.order_number(1056)) # 一千〇五十六
 
 ```
 
