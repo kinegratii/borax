@@ -1,4 +1,4 @@
-# Borax - python开发工具集合
+# Borax - python3工具集合库
 
 
 [![PyPI](https://img.shields.io/pypi/v/borax.svg)](https://pypi.org/project/borax) 
@@ -8,18 +8,33 @@
 
 
 
-## 概述 & 安装
+## 概述
 
-Borax 是一个 Python3 开发工具集合库,涉及到：
+Borax 是一个Python3工具集合库。包括了以下几个话题：
 
- - 设计模式
- - 数据结构及其实现
- - 一些简单函数的封装
+| 话题（Topics）      | 内容                                                  |
+| ------------------- | ----------------------------------------------------- |
+| Borax.Calendars     | 1900-2100年的中国农历日期库                           |
+| Borax.Choices       | 声明式的选项类。适用于Django.models.choices 定义。    |
+| Borax.Datasets      | 记录型数据操作库，包括连结（Join）、列选择（fetch）等 |
+| Borax.DataStuctures | 树形结构，json数据                                    |
+| Borax.Numbers       | 数字库。包括中文数字、百分数等。                      |
+| Borax.Patterns      | 设计模式。包括单例模式、代理对象、延迟对象。          |
 
-使用 *pip* ：
+## 安装
+
+可以通过以下两种方式安装 Borax ：
+
+1) 使用 *pip* ：
 
 ```shell
 $ pip install borax
+```
+
+2) 使用 [poetry](https://poetry.eustace.io/) 工具：
+
+```shell
+$ poetry add borax
 ```
 
 ## 使用示例
@@ -51,13 +66,13 @@ print(ld.after(10)) # LunarDate(2018, 7, 11, 0)
 
 ```python
 today = LunarDate.today()
-print(today.strftime('%Y-%M-%D')) # '二〇一八-六-廿六'
+print(today.strftime('%Y年%L%M月%D')) # '二〇一八年六月廿六'
 print(today.strftime('今天的干支表示法为：%G')) # '今天的干支表示法为：戊戌年庚申月辛未日'
 ```
 
 ### Borax.Festival: 国内外节日
 
-分别计算距离 “春节”、生日（十一月初一）、“除夕（农历十二月的最后一天）” 还有多少天
+分别计算距离 “春节”、“除夕（农历十二月的最后一天）” 还有多少天
 
 ```python
 from borax.calendars.festivals import get_festival, LunarSchema, DayLunarSchema
@@ -65,28 +80,40 @@ from borax.calendars.festivals import get_festival, LunarSchema, DayLunarSchema
 festival = get_festival('春节')
 print(festival.countdown()) # 7
 
-ls = LunarSchema(month=11, day=1)
-print(ls.countdown()) # 285
-
 dls = DayLunarSchema(month=12, day=1, reverse=1)
 print(dls.countdown()) # 344
 ```
 
 ### Borax.Numbers: 中文数字处理
 
-将金额转化为符合标准的大写数字。
+
+不同形式的中文数字
+
+```python
+from borax.numbers import ChineseNumbers
+
+# 小写、计量
+print(ChineseNumbers.to_chinese_number(204)) # '二百零四'
+# 小写、编号
+print(ChineseNumbers.order_number(204)) # '二百〇四'
+# 大写、计量
+print(ChineseNumbers.to_chinese_number(204, upper=True)) # '贰佰零肆'
+# 大写、编号
+print(ChineseNumbers.to_chinese_number(204, upper=True, order=True)) # '贰佰〇肆'
+```
+
+财务金额
+
+```python
+from borax.numbers import FinanceNumbers
+print(FinanceNumbers.to_capital_str(100000000)) # '壹亿元整'
+print(FinanceNumbers.to_capital_str(4578442.23)) # '肆佰伍拾柒万捌仟肆佰肆拾贰元贰角叁分'
+
+print(FinanceNumbers.to_capital_str(107000.53)) # '壹拾万柒仟元伍角叁分'
 
 ```
->>> from borax.numbers import FinanceNumbers
->>> FinanceNumbers.to_capital_str(100000000)
-'壹亿元整'
->>>FinanceNumbers.to_capital_str(4578442.23)
-'肆佰伍拾柒万捌仟肆佰肆拾贰元贰角叁分'
->>>FinanceNumbers.to_capital_str(107000.53)
-壹拾万柒仟元伍角叁分
-```
 
-### Borax.Datasets: 数据拾取
+### Borax.Datasets: 数据列选择
 
 从数据序列中选择一个或多个字段的数据。
 
@@ -118,7 +145,6 @@ print(names) # ['Alice', 'Bob', 'Charlie']
 - [x] [Flake8 Code Style](http://flake8.pycqa.org/en/latest/)
 - [x] [nose2](https://pypi.org/project/nose2/)
 - [x] [Travis CI](https://travis-ci.org)
-- [x] [Docsify](https://docsify.js.org)
 
 ## 开源协议
 

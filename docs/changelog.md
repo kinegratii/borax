@@ -1,5 +1,13 @@
 # 更新日志
 
+## v3.4.0
+
+- Borax.LunarDate
+  - 新增 `%N` 描述符，将“冬”、“腊”显示为“十一”、“十二”
+  - 新增 `LCalendars.get_leap_years` 函数
+- Borax.Numbers
+  - `ChineseNumbers` 类新增 计量/编号 两种数字形式
+
 ## v3.3.2 (20200920)
 
 - `borax.calendars` 

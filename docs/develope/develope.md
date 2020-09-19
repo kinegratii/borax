@@ -26,8 +26,6 @@
 
 > 主页： https://travis-ci.org
 
-
-
 Travis是一个在线持续集成的平台，支持github登录。配置文件是一个名为 *.travis.yaml* 的配置文件。
 
 **发布 - twine**
