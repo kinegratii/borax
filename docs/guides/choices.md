@@ -2,11 +2,13 @@
 
 > 模块： `borax.choices`
 
+> Update in v3.4.0
 
+## 开发背景
 
-## 背景
+`borax.choices` 使用一种 “类声明（Class-Declaration）” 的方式表示 *具有唯一性约束的二维表格式数据* 。
 
-`borax.choices` 的出现是为了解决 `django.db.models.Field` 中 choices 的一些缺点。下面是一个典型的使用示例：
+一个常用的应用场景是为了改进 `django.db.models.Field` 中 choices 定义方式。下面是一个在 Django1.x /2.x 中很常见的代码：
 
 ```python
 from django.db import models
@@ -14,16 +16,16 @@ from django.db import models
 class Student(models.Model):
     MALE = 'male' # 1
     FEMALE = 'female'
-    UNKOWN = 'unkown'
+    UNKNOWN = 'unknown'
     
     GENDER_CHOICES = (
         (MALE, 'male'), # 2
         (FEMALE, 'famale'),
-        (UNKOWN, 'unkown')
+        (UNKNOWN, 'unknown')
     )
     gender = models.IntergerFIeld(
         choices=GENDER_CHOICES,
-        default=UNKOWN
+        default=UNKNOWN
     )
 ```
 
@@ -32,7 +34,7 @@ class Student(models.Model):
 - choices 的定义冗长，每一个选项的内容通常会出现两次
 - 每个选项都是挂在 model 下的，即使用 `Student.MALE` 形式访问，当同一个model出现多个choices时，无法很好的区分
 
-使用 Borax.Choices 可解决上述两个问题，并且代码更为简洁：
+使用 Borax.Choices 改写将使得代码更为简洁：
 
 ```python
 from django.db import models
@@ -41,16 +43,33 @@ from borax import choices
 class GenderChoices(choices.ConstChoices):
     MALE = choices.Item(1, 'male')
     FEMALE = choices.Item(2, 'female')
-    UNKOWN = choices.Item(3, 'unkown')
+    UNKNOWN = choices.Item(3, 'unknown')
     
 class Student(models.Model):        
     gender = models.IntergerFIeld(
-        choices=GenderChoices,
-        default=GenderChoices.UNKOWN
+        choices=GenderChoices.choices,
+        default=GenderChoices.UNKNOWN
     )
 ```
 
 ## 使用示例
+
+例如对于表单的性别字段设计的逻辑数据如下：
+
+| 性别   | 数据库存储值 | 可读文本 |
+| ------ | ------------ | -------- |
+| 男     | 1            | Male     |
+| 女     | 2            | Female   |
+| 未填写 | 3            | Unknown  |
+
+对应的类表示如下：
+
+```python
+class GenderChoices(choices.ConstChoices):
+    MALE = choices.Item(1, 'male')
+    FEMALE = choices.Item(2,'female')
+    UNKNOWN = choices.Item(3, 'unknown')
+```
 
 每个可选选项集合都继承自 `choices.ConstChoices`, 并使用 `choices.Item` 列出所有的可选项。
 
@@ -141,7 +160,7 @@ class DirectionChoices(VerticalChoices):
 ```
 默认情况下，子类的选项在父类选项之后，但可以使用 `order` 属性以调整顺序。
 
-## API
+## ConstChoices API
 
 以下所有的方法均为 `ConstChoices` 类的属性和方法。
 

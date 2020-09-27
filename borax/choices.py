@@ -74,12 +74,20 @@ class ChoicesMetaclass(type):
         return [(item.value, item.label) for _, item in cls.fields.items()]
 
     @property
-    def values(cls) -> list:
-        return [value for value, _ in cls.choices]
+    def names(cls) -> tuple:
+        return tuple(cls.fields.keys())
 
     @property
-    def labels(cls) -> list:
-        return [label for _, label in cls.choices]
+    def values(cls) -> tuple:
+        return tuple([value for value, _ in cls.choices])
+
+    @property
+    def displays(cls) -> tuple:
+        return tuple([display for _, display in cls.choices])
+
+    @property
+    def labels(cls) -> tuple:
+        return cls.displays
 
     @property
     def display_lookup(cls) -> dict:
@@ -94,6 +102,9 @@ class ChoicesMetaclass(type):
 
     def __len__(self):
         return len(self.choices)
+
+    def get_item_obj(cls):
+        pass
 
     # API
     def is_valid(cls, value) -> bool:

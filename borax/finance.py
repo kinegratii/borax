@@ -13,7 +13,7 @@ __all__ = ['financial_amount_capital']
 
 def financial_amount_capital(num: Union[int, float, Decimal, str]) -> str:
     warnings.warn(
-        'This method is deprecated and will be removed in V3.5.Use borax.numbers.FinanceNumbers instead.',
+        'This method is deprecated and will be removed in V4.0.Use borax.numbers.FinanceNumbers instead.',
         category=PendingDeprecationWarning, stacklevel=2
     )
 
