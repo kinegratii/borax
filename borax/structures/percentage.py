@@ -51,7 +51,7 @@ class Percentage:
         """old alias name for fraction_display'"""
         return self.fraction_display
 
-    def as_dict(self, prefix='') -> dict:
+    def as_dict(self, prefix: str = '') -> dict:
         return {
             prefix + 'total': self.total,
             prefix + 'completed': self.completed,
@@ -60,7 +60,7 @@ class Percentage:
             prefix + 'display': self.display
         }
 
-    def generate(self, char_total=100) -> str:
+    def generate(self, char_total: int = 100) -> str:
         char_completed = int(self.percent * char_total)
         return '|{0}{1}| {2:.2f}%'.format(
             '▇' * char_completed,
