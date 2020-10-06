@@ -2,19 +2,17 @@
 
 ## v3.4.0
 
-- Borax.LunarDate
+- **`borax.choices`**
+  - `ConstChoices` 新增 labels 、values 等属性
+- **`borax.calendars.lunarDate`**
   - 新增 `%N` 描述符，将“冬”、“腊”显示为“十一”、“十二”
   - 新增 `LCalendars.get_leap_years` 函数
-- Borax.Numbers
-  - `ChineseNumbers` 类新增 计量/编号 两种数字形式
-
-## v3.3.2 (20200920)
-
-- `borax.calendars` 
-  - 修正农历平月日期 `%t` 格式化显示的BUG
   - 新增 `InvalidLunarDateError` 异常类
-- 构建部署
-  - 重新组织Borax文档
+  - 修正农历平月日期 `%t` 格式化显示的BUG
+- **`borax.numbers`**
+  - `ChineseNumbers` 类新增 计量/编号 两种数字形式
+- **`borax.htmls`**
+  - 修正函数 `html_tag` 处理的BUG
 
 ## v3.3.1 (20200827)
 
