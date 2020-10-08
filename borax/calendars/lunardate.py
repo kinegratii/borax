@@ -15,6 +15,7 @@ __all__ = ['LunarDate', 'LCalendars', 'InvalidLunarDateError']
 # Exception
 
 class InvalidLunarDateError(ValueError):
+    # The InvalidLunarDateError will not be the subclass of ValueError in V4.0.
     pass
 
 

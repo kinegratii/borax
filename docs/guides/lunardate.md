@@ -16,15 +16,17 @@
 
 ## 异常
 
-> Add in v3.3.2
+> Add in v3.4.0
 
 - **lunardate.InvalidLunarDateError**
 
-该类是ValueError的子类。通常在三种情况下会抛出该异常，表示无效的日期：
+无效农历日期的异常。通常在三种情况下会抛出该异常，表示无效的日期：
 
-- 年份不在 [1900, 2100] 范围
+- 农历年份不在 [1900, 2100] 范围
 - 尝试创建一个不存在的闰月日期
 - 尝试创建日字段不存在的日期，一般是每个月份的最后几天（廿九、三十）等日期。
+
+该类是ValueError的子类。不过我们将在v4.0中移除这一特性。
 
 ## 常量定义
 
@@ -232,14 +234,14 @@ LunarDate(2018, 6, 1, 0)
 
 `replace(self, *, year=None, month=None, day=None, leap=None)`
 
-返回一个替换给定值后的日期对象。所有参数必须以关键字形式传入。如果该日期不存在，将抛出 `ValyeError` 异常。
+返回一个替换给定值后的日期对象。所有参数必须以关键字形式传入。如果该日期不存在，将抛出 `InvalidLunarDateError` 异常。
 
 ```
 >>>ld = LunarDate(2018, 5, 3)
 >>>ld.replace(year=2019)
 LunarDate(2019, 5, 3, 0)
 >>>ld.replace(leap=True)
-ValueError: month out of range
+borax.calendars.lunardate.InvalidLunarDateError: [year=2018,month=5,leap=1]: Invalid month.
 ```
 
 ## 日期比较
@@ -316,6 +318,7 @@ print(my_birthday.leap) # 0
 
 `LCalendars` 提供了一系列的工具方法。`LCalendars` 类中的函数参数 year 和 month 均为农历年份、月份。
 
+### 闰月月份
 
 
 - **LCalendars.leap_month(year: int) -> int**
@@ -325,6 +328,8 @@ print(my_birthday.leap) # 0
 - **LCalendars.is_leap_month(year: int, month: int) -> bool**
 
 判断 year 年 month 月是否为闰月。该方法已废弃，可使用 `LCalendars.leap_month(year) == month` 表达式代替。
+
+### 闰月年份
 
 - **LCalendars.get_leap_years(month: int = 0) -> tuple**
 
@@ -338,6 +343,20 @@ print(my_birthday.leap) # 0
 >>> LCalendars.get_leap_years(6)
 (1911, 1930, 1941, 1960, 1979, 1987, 2017, 2025, 2036, 2055, 2074, 2093)
 ```
+
+- **LCalendars.iter_year_month(year: int) -> Iterator[Tuple[int, int, int]]**
+
+迭代X年的月份信息，元素返回 *(月份, 该月的天数, 闰月标记)* 的元祖。
+
+例子：
+
+```
+>>>from borax.calendars.lunardate import LCalendars
+>>>list(LCalendars.iter_year_month(2017))
+[(1, 29, 0), (2, 30, 0), (3, 29, 0), (4, 30, 0), (5, 29, 0), (6, 29, 0), (6, 30, 1), (7, 29, 0), (8, 30, 0), (9, 29, 0), (10, 30, 0), (11, 30, 0), (12, 30, 0)]
+```
+
+### 日期相关
 
 - **LCalendars.ndays(year: int, month: Optional[int] = None, leap: Leap = False) -> int**
 
@@ -357,17 +376,14 @@ ValueError: year out of range [1900, 2100]
 >>>LCalendars.ndays(2017, 7, 1)
 ValueError: Invalid month for the year 2017
 ```
-- **LCalendars.iter_year_month(year: int) -> Iterator[Tuple[int, int, int]]**
 
-迭代X年的月份信息，元素返回 *(月份, 该月的天数, 闰月标记)* 的元祖。
 
-例子：
+- **LCalendars.delta(date1:MDate, date2:MDate) -> int**
 
-```
->>>from borax.calendars.lunardate import LCalendars
->>>list(LCalendars.iter_year_month(2017))
-[(1, 29, 0), (2, 30, 0), (3, 29, 0), (4, 30, 0), (5, 29, 0), (6, 29, 0), (6, 30, 1), (7, 29, 0), (8, 30, 0), (9, 29, 0), (10, 30, 0), (11, 30, 0), (12, 30, 0)]
-```
+计算两个日期相隔的天数，即 `(date1 - date2).days`。
+
+
+### 节气
 
 - **LCalendars.create_solar_date(year: int, term_index: Optional[int] = None, term_name: Optional[str] = None) -> datetime.date**
 
@@ -379,10 +395,6 @@ ValueError: Invalid month for the year 2017
 >>>LCalendars.create_solar_date(2019, term_name='清明')
 2019-04-05
 ```
-
-- **LCalendars.delta(date1:MDate, date2:MDate) -> int**
-
-计算两个日期相隔的天数，即 `(date1 - date2).days`。
 
 
 ## 参考资料

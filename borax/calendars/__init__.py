@@ -1,5 +1,6 @@
 # coding=utf8
 
-from .lunardate import LunarDate, LCalendars
+from .lunardate import LunarDate, InvalidLunarDateError, LCalendars
+from .utils import SCalendars
 
-__all__ = ['LunarDate', 'LCalendars']
+__all__ = ['LunarDate', 'InvalidLunarDateError', 'LCalendars', 'SCalendars']
