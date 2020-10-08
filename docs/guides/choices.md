@@ -2,7 +2,7 @@
 
 > 模块： `borax.choices`
 
-> Update in v3.4.0
+> Update in v3.4.0 
 
 ## 开发背景
 
@@ -93,8 +93,32 @@ True
 >>> YearInShoolChoices.is_valid('Et')
 False
  ```
+## 选项(Item)
 
- ## 简单选项
+### 显式Item定义
+
+在类定义体使用 `<name> = <value>` 的格式定义选项。
+
+名称 name 遵循 Python 变量命名规范，需要注意的是：
+
+- 以下划线（"_"）开始的变量不视为一个有效的选项
+- 变量名并不是必须使用大写形式
+
+值 value 通常为一个 `Item` 对象，定义如下：
+
+```python
+def __init__(value, display=None, *, order=None):pass
+```
+
+参数说明如下：
+
+- value ： 保存的值，在一个 Choices 中该值是唯一的
+- display ： 可读的文本信息
+- label: 同 display
+- order ：用于排序的数字
+
+
+ ### 隐式Item定义
 
 在某些选项稀少、意义明确的情况下，可以只使用简单的数据类型定义选项，这些形式包括：
 
@@ -121,28 +145,51 @@ class YearInSchoolChoices(choices.ConstChoices):
     SENIOR = 'SR', 'Senior'
 ```
 
-## 选项(Item)定义
+## ConstChoices API
 
-在类定义体使用 `<name> = <value>` 的格式定义选项。
+以下所有的方法均为 `ConstChoices` 类的属性和方法。
 
-名称 name 遵循 Python 变量命名规范，需要注意的是：
+### 属性
 
-- 以下划线（"_"）开始的变量不视为一个有效的选项
-- 变量名并不是必须使用大写形式
+- **`ConstChoices.choices`**
 
-值 value 通常为一个 `Item` 对象，定义如下：
+类型：`List[Tuple[Any, str]]`。所有选项列表。可直接赋值给 django.models.Field.choices 。
 
-```python
-def __init__(value, display=None, *, order=None):pass
-```
+类似于 `[(value1, display1), (value2, display2), ...]` 。
 
-参数说明如下：
+- **`ConstChoices.fields`**
 
-- value ： 保存的值，在一个 Choices 中该值是唯一的
-- display ： 可读的文本信息
-- order ：用于排序的数字
+类型：`Dict[str,Item]`。选项字典。
 
-## 选项复用和继承
+- **`ConstChoices.names`**
+
+类型：`List[str]`。类字段名称列表。
+
+- **`ConstChoices.values`**
+
+类型：`List[Any]`。值列表。
+
+- **`ConstChoices.labels`**
+
+类型：`List[str]`。标签值列表。
+
+### 方法
+
+- **`ConstChoices.is_valid(value)`**
+
+检查 `value` 是否是有效的选项。
+
+- **`ConstChoices.get_value_display(value)`**
+
+获取某个选项的文本。
+
+- **`ConstChoices.__iter__()`**
+
+遍历 `ConstChoices.choices`
+
+## 高级使用
+
+### 选项复用和继承
 
 可以使用类继承的方式实现选项的复用和重新定制某些选项的属性。
 
@@ -160,27 +207,7 @@ class DirectionChoices(VerticalChoices):
 ```
 默认情况下，子类的选项在父类选项之后，但可以使用 `order` 属性以调整顺序。
 
-## ConstChoices API
 
-以下所有的方法均为 `ConstChoices` 类的属性和方法。
-
-- **`ConstChoices.choices`**
-
-所有选项列表。可直接用于 django.models.Field.choices 。
-
-类似于 `[(value1, display1), (value2, display2), ...]` 。
-
-- **`ConstChoices.is_valid(value)`**
-
-检查 `value` 是否是有效的选项。
-
-- **`ConstChoices.get_value_display(value)`**
-
-获取某个选项的文本。
-
-- **`ConstChoices.__iter__()`**
-
-遍历 `ConstChoices.choices`
 
 ## 关于Django.Choices
 
@@ -233,7 +260,7 @@ class MyChoices(choices.Choices):
 | MyChoices.GREEN.display     | -             | -                  |      |
 | MyChoices.get_value_display | `<label>`     | -                  |      |
 | MyChoices._ _ iter _ _      | Y             | -                  |      |
-| MyChoices.names             | -             | Y                  |      |
-| MyChoices.values            | -             | Y                  |      |
-| MyChoices.labels            | -             | Y                  |      |
+| MyChoices.names             | V3.4.0+       | Y                  |      |
+| MyChoices.values            | V3.4.0+       | Y                  |      |
+| MyChoices.labels            | V3.4.0+       | Y                  |      |
 | member in (check values)    | Y             | Y                  |      |

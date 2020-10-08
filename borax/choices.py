@@ -1,6 +1,8 @@
 # coding=utf8
 from collections import OrderedDict
 
+from typing import Dict
+
 __all__ = ['Item', 'ConstChoices']
 
 
@@ -66,8 +68,8 @@ class ChoicesMetaclass(type):
         return new_cls
 
     @property
-    def fields(cls) -> OrderedDict:
-        return cls._fields
+    def fields(cls) -> Dict[str, Item]:
+        return dict(cls._fields)
 
     @property
     def choices(cls) -> list:
@@ -102,9 +104,6 @@ class ChoicesMetaclass(type):
 
     def __len__(self):
         return len(self.choices)
-
-    def get_item_obj(cls):
-        pass
 
     # API
     def is_valid(cls, value) -> bool:
