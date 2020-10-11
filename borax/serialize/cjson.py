@@ -19,7 +19,7 @@ def _unregister(self, cls):
 
 
 encoder = singledispatch(encode_object)
-encoder.unregister = _unregister.__get__(encoder) # see more detail on https://stackoverflow.com/a/28060251
+encoder.unregister = _unregister.__get__(encoder)  # see more detail on https://stackoverflow.com/a/28060251
 
 
 def dumps(obj, **kwargs):
