@@ -5,7 +5,7 @@
 - **`borax.choices`**
   - `ConstChoices` 新增 labels 、values 等属性
 - **`borax.calendars.lunarDate`**
-  - 新增 `%N` 描述符，将“冬”、“腊”显示为“十一”、“十二”
+  - 新增 `%N` 月份描述符，将“冬”、“腊”显示为“十一”、“十二”
   - 新增 `LCalendars.get_leap_years` 函数
   - 新增 `InvalidLunarDateError` 异常类
   - 修正农历平月日期 `%t` 格式化显示的BUG
@@ -13,6 +13,11 @@
   - `ChineseNumbers` 类新增 计量/编号 两种数字形式
 - **`borax.htmls`**
   - 修正函数 `html_tag` 处理的BUG
+- **`borax.serialize`**
+  - 整合 `bjson` 和 `cjson` ，`cjson` 支持 `__json` 特性
+  - 模块 `bjson` 标记为 `DeprecationWarning` 状态
+- **构建部署**
+  - 支持 [Github Action](https://github.com/kinegratii/borax/actions) 
 
 ## v3.3.1 (20200827)
 
@@ -34,7 +39,7 @@
   - 新增 `finaceNumbers` 类，由 `borax.finace` 模块转化
 - `borax.finance` 模块
   - 修正小数使用字符串时 `financial_amount_capital` 错误的BUG
-  - 本模块被标记为 `PendingDeprecationWarning` ，将在V3.5移除
+  - 本模块被标记为 `PendingDeprecationWarning` 
 - 被移除模块
   -  `borax.structures.dic`
   -  `borax.fetch` 

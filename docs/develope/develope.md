@@ -60,5 +60,6 @@ coverage~=5.2
 flake8~=3.8
 mccabe~=0.6
 wheel~=0.35
+setuptools~=47.3
 ```
 
