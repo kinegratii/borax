@@ -2,6 +2,8 @@
 
 ## v3.4.0
 
+> 新增 Python3.9构建支持
+
 - **`borax.choices`**
   - `ConstChoices` 新增 labels 、values 等属性
 - **`borax.calendars.lunarDate`**
@@ -61,7 +63,7 @@
 
 ## v3.1.0 (20200118)
 
-> 新增 Python3.8构建
+> 新增 Python3.8构建支持
 
 - `datasets` 包
   - 新增 `borax.datasets.fetch`
