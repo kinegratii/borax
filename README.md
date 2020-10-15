@@ -4,7 +4,7 @@
 [![PyPI](https://img.shields.io/pypi/v/borax.svg)](https://pypi.org/project/borax) 
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/borax.svg)](https://pypi.org/project/borax)
 [![PyPI - Status](https://img.shields.io/pypi/status/borax.svg)](https://github.com/kinegratii/borax)
-[![Build Status](https://travis-ci.org/kinegratii/borax.svg?branch=master)](https://travis-ci.org/kinegratii/borax)
+![Python package](https://github.com/kinegratii/borax/workflows/Python%20package/badge.svg)
 
 
 
@@ -23,7 +23,9 @@ Borax 是一个Python3工具集合库。包括了以下几个话题：
 
 ## 安装
 
-可以通过以下两种方式安装 Borax ：
+Borax 要求 Python3.5+ 。
+
+可以通过以下两种方式安装 ：
 
 1) 使用 *pip* ：
 
@@ -144,7 +146,7 @@ print(names) # ['Alice', 'Bob', 'Charlie']
 - [x] [Typing Hints](https://www.python.org/dev/peps/pep-0484/)
 - [x] [Flake8 Code Style](http://flake8.pycqa.org/en/latest/)
 - [x] [nose2](https://pypi.org/project/nose2/)
-- [x] [Travis CI](https://travis-ci.org)
+- [x] [Github Action](https://github.com/kinegratii/borax/actions)
 
 ## 开源协议
 
