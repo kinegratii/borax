@@ -94,8 +94,8 @@ def flatten(iterable):
 
 def force_list(val, sep=','):
     if isinstance(val, (list, set, tuple)):
-        return val
+        return tuple(val)
     elif isinstance(val, str):
-        return val.split(sep)
+        return tuple(val.split(sep))
     else:
         return val,

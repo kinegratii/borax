@@ -33,8 +33,8 @@ class HTMLString(str):
 
 def html_params(**kwargs) -> str:
     params = []
-    for k, v in sorted(kwargs.items()):
-        if k in ('class_', 'class__', 'for_'):
+    for k, v in kwargs.items():
+        if k in ('class_', 'class__', 'for_', 'id_'):
             k = k[:-1]
         elif k.startswith('data_'):
             k = k.replace('_', '-')
@@ -49,6 +49,6 @@ def html_params(**kwargs) -> str:
 
 def html_tag(tag_name, content=None, **kwargs):
     if content:
-        return HTMLString('<{0} {1}>{2}</0>'.format(tag_name, html_params(**kwargs), content))
+        return HTMLString('<{0} {1}>{2}</{0}>'.format(tag_name, html_params(**kwargs), content))
     else:
-        return HTMLString('<{0} {1}/>'.format(tag_name, html_params(**kwargs)))
+        return HTMLString('<{0} {1} />'.format(tag_name, html_params(**kwargs)))

@@ -15,6 +15,13 @@ class LunarDateTestCase(unittest.TestCase):
         self.assertEqual(8, ld.day)
         self.assertEqual(True, ld.leap)
 
+    def test_create_specific_dates(self):
+        today = LunarDate.today()
+        self.assertEqual(1, LCalendars.delta(LunarDate.tomorrow(), today))
+        self.assertEqual(-1, LCalendars.delta(LunarDate.yesterday(), today))
+        self.assertEqual(5, LCalendars.delta(today.after(5), today))
+        self.assertEqual(-5, LCalendars.delta(today.before(5), today))
+
     def test_convert_datetime(self):
         dt = LunarDate(1976, 8, 8, 1).to_solar_date()
         self.assertEqual(date(1976, 10, 1), dt)
@@ -130,6 +137,7 @@ class FormatterTestCase(unittest.TestCase):
         self.assertEqual('%2017', ld3.strftime('%%%y'))
         self.assertEqual('2017631', ld3.strftime('%y%m%d%l'))
         self.assertEqual('201706031', ld3.strftime('%y%A%B%l'))
+        self.assertEqual('201706031', ld3.__format__('%y%A%B%l'))
 
     def test_term(self):
         ld = LunarDate(2020, 3, 23)
