@@ -22,11 +22,11 @@
 
 从v3.3.1 开始，测试用例全部使用标准的 unittest 代码，支持 unittest / nose / nose2 / pytest 等测试框架。
 
-**持续构建 - Travis CI**
+**持续构建 - Github Action**
 
-> 主页： https://travis-ci.org
+> 主页： https://github.com/kinegratii/borax/actions
 
-Travis是一个在线持续集成的平台，支持github登录。配置文件是一个名为 *.travis.yaml* 的配置文件。
+Github Action 是 Github 推出的持续集成服务。
 
 **发布 - twine**
 

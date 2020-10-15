@@ -20,6 +20,7 @@
   - 模块 `bjson` 标记为 `DeprecationWarning` 状态
 - **构建部署**
   - 支持 [Github Action](https://github.com/kinegratii/borax/actions) 
+  - 更新 *requirements_dev.txt*
 
 ## v3.3.1 (20200827)
 

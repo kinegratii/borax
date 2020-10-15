@@ -1,8 +1,11 @@
 # coding=utf8
 
 import json
+import warnings
 
 __all__ = ['EncoderMixin', 'BJSONEncoder']
+
+warnings.warn('This module is deprecated, use borax.serialize.cjson instead.', DeprecationWarning, stacklevel=2)
 
 
 class EncoderMixin:
