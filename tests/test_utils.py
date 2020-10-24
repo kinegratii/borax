@@ -1,5 +1,6 @@
 # coding=utf8
 
+import itertools
 import unittest
 from unittest.mock import Mock
 
@@ -14,6 +15,15 @@ class BaseTestCase(unittest.TestCase):
     def test_item_cycle(self):
         data = list(range(0, 10))
         self.assertEqual(6, get_item_cycle(data, 6))
+        self.assertEqual(get_item_cycle(data, 45, 2), list(itertools.cycle(data))[45 - 2])
+
+    def test_item_cycle2(self):
+        source = list(range(7))
+        total = 1232
+        for index, ele in enumerate(itertools.cycle(source)):
+            if index > total:
+                break
+            self.assertEqual(ele, get_item_cycle(source, index))
 
     def test_chain(self):
         c = Mock(a=Mock(c='ac'))

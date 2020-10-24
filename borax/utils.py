@@ -34,6 +34,13 @@ def chain_getattr(obj, attr, value=None):
 
 
 def get_item_cycle(data, index, start=0):
+    """
+    get_item_cycle(data, index) == list(itertools.cycle(data))[index-start]
+    :param data:
+    :param index:
+    :param start:
+    :return:
+    """
     length = len(data)
     return data[((index - start) % length + length) % length]
 
