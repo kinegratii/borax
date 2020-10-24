@@ -6,9 +6,9 @@
 
 自v3.4.0 开始:
 
-1. 原来的 `bjson` 和 `cjson` 将合并为 `cjson`，支持 `__json__` 定义。
+1. 原来的 `bjson` 和 `cjson` 将合并为 `cjson`，`cjson` 现在也支持 `__json__` 定义。
 2.  编码函数 `cjson.to_serializable` 将重名为 `cjson.encoder`。
-3. `bjson` 模块 和 `cjson.to_serializable` 将在v4.0版本移除。
+3. `bjson` 模块 和 `cjson.to_serializable` 函数别名将在v4.0版本移除。
 
 ## 使用方法
 
@@ -127,26 +127,27 @@ print(cjson.dumps(obj)) # 输出：'{"point": [1, 2]}'
 
 ### cjson.encode_object
 
-原始的编码函数。默认采用 `__json__` 进行编码。
+cjson 默认的编码函数。调用 `__json__` 进行编码。
 
 
 ###  cjson.encoder
 
 使用 [singledispatch](https://docs.python.org/3/library/functools.html#functools.singledispatch) 装饰的json encoder函数，可以直接用于 dump 的 default 参数。
 
-默认添加了对 `datetime` 、`date` 的序列化支持。
+使用 `register` 重载新的编码实现， 默认添加了对 `datetime` 、`date` 的序列化支持。
 
 ```python
 encoder.register(datetime, lambda obj: obj.strftime('%Y-%m-%d %H:%M:%S'))
 encoder.register(date, lambda obj: obj.strftime('%Y-%m-%d'))
 ```
 
+### cjson.to_serializable
 
-
+`cjson.encoder` 的别名引用。 将于 v4.0 移除。
 
 ### cjson.dumps/dump
 
-cjson 还提供了类似的 `dumps` / `dump` 方法，默认使用 `cjson.encoder` 。
+cjson 还提供了类似的 `dumps` / `dump` 方法，默认使用 `cjson.encoder` 函数。
 
 - `borax.serialize.cjson.dumps(obj, **kwargs)` 
 - `borax.serialize.cjson.dumps(obj, fp, **kwargs)` 
@@ -159,3 +160,6 @@ json.dump(obj, default=cjson.encoder)
 cjson.dump(obj)
 ```
 
+## 参考资料
+
+- [PEP 443 -- Single-dispatch generic functions](https://www.python.org/dev/peps/pep-0443/)

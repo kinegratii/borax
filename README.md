@@ -8,7 +8,7 @@
 
 
 
-## 概述
+## 概述 (Overview)
 
 Borax 是一个Python3工具集合库。包括了以下几个话题：
 
@@ -21,7 +21,7 @@ Borax 是一个Python3工具集合库。包括了以下几个话题：
 | Borax.Numbers       | 数字库。包括中文数字、百分数等。                      |
 | Borax.Patterns      | 设计模式。包括单例模式、代理对象、延迟对象。          |
 
-## 安装
+## 安装 (Installation)
 
 Borax 要求 Python3.5+ 。
 
@@ -39,7 +39,7 @@ $ pip install borax
 $ poetry add borax
 ```
 
-## 使用示例
+## 使用示例 (Usage)
 
 ### Borax.LunarDate: 中国农历日期
 
@@ -50,7 +50,7 @@ $ poetry add borax
 创建日期，日期推算
 
 ```python
-from borax.calendars.lunardate import LunarDate
+from borax.calendars import LunarDate
 
 # 获取今天的农历日期（农历2018年七月初一）
 print(LunarDate.today()) # LunarDate(2018, 7, 1, 0)
@@ -132,7 +132,7 @@ names = fetch(objects, 'name')
 print(names) # ['Alice', 'Bob', 'Charlie']
 ```
 
-## 文档
+## 文档 (Document)
 
 文档由 [docsify](https://docsify.js.org/) 构建。
 
@@ -141,14 +141,14 @@ print(names) # ['Alice', 'Bob', 'Charlie']
 | github | [https://kinegratii.github.io/borax](https://kinegratii.github.io/borax) |
 | gitee | [https://kinegratii.gitee.io/borax](https://kinegratii.gitee.io/borax) |
 
-## 开发特性和规范
+## 开发特性和规范 (Development Features)
 
 - [x] [Typing Hints](https://www.python.org/dev/peps/pep-0484/)
 - [x] [Flake8 Code Style](http://flake8.pycqa.org/en/latest/)
 - [x] [nose2](https://pypi.org/project/nose2/)
 - [x] [Github Action](https://github.com/kinegratii/borax/actions)
 
-## 开源协议
+## 开源协议 (License)
 
 ```
 The MIT License (MIT)
@@ -173,7 +173,7 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
 
-## 捐赠
+## 捐赠 (Donate)
 
 如果你觉得这个项目帮助到了你，你可以帮作者们买一杯咖啡表示感谢！
 
