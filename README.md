@@ -5,6 +5,7 @@
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/borax.svg)](https://pypi.org/project/borax)
 [![PyPI - Status](https://img.shields.io/pypi/status/borax.svg)](https://github.com/kinegratii/borax)
 ![Python package](https://github.com/kinegratii/borax/workflows/Python%20package/badge.svg)
+![Codecov](https://codecov.io/github/kinegratii/borax/coverage.svg)
 
 
 
@@ -145,8 +146,9 @@ print(names) # ['Alice', 'Bob', 'Charlie']
 
 - [x] [Typing Hints](https://www.python.org/dev/peps/pep-0484/)
 - [x] [Flake8 Code Style](http://flake8.pycqa.org/en/latest/)
-- [x] [nose2](https://pypi.org/project/nose2/)
+- [x] [nose2](https://pypi.org/project/nose2/) | [pytest](https://docs.pytest.org/en/latest/)
 - [x] [Github Action](https://github.com/kinegratii/borax/actions)
+- [x] [Code Coverage](https://codecov.io/)
 
 ## 开源协议 (License)
 
