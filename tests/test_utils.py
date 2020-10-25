@@ -15,7 +15,6 @@ class BaseTestCase(unittest.TestCase):
     def test_item_cycle(self):
         data = list(range(0, 10))
         self.assertEqual(6, get_item_cycle(data, 6))
-        self.assertEqual(get_item_cycle(data, 45, 2), list(itertools.cycle(data))[45 - 2])
 
     def test_item_cycle2(self):
         source = list(range(7))

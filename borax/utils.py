@@ -35,7 +35,7 @@ def chain_getattr(obj, attr, value=None):
 
 def get_item_cycle(data, index, start=0):
     """
-    get_item_cycle(data, index) == list(itertools.cycle(data))[index-start]
+    get_item_cycle(data, index) == list(itertools.cycle(data))[:index-start][-1]
     :param data:
     :param index:
     :param start:
