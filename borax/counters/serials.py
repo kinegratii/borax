@@ -64,7 +64,7 @@ class StringSerialGenerator(SerialGenerator):
             raise ValueError('Invalid base value {}.Choices are: 2, 8, 10, 16'.format(base))
         self._num_fmt = '{{0:0{0}{1}}}'.format(digits, num_fmt[base])
         self._base = base
-        super().__init__(lower=0, upper=self._base ** digits - 1)
+        super().__init__(lower=0, upper=self._base ** digits)
 
     def generate(self, num: int) -> List[str]:
         res = super().generate(num)
