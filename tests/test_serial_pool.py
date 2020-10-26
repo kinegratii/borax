@@ -87,3 +87,20 @@ class SerialNoPoolTestCase(unittest.TestCase):
             sp.add_elements([-2])
         with self.assertRaises(TypeError):
             sp.add_elements([2.5])
+
+    def test_elements_source(self):
+        actual_store = ['LC0001', 'LC0002']
+
+        def get_source():
+            return actual_store
+
+        sp = SerialNoPool(label_fmt='LC{no:04d}')
+        sp.set_source(get_source)
+
+        data = sp.generate_labels(2)
+        self.assertListEqual(['LC0003', 'LC0004'], data)
+
+        actual_store.extend(data)
+
+        data = sp.generate_labels(2)
+        self.assertListEqual(['LC0005', 'LC0006'], data)

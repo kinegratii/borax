@@ -3,7 +3,10 @@
 import re
 from itertools import chain
 
-from typing import List, Union, Iterable, Generator, Optional
+from typing import List, Union, Iterable, Generator, Optional, Callable
+
+# ---------- Custom typing ----------
+ElementsType = List[Union[int, str]]
 
 
 def serial_no_generator(lower: int = 0, upper: int = 10, reused: bool = True, values: Iterable[int] = None) -> \
@@ -110,6 +113,7 @@ class SerialNoPool:
                 self._lower, self._upper = 0, 100
 
         self._values = set()
+        self._source = None
 
     # ---------- Pool Attributes ----------
 
@@ -123,19 +127,28 @@ class SerialNoPool:
 
     # ---------- Data API ----------
 
-    def add_elements(self, elements: List[Union[int, str]]) -> 'SerialNoPool':
+    def set_elements(self, elements: ElementsType) -> 'SerialNoPool':
+        self._values = set()
+        self.add_elements(elements)
+        return self
+
+    def set_source(self, source: Callable[[], ElementsType]) -> 'SerialNoPool':
+        self._source = source
+        return self
+
+    def add_elements(self, elements: ElementsType) -> 'SerialNoPool':
         values = self._elements2values(elements)
         for v in values:
             self._values.add(v)
         return self
 
-    def remove_elements(self, elements: List[Union[int, str]]) -> 'SerialNoPool':
+    def remove_elements(self, elements: ElementsType) -> 'SerialNoPool':
         values = self._elements2values(elements)
         for v in values:
             self._values.remove(v)
         return self
 
-    def _elements2values(self, elements: List[Union[int, str]]) -> List[int]:
+    def _elements2values(self, elements: ElementsType) -> List[int]:
         values = []  # type: List[int]
         for ele in elements:
             if isinstance(ele, int):
@@ -153,6 +166,13 @@ class SerialNoPool:
     # ---------- Generate API ----------
 
     def get_next_generator(self) -> Generator[SerialElement, None, None]:
+        """
+        This is the low-level method.
+        :return:
+        """
+        if self._source is not None:
+            elements = self._source()
+            self.set_elements(elements)
         value_gen = serial_no_generator(lower=self._lower, upper=self._upper, values=self._values)
         for value in value_gen:
             if self._opts:
