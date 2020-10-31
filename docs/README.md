@@ -23,7 +23,7 @@ Borax 是一个Python3工具集合库。
 - **Borax.DataStructures**:  [树形结构](guides/tree) | [bjson](guides/bjson) | [cjson](guides/cjson) 
 - **Borax.Numbers:**: [中文数字](guides/numbers) |  [百分数](guides/percentage)
 - **Borax.Pattern**: [单例模式](guides/singleton) | [选项Choices](guides/choices)
-- **其他**: [序列号生成器](guides/serial_generator)  | [Tkinter界面](guides/ui)
+- **其他**: [序列号生成器](guides/serial_generator) | [序列号生成器(Pool)](guides/serial_pool) | [Tkinter界面](guides/ui)
 
 ## 开发(Development)
 
