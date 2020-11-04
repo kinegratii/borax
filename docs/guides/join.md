@@ -2,11 +2,11 @@
 
 > 模块 `borax.datasets.join_`
 
-> Changed in V3.2.0
+> Changed in v3.2.0
 
 ## 重要说明
 
-从V3.2.0开始，我们重写 `join` 和 `join_one` ，原有的函数分别重命名为 `old_join` 和 `old_join_one` ，主要变化如下：
+从v3.2.0开始，我们重写 `join` 和 `join_one` ，原有的函数分别重命名为 `old_join` 和 `old_join_one` ，主要变化如下：
 
 - 使用符合SQL的参数命名，比如 on、select_as 等。
 - 原有比较分散的参数进行合并。
@@ -175,7 +175,7 @@ def on_callback(litem:dict, ritem:dict) -> bool:
   ]
 ```
 
-  表示 `left_item.lkey1=right_item.rkey1&left_item.lkey2=right_item.rkey2`。
+  对应的条件表达式为  `left_item.lkey1 == right_item.rkey1 and left_item.lkey2==right_item.rkey2`。
 
 - 简易配置。当含有以下条件时，可以不显式定义 `OnClause` 对象，由程序自动转化为对应的 `OnClause`对象，。
 
@@ -230,7 +230,7 @@ on = [OnClause('x', 'y')]
 
 *`old_join_one(data_list, values, from_, as_, default=None)`*
 
-> V3.1 新增default参数。
+> v3.1 新增default参数。
 
 从字典读取某一列的值。
 

@@ -8,7 +8,7 @@
 
 ### format_percentage
 
-> Add in V3.2.0
+> Add in v3.2.0
 
 ```
 format_percentage(numerator: int, denominator: int, *, places: int = 2, null_val: str = '-') -> str
@@ -27,7 +27,7 @@ def __init__(self, *, total=100, completed=0, places=2, display_fmt='{completed}
   pass
 ```
 
-> Changed in V3.2.0: 新增 null_val 参数。
+> Changed in v3.2.0: 新增 null_val 参数。
 
 各参数意义如下：
 
@@ -63,7 +63,7 @@ p = Percentage(total=100, completed=34)
 
 备注：
 
-- `fraction_display` 为 V3.2.0 新增。
+- `fraction_display` 为 v3.2.0 新增。
 
 ### 方法
 

@@ -2,7 +2,7 @@
 
 > 模块：`borax.numbers`
 
-> Added in V3.3.0
+> Added in v3.3.0
 
 ## 常量定义
 

@@ -2,7 +2,7 @@
 
 > 模块： `borax.structure.tree`
 
-> Added in V1.1.4
+> Added in v1.1.4
 
 ## 功能
 

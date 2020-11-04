@@ -2,7 +2,7 @@
 
 > 模块：`borax.serialize.cjson`
 
-## V3.4更新
+## v3.4更新
 
 自v3.4.0 开始:
 
