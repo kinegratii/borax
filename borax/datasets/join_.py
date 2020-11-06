@@ -1,11 +1,13 @@
 # coding=utf8
 
 import operator
+import copy
 
 __all__ = ['join_one', 'join', 'old_join_one', 'old_join']
 
 
 def join_one(ldata, rdata, on, select_as, default=None):
+    ldata = copy.deepcopy(ldata)
     if isinstance(rdata, (list, tuple)):
         rdata = dict(rdata)
     if not isinstance(rdata, dict):
@@ -70,6 +72,7 @@ SC = SelectClause
 
 
 def join(ldata, rdata, on, select_as):
+    ldata = copy.deepcopy(ldata)
     if isinstance(on, CLAUSE_SINGLE_TYPES):
         on = [on]
     if isinstance(on, list):
@@ -104,6 +107,7 @@ def join(ldata, rdata, on, select_as):
 
 
 def old_join_one(data_list, values, from_, as_, default=None):
+    data_list = copy.deepcopy(data_list)
     if isinstance(values, (list, tuple)):
         values = dict(values)
     if not isinstance(values, dict):
@@ -120,6 +124,7 @@ def old_join_one(data_list, values, from_, as_, default=None):
 
 
 def old_join(data_list, values, from_, to_, as_args=None, as_kwargs=None):
+    data_list = copy.deepcopy(data_list)
     as_args = as_args or []
     as_kwargs = as_kwargs or {}
     as_fields = {**{a: a for a in as_args}, **as_kwargs}

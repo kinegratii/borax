@@ -6,6 +6,12 @@
 
 ## 重要说明
 
+### Changed in v3.4.0
+
+本模块 `join_*` 相关函数的第一个参数 `ldata` 、`data_list` 改用赋值传参方式，即这些函数不会改变原有的数据内容。
+
+### Changed in v3.2.0
+
 从v3.2.0开始，我们重写 `join` 和 `join_one` ，原有的函数分别重命名为 `old_join` 和 `old_join_one` ，主要变化如下：
 
 - 使用符合SQL的参数命名，比如 on、select_as 等。
@@ -31,8 +37,6 @@ from borax.datasets.join_ import old_join as join, old_join_one as join_one
 本模块实现了类似于数据库的 LEFT JOIN 数据列表操作，从另一个数据集获取某一个或几个列的值，加到当前数据集中。
 
 > **关于LEFT JOIN** ：LEFT JOIN返回左表的全部行和右表满足ON条件的行，如果左表的行在右表中没有匹配，那么这一行右表中对应数据用NULL代替。
-
-本模块的 join_ 函数将会修改传入的列表join_数据，如需不影响原有数据，可以提前复制一份数据。
 
 本模块示例所用的数据描述如下：
 

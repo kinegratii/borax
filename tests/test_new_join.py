@@ -65,54 +65,53 @@ class SelectClauseTestCase(unittest.TestCase):
 
 class JoinOneTestCase(unittest.TestCase):
     def test_with_dict(self):
-        book_data = copy.deepcopy(books)
-        catalog_books = join_one(book_data, catalogs_dict, on='catalog', select_as='catalog_name')
+        catalog_books = join_one(books, catalogs_dict, on='catalog', select_as='catalog_name')
         self.assertTrue(all(['catalog_name' in book for book in catalog_books]))
         self.assertEqual('Java', catalog_books[1]['catalog_name'])
+        self.assertFalse('catalog_name' in books[1])
 
     def test_with_choices(self):
-        book_data = copy.deepcopy(books)
-
-        catalog_books = join_one(book_data, catalog_choices, on='catalog', select_as='catalog_name')
+        catalog_books = join_one(books, catalog_choices, on='catalog', select_as='catalog_name')
         self.assertTrue(all(['catalog_name' in book for book in catalog_books]))
         self.assertEqual('Java', catalog_books[1]['catalog_name'])
+        self.assertFalse('catalog_name' in books[1])
 
     def test_join_one_with_default(self):
-        book_data = copy.deepcopy(books)
         cur_catalogs_dict = {
             1: 'Python',
             2: 'Java'
         }
 
-        catalog_books = join_one(book_data, cur_catalogs_dict, on='catalog', select_as='catalog_name')
+        catalog_books = join_one(books, cur_catalogs_dict, on='catalog', select_as='catalog_name')
         self.assertTrue(all(['catalog_name' in book for book in catalog_books]))
         self.assertEqual(None, catalog_books[2]['catalog_name'])
+        self.assertFalse('catalog_name' in books[1])
 
     def test_join_one_with_custom_default(self):
-        book_data = copy.deepcopy(books)
         cur_catalogs_dict = {
             1: 'Python',
             2: 'Java'
         }
-        catalog_books = join_one(book_data, cur_catalogs_dict, on='catalog', select_as='catalog_name',
+        catalog_books = join_one(books, cur_catalogs_dict, on='catalog', select_as='catalog_name',
                                  default='[未知分类]')
         self.assertTrue(all(['catalog_name' in book for book in catalog_books]))
         self.assertEqual('[未知分类]', catalog_books[2]['catalog_name'])
+        self.assertFalse('catalog_name' in books[1])
 
     def test_callback(self):
         def _on(_litem):
             return _litem['catalog']
 
-        book_data = copy.deepcopy(books)
-        catalog_books = join_one(book_data, catalogs_dict, on=_on, select_as='catalog_name')
+        catalog_books = join_one(books, catalogs_dict, on=_on, select_as='catalog_name')
         self.assertTrue(all(['catalog_name' in book for book in catalog_books]))
         self.assertEqual('Java', catalog_books[1]['catalog_name'])
+        self.assertFalse('catalog_name' in books[1])
 
 
 class JoinTestCase(unittest.TestCase):
     def test_basic_join(self):
-        book_data = copy.deepcopy(books)
-        catalog_books = join(book_data, catalogs_list, on=('catalog', 'id'),
+        catalog_books = join(books, catalogs_list, on=('catalog', 'id'),
                              select_as=('name', 'catalog_name'))
         self.assertTrue(all(['catalog_name' in book for book in catalog_books]))
         self.assertEqual('Java', catalog_books[1]['catalog_name'])
+        self.assertFalse('catalog_name' in books[1])

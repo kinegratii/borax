@@ -11,6 +11,8 @@
   - 新增 `LCalendars.get_leap_years` 函数
   - 新增 `InvalidLunarDateError` 异常类
   - 修正农历平月日期 `%t` 格式化显示的BUG
+- **borax.datasets**
+  - `join` 模块相关函数参数 `ldata` 和 `data_list` 使用赋值传参方式，不再改变原有列表数据的内容
 - **`borax.numbers`**
   - `ChineseNumbers` 类新增 计量/编号 两种数字形式
 - **`borax.htmls`**
