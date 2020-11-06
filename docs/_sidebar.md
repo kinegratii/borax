@@ -22,6 +22,7 @@
   - [字符串工具模块](guides/strings)
 - **● 其他**
   - [序列号生成器](guides/serial_generator)
+  - [序列号生成器(Pool)](guides/serial_pool)
   - [Tkinter界面](guides/ui)
 - **● 项目开发**
   - [版本日志](changelog)

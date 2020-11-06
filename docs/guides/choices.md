@@ -260,7 +260,7 @@ class MyChoices(choices.Choices):
 | MyChoices.GREEN.display     | -             | -                  |      |
 | MyChoices.get_value_display | `<label>`     | -                  |      |
 | MyChoices._ _ iter _ _      | Y             | -                  |      |
-| MyChoices.names             | V3.4.0+       | Y                  |      |
-| MyChoices.values            | V3.4.0+       | Y                  |      |
-| MyChoices.labels            | V3.4.0+       | Y                  |      |
+| MyChoices.names             | v3.4.0+       | Y                  |      |
+| MyChoices.values            | v3.4.0+       | Y                  |      |
+| MyChoices.labels            | v3.4.0+       | Y                  |      |
 | member in (check values)    | Y             | Y                  |      |

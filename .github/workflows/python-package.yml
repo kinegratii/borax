@@ -11,7 +11,9 @@ on:
       - dev/v**
       - release-**
   pull_request:
-    branches: [ master ]
+    branches:
+      - master
+      - develop
 
 jobs:
   build:
