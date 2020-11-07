@@ -1,6 +1,7 @@
 # coding=utf8
 
 import operator
+import copy
 
 __all__ = ['join_one', 'join', 'old_join_one', 'old_join']
 
@@ -101,6 +102,16 @@ def join(ldata, rdata, on, select_as):
             _ri = {}
         litem.update(_pick_data(_ri, sf_list))
     return ldata
+
+
+def deep_join_one(ldata, rdata, on, select_as, default=None):
+    ldata = copy.deepcopy(ldata)
+    return join_one(ldata, rdata, on, select_as, default=default)
+
+
+def deep_join(ldata, rdata, on, select_as):
+    ldata = copy.deepcopy(ldata)
+    return join(ldata, rdata, on, select_as)
 
 
 def old_join_one(data_list, values, from_, as_, default=None):
