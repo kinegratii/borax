@@ -34,6 +34,13 @@ def chain_getattr(obj, attr, value=None):
 
 
 def get_item_cycle(data, index, start=0):
+    """
+    get_item_cycle(data, index) == list(itertools.cycle(data))[:index-start][-1]
+    :param data:
+    :param index:
+    :param start:
+    :return:
+    """
     length = len(data)
     return data[((index - start) % length + length) % length]
 
@@ -86,7 +93,7 @@ def flatten(iterable):
     """flat a iterable. https://stackoverflow.com/a/2158532
     """
     for el in iterable:
-        if isinstance(el, collections.Iterable) and not isinstance(el, (str, bytes)):
+        if isinstance(el, collections.abc.Iterable) and not isinstance(el, (str, bytes)):
             yield from flatten(el)
         else:
             yield el
@@ -94,8 +101,8 @@ def flatten(iterable):
 
 def force_list(val, sep=','):
     if isinstance(val, (list, set, tuple)):
-        return val
+        return tuple(val)
     elif isinstance(val, str):
-        return val.split(sep)
+        return tuple(val.split(sep))
     else:
         return val,

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "borax"
-version = "3.3.0"
+version = "3.4.0"
 description = "A util collections for Python3."
 readme = "long_description.rst"
 authors = ["kinegratii <kinegratii@gmail.com>"]
@@ -15,6 +15,7 @@ classifiers=[
     "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3 :: Only",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",

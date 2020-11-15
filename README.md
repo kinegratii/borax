@@ -1,30 +1,48 @@
-# Borax - python开发工具集合
+# Borax - python3工具集合库
 
 
 [![PyPI](https://img.shields.io/pypi/v/borax.svg)](https://pypi.org/project/borax) 
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/borax.svg)](https://pypi.org/project/borax)
 [![PyPI - Status](https://img.shields.io/pypi/status/borax.svg)](https://github.com/kinegratii/borax)
-[![Build Status](https://travis-ci.org/kinegratii/borax.svg?branch=master)](https://travis-ci.org/kinegratii/borax)
+![Python package](https://github.com/kinegratii/borax/workflows/Python%20package/badge.svg)
+![Codecov](https://codecov.io/github/kinegratii/borax/coverage.svg)
 
 
 
-## 概述 & 安装
+## 概述 (Overview)
 
-Borax 是一个 Python3 开发工具集合库,涉及到：
+Borax 是一个Python3工具集合库。包括了以下几个话题：
 
- - 设计模式
- - 数据结构及其实现
- - 一些简单函数的封装
+| 话题（Topics）      | 内容                                                  |
+| ------------------- | ----------------------------------------------------- |
+| Borax.Calendars     | 1900-2100年的中国农历日期库                           |
+| Borax.Choices       | 声明式的选项类。适用于Django.models.choices 定义。    |
+| Borax.Datasets      | 记录型数据操作库，包括连结（Join）、列选择（fetch）等 |
+| Borax.DataStuctures | 树形结构，json数据                                    |
+| Borax.Numbers       | 数字库。包括中文数字、百分数等。                      |
+| Borax.Patterns      | 设计模式。包括单例模式、代理对象、延迟对象。          |
 
-使用 *pip* ：
+## 安装 (Installation)
+
+Borax 要求 Python3.5+ 。
+
+可以通过以下两种方式安装 ：
+
+1) 使用 *pip* ：
 
 ```shell
 $ pip install borax
 ```
 
-## 使用示例
+2) 使用 [poetry](https://poetry.eustace.io/) 工具：
 
-### 中国农历日期
+```shell
+$ poetry add borax
+```
+
+## 使用示例 (Usage)
+
+### Borax.LunarDate: 中国农历日期
 
 一个支持1900-2100年的农历日期工具库。
 
@@ -33,7 +51,7 @@ $ pip install borax
 创建日期，日期推算
 
 ```python
-from borax.calendars.lunardate import LunarDate
+from borax.calendars import LunarDate
 
 # 获取今天的农历日期（农历2018年七月初一）
 print(LunarDate.today()) # LunarDate(2018, 7, 1, 0)
@@ -51,13 +69,13 @@ print(ld.after(10)) # LunarDate(2018, 7, 11, 0)
 
 ```python
 today = LunarDate.today()
-print(today.strftime('%Y-%M-%D')) # '二〇一八-六-廿六'
+print(today.strftime('%Y年%L%M月%D')) # '二〇一八年六月廿六'
 print(today.strftime('今天的干支表示法为：%G')) # '今天的干支表示法为：戊戌年庚申月辛未日'
 ```
 
-### 国内外节日
+### Borax.Festival: 国内外节日
 
-分别计算距离 “春节”、生日（十一月初一）、“除夕（农历十二月的最后一天）” 还有多少天
+分别计算距离 “春节”、“除夕（农历十二月的最后一天）” 还有多少天
 
 ```python
 from borax.calendars.festivals import get_festival, LunarSchema, DayLunarSchema
@@ -65,28 +83,40 @@ from borax.calendars.festivals import get_festival, LunarSchema, DayLunarSchema
 festival = get_festival('春节')
 print(festival.countdown()) # 7
 
-ls = LunarSchema(month=11, day=1)
-print(ls.countdown()) # 285
-
 dls = DayLunarSchema(month=12, day=1, reverse=1)
 print(dls.countdown()) # 344
 ```
 
-### 大写金额
+### Borax.Numbers: 中文数字处理
 
-将金额转化为符合标准的大写数字。
+
+不同形式的中文数字
+
+```python
+from borax.numbers import ChineseNumbers
+
+# 小写、计量
+print(ChineseNumbers.to_chinese_number(204)) # '二百零四'
+# 小写、编号
+print(ChineseNumbers.order_number(204)) # '二百〇四'
+# 大写、计量
+print(ChineseNumbers.to_chinese_number(204, upper=True)) # '贰佰零肆'
+# 大写、编号
+print(ChineseNumbers.to_chinese_number(204, upper=True, order=True)) # '贰佰〇肆'
+```
+
+财务金额
+
+```python
+from borax.numbers import FinanceNumbers
+print(FinanceNumbers.to_capital_str(100000000)) # '壹亿元整'
+print(FinanceNumbers.to_capital_str(4578442.23)) # '肆佰伍拾柒万捌仟肆佰肆拾贰元贰角叁分'
+
+print(FinanceNumbers.to_capital_str(107000.53)) # '壹拾万柒仟元伍角叁分'
 
 ```
->>> from borax.numbers import FinanceNumbers
->>> FinanceNumbers.to_capital_str(100000000)
-'壹亿元整'
->>>FinanceNumbers.to_capital_str(4578442.23)
-'肆佰伍拾柒万捌仟肆佰肆拾贰元贰角叁分'
->>>FinanceNumbers.to_capital_str(107000.53)
-壹拾万柒仟元伍角叁分
-```
 
-### 数据拾取
+### Borax.Datasets: 数据列选择
 
 从数据序列中选择一个或多个字段的数据。
 
@@ -103,24 +133,24 @@ names = fetch(objects, 'name')
 print(names) # ['Alice', 'Bob', 'Charlie']
 ```
 
-## 文档
+## 文档 (Document)
 
 文档由 [docsify](https://docsify.js.org/) 构建。
 
 | 源 | 网址 |
 | ---- | ---- |
-| github | [https://kinegratii.github.io/borax](https://kinegratii.github.io/borax) | 
+| github | [https://kinegratii.github.io/borax](https://kinegratii.github.io/borax) |
 | gitee | [https://kinegratii.gitee.io/borax](https://kinegratii.gitee.io/borax) |
 
-## 开发特性和规范
+## 开发特性和规范 (Development Features)
 
 - [x] [Typing Hints](https://www.python.org/dev/peps/pep-0484/)
 - [x] [Flake8 Code Style](http://flake8.pycqa.org/en/latest/)
-- [x] [nose2](https://pypi.org/project/nose2/)
-- [x] [Travis CI](https://travis-ci.org)
-- [x] [Docsify](https://docsify.js.org)
+- [x] [nose2](https://pypi.org/project/nose2/) | [pytest](https://docs.pytest.org/en/latest/)
+- [x] [Github Action](https://github.com/kinegratii/borax/actions)
+- [x] [Code Coverage](https://codecov.io/)
 
-## 开源协议
+## 开源协议 (License)
 
 ```
 The MIT License (MIT)
@@ -145,7 +175,7 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
 
-## 捐赠
+## 捐赠 (Donate)
 
 如果你觉得这个项目帮助到了你，你可以帮作者们买一杯咖啡表示感谢！
 

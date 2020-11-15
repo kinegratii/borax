@@ -9,7 +9,15 @@ from .store import (
 
 from typing import Optional, Iterator, Tuple, Union
 
-__all__ = ['LunarDate', 'LCalendars']
+__all__ = ['LunarDate', 'LCalendars', 'InvalidLunarDateError']
+
+
+# Exception
+
+class InvalidLunarDateError(ValueError):
+    # The InvalidLunarDateError will not be the subclass of ValueError in v4.0.
+    pass
+
 
 # Typing
 
@@ -28,7 +36,7 @@ MAX_OFFSET = 73411  # (MAX_SOLAR_DATE - MIN_SOLAR_DATE).days
 
 def _check_year_range(year):
     if year < MIN_LUNAR_YEAR or year > MAX_LUNAR_YEAR:
-        raise ValueError('year out of range [1900, 2100]')
+        raise InvalidLunarDateError('[year={}]: Year must be in the range [1900, 2100]'.format(year))
 
 
 # lunar year 1900~2100
@@ -129,7 +137,16 @@ class LCalendars:
             if (_month, _leap) == (month, leap):
                 return _days
         else:
-            raise ValueError('Invalid month for the year {}'.format(year))
+            raise InvalidLunarDateError('[year={},month={},leap={}]: Invalid month.'.format(year, month, leap))
+
+    @staticmethod
+    def get_leap_years(month: int = 0) -> tuple:
+        res = []
+        for yoffset, yinfo in enumerate(YEAR_INFOS):
+            leap_month = yinfo % 16
+            if leap_month > 0 and (month == 0 or leap_month == month):
+                res.append(MIN_LUNAR_YEAR + yoffset)
+        return tuple(res)
 
     @staticmethod
     def create_solar_date(year: int, term_index: Optional[int] = None,
@@ -164,7 +181,7 @@ class LCalendars:
 
 # offset <----> year, day_offset <----> year, month, day, leap
 
-def offset2ymdl(offset):
+def offset2ymdl(offset: int) -> Tuple[int, int, int, Leap]:
     def _o2mdl(_year_info, _offset):
         for _month, _days, _leap in _iter_year_month(_year_info):
             if _offset < _days:
@@ -199,10 +216,11 @@ def ymdl2offset(year, month, day, leap):
                     res += _day - 1
                     return res
                 else:
-                    raise ValueError("day out of range")
+                    raise InvalidLunarDateError(
+                        "[year={},month={},day={},leap={}]:Invalid day".format(year, month, day, leap))
             res += _days_
 
-        raise ValueError("month out of range")
+        raise InvalidLunarDateError('[year={},month={},leap={}]: Invalid month.'.format(year, month, leap))
 
     offset = 0
     _check_year_range(year)
@@ -416,15 +434,24 @@ class LunarDate(EncoderMixin):
 
     @property
     def cn_year(self) -> str:
-        return '{}年'.format(TextUtils.year_cn(self.year))
+        return '{}'.format(TextUtils.year_cn(self.year))
 
     @property
     def cn_month(self) -> str:
-        return '{}{}月'.format('闰' if self.leap else '', TextUtils.month_cn(self.month))
+        return '{}'.format(TextUtils.month_cn(self.month))
 
     @property
     def cn_day(self) -> str:
         return '{}'.format(TextUtils.day_cn(self.day))
+
+    @property
+    def cn_leap(self) -> str:
+        return '闰' if self.leap else ''
+
+    @property
+    def cn_month_num(self) -> str:
+        mstr = self.cn_month
+        return {'冬': '十一', '腊': '十二'}.get(mstr, mstr)
 
     @property
     def cn_day_calendar(self) -> str:
@@ -433,14 +460,14 @@ class LunarDate(EncoderMixin):
         else:
             return self.cn_day
 
-    def weekday(self):
+    def weekday(self) -> int:
         return (self.offset + 2) % 7
 
-    def isoweekday(self):
+    def isoweekday(self) -> int:
         return (self.offset + 3) % 7 or 7
 
     def cn_str(self) -> str:
-        return '{}{}{}'.format(self.cn_year, self.cn_month, self.cn_day)
+        return '{}年{}{}月{}'.format(self.cn_year, self.cn_leap, self.cn_month, self.cn_day)
 
     def gz_str(self) -> str:
         return '{}年{}月{}日'.format(self.gz_year, self.gz_month, self.gz_day)
@@ -593,6 +620,7 @@ class Formatter:
         '%q': 'gz_day',
         '%C': 'cn_str',
         '%G': 'gz_str',
+        '%N': 'cn_month_num',
         '%%': '%'
     }
 
@@ -629,26 +657,20 @@ class Formatter:
 
     # Custom values
 
-    def get_leap(self, obj):
-        return int(obj.leap)
+    def get_term(self, obj: LunarDate) -> str:
+        return obj.term or '-'
 
-    def get_cn_leap(self, obj):
+    def get_leap(self, obj: LunarDate) -> str:
+        return str(int(obj.leap))
+
+    def get_cn_leap(self, obj: LunarDate) -> str:
         if obj.leap:
             return '闰'
         else:
             return ''
 
-    def get_cn_year(self, obj):
-        return TextUtils.year_cn(obj.year)
-
-    def get_cn_month(self, obj):
-        return TextUtils.month_cn(obj.month)
-
-    def get_cn_day(self, obj):
-        return TextUtils.day_cn(obj.day)
-
-    def get_padding_month(self, obj):
+    def get_padding_month(self, obj: LunarDate) -> str:
         return '{0:02d}'.format(obj.month)
 
-    def get_padding_day(self, obj):
+    def get_padding_day(self, obj: LunarDate) -> str:
         return '{0:02d}'.format(obj.day)

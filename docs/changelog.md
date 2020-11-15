@@ -1,10 +1,35 @@
 # 更新日志
 
+## v3.4.0 (20201115)
+
+> 新增 Python3.9构建支持
+
+- **`borax.choices`**
+  - `ConstChoices` 新增 labels 、values 等属性
+- **`borax.calendars.lunarDate`**
+  - 新增 `%N` 月份描述符，将“冬”、“腊”显示为“十一”、“十二”
+  - 新增 `LCalendars.get_leap_years` 函数
+  - 新增 `InvalidLunarDateError` 异常类
+  - 修正农历平月日期 `%t` 格式化显示的BUG
+- `borax.datasets.join`
+  - 新增 `deep_join` 、`deep_join_one` 使用赋值传参方式
+- **`borax.numbers`**
+  - `ChineseNumbers` 类新增 计量/编号 两种数字形式
+- **`borax.htmls`**
+  - 修正函数 `html_tag` 处理的BUG
+- **`borax.serialize`**
+  - 整合 `bjson` 和 `cjson` ，`cjson` 支持 `__json__` 特性
+  - 模块 `bjson` 标记为 `DeprecationWarning` 状态
+- **开发SOP**
+  - 支持 [Github Action](https://github.com/kinegratii/borax/actions) 
+  - 更新依赖库，参见 *requirements_dev.txt*
+  - 新增代码覆盖率 [Codecov](https://codecov.io/)
+
 ## v3.3.1 (20200827)
 
 - `borax.structures.dictionary` 模块
   - 类 `AttrDict` 新增别名 `AD`
-- 构建部署
+- 开发SOP
   - 修正因stacklevel 设置错误导致 `DeprecatedWarning` 无法正确提示的BUG
   - 参数化测试改用 `unittest.TestCase.subTest`
   - 支持 unittest / nose / nose2 / pytest 测试框架
@@ -12,17 +37,18 @@
 
 ## v3.3.0 (20200815)
 
-- 移除 `borax.fetch` 模块
 - `borax.datasets.join_` 模块
-  -  `old_join` 和 `old_join_one` 标记为 PendingDeprecationWarning  ，将在 V3.5移除
+  -  `old_join` 和 `old_join_one` 标记为 PendingDeprecationWarning  ，将在 v3.5移除
 - `borax.runtime` 模块
 - `borax.numbers` 模块 (+)
   - 新增 `ChineseNumbers` 类
   - 新增 `finaceNumbers` 类，由 `borax.finace` 模块转化
 - `borax.finance` 模块
   - 修正小数使用字符串时 `financial_amount_capital` 错误的BUG
-  - 本模块被标记为 `PendingDeprecationWarning` ，将在V3.5移除
-- 移除 `borax.structures.dic` 模块
+  - 本模块被标记为 `PendingDeprecationWarning` 
+- 被移除模块
+  -  `borax.structures.dic`
+  -  `borax.fetch` 
 
 ## v3.2.0 (20200510)
 
@@ -30,18 +56,18 @@
 
 - `borax.datasets.join_`模块
   - 重写 `join` 和 `join_one` 函数，原有的重命名为 `old_join` 和 `old_join_one`
-  - 原有的 `old_*` 将在V4.0版本移除。
+  - 原有的 `old_*` 将在v4.0版本移除。
 - 新增 `borax.calendars.utils` 模块
 - `borax.structures.percentage` 模块
   - 新增 `format_percentage` 函数
   - 类 `Percentage` 新增 `fraction_display` 属性
   - 当 total 为 0 ，显示为 `'-'` ，而不是 `'0.00%'`
 - `borax.fetch` 模块
-  - 本模块被标记为 DeprecationWarning ，将在V3.3移除
+  - 本模块被标记为 DeprecationWarning ，将在v3.3移除
 
 ## v3.1.0 (20200118)
 
-> 新增 Python3.8构建
+> 新增 Python3.8构建支持
 
 - `datasets` 包
   - 新增 `borax.datasets.fetch`
@@ -50,7 +76,7 @@
 - `calendars.lunardate` 模块
   - 修正农历闰月转平月错误的BUG ([#11](https://github.com/kinegratii/borax/issues/11))
 - `borax.fetch` 模块
-  - 本模块被标记为 PendingDeprecationWarning ，将在V3.3移除
+  - 本模块被标记为 PendingDeprecationWarning ，将在v3.3移除
 
 ## v3.0.0 (20191125)
 

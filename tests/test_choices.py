@@ -39,29 +39,34 @@ class FieldChoiceTestCase(unittest.TestCase):
 
 
 class GenderChoices(choices.ConstChoices):
-    male = choices.Item('male', 'Male')
-    female = choices.Item('female', 'Female')
-    unknown = choices.Item('unknown', 'Unknown')
+    MALE = choices.Item(1, 'Male')
+    FEMALE = choices.Item(2, 'Female')
+    UNKNOWN = choices.Item(3, 'Unknown')
 
 
 class ChoicesItemTestCase(unittest.TestCase):
     def test_get_value(self):
-        self.assertEqual('male', GenderChoices.male)
+        self.assertEqual(1, GenderChoices.MALE)
 
     def test_is_valid(self):
-        self.assertTrue(GenderChoices.is_valid('male'))
-        self.assertTrue(GenderChoices.is_valid('female'))
-        self.assertTrue(GenderChoices.is_valid('unknown'))
-        self.assertFalse(GenderChoices.is_valid('Unknown'))
+        self.assertTrue(GenderChoices.is_valid(1))
+        self.assertTrue(GenderChoices.is_valid(2))
+        self.assertTrue(GenderChoices.is_valid(3))
+        self.assertFalse(GenderChoices.is_valid(4))
 
     def test_get_display(self):
-        self.assertEqual('Male', GenderChoices.get_value_display('male'))
-        self.assertEqual('Female', GenderChoices.get_value_display('female'))
+        self.assertEqual('Male', GenderChoices.get_value_display(1))
+        self.assertEqual('Female', GenderChoices.get_value_display(2))
         self.assertIsNone(Demo1Field.get_value_display(4))
 
+    def test_get_names_and_values_and_labels(self):
+        self.assertTupleEqual(('MALE', 'FEMALE', 'UNKNOWN'), GenderChoices.names)
+        self.assertTupleEqual((1, 2, 3), GenderChoices.values)
+        self.assertTupleEqual(('Male', 'Female', 'Unknown'), GenderChoices.displays)
+        self.assertTupleEqual(('Male', 'Female', 'Unknown'), GenderChoices.labels)
+
     def test_choices(self):
-        self.assertListEqual([('male', 'Male'), ('female', 'Female'), ('unknown', 'Unknown')],
-                             GenderChoices.choices)
+        self.assertListEqual([(1, 'Male'), (2, 'Female'), (3, 'Unknown')], GenderChoices.choices)
 
 
 class OffsetChoices(choices.ConstChoices):

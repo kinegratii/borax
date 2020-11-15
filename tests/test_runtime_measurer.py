@@ -2,11 +2,12 @@
 import time
 import unittest
 
-from borax.runtime import RuntimeMeasurer
+from borax.devtools import RuntimeMeasurer
 
 
 def long_operate():
-    time.sleep(1)
+    for _ in range(100000):
+        pass
 
 
 class RuntimeMeasurerTestCase(unittest.TestCase):
@@ -15,14 +16,25 @@ class RuntimeMeasurerTestCase(unittest.TestCase):
         rm.start('xt')
         long_operate()
         rm.end('xt')
-        data = rm.get_measure_data()[0]
-        self.assertEqual(1, data['total'])
-        self.assertAlmostEqual(1, data['avg'], places=2)
+        data = rm.get_measure_result()
+        self.assertEqual(1, data['xt'].count)
+        self.assertTrue(data['xt'].avg > 0)
 
     def test_with(self):
         rm = RuntimeMeasurer()
         with rm.measure('xt'):
             long_operate()
-        data = rm.get_measure_data()[0]
-        self.assertEqual(1, data['total'])
-        self.assertAlmostEqual(1, data['avg'], places=2)
+        data = rm.get_measure_result()
+        self.assertEqual(1, data['xt'].count)
+        self.assertTrue(data['xt'].avg > 0)
+
+    def test_multiple_tags(self):
+        rm = RuntimeMeasurer()
+        rm.start('tag1')
+        long_operate()
+        rm.end('tag1').start('tag2')
+        long_operate()
+        rm.end('tag2')
+        data = rm.get_measure_result()
+        self.assertTrue('tag1' in data)
+        self.assertTrue('tag2' in data)

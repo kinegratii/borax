@@ -3,7 +3,7 @@
 import unittest
 import copy
 
-from borax.datasets.join_ import (OnClause, OC, SelectClause, SC, join, join_one)
+from borax.datasets.join_ import (OnClause, OC, SelectClause, SC, join, join_one, deep_join, deep_join_one)
 
 catalogs_dict = {
     1: 'Python',
@@ -69,6 +69,7 @@ class JoinOneTestCase(unittest.TestCase):
         catalog_books = join_one(book_data, catalogs_dict, on='catalog', select_as='catalog_name')
         self.assertTrue(all(['catalog_name' in book for book in catalog_books]))
         self.assertEqual('Java', catalog_books[1]['catalog_name'])
+        self.assertTrue('catalog_name' in book_data[1])
 
     def test_with_choices(self):
         book_data = copy.deepcopy(books)
@@ -116,3 +117,21 @@ class JoinTestCase(unittest.TestCase):
                              select_as=('name', 'catalog_name'))
         self.assertTrue(all(['catalog_name' in book for book in catalog_books]))
         self.assertEqual('Java', catalog_books[1]['catalog_name'])
+        self.assertTrue('catalog_name' in book_data[1])
+
+
+class DeepJoinTestCase(unittest.TestCase):
+    def test_basic_join(self):
+        catalog_books = deep_join(books, catalogs_list, on=('catalog', 'id'),
+                                  select_as=('name', 'catalog_name'))
+        self.assertTrue(all(['catalog_name' in book for book in catalog_books]))
+        self.assertEqual('Java', catalog_books[1]['catalog_name'])
+        self.assertFalse('catalog_name' in books[1])
+
+
+class DeepJoinOneTestCase(unittest.TestCase):
+    def test_with_dict(self):
+        catalog_books = deep_join_one(books, catalogs_dict, on='catalog', select_as='catalog_name')
+        self.assertTrue(all(['catalog_name' in book for book in catalog_books]))
+        self.assertEqual('Java', catalog_books[1]['catalog_name'])
+        self.assertFalse('catalog_name' in books[1])

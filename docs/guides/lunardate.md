@@ -14,6 +14,20 @@
 
 关于本模块的更多资料可参考文章 [《Borax-Lunar开发笔记》](https://kinegratii.github.io/2019/01/05/lunardate-module/)。
 
+## 异常
+
+> Add in v3.4.0
+
+- **lunardate.InvalidLunarDateError**
+
+无效农历日期的异常。通常在三种情况下会抛出该异常，表示无效的日期：
+
+- 农历年份不在 [1900, 2100] 范围
+- 尝试创建一个不存在的闰月日期
+- 尝试创建日字段不存在的日期，一般是每个月份的最后几天（廿九、三十）等日期。
+
+该类是ValueError的子类。不过我们将在v4.0中移除这一特性。
+
 ## 常量定义
 
 `lunardate` 提供了下列的模块级常量。 
@@ -108,17 +122,19 @@ LunarDate(2100, 12, 29, 0)
 | day | `int` | 农历日 | 26 | %d | |
 | leap | `bool` | 是否闰月 | False | %l | (1) |
 | offset | `int` | 距下限的偏移量 | 43287 | - | |
-| term | `str` 或 `None` | 节气名称 | 立秋 | %t | |
-| cn_year | `str` | 中文年 | 二〇一八年 | %Y | (2) |
-| cn_month | `str` | 中文月 | 六月 | %M | (2) |
-| cn_day | `str` | 中文日 | 廿六 | %D | (2) |
-| gz_year | `str` | 干支年份 | 戊戌 | %o | |
-| gz_month | `str` | 干支月份 | 庚申 | %p | |
+| term | `str` 或 `None` | 节气名称 | 立秋 | %t | (2) |
+| cn_year | `str` | 中文年 | 二〇一八 | %Y | (3) |
+| cn_month | `str` | 中文月 | 六 | %M | (3) |
+| cn_day | `str` | 中文日 | 廿六 | %D | (3) |
+| cn_leap | `str` | 中文闰月标识 | "闰" 或 "" | %L |  |
+| cn_month_num | `str` | 中文月（数字） | "十一" | %N | v3.4.0新增(4) |
+| gz_year | `str` | 干支年 | 戊戌 | %o | |
+| gz_month | `str` | 干支月 | 庚申 | %p | |
 | gz_day | `str` | 干支日 | 辛未 | %q | |
 | animal | `str` | 年生肖 | 狗 | %a | |
 | - | `str` | 两位数字的月份 | 06 | %A | |
 | - | `str` | 两位数字的日期 | 26 | %B | |
-| cn_day_calendar | `str` | 用于日历显示的中文日 | 26 | %F | v1.3.0新增 (3) |
+| cn_day_calendar | `str` | 用于日历显示的中文日 | 廿六 | %F | v1.3.0新增 (5) |
 | `str(ld)` | `str` | 默认表示法 | LunarDate(2018, 6, 26, False) | - |  |
 | `ld.cn_str()` | `str` | 汉字表示法 | 2018年六月廿六 | %C |  |
 | `ld.gz_str()` | `str` | 干支表示法 | 戊戌年庚申月辛未日 | %G |  |
@@ -126,8 +142,10 @@ LunarDate(2100, 12, 29, 0)
 备注信息：
 
 - (1) '%l' 将闰月标志格式化为数字，如“0”、“1”
-- (2) '%Y'、'%M'、'%D' 三个中文名称不包含“年”、“月”、“日”后缀汉字
-- (3) '%F' 将“初一”改为相应的中文月份，如“七月”、“闰六”、“冬月”、“闰冬”。
+- (2) 当 term为None时，将格式化为 '-'。
+- (3) '%Y'、'%M'、'%D' 三个中文名称不包含“年”、“月”、“日”后缀汉字
+- (4) 和'%M' 相比，将“冬”、“腊” 显示为“十一”、“十二”，其余不变
+- (5) '%F' 将“初一”改为相应的中文月份，如“七月”、“闰六”、“冬月”、“闰冬”。通常用于日历打印，如“廿八  廿九 三十 七月 初二 初三”。
 
 ### 格式化
 
@@ -139,11 +157,24 @@ LunarDate(2100, 12, 29, 0)
 
 ```
 >>>today = LunarDate.today()
->>>today.strftime（'%Y-%M-%D')
+>>>today.strftime（'%Y-%L%M-%D')
 '二〇一八-六-廿六'
 >>>today.strftime('今天的干支表示法为：%G')
 '今天的干支表示法为：戊戌年庚申月辛未日'
 ```
+
+下表是从年月日的角度显示各个描述符之间的关系，以便更快的找到所需要的描述符：
+
+|                            | 年   | 月   | 日   | 闰月标记 |
+| -------------------------- | ---- | ---- | ---- | -------- |
+| 数字                       | %y   | %m   | %d   | %l       |
+| 数字（前导零）             |      | %A   | %B   |          |
+| 中文数字（冬、腊）         | %Y   | %M   | %D   | %L       |
+| 中文数字（十一、十二）     |      | %N   |      |          |
+| 干支                       | %o   | %p   | %q   |          |
+| 生肖                       | %a   |      |      |          |
+| 日历显示（廿九-七月-初二） |      |      | %F   |          |
+|                            |      |      |      |          |
 
 ## 公历转化
 
@@ -203,14 +234,14 @@ LunarDate(2018, 6, 1, 0)
 
 `replace(self, *, year=None, month=None, day=None, leap=None)`
 
-返回一个替换给定值后的日期对象。所有参数必须以关键字形式传入。如果该日期不存在，将抛出 `ValyeError` 异常。
+返回一个替换给定值后的日期对象。所有参数必须以关键字形式传入。如果该日期不存在，将抛出 `InvalidLunarDateError` 异常。
 
 ```
 >>>ld = LunarDate(2018, 5, 3)
 >>>ld.replace(year=2019)
 LunarDate(2019, 5, 3, 0)
 >>>ld.replace(leap=True)
-ValueError: month out of range
+borax.calendars.lunardate.InvalidLunarDateError: [year=2018,month=5,leap=1]: Invalid month.
 ```
 
 ## 日期比较
@@ -285,7 +316,10 @@ print(my_birthday.leap) # 0
 
 ## LCalendars工具接口
 
-`LCalendars` 提供了一系列的工具方法。
+`LCalendars` 提供了一系列的工具方法。`LCalendars` 类中的函数参数 year 和 month 均为农历年份、月份。
+
+### 闰月月份
+
 
 - **LCalendars.leap_month(year: int) -> int**
 
@@ -294,6 +328,35 @@ print(my_birthday.leap) # 0
 - **LCalendars.is_leap_month(year: int, month: int) -> bool**
 
 判断 year 年 month 月是否为闰月。该方法已废弃，可使用 `LCalendars.leap_month(year) == month` 表达式代替。
+
+### 闰月年份
+
+- **LCalendars.get_leap_years(month: int = 0) -> tuple**
+
+> Add in v3.4.0
+
+
+返回含有给定农历闰月的年份列表。当 month == 0 时，返回所有含有闰月的年份。当 month 大于 12 时， 返回空列表。
+
+```
+>>> from borax.calendars.lunardate import LCalendars
+>>> LCalendars.get_leap_years(6)
+(1911, 1930, 1941, 1960, 1979, 1987, 2017, 2025, 2036, 2055, 2074, 2093)
+```
+
+- **LCalendars.iter_year_month(year: int) -> Iterator[Tuple[int, int, int]]**
+
+迭代X年的月份信息，元素返回 *(月份, 该月的天数, 闰月标记)* 的元祖。
+
+例子：
+
+```
+>>>from borax.calendars.lunardate import LCalendars
+>>>list(LCalendars.iter_year_month(2017))
+[(1, 29, 0), (2, 30, 0), (3, 29, 0), (4, 30, 0), (5, 29, 0), (6, 29, 0), (6, 30, 1), (7, 29, 0), (8, 30, 0), (9, 29, 0), (10, 30, 0), (11, 30, 0), (12, 30, 0)]
+```
+
+### 日期相关
 
 - **LCalendars.ndays(year: int, month: Optional[int] = None, leap: Leap = False) -> int**
 
@@ -313,17 +376,14 @@ ValueError: year out of range [1900, 2100]
 >>>LCalendars.ndays(2017, 7, 1)
 ValueError: Invalid month for the year 2017
 ```
-- **LCalendars.iter_year_month(year: int) -> Iterator[Tuple[int, int, int]]**
 
-迭代X年的月份信息，元素返回 *(月份, 该月的天数, 闰月标记)* 的元祖。
 
-例子：
+- **LCalendars.delta(date1:MDate, date2:MDate) -> int**
 
-```
->>>from borax.calendars.lunardate import LCalendars
->>>list(LCalendars.iter_year_month(2017))
-[(1, 29, 0), (2, 30, 0), (3, 29, 0), (4, 30, 0), (5, 29, 0), (6, 29, 0), (6, 30, 1), (7, 29, 0), (8, 30, 0), (9, 29, 0), (10, 30, 0), (11, 30, 0), (12, 30, 0)]
-```
+计算两个日期相隔的天数，即 `(date1 - date2).days`。
+
+
+### 节气
 
 - **LCalendars.create_solar_date(year: int, term_index: Optional[int] = None, term_name: Optional[str] = None) -> datetime.date**
 
@@ -335,10 +395,6 @@ ValueError: Invalid month for the year 2017
 >>>LCalendars.create_solar_date(2019, term_name='清明')
 2019-04-05
 ```
-
-- **LCalendars.delta(date1:MDate, date2:MDate) -> int**
-
-计算两个日期相隔的天数，即 `(date1 - date2).days`。
 
 
 ## 参考资料

@@ -4,7 +4,7 @@ import datetime
 import unittest
 from datetime import date, timedelta
 
-from borax.calendars.lunardate import LunarDate, parse_year_days, LCalendars
+from borax.calendars.lunardate import LunarDate, parse_year_days, LCalendars, InvalidLunarDateError
 
 
 class LunarDateTestCase(unittest.TestCase):
@@ -15,6 +15,13 @@ class LunarDateTestCase(unittest.TestCase):
         self.assertEqual(8, ld.day)
         self.assertEqual(True, ld.leap)
 
+    def test_create_specific_dates(self):
+        today = LunarDate.today()
+        self.assertEqual(1, LCalendars.delta(LunarDate.tomorrow(), today))
+        self.assertEqual(-1, LCalendars.delta(LunarDate.yesterday(), today))
+        self.assertEqual(5, LCalendars.delta(today.after(5), today))
+        self.assertEqual(-5, LCalendars.delta(today.before(5), today))
+
     def test_convert_datetime(self):
         dt = LunarDate(1976, 8, 8, 1).to_solar_date()
         self.assertEqual(date(1976, 10, 1), dt)
@@ -22,14 +29,14 @@ class LunarDateTestCase(unittest.TestCase):
         self.assertTrue(LunarDate(2033, 10, 1, 0), dt2)
 
         # day out of range
-        with self.assertRaises(ValueError):
+        with self.assertRaises(InvalidLunarDateError):
             LunarDate(2004, 1, 30).to_solar_date()
 
         # year out of range [1900, 2100]
-        with self.assertRaises(ValueError):
+        with self.assertRaises(InvalidLunarDateError):
             LunarDate(2101, 1, 1).to_solar_date()
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(InvalidLunarDateError):
             LunarDate(2019, 1, 1, 1).to_solar_date()
 
     def test_solar_and_lunar(self):
@@ -119,6 +126,7 @@ class FormatterTestCase(unittest.TestCase):
 
         ld2 = LunarDate(2018, 11, 23)
         self.assertEqual('二〇一八/冬/廿三', ld2.strftime('%Y/%M/%D'))
+        self.assertEqual('二〇一八/十一/廿三', ld2.strftime('%Y/%N/%D'))
 
         ld3 = LunarDate(2017, 6, 3, 1)
         self.assertEqual('61', ld3.strftime('%m%l'))
@@ -129,6 +137,11 @@ class FormatterTestCase(unittest.TestCase):
         self.assertEqual('%2017', ld3.strftime('%%%y'))
         self.assertEqual('2017631', ld3.strftime('%y%m%d%l'))
         self.assertEqual('201706031', ld3.strftime('%y%A%B%l'))
+        self.assertEqual('201706031', ld3.__format__('%y%A%B%l'))
+
+    def test_term(self):
+        ld = LunarDate(2020, 3, 23)
+        self.assertEqual('tem:-', ld.strftime('tem:%t'))
 
 
 class LCalendarTestCase(unittest.TestCase):
@@ -144,6 +157,9 @@ class LCalendarTestCase(unittest.TestCase):
     def test_leap_check(self):
         self.assertTrue(LCalendars.leap_month(2017) == 6)
         self.assertFalse(LCalendars.leap_month(2017) == 7)
+        self.assertIn(2017, LCalendars.get_leap_years(6))
+        self.assertIn(2017, LCalendars.get_leap_years())
+        self.assertEqual(0, len(LCalendars.get_leap_years(14)))
 
     def test_delta(self):
         sd = date(2018, 12, 1)

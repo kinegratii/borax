@@ -2,7 +2,7 @@
 
 > 模块：`borax.serialize.bjson`
 
-
+> This module has been deprecated in v3.4.0 and will be removed in v4.0. 
 
 ## 使用方法
 

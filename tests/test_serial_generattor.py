@@ -52,3 +52,9 @@ class StringSerialGeneratorTestCase(unittest.TestCase):
     def test_error_base(self):
         with self.assertRaises(ValueError):
             StringSerialGenerator(prefix='CC', digits=2, base=3)
+
+    def test_upper_edge_value(self):
+        ssg = StringSerialGenerator(prefix='ff', digits=1, base=10)
+        data = ssg.generate(num=10)
+        self.assertEqual(10, len(data))
+        self.assertEqual('ff9', data[-1])

@@ -1,5 +1,6 @@
-nose2==0.9.1
-coverage==5.0.1
-flake8==3.7.9
-mccabe==0.6.1
-wheel==0.33.6
+nose2~=0.9
+coverage~=5.2
+flake8~=3.8
+mccabe~=0.6
+wheel~=0.35
+setuptools~=47.3

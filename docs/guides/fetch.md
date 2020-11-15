@@ -2,8 +2,6 @@
 
 > 模块：`borax.datasets.fetch` 
 
-> 引用路径：`borax.fetch`
-
 ## 函数接口
 
 `borax.datasets.fetch` 模块实现了从数据列表按照指定的一个或多个属性/键选取数据。
@@ -74,7 +72,7 @@ print(ages)
 ```
 ['Alice', 'Bob', 'Charlie']
 [30, 56, 56]
- ```
+```
 
 ## 提供默认值
 

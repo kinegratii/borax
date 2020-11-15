@@ -1,9 +1,10 @@
 # coding=utf8
 
+import itertools
 import unittest
 from unittest.mock import Mock
 
-from borax.utils import force_iterable, trim_iterable, firstof, get_item_cycle, chain_getattr
+from borax.utils import force_iterable, trim_iterable, firstof, get_item_cycle, chain_getattr, force_list
 
 
 class BaseTestCase(unittest.TestCase):
@@ -14,6 +15,14 @@ class BaseTestCase(unittest.TestCase):
     def test_item_cycle(self):
         data = list(range(0, 10))
         self.assertEqual(6, get_item_cycle(data, 6))
+
+    def test_item_cycle2(self):
+        source = list(range(7))
+        total = 1232
+        for index, ele in enumerate(itertools.cycle(source)):
+            if index > total:
+                break
+            self.assertEqual(ele, get_item_cycle(source, index))
 
     def test_chain(self):
         c = Mock(a=Mock(c='ac'))
@@ -50,3 +59,10 @@ class FirstofTestCase(unittest.TestCase):
     def test_first_of(self):
         self.assertEqual(3, firstof([None, None, 3, 4]))
         self.assertEqual(3, firstof([None, None, None, None], default=3))
+
+
+class ForceListTestCase(unittest.TestCase):
+    def test_force_list(self):
+        self.assertTupleEqual((1, 2), force_list((1, 2)))
+        self.assertTupleEqual(('1', '2'), force_list('1,2'))
+        self.assertTupleEqual((1,), force_list(1))
