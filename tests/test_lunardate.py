@@ -143,7 +143,7 @@ class FormatterTestCase(unittest.TestCase):
     def test_term(self):
         ld = LunarDate(2020, 3, 23)
         self.assertEqual('tem:-', ld.strftime('tem:%t'))
-    
+
     def test_cn_calendar_day(self):
         ld = LunarDate(2017, 6, 1, 1)
         self.assertEqual('闰六', ld.strftime('%F'))
