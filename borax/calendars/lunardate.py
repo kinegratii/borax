@@ -456,7 +456,10 @@ class LunarDate(EncoderMixin):
     @property
     def cn_day_calendar(self) -> str:
         if self.day == 1:
-            return self.cn_month
+            if self.leap:
+                return '闰{}'.format(self.cn_month)
+            else:
+                return '{}月'.format(self.cn_month)
         else:
             return self.cn_day
 

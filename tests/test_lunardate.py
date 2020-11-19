@@ -127,6 +127,7 @@ class FormatterTestCase(unittest.TestCase):
         ld2 = LunarDate(2018, 11, 23)
         self.assertEqual('二〇一八/冬/廿三', ld2.strftime('%Y/%M/%D'))
         self.assertEqual('二〇一八/十一/廿三', ld2.strftime('%Y/%N/%D'))
+        self.assertEqual('廿三', ld2.strftime('%F'))
 
         ld3 = LunarDate(2017, 6, 3, 1)
         self.assertEqual('61', ld3.strftime('%m%l'))
@@ -142,6 +143,12 @@ class FormatterTestCase(unittest.TestCase):
     def test_term(self):
         ld = LunarDate(2020, 3, 23)
         self.assertEqual('tem:-', ld.strftime('tem:%t'))
+
+    def test_cn_calendar_day(self):
+        ld = LunarDate(2017, 6, 1, 1)
+        self.assertEqual('闰六', ld.strftime('%F'))
+        ld1 = LunarDate(2017, 11, 1, 0)
+        self.assertEqual('冬月', ld1.strftime('%F'))
 
 
 class LCalendarTestCase(unittest.TestCase):
