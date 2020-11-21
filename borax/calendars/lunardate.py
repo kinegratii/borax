@@ -352,9 +352,10 @@ class TextUtils:
     def day_cn(day: int) -> str:
         a, b = divmod(day, 10)
         if b == 0:  # 10,20,30
-            b = 10
-            if a == 1:  # 10
-                a = 0
+            if a == 1:
+                return TextUtils.TENS[0] + TextUtils.DAYS_CN[10]
+            else:
+                return TextUtils.DAYS_CN[a] + TextUtils.DAYS_CN[10]
         return TextUtils.TENS[a] + TextUtils.DAYS_CN[b]
 
     @staticmethod
