@@ -4,7 +4,22 @@ import datetime
 import unittest
 from datetime import date, timedelta
 
-from borax.calendars.lunardate import LunarDate, parse_year_days, LCalendars, InvalidLunarDateError
+from borax.calendars.lunardate import LunarDate, parse_year_days, LCalendars, InvalidLunarDateError, TextUtils
+
+
+class TextUtilsTestCase(unittest.TestCase):
+    def test_cn_day_text(self):
+        data = [
+            (1, '初一'),
+            (10, '初十'),
+            (14, '十四'),
+            (20, '二十'),
+            (23, '廿三'),
+            (30, '三十')
+        ]
+        for value, text in data:
+            with self.subTest(value=value, text=text):
+                self.assertEqual(text, TextUtils.day_cn(value))
 
 
 class LunarDateTestCase(unittest.TestCase):
