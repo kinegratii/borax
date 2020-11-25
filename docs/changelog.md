@@ -1,5 +1,13 @@
 # 更新日志
 
+## v3.4.1  (20201125)
+
+- **`borax.calendars.lunarDate`**
+  - 修正农历日中文名称 `LunarDate.cn_day` 二十、三十日表示错误的BUG （[#22](https://github.com/kinegratii/borax/issues/22)）
+  - 修正日历日名称 `LunarDate.cn_day_calendar` 表示错误的BUG（[#20](https://github.com/kinegratii/borax/issues/20)）
+- **`borax.htmls`**
+  - 移除html自闭合标签不必要的斜杠字符
+
 ## v3.4.0 (20201115)
 
 > 新增 Python3.9构建支持

@@ -4,7 +4,22 @@ import datetime
 import unittest
 from datetime import date, timedelta
 
-from borax.calendars.lunardate import LunarDate, parse_year_days, LCalendars, InvalidLunarDateError
+from borax.calendars.lunardate import LunarDate, parse_year_days, LCalendars, InvalidLunarDateError, TextUtils
+
+
+class TextUtilsTestCase(unittest.TestCase):
+    def test_cn_day_text(self):
+        data = [
+            (1, '初一'),
+            (10, '初十'),
+            (14, '十四'),
+            (20, '二十'),
+            (23, '廿三'),
+            (30, '三十')
+        ]
+        for value, text in data:
+            with self.subTest(value=value, text=text):
+                self.assertEqual(text, TextUtils.day_cn(value))
 
 
 class LunarDateTestCase(unittest.TestCase):
@@ -127,6 +142,7 @@ class FormatterTestCase(unittest.TestCase):
         ld2 = LunarDate(2018, 11, 23)
         self.assertEqual('二〇一八/冬/廿三', ld2.strftime('%Y/%M/%D'))
         self.assertEqual('二〇一八/十一/廿三', ld2.strftime('%Y/%N/%D'))
+        self.assertEqual('廿三', ld2.strftime('%F'))
 
         ld3 = LunarDate(2017, 6, 3, 1)
         self.assertEqual('61', ld3.strftime('%m%l'))
@@ -142,6 +158,12 @@ class FormatterTestCase(unittest.TestCase):
     def test_term(self):
         ld = LunarDate(2020, 3, 23)
         self.assertEqual('tem:-', ld.strftime('tem:%t'))
+
+    def test_cn_calendar_day(self):
+        ld = LunarDate(2017, 6, 1, 1)
+        self.assertEqual('闰六', ld.strftime('%F'))
+        ld1 = LunarDate(2017, 11, 1, 0)
+        self.assertEqual('冬月', ld1.strftime('%F'))
 
 
 class LCalendarTestCase(unittest.TestCase):
