@@ -106,3 +106,6 @@ node_modules
 *.code-workspace
 
 demo.py
+
+# Visual Studio Code
+*.vscode
