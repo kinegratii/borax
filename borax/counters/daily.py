@@ -3,7 +3,7 @@
 import calendar
 
 
-class DailyCounter(object):
+class DailyCounter:
     # TODO Use Counter
     def __init__(self, year, month, raw=None):
         self._days = calendar.monthrange(year, month)[1]
