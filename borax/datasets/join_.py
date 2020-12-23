@@ -70,14 +70,29 @@ OC = OnClause
 SC = SelectClause
 
 
-def join(ldata, rdata, on, select_as):
+def _pick_data(_item, _sfs):
+    result = {}
+    for rk, lk, defv in _sfs:
+        result[lk] = _item.get(rk, defv)
+    return result
+
+
+def join(ldata, rdata, on, select_as, defaults=None):
     if isinstance(on, CLAUSE_SINGLE_TYPES):
         on = [on]
     if isinstance(on, list):
         lfields, rfields = zip(*list(map(OnClause.from_val, on)))
 
         def on_callback(_li, _ri):
-            return operator.itemgetter(*lfields)(_li) == operator.itemgetter(*rfields)(_ri)
+            for _lf, _rf in zip(lfields, rfields):
+                if _lf in _li and _rf in _ri:
+                    if _li[_lf] != _ri[_rf]:
+                        return False
+                else:
+                    return False
+            else:
+                return True
+
     elif callable(on):
         on_callback = on
     else:
@@ -87,19 +102,14 @@ def join(ldata, rdata, on, select_as):
         select_as = [select_as]
     sf_list = list(map(SelectClause.from_val, select_as))
 
-    def _pick_data(_item, _sfs):
-        result = {}
-        for rk, lk, defv in _sfs:
-            result[lk] = _item.get(rk, defv)
-        return result
-
+    defaults = defaults or {}
     for litem in ldata:
         for ritem in rdata:
             if on_callback(litem, ritem):
                 _ri = ritem
                 break
         else:
-            _ri = {}
+            _ri = defaults
         litem.update(_pick_data(_ri, sf_list))
     return ldata
 
@@ -109,9 +119,9 @@ def deep_join_one(ldata, rdata, on, select_as, default=None):
     return join_one(ldata, rdata, on, select_as, default=default)
 
 
-def deep_join(ldata, rdata, on, select_as):
+def deep_join(ldata, rdata, on, select_as, defaults=None):
     ldata = copy.deepcopy(ldata)
-    return join(ldata, rdata, on, select_as)
+    return join(ldata, rdata, on, select_as, defaults)
 
 
 def old_join_one(data_list, values, from_, as_, default=None):
