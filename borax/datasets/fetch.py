@@ -8,7 +8,7 @@ from itertools import tee
 __all__ = ['Empty', 'fetch', 'ifetch', 'fetch_single', 'ifetch_multiple', 'ifetch_single', 'fetch_as_dict']
 
 
-class Empty(object):
+class Empty:
     pass
 
 

@@ -1,5 +1,11 @@
 # 更新日志
 
+
+## v3.4.2  (20201227)
+
+- `borax.datasets.join`
+  - `join` 新增 defaults 参数
+
 ## v3.4.1  (20201125)
 
 - **`borax.calendars.lunarDate`**

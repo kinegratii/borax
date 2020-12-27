@@ -4,7 +4,7 @@ https://github.com/coleifer/peewee/blob/3.8.2/peewee.py
 """
 
 
-class Proxy(object):
+class Proxy:
     """
     Create a proxy or placeholder for another object.
     """

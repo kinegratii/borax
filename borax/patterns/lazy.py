@@ -19,7 +19,7 @@ def proxy_method(func):
     return inner
 
 
-class LazyObject(object):
+class LazyObject:
     _wrapped = None
 
     def __init__(self, func, args=None, kwargs=None):

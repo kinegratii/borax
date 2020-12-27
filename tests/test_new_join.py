@@ -119,6 +119,35 @@ class JoinTestCase(unittest.TestCase):
         self.assertEqual('Java', catalog_books[1]['catalog_name'])
         self.assertTrue('catalog_name' in book_data[1])
 
+    def test_default_kwargs(self):
+        mybooks = [
+            {'name': 'Demo Book', 'catalog': 10, 'price': 104},
+        ]
+        catalog_books = join(mybooks, catalogs_list, on='catalog', select_as='catalog_name',
+                             defaults={'catalog_name': 'Unknown'})
+        self.assertTrue(all(['catalog_name' in book for book in catalog_books]))
+        self.assertEqual('Unknown', catalog_books[0]['catalog_name'])
+
+    def test_default_select(self):
+        mybooks = [
+            {'name': 'Demo Book', 'catalog': 10, 'price': 104},
+        ]
+        catalog_books = join(mybooks, catalogs_list, on='catalog', select_as=SC('catalog_name', 'catalog_name', 'Foo'))
+        self.assertTrue(all(['catalog_name' in book for book in catalog_books]))
+        self.assertEqual('Foo', catalog_books[0]['catalog_name'])
+
+    def test_defaults(self):
+        mybooks = [
+            {'name': 'Demo Book', 'catalog': 10, 'price': 104},
+        ]
+        catalog_books = join(mybooks, catalogs_list,
+                             on='catalog',
+                             select_as=SC('catalog_name', 'catalog_name', 'Foo'),
+                             defaults={'catalog_name': 'Unknown'}
+                             )
+        self.assertTrue(all(['catalog_name' in book for book in catalog_books]))
+        self.assertEqual('Unknown', catalog_books[0]['catalog_name'])
+
 
 class DeepJoinTestCase(unittest.TestCase):
     def test_basic_join(self):

@@ -154,10 +154,9 @@ join_one(books, catalog_dict, on='catalog', select_as='catalog_name')
 | rdata     | List[Dict]                | 右边数据集                       |
 | on        | List[OnClause] / callback | 使用左边的连接字段，支持回调函数 |
 | select_as | str / List[SelectClause]  | 右边数据在结果的字段名称         |
+| defaults | Dict  | 右边数据无匹配的默认值字典         |
 
-备注：
-
-- 和 `join` 相比，没有显式的 defaults 参数，默认值可以在 `select_as` 参数中配置。
+> Update in v3.4.2 : 新增 `defaults` 参数。
 
 #### on参数
 
