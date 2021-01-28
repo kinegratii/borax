@@ -120,7 +120,7 @@ LunarDate(2100, 12, 29, 0)
 | year | `int` | 农历年 | 2018 | %y | |
 | month | `int` | 农历月 | 6 | %m | |
 | day | `int` | 农历日 | 26 | %d | |
-| leap | `bool` | 是否闰月 | False | %l | (1) |
+| leap | `int` | 是否闰月 | 0 | %l | (1) |
 | offset | `int` | 距下限的偏移量 | 43287 | - | |
 | term | `str` 或 `None` | 节气名称 | 立秋 | %t | (2) |
 | cn_year | `str` | 中文年 | 二〇一八 | %Y | (3) |
@@ -141,7 +141,7 @@ LunarDate(2100, 12, 29, 0)
 
 备注信息：
 
-- (1) '%l' 将闰月标志格式化为数字，如“0”、“1”
+- (1) 自v3.4.3开始，leap 的类型由 `bool` 改为 `int`。 '%l' 将闰月标志格式化为数字，如“0”、“1”
 - (2) 当 term为None时，将格式化为 '-'。
 - (3) '%Y'、'%M'、'%D' 三个中文名称不包含“年”、“月”、“日”后缀汉字
 - (4) 和'%M' 相比，将“冬”、“腊” 显示为“十一”、“十二”，其余不变
@@ -183,7 +183,7 @@ LunarDate(2100, 12, 29, 0)
 将当前日期转化为公历日期
 
 ```
->>> ld = LunarDate(2018, 6, 26, False)
+>>> ld = LunarDate(2018, 6, 26, 0)
 >>>ld.to_solar_date()
 datetime.date(2018, 8, 7)
 ```
@@ -358,7 +358,7 @@ print(my_birthday.leap) # 0
 
 ### 日期相关
 
-- **LCalendars.ndays(year: int, month: Optional[int] = None, leap: Leap = False) -> int**
+- **LCalendars.ndays(year: int, month: Optional[int] = None, leap: int= 0) -> int**
 
 返回X年或者X年X月的天数；如输入的年月不存在，将抛出 `ValueError` 异常。
 例子：

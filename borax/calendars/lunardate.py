@@ -7,7 +7,7 @@ from .store import (
     EncoderMixin, f_year, f_month, f_day, f_leap
 )
 
-from typing import Optional, Iterator, Tuple, Union
+from typing import Optional, Iterator, Tuple
 
 __all__ = ['LunarDate', 'LCalendars', 'InvalidLunarDateError']
 
@@ -19,11 +19,7 @@ class InvalidLunarDateError(ValueError):
     pass
 
 
-# Typing
-
-Leap = Union[int, bool]
-
-#  Constants
+# Constants
 
 MIN_LUNAR_YEAR = 1900
 MAX_LUNAR_YEAR = 2100
@@ -128,7 +124,7 @@ class LCalendars:
         return _iter_year_month(YEAR_INFOS[year - MIN_LUNAR_YEAR])
 
     @staticmethod
-    def ndays(year: int, month: Optional[int] = None, leap: Leap = False) -> int:
+    def ndays(year: int, month: Optional[int] = None, leap: int = 0) -> int:
         _check_year_range(year)
         if month is None:
             return YEAR_DAYS[year - MIN_LUNAR_YEAR]
@@ -181,7 +177,7 @@ class LCalendars:
 
 # offset <----> year, day_offset <----> year, month, day, leap
 
-def offset2ymdl(offset: int) -> Tuple[int, int, int, Leap]:
+def offset2ymdl(offset: int) -> Tuple[int, int, int, int]:
     def _o2mdl(_year_info, _offset):
         for _month, _days, _leap in _iter_year_month(_year_info):
             if _offset < _days:
@@ -368,7 +364,7 @@ class TextUtils:
 class LunarDate(EncoderMixin):
     fields = [f_year, f_month, f_day, f_leap]
 
-    def __init__(self, year: int, month: int, day: int, leap: Leap = False):
+    def __init__(self, year: int, month: int, day: int, leap: int = 0):
         offset = ymdl2offset(year, month, day, leap)
         self._year = year
         self._month = month
@@ -390,7 +386,7 @@ class LunarDate(EncoderMixin):
         return self._day
 
     @property
-    def leap(self) -> bool:
+    def leap(self) -> int:
         return self._leap
 
     @property
@@ -488,7 +484,7 @@ class LunarDate(EncoderMixin):
         return LunarDate(y, m, d, leap)
 
     def replace(self, *, year: Optional[int] = None, month: Optional[int] = None, day: Optional[int] = None,
-                leap: Optional[Leap] = None):
+                leap: Optional[int] = None):
         if year is None:
             year = self._year
         if month is None:
