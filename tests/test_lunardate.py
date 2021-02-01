@@ -28,7 +28,7 @@ class LunarDateTestCase(unittest.TestCase):
         self.assertEqual(1976, ld.year)
         self.assertEqual(8, ld.month)
         self.assertEqual(8, ld.day)
-        self.assertEqual(True, ld.leap)
+        self.assertEqual(1, ld.leap)
 
     def test_create_specific_dates(self):
         today = LunarDate.today()

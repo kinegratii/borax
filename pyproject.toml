@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "borax"
-version = "3.4.0"
+version = "3.4.3"
 description = "A util collections for Python3."
 readme = "long_description.rst"
 authors = ["kinegratii <kinegratii@gmail.com>"]
@@ -26,7 +26,7 @@ classifiers=[
 
 [tool.poetry.dev-dependencies]
 nose = "^0.9"
-coverage = "^4.5"
-flake8 = "^3.5"
+coverage = "^5.2"
+flake8 = "^3.8"
 mccabe = "^0.6"
-wheel = "^0.31"
+wheel = "^0.35"
