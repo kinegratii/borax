@@ -1,9 +1,9 @@
 # 更新日志
 
-## v3.4.3
+## v3.4.3 (20210201)
 
 - `borax.calendars.lunarDate`
-  - `LunarDate.leap` 使用 `int` 类型
+  - `LunarDate.leap` 使用 `int` 类型 （[#26](https://github.com/kinegratii/borax/issues/26)）
 
 ## v3.4.2  (20201227)
 
