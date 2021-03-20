@@ -9,7 +9,6 @@ from borax.calendars.lunardate import LunarDate, LCalendars
 
 MixedDate = Union[date, LunarDate]
 
-FUZZY_YEAR = 0
 
 (YEARLY, MONTHLY) = list(range(2))
 
@@ -39,7 +38,6 @@ class Festival:
 
     def __init__(self, *args, **kwargs):
         self._name = kwargs.get('name', '')
-        self._year = kwargs.get('year', FUZZY_YEAR)
         self._month = kwargs.get('month', 0)
         self._day = kwargs.get('day', 0)
         self._reverse = kwargs.get('reverse', 0)
@@ -58,8 +56,6 @@ class Festival:
         return (self.at(date_obj.year) - date_obj).days == 0
 
     def at(self, year: int, month: int = 0, leap=0) -> MixedDate:
-        if year != 0 and self._year != 0 and year != self._year:
-            raise FestivalError('DateDoesNotExist', 'No date in Period(year={})'.format(year))
         _y = year
         if month != 0 and self._month != 0 and month != self._month:
             raise FestivalError('DateDoesNotExist', 'Date does not exist.')
@@ -88,10 +84,7 @@ class Festival:
         except FestivalError:
             raise
 
-    def list_range(self, start_date=None, end_date=None, reverse=False, first=False):
-        pass
-
-    def list_days(self, start_date=None, end_date=None):
+    def list_days(self, start_date=None, end_date=None, reverse=False):
         """
         list_days(solar_year=2021)
         list_days(solar_year=2021, solar_month=2)
@@ -120,13 +113,13 @@ class Festival:
 class SolarFestival(Festival):
     date_class = date
 
-    def __init__(self, *, day, freq=YEARLY, month=0, year=FUZZY_YEAR, name=None):
+    def __init__(self, *, day, freq=YEARLY, month=0, name=None):
         if day < 0:
             day = -day
             reverse = 1
         else:
             reverse = 0
-        super().__init__(name=name, freq=freq, month=month, day=day, year=year, reverse=reverse)
+        super().__init__(name=name, freq=freq, month=month, day=day, reverse=reverse)
 
     def _resolve_yearly(self, year):
         # mock
@@ -170,8 +163,8 @@ class SolarFestival(Festival):
 class WeekFestival(Festival):
     date_class = date
 
-    def __init__(self, *, month, index, week, year=FUZZY_YEAR, name=None):
-        super().__init__(name=name, freq=YEARLY, month=month, index=index, week=week, year=year)
+    def __init__(self, *, month, index, week, name=None):
+        super().__init__(name=name, freq=YEARLY, month=month, index=index, week=week)
 
     def _resolve_yearly(self, year):
         day = WeekFestival.week_day(year, self._month, self._week_index, self._week_no)
@@ -193,8 +186,8 @@ class WeekFestival(Festival):
 class TermFestival(Festival):
     date_class = date
 
-    def __init__(self, *, index=None, year=FUZZY_YEAR, name=None):
-        super().__init__(freq=YEARLY, name=name, index=index, year=year)
+    def __init__(self, *, index=None,  name=None):
+        super().__init__(freq=YEARLY, name=name, index=index)
 
     def _resolve_yearly(self, year):
         return LCalendars.create_solar_date(year, term_index=self._term_index, term_name=self._name)
@@ -203,13 +196,13 @@ class TermFestival(Festival):
 class LunarFestival(Festival):
     date_class = LunarDate
 
-    def __init__(self, *, day, freq=YEARLY, month=0, leap=0, year=FUZZY_YEAR, name=None):
+    def __init__(self, *, day, freq=YEARLY, month=0, leap=0, name=None):
         if day < 0:
             day = -day
             reverse = 1
         else:
             reverse = 0
-        super().__init__(freq=freq, name=name, year=year, month=month, day=day, leap=leap, reverse=reverse)
+        super().__init__(freq=freq, name=name,  month=month, day=day, leap=leap, reverse=reverse)
 
     def _resolve_yearly(self, year: int):
         month_meta = LCalendars.iter_year_month(year)
