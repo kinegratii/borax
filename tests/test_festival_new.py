@@ -76,3 +76,29 @@ class LunarFestivalTestCase(unittest.TestCase):
         self.assertEqual(LunarDate(2021, 3, 3), lf.at(year=2021, month=3))
         with self.assertRaises(FestivalError):
             lf.at(year=2021)
+
+
+class FestivalListDaysTestCase(unittest.TestCase):
+    def test_solar(self):
+        sf = SolarFestival(day=256)
+        days = list(sf.list_days(start_date=date(2020, 1, 1), end_date=date(2024, 1, 1)))
+        self.assertEqual(4, len(days))
+        self.assertEqual(date(2020, 9, 12), days[0])
+        self.assertEqual(date(2021, 9, 13), days[1])
+        self.assertEqual(date(2022, 9, 13), days[2])
+        self.assertEqual(date(2023, 9, 13), days[3])
+
+        days2 = list(sf.list_days(start_date=date(2020, 1, 1), end_date=date(2024, 1, 1), reverse=True))
+        self.assertEqual(4, len(days2))
+        self.assertEqual(date(2020, 9, 12), days2[3])
+        self.assertEqual(date(2021, 9, 13), days2[2])
+        self.assertEqual(date(2022, 9, 13), days2[1])
+        self.assertEqual(date(2023, 9, 13), days2[0])
+
+    def test_lunar(self):
+        lf = LunarFestival(month=12, day=-1)
+        days2 = list(lf.list_days(start_date=LunarDate(2014, 2, 3), end_date=LunarDate(2022, 1, 1)))
+        self.assertEqual(8, len(days2))
+
+        days3 = list(lf.list_days(start_date=LunarDate(2014, 2, 3), end_date=LunarDate(2021, 12, 29)))
+        self.assertEqual(8, len(days3))
