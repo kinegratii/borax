@@ -6,7 +6,7 @@ from datetime import date
 
 from borax.calendars.lunardate import LunarDate, LCalendars
 from borax.calendars.festivals2 import SolarFestival, LunarFestival, WeekFestival, TermFestival, FestivalError, \
-    MONTHLY
+    MONTHLY, Period
 
 
 class SolarFestivalTestCase(unittest.TestCase):
@@ -91,6 +91,38 @@ class LunarFestivalTestCase(unittest.TestCase):
         self.assertEqual(LunarDate(2021, 3, 3), lf.at(year=2021, month=3))
         with self.assertRaises(FestivalError):
             lf.at(year=2021)
+
+
+class PeriodTestCase(unittest.TestCase):
+    def test_solar_period(self):
+        sd1, ed1 = Period.solar_year(2020)
+        self.assertEqual(date(2020, 1, 1), sd1)
+        self.assertEqual(date(2020, 12, 31), ed1)
+
+        sd2, ed2 = Period.solar_month(2020, 5)
+        self.assertEqual(date(2020, 5, 1), sd2)
+        self.assertEqual(date(2020, 5, 31), ed2)
+
+    def test_lunar_period(self):
+        sd1, ed1 = Period.lunar_year(2020)
+        self.assertEqual(LunarDate(2020, 1, 1), sd1)
+        self.assertEqual(LunarDate(2020, 12, 30), ed1)
+
+        sd2, ed2 = Period.lunar_month(2020, 4)
+        self.assertEqual(LunarDate(2020, 4, 1, 0), sd2)
+        self.assertEqual(LunarDate(2020, 4, 29, 1), ed2)
+
+        sd3, ed3 = Period.lunar_month(2020, 4, leap=0)
+        self.assertEqual(LunarDate(2020, 4, 1, 0), sd3)
+        self.assertEqual(LunarDate(2020, 4, 30, 0), ed3)
+
+        sd4, ed4 = Period.lunar_month(2020, 4, leap=1)
+        self.assertEqual(LunarDate(2020, 4, 1, 1), sd4)
+        self.assertEqual(LunarDate(2020, 4, 29, 1), ed4)
+
+        sd5, ed5 = Period.lunar_month(2020, 5, leap=0)
+        self.assertEqual(LunarDate(2020, 5, 1, 0), sd5)
+        self.assertEqual(LunarDate(2020, 5, 30, 0), ed5)
 
 
 class FestivalListDaysTestCase(unittest.TestCase):

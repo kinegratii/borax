@@ -2,8 +2,8 @@
 
 import calendar
 import enum
-from datetime import date
-from typing import Union, List
+from datetime import date, timedelta
+from typing import Union, List, Tuple
 
 from borax.calendars.lunardate import LunarDate, LCalendars
 
@@ -22,6 +22,34 @@ class FestivalSchema(enum.IntEnum):
     WEEK = 2
     LUNAR_OLD = 3  # 兼容旧版本
     TERM = 4
+
+
+class Period:
+    @staticmethod
+    def solar_year(year):
+        return date(year, 1, 1), date(year, 12, 31)
+
+    @staticmethod
+    def solar_month(year, month):
+        ndays = calendar.monthrange(year, month)[1]
+        return date(year, month, 1), date(year, month, ndays)
+
+    @staticmethod
+    def lunar_year(year):
+        return LunarDate(year, 1, 1), LunarDate(year + 1, 1, 1) - timedelta(days=1)
+
+    @staticmethod
+    def lunar_month(year, month, leap=_IGNORE_LEAP_MONTH):
+        has_leap = LCalendars.leap_month(year) == month
+        if has_leap:
+            if leap == _IGNORE_LEAP_MONTH:
+                sl, el = 0, 1
+            else:
+                sl, el = leap, leap
+        else:
+            sl, el = 0, 0
+        ndays = LCalendars.ndays(year, month, el)
+        return LunarDate(year, month, 1, sl), LunarDate(year, month, ndays, el)
 
 
 class FestivalError(Exception):
@@ -91,6 +119,10 @@ class Festival:
             return new_date_list
         else:
             return date_list
+
+    def list_in_period(self, period: Tuple[MixedDate, MixedDate], reverse=False):
+        start_date, end_date = period
+        return self.list_days(start_date, end_date, reverse)
 
     def list_days(self, start_date=None, end_date=None, reverse=False):
         """
