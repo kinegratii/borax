@@ -89,7 +89,7 @@ class Festival:
             new_date_list = []
             for date_obj in date_list:
                 is_match = (year, month) == (date_obj.year, date_obj.month) and (
-                    self.date_class == date or leap == date_obj.leap)
+                        self.date_class == date or leap == date_obj.leap)
                 if is_match:
                     new_date_list.append(date_obj)
             return new_date_list
@@ -138,7 +138,30 @@ class Festival:
                 continue
 
     def _list_monthly(self, start_date, end_date, reverse):
-        return []
+        sy, sm = start_date.year, start_date.month
+        ey, em = end_date.year, end_date.month
+
+        for year, month in self._iter_solar_month(sy, sm, ey, em, reverse):
+            try:
+                obj_list = self._resolve(year, month)
+                for day in obj_list:
+                    yield day
+            except FestivalError:
+                continue
+
+    def _iter_solar_month(self, sy, sm, ey, em, reverse=False):
+        if reverse:
+            ym_start = 12 * sy + sm - 1
+            ym_end = 12 * ey + em - 1
+            for ym in range(ym_end, ym_start - 1, -1):
+                y, m = divmod(ym, 12)
+                yield y, m + 1
+        else:
+            ym_start = 12 * sy + sm - 1
+            ym_end = 12 * ey + em - 1
+            for ym in range(ym_start, ym_end + 1):
+                y, m = divmod(ym, 12)
+                yield y, m + 1
 
     def _normalize(self, date_obj):
         date_class = self.date_class
@@ -197,7 +220,7 @@ class SolarFestival(Festival):
             if self._reverse == 0:
                 day = self._day
             else:
-                day = calendar.monthrange(year, self._month)[1] - self._day + 1
+                day = calendar.monthrange(year, month)[1] - self._day + 1
             return [date(year, month, day)]
 
 
@@ -291,3 +314,28 @@ class LunarFestival(Festival):
                 v_day = day
             data_tuples.append(LunarDate(year, month, v_day, v_leap))
         return data_tuples
+
+    def _list_monthly(self, start_date, end_date, reverse):
+        sy, sm, sl = start_date.year, start_date.month, start_date.leap
+        ey, em, el = end_date.year, end_date.month, end_date.leap
+
+        for year, month, leap in self._iter_lunar_month(sy, sm, sl, ey, em, el, reverse):
+            try:
+                obj_list = self._resolve(year, month, leap)
+                for day in obj_list:
+                    yield day
+            except FestivalError:
+                continue
+
+    def _iter_lunar_month(self, sy, sm, sl, ey, em, el, reverse=False):
+        if reverse:
+            for year in range(ey, sy - 1, -1):
+                ym = list(LCalendars.iter_year_month(year))[::-1]
+                for month, _, leap in ym:
+                    if (sy, sm, sl) <= (year, month, leap) <= (ey, em, el):
+                        yield year, month, leap
+        else:
+            for year in range(sy, ey + 1):
+                for month, _, leap in LCalendars.iter_year_month(year):
+                    if (sy, sm, sl) <= (year, month, leap) <= (ey, em, el):
+                        yield year, month, leap
