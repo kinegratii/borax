@@ -65,7 +65,7 @@ class Festival:
             raise FestivalError('MultipleDateExist', '')
         return date_list[0]
 
-    def _resolve(self, year: int, month: int = 0, leap=0) -> List[Union[date, LunarDate]]:
+    def _resolve(self, year: int, month: int = 0, leap=_IGNORE_LEAP_MONTH) -> List[Union[date, LunarDate]]:
         _y = year
         if month != 0 and self._month != 0 and month != self._month:
             raise FestivalError('DateDoesNotExist', 'Date does not exist.')
@@ -76,15 +76,11 @@ class Festival:
 
         try:
             if self._freq == YEARLY:
-                obj_or_tuples = self._resolve_yearly(_y)
+                date_list = self._resolve_yearly(_y)
             else:
-                obj_or_tuples = self._resolve_monthly(_y, _m, leap)
+                date_list = self._resolve_monthly(_y, _m, leap)
         except FestivalError:
             raise
-        if isinstance(obj_or_tuples, (LunarDate, date)):
-            date_list = obj_or_tuples,
-        else:
-            date_list = obj_or_tuples
         if month != 0:
             new_date_list = []
             for date_obj in date_list:
@@ -98,21 +94,16 @@ class Festival:
 
     def list_days(self, start_date=None, end_date=None, reverse=False):
         """
-        list_days(solar_year=2021)
-        list_days(solar_year=2021, solar_month=2)
-        list_days(lunar_year=2021)
-        list_days(lunar_year=2021, lunar_month=2)
-        list_days(lunar_year=2021, lunar_month=2, include_leap=1)
-        list_days(lunar_year=2021, lunar_month=2, leap=1)
-
         :param start_date:
         :param end_date:
         :return:
         """
         if start_date is None:
-            start_date = self._normalize(LunarDate.min)
+            start_date = LunarDate.min
+        start_date = self._normalize(start_date)
         if end_date is None:
-            end_date = self._normalize(LunarDate.max)
+            end_date = LunarDate.max
+        end_date = self._normalize(end_date)
         if self._freq == YEARLY:
             for day in self._list_yearly(start_date, end_date, reverse):
                 if start_date <= day <= end_date:
@@ -269,7 +260,7 @@ class LunarFestival(Festival):
         super().__init__(freq=freq, name=name, month=month, day=day, leap=leap, reverse=reverse)
 
     def _resolve_yearly(self, year: int) -> List[Union[date, LunarDate]]:
-        month_meta = LCalendars.iter_year_month(year)
+        month_meta = list(LCalendars.iter_year_month(year))
 
         if self._month == 0:
             if self._reverse == 0:
@@ -290,11 +281,7 @@ class LunarFestival(Festival):
         if month == 0:
             data = []
             for _m, _nd, _l in month_meta:
-                if self._reverse == 0:
-                    day = self._day
-                else:
-                    day = LCalendars.ndays(year, _m, _l) - self._day + 1
-                data.append(LunarDate(year, _m, day, _l))
+                data.extend(self._build_date(year, _m, self._day, _l, self._reverse))
             return data
         else:
             return self._build_date(year, month, self._day, leap, self._reverse)
@@ -332,10 +319,14 @@ class LunarFestival(Festival):
             for year in range(ey, sy - 1, -1):
                 ym = list(LCalendars.iter_year_month(year))[::-1]
                 for month, _, leap in ym:
+                    if self._leap != _IGNORE_LEAP_MONTH and self._leap != leap:
+                        continue
                     if (sy, sm, sl) <= (year, month, leap) <= (ey, em, el):
                         yield year, month, leap
         else:
             for year in range(sy, ey + 1):
                 for month, _, leap in LCalendars.iter_year_month(year):
+                    if self._leap != _IGNORE_LEAP_MONTH and self._leap != leap:
+                        continue
                     if (sy, sm, sl) <= (year, month, leap) <= (ey, em, el):
                         yield year, month, leap
