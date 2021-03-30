@@ -79,8 +79,15 @@ class Festival:
 
     def is_(self, date_obj: MixedDate) -> bool:
         date_obj = self._normalize(date_obj)
-        leap = getattr(date_obj, 'leap', 0)
-        return (self.at(date_obj.year, date_obj.month, leap) - date_obj).days == 0
+        try:
+            date_list = self._resolve(date_obj.year, date_obj.month)
+            for day in date_list:
+                if (day - date_obj).days == 0:
+                    return True
+            else:
+                return False
+        except FestivalError:
+            return False
 
     def at(self, year: int, month: int = 0, leap=0) -> MixedDate:
         try:
@@ -113,7 +120,7 @@ class Festival:
             new_date_list = []
             for date_obj in date_list:
                 is_match = (year, month) == (date_obj.year, date_obj.month) and (
-                        self.date_class == date or leap == date_obj.leap)
+                        self.date_class == date or leap == _IGNORE_LEAP_MONTH or leap == date_obj.leap)
                 if is_match:
                     new_date_list.append(date_obj)
             return new_date_list

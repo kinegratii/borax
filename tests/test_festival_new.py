@@ -93,6 +93,13 @@ class LunarFestivalTestCase(unittest.TestCase):
             lf.at(year=2021)
 
 
+class CheckFestivalTestCase(unittest.TestCase):
+    def test_all_days(self):
+        ld = LunarDate(2021, 1, 3)
+        lf = LunarFestival(day=3)
+        self.assertTrue(lf.is_(ld))
+
+
 class PeriodTestCase(unittest.TestCase):
     def test_solar_period(self):
         sd1, ed1 = Period.solar_year(2020)
