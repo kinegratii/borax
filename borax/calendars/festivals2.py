@@ -5,7 +5,7 @@ import enum
 from datetime import date, timedelta
 from typing import Union, List, Tuple
 
-from borax.calendars.lunardate import LunarDate, LCalendars
+from borax.calendars.lunardate import LunarDate, LCalendars, TERMS_CN
 
 MixedDate = Union[date, LunarDate]
 
@@ -14,6 +14,13 @@ MixedDate = Union[date, LunarDate]
 # Private Global Variables
 
 _IGNORE_LEAP_MONTH = 3
+
+
+class Flag:
+    LEAP_MONTH = 1
+    REVERSE = 2
+    MONTHLY = 4
+    DAY_YEAR_ORDER = 8
 
 
 class FestivalSchema(enum.IntEnum):
@@ -76,6 +83,10 @@ class Festival:
     def set_name(self, name):
         self._name = name
         return self
+
+    @property
+    def name(self):
+        return self._name
 
     def is_(self, date_obj: MixedDate) -> bool:
         date_obj = self._normalize(date_obj)
@@ -203,6 +214,9 @@ class Festival:
     def _resolve_monthly(self, year, month, leap=0) -> List[Union[date, LunarDate]]:
         return []
 
+    def encode(self) -> str:
+        pass
+
 
 class SolarFestival(Festival):
     date_class = date
@@ -253,6 +267,19 @@ class SolarFestival(Festival):
                 day = calendar.monthrange(year, month)[1] - self._day + 1
             return [date(year, month, day)]
 
+    def encode(self) -> str:
+        flag = 0
+        if self._reverse == 1:
+            flag += Flag.REVERSE
+        if self._freq == MONTHLY:
+            flag += Flag.MONTHLY
+        if self._month == 0:
+            flag += Flag.DAY_YEAR_ORDER
+        if self._month != 0:
+            return '0{:02d}{:02d}{:X}'.format(self._month, self._day, flag)
+        else:
+            return '0{:04d}{:X}'.format(self._day, flag)
+
 
 class WeekFestival(Festival):
     date_class = date
@@ -276,15 +303,23 @@ class WeekFestival(Festival):
             raise FestivalError("DateDoesNotExist", "")
         return d
 
+    def encode(self) -> str:
+        return '2{:02d}{:02d}{}'.format(self._month, self._week_index, self._week_no)
+
 
 class TermFestival(Festival):
     date_class = date
 
     def __init__(self, *, index=None, name=None):
+        if index is None:
+            index = TERMS_CN.index(name)
         super().__init__(freq=YEARLY, name=name, index=index)
 
     def _resolve_yearly(self, year) -> List[Union[date, LunarDate]]:
         return [LCalendars.create_solar_date(year, term_index=self._term_index, term_name=self._name)]
+
+    def encode(self) -> str:
+        return '400{:02d}0'.format(self._term_index)
 
 
 class LunarFestival(Festival):
@@ -369,3 +404,80 @@ class LunarFestival(Festival):
                         continue
                     if (sy, sm, sl) <= (year, month, leap) <= (ey, em, el):
                         yield year, month, leap
+
+    def encode(self) -> str:
+        flag = 0
+        if self._reverse == 1:
+            flag += Flag.REVERSE
+        if self._freq == MONTHLY:
+            flag += Flag.MONTHLY
+        if self._leap == 1:
+            flag += Flag.LEAP_MONTH
+        if self._month == 0:
+            flag += Flag.DAY_YEAR_ORDER
+        if self._month != 0:
+            return '1{:02d}{:02d}{:X}'.format(self._month, self._day, flag)
+        else:
+            return '1{:04d}{:X}'.format(self._day, flag)
+
+
+__SCHEMA_CLASS_DICT = {
+    FestivalSchema.SOLAR: SolarFestival,
+    FestivalSchema.LUNAR: LunarFestival,
+    FestivalSchema.WEEK: WeekFestival,
+    FestivalSchema.TERM: TermFestival
+}
+
+
+def decode(raw: str) -> Festival:
+    if not raw[:-1].isdigit() or raw[-1] not in '0123456789ABCDEF':
+        raise ValueError('Invalid raw:{}'.format(raw))
+    if len(raw) == 10:
+        schema, month, day, flag = int(raw[0]), int(raw[5:7]), int(raw[7:9]), int(raw[9], 16)
+    elif len(raw) == 6:
+        schema, month, day, flag = int(raw[0]), int(raw[1:3]), int(raw[3:5]), int(raw[5], 16)
+    else:
+        raise ValueError('Invalid length.')
+    if schema == FestivalSchema.LUNAR_OLD:
+        if flag == 1:
+            schema, flag = FestivalSchema.LUNAR, 2
+        else:
+            schema, flag = FestivalSchema.LUNAR, 0
+
+    if schema not in __SCHEMA_CLASS_DICT:
+        raise ValueError('Invalid schema: {}'.format(schema))
+    cls = __SCHEMA_CLASS_DICT[schema]
+
+    attrs = {}
+    if schema in [FestivalSchema.SOLAR, FestivalSchema.LUNAR]:
+
+        is_day_of_year, is_month, is_reverse, is_leap = (
+            flag & Flag.DAY_YEAR_ORDER == Flag.DAY_YEAR_ORDER,
+            flag & Flag.MONTHLY == Flag.MONTHLY,
+            flag & Flag.REVERSE == Flag.REVERSE,
+            flag & Flag.LEAP_MONTH == Flag.LEAP_MONTH
+        )
+        if is_month:
+            attrs['freq'] = MONTHLY
+        else:
+            attrs['freq'] = YEARLY
+        if is_leap:
+            attrs['leap'] = 1
+        else:
+            attrs['leap'] = _IGNORE_LEAP_MONTH
+        if is_day_of_year:
+            day = month * 100 + day
+            month = 0
+        if is_reverse:
+            day = -day
+        attrs['month'] = month
+        attrs['day'] = day
+        if schema == FestivalSchema.SOLAR:
+            del attrs['leap']
+    elif schema == FestivalSchema.WEEK:
+        attrs['month'] = month
+        attrs['index'] = day
+        attrs['week'] = flag
+    elif schema == FestivalSchema.TERM:
+        attrs['index'] = day
+    return cls(**attrs)
