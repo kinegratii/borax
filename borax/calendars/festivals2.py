@@ -151,14 +151,13 @@ class Festival:
         else:
             return date_list
 
-    def list_in_period(self, period: Tuple[MixedDate, MixedDate], reverse=False):
-        start_date, end_date = period
-        return self.list_days(start_date, end_date, reverse)
-
     def list_days(self, start_date=None, end_date=None, reverse=False):
         """
+        Festival.list_days(*Period.solar_year(2021))
+
         :param start_date:
         :param end_date:
+        :param reverse:
         :return:
         """
         if start_date is None:
