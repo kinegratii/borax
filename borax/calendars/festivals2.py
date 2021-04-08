@@ -3,7 +3,7 @@
 import calendar
 import enum
 from datetime import date, timedelta
-from typing import Union, List, Tuple
+from typing import Union, List, Tuple, Optional
 
 from borax.calendars.lunardate import LunarDate, LCalendars, TERMS_CN
 
@@ -34,6 +34,14 @@ class FestivalSchema(enum.IntEnum):
     WEEK = 2
     LUNAR_OLD = 3  # 兼容旧版本
     TERM = 4
+
+
+class GeneralDate:
+    __slots__ = ['solar', 'lunar']
+
+    def __init__(self, date_obj: MixedDate):
+        self.solar = LCalendars.cast_date(date_obj, date)
+        self.lunar = LCalendars.cast_date(date_obj, LunarDate)
 
 
 class Period:
@@ -167,6 +175,15 @@ class Festival:
             for day in self._list_monthly(start_date, end_date, reverse):
                 if start_date <= day <= end_date:
                     yield day
+
+    def countdown(self, date_obj: MixedDate = None) -> Tuple[int, Optional[GeneralDate]]:
+        if date_obj is None:
+            date_obj = date.today()
+        days = list(self.list_days(start_date=date_obj))
+        if len(days):
+            this_day = days[0]
+            return LCalendars.delta(this_day, date_obj), GeneralDate(this_day)
+        return -1, None
 
     def _list_yearly(self, start_date, end_date, reverse):
         sy = start_date.year
