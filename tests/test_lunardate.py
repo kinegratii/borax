@@ -133,7 +133,7 @@ class LunarDateTestCase(unittest.TestCase):
         self.assertEqual('大寒', ld1.term)
 
         with self.assertRaises(ValueError):
-            sd2 = LCalendars.create_solar_date(2101, 2)
+            LCalendars.create_solar_date(2101, 2)
 
 
 class PrivateMethodsTestCase(unittest.TestCase):
