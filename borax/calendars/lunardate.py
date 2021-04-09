@@ -149,7 +149,8 @@ class LCalendars:
                           term_name: Optional[str] = None) -> datetime.date:
         if term_name:
             term_index = TERMS_CN.index(term_name)
-        _check_year_range(year)
+        if not ((1900 <= year <= 2100) or (year == 2101 and term_index in (0, 1))):
+            raise ValueError('Invalid year-index: {},{}'.format(year, term_index))
         if term_index % 2 == 0:
             month = term_index // 2 + 1
         else:
@@ -293,6 +294,8 @@ TERM_INFO = [
 class TermUtils:
     @staticmethod
     def parse_term_days(year):
+        if year == 2101:
+            return [5, 20]
         value_offset = [0, 15]
         year_index = year - 1900
         days = [int(c) + value_offset[i % 2] for i, c in enumerate(TERM_INFO[year_index])]
@@ -304,10 +307,7 @@ class TermUtils:
         (sy, sm, sd) => (term, next_gz_month)
         term for year 2101,:2101.1.5(初六) 小寒 2101.1.20(廿一) 大寒
         """
-        if year == 2101:
-            days = [5, 20]
-        else:
-            days = TermUtils.parse_term_days(year)
+        days = TermUtils.parse_term_days(year)
         term_index1 = 2 * (month - 1)
         term_index2 = 2 * (month - 1) + 1
         day1 = days[term_index1]

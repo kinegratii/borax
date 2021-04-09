@@ -391,6 +391,8 @@ ValueError: Invalid month for the year 2017
 
 `term_index` 取值为 0-23 。其中 小寒的序号为0，立春的序号为2，...冬至的序号为23。
 
+如果传入的参数无法创建对应的日期，将抛出 `ValueError` 异常。
+
 ```
 >>>LCalendars.create_solar_date(2019, term_name='清明')
 2019-04-05
