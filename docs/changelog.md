@@ -1,6 +1,6 @@
 # 更新日志
 
-## v3.4.4
+## v3.4.4 (20210410)
 
 - `borax.calendars.lunarDate`
   - 修正 `LCalendars.create_solar_date` 在2101年份无法创建的BUG（[#28](https://github.com/kinegratii/borax/issues/28)）
