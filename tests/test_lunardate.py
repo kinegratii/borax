@@ -121,6 +121,20 @@ class LunarDateTestCase(unittest.TestCase):
         ld1 = ld.replace(year=2017, month=6, day=23, leap=1)
         self.assertEqual(2017, ld1.year)
 
+    def test_term_of_edge_years(self):
+        sd = LCalendars.create_solar_date(2101, 0)
+        self.assertEqual(date(2101, 1, 5), sd)
+        ld = LunarDate.from_solar(sd)
+        self.assertEqual('小寒', ld.term)
+
+        sd1 = LCalendars.create_solar_date(2101, 1)
+        self.assertEqual(date(2101, 1, 20), sd1)
+        ld1 = LunarDate.from_solar(sd1)
+        self.assertEqual('大寒', ld1.term)
+
+        with self.assertRaises(ValueError):
+            LCalendars.create_solar_date(2101, 2)
+
 
 class PrivateMethodsTestCase(unittest.TestCase):
     def test_year_info(self):
