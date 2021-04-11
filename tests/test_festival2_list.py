@@ -4,9 +4,9 @@ import calendar
 import unittest
 from datetime import date
 
-from borax.calendars.lunardate import LunarDate, LCalendars
 from borax.calendars.festivals2 import SolarFestival, LunarFestival, WeekFestival, TermFestival, FestivalError, \
-    MONTHLY, Period
+    FreqConst, Period
+from borax.calendars.lunardate import LunarDate, LCalendars
 
 
 class SolarFestivalTestCase(unittest.TestCase):
@@ -28,7 +28,7 @@ class SolarFestivalTestCase(unittest.TestCase):
         self.assertEqual(date(2020, 12, 30), sf2.at(year=2020))
 
     def test_monthly(self):
-        sf = SolarFestival(freq=MONTHLY, day=3)
+        sf = SolarFestival(freq=FreqConst.MONTHLY, day=3)
         self.assertEqual(date(2021, 2, 3), sf.at(year=2021, month=2))
         self.assertEqual(date(2021, 3, 3), sf.at(year=2021, month=3))
         with self.assertRaises(FestivalError):
@@ -38,7 +38,7 @@ class SolarFestivalTestCase(unittest.TestCase):
         sf = SolarFestival(month=12, day=-1)
         self.assertEqual(date(2021, 12, 31), sf.at(2021))
 
-        sf2 = SolarFestival(freq=MONTHLY, day=-1)
+        sf2 = SolarFestival(freq=FreqConst.MONTHLY, day=-1)
         self.assertEqual(date(2021, 3, 31), sf2.at(year=2021, month=3))
         self.assertEqual(date(2021, 2, 28), sf2.at(year=2021, month=2))
         self.assertEqual(date(2020, 2, 29), sf2.at(year=2020, month=2))
@@ -86,7 +86,7 @@ class LunarFestivalTestCase(unittest.TestCase):
         self.assertEqual(LunarDate(2020, 12, 30), sf2.at(year=2020))
 
     def test_monthly(self):
-        lf = LunarFestival(freq=MONTHLY, day=3)
+        lf = LunarFestival(freq=FreqConst.MONTHLY, day=3)
         self.assertEqual(LunarDate(2021, 2, 3), lf.at(year=2021, month=2))
         self.assertEqual(LunarDate(2021, 3, 3), lf.at(year=2021, month=3))
         with self.assertRaises(FestivalError):
@@ -150,12 +150,12 @@ class FestivalListDaysTestCase(unittest.TestCase):
         self.assertEqual(date(2023, 9, 13), days2[0])
 
     def test_solar_monthly(self):
-        sf2 = SolarFestival(freq=MONTHLY, day=-1)
+        sf2 = SolarFestival(freq=FreqConst.MONTHLY, day=-1)
         days = list(sf2.list_days(start_date=date(2020, 1, 1), end_date=date(2024, 1, 1)))
         self.assertEqual(date(2020, 1, 31), days[0])
         self.assertEqual(date(2023, 12, 31), days[-1])
 
-        sf2 = SolarFestival(freq=MONTHLY, day=-1)
+        sf2 = SolarFestival(freq=FreqConst.MONTHLY, day=-1)
         days = list(sf2.list_days(start_date=date(2020, 1, 1), end_date=date(2024, 1, 1), reverse=True))
         self.assertEqual(date(2020, 1, 31), days[-1])
         self.assertEqual(date(2023, 12, 31), days[0])
@@ -181,7 +181,7 @@ class FestivalListDaysTestCase(unittest.TestCase):
 
     def test_lunar_monthly(self):
         self.assertEqual(4, LCalendars.leap_month(2020))
-        lf = LunarFestival(freq=MONTHLY, day=-1)
+        lf = LunarFestival(freq=FreqConst.MONTHLY, day=-1)
         days3 = list(lf.list_days(start_date=LunarDate(2020, 1, 1), end_date=LunarDate(2021, 1, 1)))
         self.assertEqual(13, len(days3))
         self.assertIn(LunarDate(2020, 4, 30, 0), days3)
@@ -190,7 +190,7 @@ class FestivalListDaysTestCase(unittest.TestCase):
         days4 = list(lf.list_days(start_date=LunarDate(2020, 1, 1), end_date=LunarDate(2021, 1, 1), reverse=True))
         self.assertEqual(13, len(days4))
 
-        lf2 = LunarFestival(freq=MONTHLY, day=-1, leap=0)
+        lf2 = LunarFestival(freq=FreqConst.MONTHLY, day=-1, leap=0)
         days5 = list(lf2.list_days(start_date=LunarDate(2020, 1, 1), end_date=LunarDate(2021, 1, 1)))
         self.assertEqual(12, len(days5))
         self.assertIn(LunarDate(2020, 4, 30, 0), days5)
@@ -206,3 +206,11 @@ class FestivalListDaysTestCase(unittest.TestCase):
         ld = LunarDate.from_solar_date(2020, 1, 1)
         days = list(sf.list_days(start_date=ld, end_date=date(2024, 1, 1)))
         self.assertEqual(4, len(days))
+
+
+class CountdownTestCase(unittest.TestCase):
+    def test_countdown(self):
+        sf = SolarFestival(day=256)
+        nday, gd = sf.countdown(date(2020, 1, 1))
+        self.assertEqual(255, nday)
+

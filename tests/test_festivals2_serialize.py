@@ -1,12 +1,10 @@
 # coding=utf8
 
 import calendar
-import unittest
 from datetime import date
+import unittest
 
-from borax.calendars.lunardate import LunarDate, LCalendars
-from borax.calendars.festivals2 import SolarFestival, LunarFestival, WeekFestival, TermFestival, FestivalError, \
-    MONTHLY, decode
+from borax.calendars.festivals2 import SolarFestival, LunarFestival, WeekFestival, TermFestival, decode, FestivalLibrary
 
 
 class FestivalEncodeTestCase(unittest.TestCase):
@@ -58,3 +56,12 @@ class FestivalDecodeTestCase(unittest.TestCase):
             with self.subTest(raw=raw):
                 f = decode(raw)
                 self.assertEqual(raw, f.encode())
+
+
+class FestivalLibraryTestCase(unittest.TestCase):
+    def test_library(self):
+        fl = FestivalLibrary.from_builtin()
+        self.assertEqual(27, len(fl))
+
+        names = fl.get_festival_names(date_obj=date(2021, 10, 1))
+        self.assertListEqual(['国庆节'], names)

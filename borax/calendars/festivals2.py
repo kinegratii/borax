@@ -2,19 +2,26 @@
 
 import calendar
 import enum
+import collections
+import csv
+from pathlib import Path
 from datetime import date, timedelta
-from typing import Union, List, Tuple, Optional
+from typing import Union, List, Tuple, Optional, Union
 
 from borax.calendars.lunardate import LunarDate, LCalendars, TERMS_CN
 
 __all__ = [
     'SolarFestival', 'LunarFestival', 'WeekFestival', 'TermFestival', 'Period', 'decode', 'FestivalError',
-    'YEARLY', 'MONTHLY'
+    'FreqConst', 'FestivalLibrary'
 ]
 
 MixedDate = Union[date, LunarDate]
 
-(YEARLY, MONTHLY) = list(range(2))
+
+class FreqConst:
+    YEARLY = 0
+    MONTHLY = 1
+
 
 # Private Global Variables
 
@@ -128,13 +135,13 @@ class Festival:
         _y = year
         if month != 0 and self._month != 0 and month != self._month:
             raise FestivalError('DateDoesNotExist', 'Date does not exist.')
-        if self._freq == MONTHLY and self._month == 0:
+        if self._freq == FreqConst.MONTHLY and self._month == 0:
             _m = month
         else:
             _m = self._month
 
         try:
-            if self._freq == YEARLY:
+            if self._freq == FreqConst.YEARLY:
                 date_list = self._resolve_yearly(_y)
             else:
                 date_list = self._resolve_monthly(_y, _m, leap)
@@ -166,7 +173,7 @@ class Festival:
         if end_date is None:
             end_date = LunarDate.max
         end_date = self._normalize(end_date)
-        if self._freq == YEARLY:
+        if self._freq == FreqConst.YEARLY:
             for day in self._list_yearly(start_date, end_date, reverse):
                 if start_date <= day <= end_date:
                     yield day
@@ -242,7 +249,7 @@ class Festival:
 class SolarFestival(Festival):
     date_class = date
 
-    def __init__(self, *, day, freq=YEARLY, month=0, name=None):
+    def __init__(self, *, day, freq=FreqConst.YEARLY, month=0, name=None):
         if day < 0:
             day = -day
             reverse = 1
@@ -292,7 +299,7 @@ class SolarFestival(Festival):
         flag = 0
         if self._reverse == 1:
             flag += Flag.REVERSE
-        if self._freq == MONTHLY:
+        if self._freq == FreqConst.MONTHLY:
             flag += Flag.MONTHLY
         if self._month == 0:
             flag += Flag.DAY_YEAR_ORDER
@@ -306,7 +313,7 @@ class WeekFestival(Festival):
     date_class = date
 
     def __init__(self, *, month, index, week, name=None):
-        super().__init__(name=name, freq=YEARLY, month=month, index=index, week=week)
+        super().__init__(name=name, freq=FreqConst.YEARLY, month=month, index=index, week=week)
 
     def _resolve_yearly(self, year) -> List[Union[date, LunarDate]]:
         day = WeekFestival.week_day(year, self._month, self._week_index, self._week_no)
@@ -334,7 +341,7 @@ class TermFestival(Festival):
     def __init__(self, *, index=None, name=None):
         if index is None:
             index = TERMS_CN.index(name)
-        super().__init__(freq=YEARLY, name=name, index=index)
+        super().__init__(freq=FreqConst.YEARLY, name=name, index=index)
 
     def _resolve_yearly(self, year) -> List[Union[date, LunarDate]]:
         return [LCalendars.create_solar_date(year, term_index=self._term_index, term_name=self._name)]
@@ -346,7 +353,7 @@ class TermFestival(Festival):
 class LunarFestival(Festival):
     date_class = LunarDate
 
-    def __init__(self, *, day, freq=YEARLY, month=0, leap=_IGNORE_LEAP_MONTH, name=None):
+    def __init__(self, *, day, freq=FreqConst.YEARLY, month=0, leap=_IGNORE_LEAP_MONTH, name=None):
         if day < 0:
             day = -day
             reverse = 1
@@ -430,7 +437,7 @@ class LunarFestival(Festival):
         flag = 0
         if self._reverse == 1:
             flag += Flag.REVERSE
-        if self._freq == MONTHLY:
+        if self._freq == FreqConst.MONTHLY:
             flag += Flag.MONTHLY
         if self._leap == 1:
             flag += Flag.LEAP_MONTH
@@ -479,9 +486,9 @@ def decode(raw: str) -> Festival:
             flag & Flag.LEAP_MONTH == Flag.LEAP_MONTH
         )
         if is_month:
-            attrs['freq'] = MONTHLY
+            attrs['freq'] = FreqConst.MONTHLY
         else:
-            attrs['freq'] = YEARLY
+            attrs['freq'] = FreqConst.YEARLY
         if is_leap:
             attrs['leap'] = 1
         else:
@@ -502,3 +509,37 @@ def decode(raw: str) -> Festival:
     elif schema == FestivalSchema.TERM:
         attrs['index'] = day
     return cls(**attrs)
+
+
+class FestivalLibrary(collections.UserList):
+    def get_festival_names(self, date_obj: MixedDate) -> list:
+        names = []
+        for festival in self.data:
+            if festival.is_(date_obj):
+                names.append(festival.name)
+        return names
+
+    @classmethod
+    def from_file(cls, file_path: Union[str, Path]) -> 'FestivalLibrary':
+        if isinstance(file_path, str):
+            file_path = Path(file_path)
+        fl = cls()
+        field_names = ['raw', 'name']
+        with file_path.open(encoding='utf8') as f:
+            reader = csv.DictReader(f, fieldnames=field_names)
+            for row in reader:
+                try:
+                    festival = decode(row['raw'])
+                    festival.set_name(row['name'])
+                    fl.append(festival)
+                except ValueError:
+                    continue
+        return fl
+
+    @classmethod
+    def from_builtin(cls, identifier: str = 'zh-Hans') -> 'FestivalLibrary':
+        file_dict = {
+            'zh-Hans': 'FestivalData.txt'
+        }
+        file_path = Path(__file__).parent / file_dict.get(identifier)
+        return cls.from_file(file_path)
