@@ -75,7 +75,7 @@ def _parse_leap(year_info):
 def parse_year_days(year_info):
     """Parse year days from a year info.
     """
-    leap_month, leap_days = _parse_leap(year_info)
+    _, leap_days = _parse_leap(year_info)
     res = leap_days
     for month in range(1, 13):
         res += (year_info >> (16 - month)) % 2 + 29
@@ -553,6 +553,7 @@ class LunarDate(EncoderMixin):
     def __rsub__(self, other):
         if isinstance(other, datetime.date):
             return other - self.to_solar_date()
+        raise TypeError
 
     def __add__(self, other):
         if isinstance(other, datetime.timedelta):
@@ -566,8 +567,8 @@ class LunarDate(EncoderMixin):
     def __lt__(self, other):
         try:
             return self - other < datetime.timedelta(0)
-        except TypeError:
-            raise TypeError("can't compare LunarDate to %s" % (type(other).__name__,))
+        except TypeError as ex:
+            raise TypeError("can't compare LunarDate to %s" % (type(other).__name__,)) from ex
 
     def __le__(self, other):
         return self < other or self == other
