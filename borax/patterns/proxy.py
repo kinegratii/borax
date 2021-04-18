@@ -43,4 +43,4 @@ class Proxy:
     def __setattr__(self, attr, value):
         if attr not in self.__slots__:
             raise AttributeError('Cannot set attribute on proxy.')
-        return super(Proxy, self).__setattr__(attr, value)
+        return super().__setattr__(attr, value)

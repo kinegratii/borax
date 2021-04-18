@@ -61,12 +61,7 @@ def pll2cnl(
 
         node_id = _get(item, id_field)
         parent_id = _get(item, parent_field)
-        # create current node if necessary
-        # Create or update
-        if node_id in nodes:
-            node = nodes[node_id]
-        else:
-            node = {id_field: node_id}
+        node = nodes.get(node_id, {id_field: node_id})
         kwargs_data = _parse_extra_data(
             item,
             flat_fields=flat_fields,
