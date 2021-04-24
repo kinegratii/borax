@@ -1,5 +1,16 @@
 # 更新日志
 
+## v3.5.0
+
+- `borax.calendars`
+  - 全新的节日库模块 `festivals2`，原有的 `festivals` 已废弃，并将在v4.0移除
+- `borax.serialize`
+  - 移除 `bjson` 模块
+  - 移除 `cjson.to_serializable` 函数
+- `borax.datasets.join_`模块
+  - 移除 `old_join` 和 `old_join_one` 函数
+- 移除 `borax.finance` 模块
+
 ## v3.4.4 (20210410)
 
 - `borax.calendars.lunarDate`

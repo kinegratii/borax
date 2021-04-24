@@ -3,7 +3,7 @@
 import operator
 import copy
 
-__all__ = ['join_one', 'join', 'old_join_one', 'old_join']
+__all__ = ['join_one', 'join']
 
 
 def join_one(ldata, rdata, on, select_as, default=None):
@@ -122,32 +122,3 @@ def deep_join_one(ldata, rdata, on, select_as, default=None):
 def deep_join(ldata, rdata, on, select_as, defaults=None):
     ldata = copy.deepcopy(ldata)
     return join(ldata, rdata, on, select_as, defaults)
-
-
-def old_join_one(data_list, values, from_, as_, default=None):
-    if isinstance(values, (list, tuple)):
-        values = dict(values)
-    if not isinstance(values, dict):
-        raise TypeError("Unsupported Type for values param.")
-    for item in data_list:
-        if from_ in item:
-            val = item[from_]
-            if val in values:
-                ref_val = values[val]
-            else:
-                ref_val = default
-            item[as_] = ref_val
-    return data_list
-
-
-def old_join(data_list, values, from_, to_, as_args=None, as_kwargs=None):
-    as_args = as_args or []
-    as_kwargs = as_kwargs or {}
-    as_fields = {**{a: a for a in as_args}, **as_kwargs}
-    dict_values = {v[to_]: v for v in values}
-    for item in data_list:
-        kv = item[from_]
-        val_dic = dict_values[kv]
-        for f1, f2 in as_fields.items():
-            item[f2] = val_dic[f1]
-    return data_list

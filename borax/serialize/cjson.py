@@ -5,7 +5,7 @@ import json
 from datetime import datetime, date
 from functools import singledispatch
 
-__all__ = ['encode_object', 'encoder', 'dumps', 'dump', 'to_serializable']
+__all__ = ['encode_object', 'encoder', 'dumps', 'dump']
 
 
 def encode_object(obj):
@@ -29,8 +29,6 @@ def dumps(obj, **kwargs):
 def dump(obj, fp, **kwargs):
     return json.dump(obj, fp, default=encoder, **kwargs)
 
-
-to_serializable = encoder
 
 encoder.register(datetime, lambda obj: obj.strftime('%Y-%m-%d %H:%M:%S'))
 encoder.register(date, lambda obj: obj.strftime('%Y-%m-%d'))
