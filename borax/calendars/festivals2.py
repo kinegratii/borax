@@ -1,12 +1,12 @@
 # coding=utf-8
 
 import calendar
-import enum
 import collections
 import csv
-from pathlib import Path
+import enum
 from datetime import date, timedelta
-from typing import Union, List, Tuple, Optional, Union
+from pathlib import Path
+from typing import List, Tuple, Optional, Union
 
 from borax.calendars.lunardate import LunarDate, LCalendars, TERMS_CN
 
@@ -126,9 +126,9 @@ class Festival:
         except FestivalError:
             raise
         if len(date_list) == 0:
-            raise FestivalError('DateDoesNotExit', '')
+            raise FestivalError('DateDoesNotExit', 'The date does not exist.')
         elif len(date_list) > 1:
-            raise FestivalError('MultipleDateExist', '')
+            raise FestivalError('MultipleDateExist', 'The result return {} dates.'.format(len(date_list)))
         return date_list[0]
 
     def _resolve(self, year: int, month: int = 0, leap=_IGNORE_LEAP_MONTH) -> List[Union[date, LunarDate]]:
@@ -328,7 +328,7 @@ class WeekFestival(Festival):
             d0 = 8 - (w - week)
         d = d0 + 7 * (index - 1)
         if not (1 <= d <= ndays):
-            raise FestivalError("DateDoesNotExist", "")
+            raise FestivalError("DateDoesNotExist", "The date({}, {}, {}) is not a valid date.".format(year, month, d))
         return d
 
     def encode(self) -> str:
