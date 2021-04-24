@@ -25,8 +25,8 @@ classifiers=[
 ]
 
 [tool.poetry.dev-dependencies]
-nose = "^0.9"
-coverage = "^5.2"
-flake8 = "^3.8"
+nose = "^0.10"
+coverage = "^5.5"
+flake8 = "^3.9"
 mccabe = "^0.6"
-wheel = "^0.35"
+wheel = "^0.36"
