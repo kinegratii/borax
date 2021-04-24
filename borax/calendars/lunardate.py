@@ -595,8 +595,8 @@ class LunarDate(EncoderMixin):
         self._year, self._month, self._day, self._leap = state
 
 
-LunarDate.min = LunarDate(1900, 1, 1, False)
-LunarDate.max = LunarDate(2100, 12, 29, False)
+LunarDate.min = LunarDate(1900, 1, 1, 0)
+LunarDate.max = LunarDate(2100, 12, 29, 0)
 
 
 class Formatter:
