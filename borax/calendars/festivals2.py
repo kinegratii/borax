@@ -344,7 +344,14 @@ class TermFestival(Festival):
         super().__init__(freq=FreqConst.YEARLY, name=name, index=index)
 
     def _resolve_yearly(self, year) -> List[Union[date, LunarDate]]:
-        return [LCalendars.create_solar_date(year, term_index=self._term_index, term_name=self._name)]
+        try:
+            date_obj = LCalendars.create_solar_date(year, term_index=self._term_index, term_name=self._name)
+            return [date_obj]
+        except ValueError as e:
+            if str(e).startswith('Invalid'):
+                return []
+            else:
+                raise ValueError from e
 
     def encode(self) -> str:
         return '400{:02d}0'.format(self._term_index)
