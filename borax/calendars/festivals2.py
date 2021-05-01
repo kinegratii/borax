@@ -151,16 +151,17 @@ class Festival:
             new_date_list = []
             for date_obj in date_list:
                 is_match = (year, month) == (date_obj.year, date_obj.month) and (
-                        self.date_class == date or leap == _IGNORE_LEAP_MONTH or leap == date_obj.leap)
+                    self.date_class == date or leap == _IGNORE_LEAP_MONTH or leap == date_obj.leap
+                )
                 if is_match:
                     new_date_list.append(date_obj)
             return new_date_list
         else:
             return date_list
 
-    def list_days(self, start_date=None, end_date=None, reverse=False):
+    def iter_days(self, start_date=None, end_date=None, reverse=False):
         """
-        Festival.list_days(*Period.solar_year(2021))
+        Festival.iter_days(*Period.solar_year(2021))
 
         :param start_date:
         :param end_date:
@@ -182,6 +183,16 @@ class Festival:
                 if start_date <= day <= end_date:
                     yield day
 
+    def list_days(self, start_date=None, end_date=None, reverse=False, count=-1):
+        days_list = []
+        ncount = 0
+        for day in self.iter_days(start_date=start_date, end_date=end_date, reverse=reverse):
+            if ncount == count:
+                break
+            days_list.append(day)
+            ncount += 1
+        return days_list
+
     def countdown(self, date_obj: MixedDate = None) -> Tuple[int, Optional[GeneralDate]]:
         if date_obj is None:
             date_obj = date.today()
@@ -195,10 +206,10 @@ class Festival:
         sy = start_date.year
         ey = end_date.year
         if reverse:
-            iter = range(ey, sy - 1, -1)
+            my_iter = range(ey, sy - 1, -1)
         else:
-            iter = range(sy, ey + 1)
-        for year in iter:
+            my_iter = range(sy, ey + 1)
+        for year in my_iter:
             try:
                 obj_list = self._resolve(year)
                 for day in obj_list:
