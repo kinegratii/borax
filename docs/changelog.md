@@ -3,7 +3,7 @@
 ## v3.5.0
 
 - `borax.calendars`
-  - 全新的节日库模块 `festivals2`，原有的 `festivals` 已废弃，并将在v4.0移除
+  - 全新的节日库模块 `festivals2`，原有的 `festivals` 已废弃，并将在v3.6移除
 - `borax.serialize`
   - 移除 `bjson` 模块
   - 移除 `cjson.to_serializable` 函数

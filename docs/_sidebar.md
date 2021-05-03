@@ -10,7 +10,6 @@
   - [列选择器(fetch)](guides/fetch)
 - **● Borax.DataStructures**
   - [树形结构](guides/tree)
-  - [bjson](guides/bjson)
   - [cjson](guides/cjson)
 - **● Borax.Numbers**
   - [中文数字 <sup style="color:red">New!<sup>](guides/numbers)
@@ -21,7 +20,6 @@
 - **● Borax.Utils**
   - [字符串工具模块](guides/strings)
 - **● 其他**
-  - [序列号生成器](guides/serial_generator)
   - [序列号生成器(Pool)](guides/serial_pool)
   - [Tkinter界面](guides/ui)
 - **● 项目开发**
