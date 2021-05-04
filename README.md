@@ -78,14 +78,57 @@ print(today.strftime('今天的干支表示法为：%G')) # '今天的干支表�
 分别计算距离 “春节”、“除夕（农历十二月的最后一天）” 还有多少天
 
 ```python
-from borax.calendars.festivals import get_festival, LunarSchema, DayLunarSchema
+from borax.calendars.festivals2 import SolarFestival
 
-festival = get_festival('春节')
-print(festival.countdown()) # 7
-
-dls = DayLunarSchema(month=12, day=1, reverse=1)
-print(dls.countdown()) # 344
+festival = SolarFestival(month=1, day=1)
+print(festival.countdown()) # (273, <GeneralDate:2022-02-01(二〇二二年正月初一)>)
 ```
+
+计算节日及其距离今天（2021年5月4日）的天数
+```python
+
+from borax.calendars.festivals2 import FestivalLibrary
+
+library = FestivalLibrary.load_builtin()
+for nday, gd_list in library.iter_festival_countdown():
+    for gd in gd_list:
+        print('{:>3d} {} {}'.format(nday, gd.name, gd))
+```
+
+输出结果
+
+```
+  0 青年节 2021-05-04(二〇二一年三月廿三)
+  5 母亲节 2021-05-09(二〇二一年三月廿八)
+  8 护士节 2021-05-12(二〇二一年四月初一)
+ 28 儿童节 2021-06-01(二〇二一年四月廿一)
+ 41 端午节 2021-06-14(二〇二一年五月初五)
+ 47 父亲节 2021-06-20(二〇二一年五月十一)
+ 89 建军节 2021-08-01(二〇二一年六月廿三)
+102 七夕 2021-08-14(二〇二一年七月初七) 
+110 中元节 2021-08-22(二〇二一年七月十五)
+129 教师节 2021-09-10(二〇二一年八月初四)
+140 中秋节 2021-09-21(二〇二一年八月十五)
+150 国庆节 2021-10-01(二〇二一年八月廿五)
+163 重阳节 2021-10-14(二〇二一年九月初九)
+205 感恩节 2021-11-25(二〇二一年十月廿一)
+231 冬至 2021-12-21(二〇二一年冬月十八) 
+234 平安夜 2021-12-24(二〇二一年冬月廿一)
+235 圣诞节 2021-12-25(二〇二一年冬月廿二)
+242 元旦 2022-01-01(二〇二一年冬月廿九) 
+251 腊八节 2022-01-10(二〇二一年腊月初八)
+272 除夕 2022-01-31(二〇二一年腊月廿九) 
+273 春节 2022-02-01(二〇二二年正月初一) 
+286 情人节 2022-02-14(二〇二二年正月十四)
+287 元宵节 2022-02-15(二〇二二年正月十五)
+308 妇女节 2022-03-08(二〇二二年二月初六)
+312 植树节 2022-03-12(二〇二二年二月初十)
+332 愚人节 2022-04-01(二〇二二年三月初一)
+336 清明 2022-04-05(二〇二二年三月初五) 
+362 劳动节 2022-05-01(二〇二二年四月初一)
+
+```
+
 
 ### Borax.Numbers: 中文数字处理
 

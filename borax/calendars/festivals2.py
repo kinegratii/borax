@@ -6,7 +6,7 @@ import csv
 import enum
 from datetime import date, timedelta
 from pathlib import Path
-from typing import List, Tuple, Optional, Union
+from typing import List, Tuple, Optional, Union, Iterator
 
 from borax.calendars.lunardate import LunarDate, LCalendars, TERMS_CN
 
@@ -44,11 +44,18 @@ class FestivalSchema(enum.IntEnum):
 
 
 class GeneralDate:
-    __slots__ = ['solar', 'lunar']
+    __slots__ = ['solar', 'lunar', 'name']
 
-    def __init__(self, date_obj: MixedDate):
+    def __init__(self, date_obj: MixedDate, name: str = ''):
         self.solar = LCalendars.cast_date(date_obj, date)
         self.lunar = LCalendars.cast_date(date_obj, LunarDate)
+        self.name = name
+
+    def __str__(self):
+        return '{}({})'.format(self.solar, self.lunar.cn_str())
+
+    def __repr__(self):
+        return '<GeneralDate:{}>'.format(self.__str__())
 
 
 class Period:
@@ -151,7 +158,7 @@ class Festival:
             new_date_list = []
             for date_obj in date_list:
                 is_match = (year, month) == (date_obj.year, date_obj.month) and (
-                    self.date_class == date or leap == _IGNORE_LEAP_MONTH or leap == date_obj.leap
+                        self.date_class == date or leap == _IGNORE_LEAP_MONTH or leap == date_obj.leap
                 )
                 if is_match:
                     new_date_list.append(date_obj)
@@ -199,7 +206,7 @@ class Festival:
         days = list(self.list_days(start_date=date_obj))
         if len(days):
             this_day = days[0]
-            return LCalendars.delta(this_day, date_obj), GeneralDate(this_day)
+            return LCalendars.delta(this_day, date_obj), GeneralDate(this_day, name=self.name)
         return -1, None
 
     def _list_yearly(self, start_date, end_date, reverse):
@@ -530,15 +537,31 @@ def decode(raw: str) -> Festival:
 
 
 class FestivalLibrary(collections.UserList):
+
+    def get_festival(self, name: str) -> Optional[Festival]:
+        for festival in self:
+            if festival.name == name:
+                return festival
+
     def get_festival_names(self, date_obj: MixedDate) -> list:
         names = []
-        for festival in self.data:
+        for festival in self:
             if festival.is_(date_obj):
                 names.append(festival.name)
         return names
 
+    def iter_festival_countdown(self, countdown: Optional[int] = None, date_obj: MixedDate = None) -> Iterator[
+        Tuple[int, List]]:
+        ndays2festivals = collections.defaultdict(list)
+        for festival in self:
+            ndays, gd = festival.countdown(date_obj)
+            if countdown is None or ndays <= countdown:
+                ndays2festivals[ndays].append(gd)
+        for offset in sorted(ndays2festivals.keys()):
+            yield offset, ndays2festivals[offset]
+
     @classmethod
-    def from_file(cls, file_path: Union[str, Path]) -> 'FestivalLibrary':
+    def load_file(cls, file_path: Union[str, Path]) -> 'FestivalLibrary':
         if isinstance(file_path, str):
             file_path = Path(file_path)
         fl = cls()
@@ -555,9 +578,9 @@ class FestivalLibrary(collections.UserList):
         return fl
 
     @classmethod
-    def from_builtin(cls, identifier: str = 'zh-Hans') -> 'FestivalLibrary':
+    def load_builtin(cls, identifier: str = 'zh-Hans') -> 'FestivalLibrary':
         file_dict = {
             'zh-Hans': 'FestivalData.txt'
         }
         file_path = Path(__file__).parent / file_dict.get(identifier)
-        return cls.from_file(file_path)
+        return cls.load_file(file_path)

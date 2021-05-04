@@ -60,8 +60,17 @@ class FestivalDecodeTestCase(unittest.TestCase):
 
 class FestivalLibraryTestCase(unittest.TestCase):
     def test_library(self):
-        fl = FestivalLibrary.from_builtin()
-        self.assertEqual(27, len(fl))
+        fl = FestivalLibrary.load_builtin()
+        self.assertEqual(28, len(fl))
+
+        spring_festival = fl.get_festival('春节')
+        self.assertTrue(isinstance(spring_festival, LunarFestival))
 
         names = fl.get_festival_names(date_obj=date(2021, 10, 1))
         self.assertListEqual(['国庆节'], names)
+
+        gd_days = []
+        for nday, gd_list in fl.iter_festival_countdown(date_obj=date(2021, 1, 1), countdown=31):
+            gd_days.extend(gd_list)
+
+        self.assertIn('元旦', [g.name for g in gd_days])
