@@ -2,10 +2,10 @@
 
 import calendar
 import unittest
-from datetime import date
+from datetime import date, timedelta
 
 from borax.calendars.festivals2 import SolarFestival, LunarFestival, WeekFestival, TermFestival, FestivalError, \
-    FreqConst, Period
+    FreqConst, Period, WrappedDate
 from borax.calendars.lunardate import LunarDate, LCalendars
 
 
@@ -66,7 +66,6 @@ class TermFestivalTestCase(unittest.TestCase):
             tt.at(year=2021, month=3)
 
 
-#
 class LunarFestivalTestCase(unittest.TestCase):
     def test_yearly(self):
         spring_festival = LunarFestival(month=1, day=1).set_name('春节')
@@ -132,33 +131,47 @@ class PeriodTestCase(unittest.TestCase):
         self.assertEqual(LunarDate(2020, 5, 30, 0), ed5)
 
 
+class WrappedDateTestCase(unittest.TestCase):
+
+    def test_wrapped_date(self):
+        wd = WrappedDate(date(2021, 5, 1))
+        sd, ld = wd
+        self.assertEqual(date(2021, 5, 1), sd)
+        self.assertEqual(LunarDate(2021, 3, 20), ld)
+
+    def test_magic_method(self):
+        wd = WrappedDate(date(2021, 5, 1))
+
+
 class FestivalListDaysTestCase(unittest.TestCase):
     def test_solar(self):
         sf = SolarFestival(day=256)
         days = list(sf.list_days(start_date=date(2020, 1, 1), end_date=date(2024, 1, 1)))
         self.assertEqual(4, len(days))
-        self.assertEqual(date(2020, 9, 12), days[0])
-        self.assertEqual(date(2021, 9, 13), days[1])
-        self.assertEqual(date(2022, 9, 13), days[2])
-        self.assertEqual(date(2023, 9, 13), days[3])
+        self.assertEqual(date(2020, 9, 12), days[0].solar)
+        self.assertEqual(date(2021, 9, 13), days[1].solar)
+        self.assertEqual(date(2022, 9, 13), days[2].solar)
+        self.assertEqual(date(2023, 9, 13), days[3].solar)
 
         days2 = list(sf.list_days(start_date=date(2020, 1, 1), end_date=date(2024, 1, 1), reverse=True))
         self.assertEqual(4, len(days2))
-        self.assertEqual(date(2020, 9, 12), days2[3])
-        self.assertEqual(date(2021, 9, 13), days2[2])
-        self.assertEqual(date(2022, 9, 13), days2[1])
-        self.assertEqual(date(2023, 9, 13), days2[0])
+        self.assertEqual(date(2020, 9, 12), days2[3].solar)
+        self.assertEqual(date(2021, 9, 13), days2[2].solar)
+        self.assertEqual(date(2022, 9, 13), days2[1].solar)
+        self.assertEqual(date(2023, 9, 13), days2[0].solar)
 
     def test_solar_monthly(self):
         sf2 = SolarFestival(freq=FreqConst.MONTHLY, day=-1)
         days = list(sf2.list_days(start_date=date(2020, 1, 1), end_date=date(2024, 1, 1)))
-        self.assertEqual(date(2020, 1, 31), days[0])
-        self.assertEqual(date(2023, 12, 31), days[-1])
+        solar_days = [d.solar for d in days]
+        self.assertEqual(date(2020, 1, 31), solar_days[0])
+        self.assertEqual(date(2023, 12, 31), solar_days[-1])
 
         sf2 = SolarFestival(freq=FreqConst.MONTHLY, day=-1)
         days = list(sf2.list_days(start_date=date(2020, 1, 1), end_date=date(2024, 1, 1), reverse=True))
-        self.assertEqual(date(2020, 1, 31), days[-1])
-        self.assertEqual(date(2023, 12, 31), days[0])
+        solar_days = [d.solar for d in days]
+        self.assertEqual(date(2020, 1, 31), solar_days[-1])
+        self.assertEqual(date(2023, 12, 31), solar_days[0])
 
     def test_week_festival(self):
         end_date = date(2024, 1, 1)
@@ -184,8 +197,9 @@ class FestivalListDaysTestCase(unittest.TestCase):
         lf = LunarFestival(freq=FreqConst.MONTHLY, day=-1)
         days3 = list(lf.list_days(start_date=LunarDate(2020, 1, 1), end_date=LunarDate(2021, 1, 1)))
         self.assertEqual(13, len(days3))
-        self.assertIn(LunarDate(2020, 4, 30, 0), days3)
-        self.assertIn(LunarDate(2020, 4, 29, 1), days3)
+        lunar_days3 = [d.lunar for d in days3]
+        self.assertIn(LunarDate(2020, 4, 30, 0), lunar_days3)
+        self.assertIn(LunarDate(2020, 4, 29, 1), lunar_days3)
 
         days4 = list(lf.list_days(start_date=LunarDate(2020, 1, 1), end_date=LunarDate(2021, 1, 1), reverse=True))
         self.assertEqual(13, len(days4))
@@ -193,8 +207,9 @@ class FestivalListDaysTestCase(unittest.TestCase):
         lf2 = LunarFestival(freq=FreqConst.MONTHLY, day=-1, leap=0)
         days5 = list(lf2.list_days(start_date=LunarDate(2020, 1, 1), end_date=LunarDate(2021, 1, 1)))
         self.assertEqual(12, len(days5))
-        self.assertIn(LunarDate(2020, 4, 30, 0), days5)
-        self.assertNotIn(LunarDate(2020, 4, 29, 1), days5)
+        lunar_days5 = [d.lunar for d in days5]
+        self.assertIn(LunarDate(2020, 4, 30, 0), lunar_days5)
+        self.assertNotIn(LunarDate(2020, 4, 29, 1), lunar_days5)
 
     def test_week_out(self):
         wf = WeekFestival(month=1, index=7, week=calendar.MONDAY)
@@ -213,4 +228,3 @@ class CountdownTestCase(unittest.TestCase):
         sf = SolarFestival(day=256)
         nday, gd = sf.countdown(date(2020, 1, 1))
         self.assertEqual(255, nday)
-

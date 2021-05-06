@@ -161,14 +161,14 @@ class LCalendars:
 
     @staticmethod
     def cast_date(date_obj, target_class):
-        if not isinstance(date_obj, (datetime.date, LunarDate)):
+        if not (isinstance(date_obj, (datetime.date, LunarDate)) or (hasattr(date_obj, 'solar') and hasattr(date_obj, 'lunar'))):
             raise TypeError('Unsupported type: {}'.format(date_obj.__class__.__name__))
         if isinstance(date_obj, target_class):
             return date_obj
         if isinstance(date_obj, LunarDate):
-            return date_obj.to_solar_date()
+            return getattr(date_obj, 'lunar', date_obj.to_solar_date())
         else:
-            return LunarDate.from_solar(date_obj)
+            return getattr(date_obj, 'solar', LunarDate.from_solar(date_obj))
 
     @staticmethod
     def delta(date1, date2):
@@ -541,7 +541,9 @@ class LunarDate(EncoderMixin):
         :param other: a instance of LunarDate / date / timedelta
         :return:
         """
-        if isinstance(other, LunarDate):
+        if hasattr(other, 'solar'):
+            return self.to_solar_date() - other.solar
+        elif isinstance(other, LunarDate):
             return self.to_solar_date() - other.to_solar_date()
         elif isinstance(other, datetime.date):
             return self.to_solar_date() - other
@@ -551,7 +553,7 @@ class LunarDate(EncoderMixin):
         raise TypeError
 
     def __rsub__(self, other):
-        if isinstance(other, datetime.date):
+        if isinstance(other, datetime.date) or (hasattr(other, 'solar') and hasattr(other, 'lunar')):
             return other - self.to_solar_date()
         raise TypeError
 

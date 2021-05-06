@@ -43,7 +43,7 @@ class FestivalSchema(enum.IntEnum):
     TERM = 4
 
 
-class GeneralDate:
+class WrappedDate:
     __slots__ = ['solar', 'lunar', 'name']
 
     def __init__(self, date_obj: MixedDate, name: str = ''):
@@ -51,11 +51,34 @@ class GeneralDate:
         self.lunar = LCalendars.cast_date(date_obj, LunarDate)
         self.name = name
 
+    def __iter__(self):
+        yield self.solar
+        yield self.lunar
+
     def __str__(self):
         return '{}({})'.format(self.solar, self.lunar.cn_str())
 
     def __repr__(self):
-        return '<GeneralDate:{}>'.format(self.__str__())
+        return '<WrappedDate:{}>'.format(self.__str__())
+
+    def __sub__(self, other):
+        """This is the basic method for comparable feature.
+        :param other: a instance of LunarDate / date / timedelta
+        :return:
+        """
+        if isinstance(other, LunarDate):
+            return self.solar - other.to_solar_date()
+        elif isinstance(other, date):
+            return self.solar - other
+        elif isinstance(other, timedelta):
+            res = self.solar - other
+            return LunarDate.from_solar_date(res.year, res.month, res.day)
+        raise TypeError
+
+    def __rsub__(self, other):
+        if isinstance(other, date):
+            return other - self.solar
+        raise TypeError
 
 
 class Period:
@@ -122,8 +145,7 @@ class Festival:
             for day in date_list:
                 if (day - date_obj).days == 0:
                     return True
-            else:
-                return False
+            return False
         except FestivalError:
             return False
 
@@ -166,7 +188,7 @@ class Festival:
         else:
             return date_list
 
-    def iter_days(self, start_date=None, end_date=None, reverse=False):
+    def iter_days(self, start_date=None, end_date=None, reverse=False) -> Iterator[WrappedDate]:
         """
         Festival.iter_days(*Period.solar_year(2021))
 
@@ -175,6 +197,8 @@ class Festival:
         :param reverse:
         :return:
         """
+        # Use WrappedDate
+
         if start_date is None:
             start_date = LunarDate.min
         start_date = self._normalize(start_date)
@@ -184,13 +208,13 @@ class Festival:
         if self._freq == FreqConst.YEARLY:
             for day in self._list_yearly(start_date, end_date, reverse):
                 if start_date <= day <= end_date:
-                    yield day
+                    yield WrappedDate(day, name=self.name)
         else:
             for day in self._list_monthly(start_date, end_date, reverse):
                 if start_date <= day <= end_date:
-                    yield day
+                    yield WrappedDate(day, name=self.name)
 
-    def list_days(self, start_date=None, end_date=None, reverse=False, count=-1):
+    def list_days(self, start_date=None, end_date=None, reverse=False, count=-1) -> List[WrappedDate]:
         days_list = []
         ncount = 0
         for day in self.iter_days(start_date=start_date, end_date=end_date, reverse=reverse):
@@ -200,13 +224,13 @@ class Festival:
             ncount += 1
         return days_list
 
-    def countdown(self, date_obj: MixedDate = None) -> Tuple[int, Optional[GeneralDate]]:
+    def countdown(self, date_obj: MixedDate = None) -> Tuple[int, Optional[WrappedDate]]:
         if date_obj is None:
             date_obj = date.today()
         days = list(self.list_days(start_date=date_obj))
         if len(days):
             this_day = days[0]
-            return LCalendars.delta(this_day, date_obj), GeneralDate(this_day, name=self.name)
+            return LCalendars.delta(this_day, date_obj), WrappedDate(this_day, name=self.name)
         return -1, None
 
     def _list_yearly(self, start_date, end_date, reverse):
@@ -550,8 +574,7 @@ class FestivalLibrary(collections.UserList):
                 names.append(festival.name)
         return names
 
-    def iter_festival_countdown(self, countdown: Optional[int] = None, date_obj: MixedDate = None) -> Iterator[
-        Tuple[int, List]]:
+    def iter_festival_countdown(self, countdown: Optional[int] = None, date_obj: MixedDate = None) -> Iterator[Tuple[int, List]]:
         ndays2festivals = collections.defaultdict(list)
         for festival in self:
             ndays, gd = festival.countdown(date_obj)
