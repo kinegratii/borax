@@ -142,6 +142,21 @@ class WrappedDateTestCase(unittest.TestCase):
     def test_magic_method(self):
         wd = WrappedDate(date(2021, 5, 1))
 
+    def test_add(self):
+        wd = WrappedDate(date(2021, 5, 1))
+        self.assertEqual(date(2021, 5, 3), (wd + timedelta(days=2)).solar)
+        self.assertEqual(date(2021, 5, 3), (timedelta(days=2) + wd).solar)
+
+    def test_sub(self):
+        wd = WrappedDate(date(2021, 5, 1))
+
+        self.assertEqual(timedelta(days=2), date(2021, 5, 3) - wd)
+        self.assertEqual(timedelta(days=1), wd - date(2021, 4, 30))
+
+        self.assertEqual(timedelta(days=1), LunarDate(2021, 3, 21) - wd)
+        self.assertEqual(timedelta(days=2), wd - LunarDate(2021, 3, 18))
+        self.assertEqual(WrappedDate(date(2021, 4, 30)), wd - timedelta(days=1))
+
 
 class FestivalListDaysTestCase(unittest.TestCase):
     def test_solar(self):

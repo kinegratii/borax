@@ -12,7 +12,7 @@ from borax.calendars.lunardate import LunarDate, LCalendars, TERMS_CN
 
 __all__ = [
     'SolarFestival', 'LunarFestival', 'WeekFestival', 'TermFestival', 'Period', 'decode', 'FestivalError',
-    'FreqConst', 'FestivalLibrary'
+    'FreqConst', 'FestivalLibrary', 'WrappedDate'
 ]
 
 MixedDate = Union[date, LunarDate]
@@ -61,6 +61,14 @@ class WrappedDate:
     def __repr__(self):
         return '<WrappedDate:{}>'.format(self.__str__())
 
+    def __add__(self, other):
+        if isinstance(other, timedelta):
+            return WrappedDate(self.solar + other)
+        raise TypeError
+
+    def __radd__(self, other):
+        return self + other
+
     def __sub__(self, other):
         """This is the basic method for comparable feature.
         :param other: a instance of LunarDate / date / timedelta
@@ -72,13 +80,29 @@ class WrappedDate:
             return self.solar - other
         elif isinstance(other, timedelta):
             res = self.solar - other
-            return LunarDate.from_solar_date(res.year, res.month, res.day)
+            return WrappedDate(res)
         raise TypeError
 
     def __rsub__(self, other):
         if isinstance(other, date):
             return other - self.solar
         raise TypeError
+
+    def __key(self):
+        return self.solar.year, self.solar.month, self.solar.day,
+
+    def __hash__(self):
+        return hash(self.__key())
+
+    def __eq__(self, other):
+        return isinstance(self, type(other)) and self.__key() == other.__key()
+
+    def __getstate__(self):
+        return self.__key()
+
+    def __setstate__(self, state):
+        _year, _month, _day = state
+        self.solar = date(_year, _month, _day)
 
 
 class Period:
@@ -230,7 +254,7 @@ class Festival:
         days = list(self.list_days(start_date=date_obj))
         if len(days):
             this_day = days[0]
-            return LCalendars.delta(this_day, date_obj), WrappedDate(this_day, name=self.name)
+            return LCalendars.delta(this_day, date_obj), this_day
         return -1, None
 
     def _list_yearly(self, start_date, end_date, reverse):
@@ -574,7 +598,8 @@ class FestivalLibrary(collections.UserList):
                 names.append(festival.name)
         return names
 
-    def iter_festival_countdown(self, countdown: Optional[int] = None, date_obj: MixedDate = None) -> Iterator[Tuple[int, List]]:
+    def iter_festival_countdown(self, countdown: Optional[int] = None, date_obj: MixedDate = None) -> Iterator[
+        Tuple[int, List]]:
         ndays2festivals = collections.defaultdict(list)
         for festival in self:
             ndays, gd = festival.countdown(date_obj)
