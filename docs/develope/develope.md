@@ -2,6 +2,22 @@
 
 本节描述了Borax开源项目使用的技术思想、规范和工具。本页是一个简要的工具清单，具体可以查看[《python项目持续集成与包发布》](https://kinegratii.github.io/2017/04/25/python-project-ci-publish/) 这篇文章。
 
+## 开发基本SOP
+
+1.  编写模块代码
+1.  编写测试代码
+1.  更新文档
+1.  变更版本号
+1.  执行单元测试： unittest / pytest
+1.  代码静态检查 `flake8 borax tests`
+1.  推送代码 commit信息： `:bookmark: release v3.4.0` ,emojj 意义参见 [gitmoji | git 提交信息的 emoji 指南](https://gitmoji.js.org/) 。
+1.  检查确认 github action 的构建结果
+1.  创建合并PR 标题    `Release v3.4.0 `
+1.  创建 tag 和 release ，tag名称格式：`vx.y.z`
+1.  构建wheel包
+1.  上传到pypi，命令：`twine upload dist/borax-3.4.0-py2.py3.whl`
+1.  同步到gitee仓库
+
 ## 编码实现
 
 **关键字参数**
@@ -19,6 +35,18 @@
 **代码风格 - Flake8**
 
 > Flake8工具：http://flake8.pycqa.org/en/latest/
+
+安装flake8
+
+```shell
+pip install flake8
+```
+
+运行代码检查
+
+```shell
+flake8 borax tests
+```
 
 ## 单元测试
 

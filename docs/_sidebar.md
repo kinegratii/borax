@@ -2,17 +2,18 @@
   - [快速开始](quickstart)
 - **● Borax.Calendar**
   - [农历](guides/lunardate)
+  - [节日(festivals2) <sup style="color:red">New!<sup>](guides/festivals2)
   - [节日](guides/festival)
   - [生日](guides/birthday)
   - [工具类](guides/calendars-utils)
 - **● Borax.Datasets**
-  - [数据连接(Join)<sup style="color:red">New!<sup>](guides/join)
+  - [数据连接(Join)](guides/join)
   - [列选择器(fetch)](guides/fetch)
 - **● Borax.DataStructures**
   - [树形结构](guides/tree)
   - [cjson](guides/cjson)
 - **● Borax.Numbers**
-  - [中文数字 <sup style="color:red">New!<sup>](guides/numbers)
+  - [中文数字](guides/numbers)
   - [百分数](guides/percentage)
 - **● Borax.Pattern**
   - [单例模式](guides/singleton)
