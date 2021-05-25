@@ -248,6 +248,11 @@ class Festival:
             ncount += 1
         return days_list
 
+    def get_one_day(self, start_date=None, end_date=None) -> Optional[WrappedDate]:
+        days = self.list_days(start_date, end_date, count=1)
+        if days:
+            return days[0]
+
     def countdown(self, date_obj: MixedDate = None) -> Tuple[int, Optional[WrappedDate]]:
         if date_obj is None:
             date_obj = date.today()
@@ -324,7 +329,6 @@ class SolarFestival(Festival):
         super().__init__(name=name, freq=freq, month=month, day=day, reverse=reverse)
 
     def _resolve_yearly(self, year) -> List[Union[date, LunarDate]]:
-        # mock
         if self._month == 0:
             if self._reverse == 0:
                 _index = self._day

@@ -10,7 +10,9 @@
 
 Borax 是一个Python3工具集合库。
 
- 本文档的所有内容都是基于最新版本，函数和类签名的变化参见各自的文档说明。
+本文档的所有内容都是基于最新版本，函数和类签名的变化参见各自的文档说明。
+ 
+本项目代码仓库位于 [https://github.com/kinegratii/borax/](https://github.com/kinegratii/borax/) 。同时使用 Gitee 作为国内镜像，位于 [https://gitee.com/kinegratii/borax](https://gitee.com/kinegratii/borax) 。
 
 ## 开始(Quickstart)
 

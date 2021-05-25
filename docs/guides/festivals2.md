@@ -8,6 +8,8 @@
 ## 概述
  
 `borax.calendars.festivals2` 模块是实现常见节日的节日库，你可以使用它进行节日的计算和推导。
+
+`festivals2` 和 `festivals` 模块的差别和改进。
  
 ### 常量定义
  
@@ -21,7 +23,7 @@ FreqConst 表示节日的频率，用于设置 `Festival` 的 `freq` 参数。
 | --------------------- | -------- |
 | FreqConst.YEARLY = 0  | 表示每年 |
 | FreqConst.MONTHLY = 1 | 表示每月 |
- 
+
 #### LeapConst
  
 LeapConst表示农历闰月的标志，用于 `Period` 、`Festival` 对象初始化操作。
@@ -31,25 +33,7 @@ LeapConst表示农历闰月的标志，用于 `Period` 、`Festival` 对象初�
 | LeapConst.NORMAL = 0 | 平月 |
 | LeapConst.LEAP = 1   | 闰月 |
 | LeapConst.MIXED = 2  | 混合 |
- 
-### 异常类
- 
- 
-- `festivals2.FestivalError（label, message）`
- 
- 
-异常类。
- 
 
-### 模块类
- 
- 
-所有类如下：
- 
- 
-- Festival：表示特定的节日类，该类为抽象类，具体的节日类参见 *节日定义* 一节。
-- FestivalError：异常类
-- FestivalLibrary：节日库
 
 ## 基础数据结构
  
@@ -63,6 +47,7 @@ LeapConst表示农历闰月的标志，用于 `Period` 、`Festival` 对象初�
 | solar:date      | 公历日期   |
 | lunar:LunarDate | 农历日期   |
 | name:str        | 名称、标签 |
+
  
 为了赋值方便，`WrappedDate` 支持 `__iter__`，可以直接使用类似 `sd, ld = wd` 的方式赋值。
  
@@ -82,14 +67,14 @@ print(ld) # LunarDate(2020, 11, 18, 0)
  
 `WrappedDate` 也支持日期的计算。原则是 **只要操作数中有一个是WrappedDate对象，结果就是WrappedDate对象**。
  
-| 左操作数         | 操作符 | 右操作数         | 结果        |              |
-| ---------------- | ------ | ---------------- | ----------- | ------------ |
-| WrappedDate      | +      | timedelta        | WrappedDate | `w.__add__`  |
-| timedelta        | +      | WrappedDate      | WrappedDate | `w.__radd__` |
-| date / LunarDate | -      | WrappedDate      | timedelta   | d.sub/l.sub  |
-| WrappedDate      | -      | date / LunarDate | timedelta   | w.sub        |
-| WappedDate       | -      | timedelta        | WappedDate  | w.sub        |
- 
+| 左操作数         | 操作符 | 右操作数         | 结果        |
+| ---------------- | ------ | ---------------- | ----------- |
+| WrappedDate      | +      | timedelta        | WrappedDate |
+| timedelta        | +      | WrappedDate      | WrappedDate |
+| date / LunarDate | -      | WrappedDate      | timedelta   |
+| WrappedDate      | -      | date / LunarDate | timedelta   |
+| WappedDate       | -      | timedelta        | WappedDate  |
+
  
  
  
@@ -120,7 +105,7 @@ Period 是一个工具类，提供了一系列方法，这些方法均返回一�
 ### 创建节日对象
 
 节日是对日期（公历和农历）的进一步抽象。
- 
+
 | 节日                        | 表示法                                               | 规范化描述             |
 | --------------------------- | ---------------------------------------------------- | ---------------------- |
 | 元旦                        | SolarFestival(month=1, day=1)                        | 农历每年正月初一       |
@@ -128,20 +113,18 @@ Period 是一个工具类，提供了一系列方法，这些方法均返回一�
 | 母亲节（每年5月第二个周日） | WeekFestival(month=5, index=2, week=calendar.SUNDAY) | 公历每年5月第2个星期日 |
 | 除夕                        | LunarFestival(month=12, day=-1)                      | 农历每年腊月最后一天   |
 |                             | LunarFestival(day=-1)                                | 农历每年最后一天       |
-| 程序员节                    | SolarFestival(freq=YEARLY，day=256)                  | 公历每年第256天        |
+| 程序员节                    | SolarFestival(freq=FreqConst.YEARLY，day=256)         | 公历每年第256天        |
 | 清明节                      | TemFestival(name="清明")                             | 公历每年清明           |
-| 每月5日                     | SolarFestival(freq=MONTHLY， day=5)                  | 公历每月5日            |
-|                             |                                                      |                        |
+| 每月5日                     | SolarFestival(freq=FreqConst.MONTHLY， day=5)       | 公历每月5日            |
 
- 
 festivals模块使用4个类表示节日，各个类的初始化函数签名如下：
 
  
 ```python
-class SolarFestival(day, freq=YEARLY, year=0, month=0)
+class SolarFestival(day, freq=FreqConst.YEARLY, year=0, month=0)
 class WeekFestival(month, index, week)
 class TermFestival(name)
-class LunarFestival(day, freq=YEARLY, year=0, month=0, leap=0)
+class LunarFestival(day, freq=FreqConst.YEARLY, year=0, month=0, leap=0)
 ```
  
 各参数定义如下：
@@ -155,14 +138,14 @@ class LunarFestival(day, freq=YEARLY, year=0, month=0, leap=0)
 | day   | 日期序号。当month未设置时，表示一年的第几天；否则表示该月的第几天。允许取负值，表示一年/一个月的倒数 第几天。 | 必要参数         |
 | index | 序号。从1开始计数。                                          | 必要参数         |
 | week  | 星期表示。同`calendar.MONTHDAY` 等。                         | 必要参数         |
- 
+
 ### 其他属性
  
 **`Festival.set_name(name)`**
  
 设置节日对象的 name。
  
-## 基于单日期的方法
+## Festival API
  
 ### at
  
@@ -173,65 +156,21 @@ Festival.at(year:int, month:int=0, leap:int=0) -> MixdDate
 ```
  
 返回在给定年、年月的时间段的一个日期。
- 
+
 - 在 `LunarFestival` 参数表示农历年月日，返回一个 `LunarDate` 对象
 -  其余三个类的参数表示公历年月日，此时 leap 参数无意义，返回一个 `datetime.date` 对象
 - 当未找到或者找到一个以上的，抛出 `FestivalError` 异常
- 
+
 ### is_
- 
-方法签名
+
  
 ```python
 Festival.is_(date_obj:MixedDate) -> bool
 ```
  
 判断给定的日期是否是该节日，返回布尔值。
- 
- 
-| 新版                                        | 旧版    | 功能                               |
-| ------------------------------------------- | ------- | ---------------------------------- |
-| `is_(date_obj)`                             | match   | 判定给定的日期是否是该节日         |
-| `at(year)`                                  | reslove | 根据year获取节日，如果没有返回None |
-| `list_days(start_date, end_date, **kwargs)` |         | 遍历日期                           |
-| `list_days(solar_year)`                     |         |                                    |
-| `list_days(solar_year, solar_month)`        |         |                                    |
-|                                             |         |                                    |
- 
-### 示例
- 
-代码
- 
-```python
-from datetime import datetime, date
-import calendar
-from borax.calendars.lunardate import LunarDate
-from borax.calendars.festivals2 import LunarFestival, WeekFestival
-# 构建除夕节对象日，农历12月的最后一天
-chuxi = LunarFestival(month=12, day=-1, name="除夕")
- 
-chuxi_of_this_year = chuxi.at(year=2021)
- 
- 
-montherDay = WeekFestival(month=5, index=2, week=calendar.SUNDAY, name="母亲节")
- 
-montherDayForThisYear = montherDay.at(year=2021)
- 
-nextMonthDay = montherDay.list_days(start_date=datetime.now())[0]
- 
-ld = LunarDate(year=2020, month=12, day=30)
- 
-print(chuxi.is_(ld)) # True
- 
-next_chuxi_list = [ld for ld in chuxi.iter_days(start_date=date.today())]
-```
- 
-## 节日迭代
- 
- 
+
 ### iter_days
- 
-方法签名
  
 ```python
 Festival.iter_days(start_date:Option[MixedDate]=None, end_date:Option[MixedDate]=None, reverse=False) -> Iterable[None, None, MixedDate]
@@ -242,7 +181,7 @@ Festival.iter_days(start_date:Option[MixedDate]=None, end_date:Option[MixedDate]
 - 日期期间的最大范围为 [LunarDate.min, LunarDate.max]
 - 返回的是一个迭代器，而不是包含具体日期对象的列表
 - reverse 表示是否反向
- 
+
 例如，获取未来每年除夕节日的公历和公历日期：
  
 ```python
@@ -252,13 +191,8 @@ chuxi = LunarFestival(month=12, day=-1)
 for wd in chuxi.list_days(start_date=date.today()):
     sd, ld = wd
     print("%s %s".format(sd.strftime("%y-%m-%d"), ld.cn_str()))
-# 方案二
-chuxi = LunarFestival(month=12, day=-1)
-for wd in chuxi.list_days(*Period.future()):
-    sd, ld = wd
-    print("%s %s".format(sd.strftime("%y-%m-%d"), ld.cn_str()))
 ```
- 
+
 ### list_days
  
 ```python
@@ -270,10 +204,18 @@ Festival.list_days(start_date=None, end_date=None, reverse=False, count=-1)
 - start_date, end_date, reverse 的参数意义同 iter_days 方法
 - 返回一个日期列表。
 - count表示日期列表的长度。
+
+### get_one_day
  
-### 其他方法
+```python
+Festival.get_one_day(start_date=None, end_date=None)
+```
  
+返回在 start_date 和 end_date 之间（含起止日期）匹配本 Festival 的第一个日期。
  
+- start_date, end_date 的参数意义同 iter_days 方法
+- 返回一个日期，类型为 WrappedDate。
+
 ### 倒计时
  
 ```python
@@ -289,34 +231,119 @@ spring_festival = LunarFestival(month=1, day=1)
  
 print(spring_festival.countdown()) # (273, <WrappedDate:2022-02-01(二〇二二年正月初一)>)
 ```
- 
- 
-## 综合使用示例
- 
-### 除夕日列表
- 
- 
- 
+
+## FestivalLibrary：节日集合库
+
+`FestivalLibrary` 是集合容器类，提供了一些常用的节日。此类继承自 `collections.UserList` 。
+
 ```python
-chuxi = LunarFestival(month=12, day=-1)
-for day in chuxi.list_days(start_date=date.today()):
-    sd = day.to_solar_date()
-    print("%s %s".format(sd.strftime("%y-%m-%d %h:%i:%s"), day.cn_str()))
+class FestivalLibrary(collections.UserList):
+    pass
 ```
+
+## FestivalLibrary API
+
+### load_file
+
+```python
+FestivalLibrary.load_file(cls, file_path: Union[str, Path]) -> 'FestivalLibrary'
+```
+
+从文件 file_path 中加载节日数据。
+
+### load_builtin
+
+```python
+FestivalLibrary.load_builtin(cls, identifier: str = 'zh-Hans') -> 'FestivalLibrary'
+```
+
+加载Borax提供的节日库数据。
+
+### get_festival
+
+```python
+FestivalLibrary.get_festival(self, name: str) -> Optional[Festival]
+```
+
+根据名称获取对应的 Festival 对象。
+
+### get_festival_names
+
+```python
+FestivalLibrary.get_festival_names(self, date_obj: MixedDate) -> list
+```
+
+获取某一个日期的节日名称列表。
+
+### iter_festival_countdown
+
+```python
+FestivalLibrary.iter_festival_countdown(self, countdown: Optional[int] = None, date_obj: MixedDate = None) -> Iterator[Tuple[int, List]]
+```
+
+迭代获取节日的日期。
+
+```python
+
+from borax.calendars.festivals2 import FestivalLibrary
+
+fl = FestivalLibrary.load_builtin()
+for nday, gd_list in fl.iter_festival_countdown():
+    for gd in gd_list:
+        print('{:>3d} {} {}'.format(nday, gd.name, gd))
+
+```
+
+输出
+
+```
+  7 儿童节 2021-06-01(二〇二一年四月廿一)
+ 20 端午节 2021-06-14(二〇二一年五月初五)
+ 26 父亲节 2021-06-20(二〇二一年五月十一)
+ 68 建军节 2021-08-01(二〇二一年六月廿三)
+ 81 七夕 2021-08-14(二〇二一年七月初七)
+ 89 中元节 2021-08-22(二〇二一年七月十五)
+108 教师节 2021-09-10(二〇二一年八月初四)
+119 中秋节 2021-09-21(二〇二一年八月十五)
+129 国庆节 2021-10-01(二〇二一年八月廿五)
+142 重阳节 2021-10-14(二〇二一年九月初九)
+184 感恩节 2021-11-25(二〇二一年十月廿一)
+210 冬至 2021-12-21(二〇二一年冬月十八)
+213 平安夜 2021-12-24(二〇二一年冬月廿一)
+214 圣诞节 2021-12-25(二〇二一年冬月廿二)
+221 元旦 2022-01-01(二〇二一年冬月廿九)
+230 腊八节 2022-01-10(二〇二一年腊月初八)
+251 除夕 2022-01-31(二〇二一年腊月廿九)
+252 春节 2022-02-01(二〇二二年正月初一)
+265 情人节 2022-02-14(二〇二二年正月十四)
+266 元宵节 2022-02-15(二〇二二年正月十五)
+287 妇女节 2022-03-08(二〇二二年二月初六)
+291 植树节 2022-03-12(二〇二二年二月初十)
+311 愚人节 2022-04-01(二〇二二年三月初一)
+315 清明 2022-04-05(二〇二二年三月初五)
+341 劳动节 2022-05-01(二〇二二年四月初一)
+344 青年节 2022-05-04(二〇二二年四月初四)
+348 母亲节 2022-05-08(二〇二二年四月初八)
+352 护士节 2022-05-12(二〇二二年四月十二)
+```
+
+## 序列化和存储
  
- 
- 
+
+## 综合使用示例
+
 ###  两头春、无头春
  
 ```python
-# 农历两头春，无头春
- 
- 
-# 在农历year年时间段，立春的个数
+# 农历两头春，无头春。在农历year年时间段，立春的个数。
+
+from borax.calendars.festivals2 import TermFestival, Period
+from borax.calendars.lunardate import MIN_LUNAR_YEAR, MAX_LUNAR_YEAR
+
 tf = TermFestival(name='立春')
 for year in range(MIN_LUNAR_YEAR, MAX_LUNAR_YEAR):
     start_date, end_date = Period.lunar_year(year)
-    ncount = len(list(tf.list_days(start_date, end_date)))
+    ncount = len(tf.list_days(start_date, end_date))
     print('{}({}) - {}({})    {}'.format(
         start_date.cn_str(),
         start_date.to_solar_date(),
@@ -324,6 +351,7 @@ for year in range(MIN_LUNAR_YEAR, MAX_LUNAR_YEAR):
         end_date.to_solar_date(),
         ncount
     ))
+
 ```
  
  
@@ -350,21 +378,8 @@ for year in range(MIN_LUNAR_YEAR, MAX_LUNAR_YEAR):
  
 ...
 ```
- 
-## 附录：开发性接口变更
- 
- 
- 
-- `Festival.list_days` 移除 reverse 参数
-- `LCalendars.cast` 支持 `GeneralDate` 参数
-- 模块变量 YEARLY/MONTHLY 变为 Freq类变量
-- 内部方法 `Festival._resolve` 统一返回 `List[Union[date, LunarDate]]`
-- 移除`Festival.list_in_period`
-- 移除短编码字符串
-- `SolarSchema`、`LunarSchema` 的 day 参数允许取负值，表示倒数。
-- DayLunarSchema 移除
- 
- 
+
+
 ## 附录：新旧API对比
  
 体系结构
