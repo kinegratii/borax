@@ -325,10 +325,6 @@ print(my_birthday.leap) # 0
 
 返回 year 年的闰月月份，范围为 [0,12] ，0 表示该年无闰月。
 
-- **LCalendars.is_leap_month(year: int, month: int) -> bool**
-
-判断 year 年 month 月是否为闰月。该方法已废弃，可使用 `LCalendars.leap_month(year) == month` 表达式代替。
-
 ### 闰月年份
 
 - **LCalendars.get_leap_years(month: int = 0) -> tuple**

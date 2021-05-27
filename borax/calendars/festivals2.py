@@ -8,7 +8,7 @@ from datetime import date, timedelta
 from pathlib import Path
 from typing import List, Tuple, Optional, Union, Iterator
 
-from borax.calendars.lunardate import LunarDate, LCalendars, TERMS_CN
+from borax.calendars.lunardate import LunarDate, LCalendars, TermUtils
 
 __all__ = [
     'SolarFestival', 'LunarFestival', 'WeekFestival', 'TermFestival', 'Period', 'decode', 'FestivalError',
@@ -410,7 +410,7 @@ class TermFestival(Festival):
 
     def __init__(self, *, index=None, name=None):
         if index is None:
-            index = TERMS_CN.index(name)
+            index = TermUtils.get_index_for_name(name)
         super().__init__(freq=FreqConst.YEARLY, name=name, index=index)
 
     def _resolve_yearly(self, year) -> List[Union[date, LunarDate]]:

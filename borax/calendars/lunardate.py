@@ -9,7 +9,7 @@ from .store import (
 
 from typing import Optional, Iterator, Tuple
 
-__all__ = ['LunarDate', 'LCalendars', 'InvalidLunarDateError']
+__all__ = ['LunarDate', 'LCalendars', 'InvalidLunarDateError', 'TermUtils']
 
 
 # Exception
@@ -107,12 +107,6 @@ class LCalendars:
     """
 
     @staticmethod
-    def is_leap_month(year: int, month: int) -> bool:
-        warnings.warn('This method is deprecated, use LCalendars.leap_month instead.', DeprecationWarning, stacklevel=2)
-        _check_year_range(year)
-        return YEAR_INFOS[year - MIN_LUNAR_YEAR] % 16 == month
-
-    @staticmethod
     def leap_month(year: int) -> int:
         _check_year_range(year)
         leap_month, _ = _parse_leap(YEAR_INFOS[year - MIN_LUNAR_YEAR])
@@ -161,7 +155,8 @@ class LCalendars:
 
     @staticmethod
     def cast_date(date_obj, target_class):
-        if not (isinstance(date_obj, (datetime.date, LunarDate)) or (hasattr(date_obj, 'solar') and hasattr(date_obj, 'lunar'))):
+        if not (isinstance(date_obj, (datetime.date, LunarDate)) or (
+                hasattr(date_obj, 'solar') and hasattr(date_obj, 'lunar'))):
             raise TypeError('Unsupported type: {}'.format(date_obj.__class__.__name__))
         if isinstance(date_obj, target_class):
             return date_obj
@@ -321,6 +316,11 @@ class TermUtils:
 
         next_gz_month = day >= day1
         return term_name, next_gz_month
+
+    @staticmethod
+    def get_index_for_name(name: str):
+        name = name.rstrip("节")
+        return TERMS_CN.index(name)
 
 
 # ------ Stems and Branches ------

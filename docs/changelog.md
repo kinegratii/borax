@@ -2,7 +2,9 @@
 
 ## v3.5.0
 
-- `borax.calendars`
+- `borax.calendars.lunardate`
+  - 移除 `LCalendars.is_leap_month` 喊出
+- `borax.calendars.festivals2`
   - 全新的节日库模块 `festivals2`
   - `festivals` 标记为废弃，将在v3.6移除
 - `borax.serialize`
