@@ -2,8 +2,10 @@
 
 ## v3.5.0
 
+> 新增 Python3.10构建支持
+
 - `borax.calendars.lunardate`
-  - 移除 `LCalendars.is_leap_month` 喊出
+  - 移除 `LCalendars.is_leap_month` 函数
 - `borax.calendars.festivals2`
   - 全新的节日库模块 `festivals2`
   - `festivals` 标记为废弃，将在v3.6移除
