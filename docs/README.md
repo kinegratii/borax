@@ -20,7 +20,7 @@ Borax 是一个Python3工具集合库。
 
 ## 话题(Topics)
 
-- **Borax.Calendar**:  [农历](guides/lunardate) | [节日(festivals2)](guides/festival)  | [节日序列化](guides/festivals2-serialize) | [生日](guides/birthday) | [工具类](guides/calendars-utils)
+- **Borax.Calendar**:  [农历](guides/lunardate) | [节日(festivals2)](guides/festival)  | [节日序列化](guides/festivals2-serialize)  | [节日综合示例](guides/festivals2-usage) | [生日](guides/birthday) | [工具类](guides/calendars-utils)
 - **Borax.Datasets**: [数据连接(Join)](guides/join) | [列选择器(fetch)](guides/fetch) 
 - **Borax.DataStructures**:  [树形结构](guides/tree) | [cjson](guides/cjson) 
 - **Borax.Numbers:**: [中文数字](guides/numbers) |  [百分数](guides/percentage)

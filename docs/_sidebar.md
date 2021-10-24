@@ -4,6 +4,7 @@
   - [农历](guides/lunardate)
   - [节日(festivals2) <sup style="color:red">New!<sup>](guides/festivals2)
   - [节日序列化](guides/festivals2-serialize)
+  - [节日综合示例](guides/festivals2-usage)
   - [节日(festivals)](guides/festival)
   - [生日](guides/birthday)
   - [工具类](guides/calendars-utils)
