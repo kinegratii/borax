@@ -89,7 +89,7 @@ class WrappedDate:
         raise TypeError
 
     def __key(self):
-        return self.solar.year, self.solar.month, self.solar.day,
+        return self.solar.year, self.solar.month, self.solar.day
 
     def __hash__(self):
         return hash(self.__key())
@@ -174,13 +174,10 @@ class Festival:
             return False
 
     def at(self, year: int, month: int = 0, leap=0) -> MixedDate:
-        try:
-            date_list = self._resolve(year, month, leap)
-        except FestivalError:
-            raise
+        date_list = self._resolve(year, month, leap)
         if len(date_list) == 0:
             raise FestivalError('DateDoesNotExit', 'The date does not exist.')
-        elif len(date_list) > 1:
+        if len(date_list) > 1:
             raise FestivalError('MultipleDateExist', 'The result return {} dates.'.format(len(date_list)))
         return date_list[0]
 
@@ -193,13 +190,10 @@ class Festival:
         else:
             _m = self._month
 
-        try:
-            if self._freq == FreqConst.YEARLY:
-                date_list = self._resolve_yearly(_y)
-            else:
-                date_list = self._resolve_monthly(_y, _m, leap)
-        except FestivalError:
-            raise
+        if self._freq == FreqConst.YEARLY:
+            date_list = self._resolve_yearly(_y)
+        else:
+            date_list = self._resolve_monthly(_y, _m, leap)
         if month != 0:
             new_date_list = []
             for date_obj in date_list:
@@ -257,7 +251,7 @@ class Festival:
         if date_obj is None:
             date_obj = date.today()
         days = list(self.list_days(start_date=date_obj))
-        if len(days):
+        if days:
             this_day = days[0]
             return LCalendars.delta(this_day, date_obj), this_day
         return -1, None
@@ -397,7 +391,7 @@ class WeekFestival(Festival):
         else:
             d0 = 8 - (w - week)
         d = d0 + 7 * (index - 1)
-        if not (1 <= d <= ndays):
+        if not 1 <= d <= ndays:
             raise FestivalError("DateDoesNotExist", "The date({}, {}, {}) is not a valid date.".format(year, month, d))
         return d
 
@@ -594,6 +588,7 @@ class FestivalLibrary(collections.UserList):
         for festival in self:
             if festival.name == name:
                 return festival
+        return None
 
     def get_festival_names(self, date_obj: MixedDate) -> list:
         names = []

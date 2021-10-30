@@ -144,7 +144,8 @@ disable=print-statement,
 		missing-module-docstring,
 		bad-classmethod-argument,
 		invalid-name,
-		no-else-return
+		no-else-return,
+		no-self-use
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
@@ -531,7 +532,7 @@ max-branches=12
 max-locals=15
 
 # Maximum number of parents for a class (see R0901).
-max-parents=7
+max-parents=10
 
 # Maximum number of public methods for a class (see R0904).
 max-public-methods=20
@@ -540,10 +541,10 @@ max-public-methods=20
 max-returns=6
 
 # Maximum number of statements in function / method body.
-max-statements=50
+max-statements=80
 
 # Minimum number of public methods for a class (see R0903).
-min-public-methods=2
+min-public-methods=1
 
 
 [IMPORTS]

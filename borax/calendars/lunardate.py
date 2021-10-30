@@ -1,13 +1,11 @@
 # coding=utf8
-import re
 import datetime
-import warnings
+import re
+from typing import Optional, Iterator, Tuple
 
 from .store import (
     EncoderMixin, f_year, f_month, f_day, f_leap
 )
-
-from typing import Optional, Iterator, Tuple
 
 __all__ = ['LunarDate', 'LCalendars', 'InvalidLunarDateError', 'TermUtils']
 
