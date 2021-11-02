@@ -28,6 +28,10 @@ Borax 是一个Python3工具集合库。
 - **其他**: [序列号生成器(Pool)](guides/serial_pool) | [Tkinter界面](guides/ui)
 - **已废弃**: [节日](guides/festival)
 
+## 发布日志
+
+[v3.5](release-note/v350)
+
 ## 开发(Development)
 
 - **代码仓库**：[Github](https://github.com/kinegratii/borax/) | [Gitee (镜像)](https://gitee.com/kinegratii/borax)
