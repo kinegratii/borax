@@ -140,7 +140,7 @@ class WrappedDateTestCase(unittest.TestCase):
         self.assertEqual(LunarDate(2021, 3, 20), ld)
 
     def test_magic_method(self):
-        wd = WrappedDate(date(2021, 5, 1))
+        WrappedDate(date(2021, 5, 1))
 
     def test_add(self):
         wd = WrappedDate(date(2021, 5, 1))

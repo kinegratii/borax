@@ -197,9 +197,8 @@ class Festival:
         if month != 0:
             new_date_list = []
             for date_obj in date_list:
-                is_match = (year, month) == (date_obj.year, date_obj.month) and (
-                        self.date_class == date or leap == _IGNORE_LEAP_MONTH or leap == date_obj.leap
-                )
+                is_match = (year, month) == (date_obj.year, date_obj.month)
+                is_match = is_match and (self.date_class == date or leap == _IGNORE_LEAP_MONTH or leap == date_obj.leap)
                 if is_match:
                     new_date_list.append(date_obj)
             return new_date_list
@@ -597,8 +596,9 @@ class FestivalLibrary(collections.UserList):
                 names.append(festival.name)
         return names
 
-    def iter_festival_countdown(self, countdown: Optional[int] = None, date_obj: MixedDate = None) -> Iterator[
-        Tuple[int, List]]:
+    def iter_festival_countdown(
+            self, countdown: Optional[int] = None, date_obj: MixedDate = None
+    ) -> Iterator[Tuple[int, List]]:
         ndays2festivals = collections.defaultdict(list)
         for festival in self:
             ndays, gd = festival.countdown(date_obj)
