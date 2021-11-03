@@ -4,7 +4,9 @@ import calendar
 from datetime import date
 import unittest
 
-from borax.calendars.festivals2 import SolarFestival, LunarFestival, WeekFestival, TermFestival, decode, FestivalLibrary
+from borax.calendars.lunardate import LunarDate
+from borax.calendars.festivals2 import SolarFestival, LunarFestival, WeekFestival, TermFestival, decode, \
+    FestivalLibrary, WrappedDate,FestivalError
 
 
 class FestivalEncodeTestCase(unittest.TestCase):
@@ -56,6 +58,30 @@ class FestivalDecodeTestCase(unittest.TestCase):
             with self.subTest(raw=raw):
                 f = decode(raw)
                 self.assertEqual(raw, f.encode())
+
+
+class DateEncoderTestCase(unittest.TestCase):
+    def test_date_encode(self):
+        ld = LunarDate(2021, 8, 15)
+        self.assertEqual('1202108150', WrappedDate(ld).encode())
+        self.assertEqual('0202109210', WrappedDate(ld.to_solar_date()).encode())
+
+        ld = LunarDate(2020, 4, 3, 1)
+        self.assertEqual('1202004031', WrappedDate(ld).encode())
+
+    def test_date_decode(self):
+        wd = WrappedDate.decode('0202109210')
+        self.assertEqual(date(2021, 9, 21), wd.solar)
+
+        wd1 = WrappedDate.decode('1202004031')
+        self.assertEqual(LunarDate(2020, 4, 3, 1), wd1.lunar)
+
+        wd2 = WrappedDate.decode('1202004030')
+        self.assertEqual(LunarDate(2020, 4, 3, 0), wd2.lunar)
+
+    def test_exception(self):
+        with self.assertRaises(FestivalError):
+            WrappedDate.decode('4202100230')
 
 
 class FestivalLibraryTestCase(unittest.TestCase):

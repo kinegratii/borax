@@ -44,12 +44,16 @@ class FestivalSchema(enum.IntEnum):
 
 
 class WrappedDate:
-    __slots__ = ['solar', 'lunar', 'name']
+    __slots__ = ['solar', 'lunar', 'name', '_fl']
 
     def __init__(self, date_obj: MixedDate, name: str = ''):
         self.solar = LCalendars.cast_date(date_obj, date)
         self.lunar = LCalendars.cast_date(date_obj, LunarDate)
         self.name = name
+        if isinstance(date_obj, date):
+            self._fl = 's'
+        else:
+            self._fl = 'l'
 
     def __iter__(self):
         yield self.solar
@@ -104,6 +108,30 @@ class WrappedDate:
         _year, _month, _day = state
         self.solar = date(_year, _month, _day)
 
+    def encode(self) -> str:
+        if self._fl == 'l':
+            festival = LunarFestival(month=self.lunar.month, day=self.lunar.day, leap=self.lunar.leap)
+            encoded_str = festival.encode()
+            return '{}{:04d}{}'.format(encoded_str[0], self.lunar.year, encoded_str[1:])
+        else:
+            festival = SolarFestival(month=self.solar.month, day=self.solar.day)
+            encoded_str = festival.encode()
+            return '{}{:04d}{}'.format(encoded_str[0], self.solar.year, encoded_str[1:])
+
+    @classmethod
+    def decode(cls, raw: str) -> 'WrappedDate':
+        festival = decode(raw)
+        if isinstance(festival, SolarFestival):
+            return WrappedDate(date(festival._cyear, festival._month, festival._day))
+        elif isinstance(festival, LunarFestival):
+            if festival._leap == 1:
+                leap = 1
+            else:
+                leap = 0
+            return WrappedDate(LunarDate(festival._cyear, festival._month, festival._day, leap))
+        else:
+            raise FestivalError('Invalid FestivalSchema', '')
+
 
 class Period:
     @staticmethod
@@ -154,9 +182,19 @@ class Festival:
         self._week_no = kwargs.get('week', 0)
         self._freq = kwargs.get('freq', 0)
 
+        self._cyear = 0
+
     def set_name(self, name):
         self._name = name
         return self
+
+    @property
+    def cyear(self):
+        return self._cyear
+
+    @cyear.setter
+    def cyear(self, value):
+        self._cyear = value
 
     @property
     def name(self):
@@ -530,8 +568,10 @@ __SCHEMA_CLASS_DICT = {
 def decode(raw: str) -> Festival:
     if not raw[:-1].isdigit() or raw[-1] not in '0123456789ABCDEF':
         raise ValueError('Invalid raw:{}'.format(raw))
+    cyear = 0
     if len(raw) == 10:
         schema, month, day, flag = int(raw[0]), int(raw[5:7]), int(raw[7:9]), int(raw[9], 16)
+        cyear = int(raw[1:5])
     elif len(raw) == 6:
         schema, month, day, flag = int(raw[0]), int(raw[1:3]), int(raw[3:5]), int(raw[5], 16)
     else:
@@ -578,7 +618,10 @@ def decode(raw: str) -> Festival:
         attrs['week'] = flag
     elif schema == FestivalSchema.TERM:
         attrs['index'] = day
-    return cls(**attrs)
+    obj = cls(**attrs)
+    if cyear:
+        obj.cyear = cyear
+    return obj
 
 
 class FestivalLibrary(collections.UserList):
