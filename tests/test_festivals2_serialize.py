@@ -6,7 +6,7 @@ import unittest
 
 from borax.calendars.lunardate import LunarDate
 from borax.calendars.festivals2 import SolarFestival, LunarFestival, WeekFestival, TermFestival, decode, \
-    FestivalLibrary, WrappedDate,FestivalError
+    FestivalLibrary, WrappedDate, FestivalError
 
 
 class FestivalEncodeTestCase(unittest.TestCase):
