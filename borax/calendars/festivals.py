@@ -263,7 +263,7 @@ class DateSchemaFactory:
 
 # -------------------- Festival Dataset  ---------------------------------
 LANG_FILES = {
-    'zh-Hans': 'FestivalData.txt'
+    'zh-Hans': 'FestivalData.csv'
 }
 
 

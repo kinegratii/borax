@@ -627,7 +627,7 @@ class FestivalLibrary(collections.UserList):
     @classmethod
     def load_builtin(cls, identifier: str = 'zh-Hans') -> 'FestivalLibrary':
         file_dict = {
-            'zh-Hans': 'FestivalData.txt'
+            'zh-Hans': 'FestivalData.csv'
         }
         file_path = Path(__file__).parent / file_dict.get(identifier)
         return cls.load_file(file_path)
