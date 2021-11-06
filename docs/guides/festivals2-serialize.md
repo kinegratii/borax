@@ -47,6 +47,34 @@ class EncodeMixin:
 
 和 `festivals` 相比， `festivals2` 不再支持 `LunarDate` 的序列化，必须转化为对应的 `WrappedDate` 对象。这一特定将在Borax3.6版本移除。
 
+## 使用方法
+
+序列化方法定义在三个模块方法。
+
+### encode
+
+```python
+festivals2.encode(obj: Union[WrappedDate, Festival]) -> str
+```
+
+序列化日期或节日对象，返回特定格式的字符串。
+
+### decode
+
+```python
+festivals2.decode(raw: Union[str, bytes]) -> Union[WrappedDate, Festival]
+```
+
+反序列化日期或节日对象，返回 `WrappedDate` 或 `Festival` 对象。
+
+### decode_festival
+
+```python
+festivals2.decode_festival(raw: Union[str, bytes]) -> Festival
+```
+
+反序列化节日对象，返回 `Festival` 对象。
+
 ## 基本定义
 
 ### 编码格式

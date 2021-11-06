@@ -11,8 +11,11 @@ from typing import List, Tuple, Optional, Union, Iterator
 from borax.calendars.lunardate import LunarDate, LCalendars, TermUtils
 
 __all__ = [
-    'SolarFestival', 'LunarFestival', 'WeekFestival', 'TermFestival', 'Period', 'decode', 'FestivalError',
-    'FreqConst', 'FestivalLibrary', 'WrappedDate'
+    'FestivalError', 'WrappedDate', 'Period',
+    'FreqConst',
+    'SolarFestival', 'LunarFestival', 'WeekFestival', 'TermFestival',
+    'encode', 'decode', 'decode_festival',
+    'FestivalLibrary',
 ]
 
 MixedDate = Union[date, LunarDate]
@@ -120,17 +123,7 @@ class WrappedDate:
 
     @classmethod
     def decode(cls, raw: str) -> 'WrappedDate':
-        festival = decode(raw)
-        if isinstance(festival, SolarFestival):
-            return WrappedDate(date(festival._cyear, festival._month, festival._day))
-        elif isinstance(festival, LunarFestival):
-            if festival._leap == 1:
-                leap = 1
-            else:
-                leap = 0
-            return WrappedDate(LunarDate(festival._cyear, festival._month, festival._day, leap))
-        else:
-            raise FestivalError('Invalid FestivalSchema', '')
+        return decode(raw)
 
 
 class Period:
@@ -565,7 +558,13 @@ __SCHEMA_CLASS_DICT = {
 }
 
 
-def decode(raw: str) -> Festival:
+def encode(obj: Union[WrappedDate, Festival]) -> str:
+    return obj.encode()
+
+
+def decode_festival(raw: Union[str, bytes]) -> Festival:
+    if isinstance(raw, bytes):
+        raw = raw.decode()
     if not raw[:-1].isdigit() or raw[-1] not in '0123456789ABCDEF':
         raise ValueError('Invalid raw:{}'.format(raw))
     cyear = 0
@@ -624,6 +623,24 @@ def decode(raw: str) -> Festival:
     return obj
 
 
+def decode(raw: Union[str, bytes]) -> Union[WrappedDate, Festival]:
+    if isinstance(raw, bytes):
+        raw = raw.decode()
+    festival = decode_festival(raw)
+    if festival.cyear == 0:
+        return festival
+    if isinstance(festival, SolarFestival):
+        return WrappedDate(date(festival._cyear, festival._month, festival._day))
+    elif isinstance(festival, LunarFestival):
+        if festival._leap == 1:
+            leap = 1
+        else:
+            leap = 0
+        return WrappedDate(LunarDate(festival._cyear, festival._month, festival._day, leap))
+    else:
+        raise FestivalError('Invalid FestivalSchema', '')
+
+
 class FestivalLibrary(collections.UserList):
 
     def get_festival(self, name: str) -> Optional[Festival]:
@@ -660,7 +677,7 @@ class FestivalLibrary(collections.UserList):
             reader = csv.DictReader(f, fieldnames=field_names)
             for row in reader:
                 try:
-                    festival = decode(row['raw'])
+                    festival = decode_festival(row['raw'])
                     festival.set_name(row['name'])
                     fl.append(festival)
                 except ValueError:

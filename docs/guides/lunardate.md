@@ -278,6 +278,8 @@ with open('data.pickle', 'rb') as f:
 
 ### sqlite3自定义字段
 
+> 从 Borax3.5开始，为了增加公历日期（`datetime.date`）和农历日期（`LunarDate`）的序列化， `LunarDate` 将不再支持直接序列化，需转化为 `WrappedDate` 对象。
+
 `LunarDate` 继承自 `store.EncoderMixin` 接口，为 sqlite3 自定义字段提供支持，更多细节参考 [sqlite3文档](https://docs.python.org/3.7/library/sqlite3.html#converting-sqlite-values-to-custom-python-types)。
 
 下面是一个简单的例子：

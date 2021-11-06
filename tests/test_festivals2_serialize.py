@@ -6,7 +6,7 @@ import unittest
 
 from borax.calendars.lunardate import LunarDate
 from borax.calendars.festivals2 import SolarFestival, LunarFestival, WeekFestival, TermFestival, decode, \
-    FestivalLibrary, WrappedDate, FestivalError
+    decode_festival, FestivalLibrary, WrappedDate, FestivalError
 
 
 class FestivalEncodeTestCase(unittest.TestCase):
@@ -27,10 +27,10 @@ class FestivalEncodeTestCase(unittest.TestCase):
         self.assertEqual('10002A', lf3.encode())
 
     def test_old_lunar(self):
-        lf = decode('312011')
+        lf = decode_festival('312011')
         lf2 = LunarFestival(month=12, day=-1)
         self.assertEqual(lf.encode(), lf2.encode())
-        lf = decode('312010')
+        lf = decode_festival('312010')
         lf2 = LunarFestival(month=12, day=1)
         self.assertEqual(lf.encode(), lf2.encode())
 
@@ -38,26 +38,27 @@ class FestivalEncodeTestCase(unittest.TestCase):
 class FestivalDecodeTestCase(unittest.TestCase):
     def test_festival_decode(self):
         raw = '001010'
-        f = decode(raw)
+        f = decode_festival(raw)
         self.assertEqual(raw, f.encode())
         raw2 = '0202001010'
-        f2 = decode(raw2)
+        f2 = decode_festival(raw2)
         self.assertEqual(raw, f2.encode())
 
     def test_fail_decode(self):
         with self.assertRaises(ValueError):
-            decode('XEDE')
+            decode_festival('XEDE')
         with self.assertRaises(ValueError):
-            decode('123456789')
+            decode_festival('123456789')
         with self.assertRaises(ValueError):
-            decode('654321')
+            decode_festival('654321')
 
     def test_all(self):
         all_codes = ['001010', '009100', '105050', '205026', '400230', '00002A', '00112A', '00003C']
         for raw in all_codes:
             with self.subTest(raw=raw):
-                f = decode(raw)
+                f = decode_festival(raw)
                 self.assertEqual(raw, f.encode())
+                self.assertEqual(raw, decode(raw).encode())
 
 
 class DateEncoderTestCase(unittest.TestCase):

@@ -60,3 +60,27 @@ for ld in new_year_eve.list_days(start_date=LunarDate.today(), count=10):
 2031-01-22(二〇三〇年腊月廿九)
 ```
 
+## sqlite3整合
+
+`festival2` 内置了对sqlite3数据库自定义字段的支持。在示例中可以在同一个字段存储公历生日日期和农历生日日期。
+
+```python
+import sqlite3
+
+from borax.calendars.lunardate import LunarDate
+from borax.calendars.festivals2 import encode, decode, WrappedDate
+
+sqlite3.register_adapter(WrappedDate, encode)
+sqlite3.register_converter("WrappedDate", decode)
+
+con = sqlite3.connect(":memory:", detect_types=sqlite3.PARSE_DECLTYPES)
+cur = con.cursor()
+cur.execute('CREATE TABLE member (pid INT AUTO_INCREMENT PRIMARY KEY,birthday WrappedDate);')
+ld = LunarDate(2018, 5, 3)
+cur.execute("INSERT INTO member(birthday) VALUES (?)", (WrappedDate(ld),))
+cur.execute("SELECT pid, birthday FROM member;")
+my_birthday = cur.fetchone()[1]
+cur.close()
+con.close()
+print(my_birthday)
+```
