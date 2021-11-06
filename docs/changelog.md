@@ -1,6 +1,6 @@
 # 更新日志
 
-## v3.5.0
+## v3.5.0 (20211115)
 
 > 新增 Python3.10构建支持
 
@@ -15,6 +15,8 @@
 - `borax.datasets.join_`模块
   - 移除 `old_join` 和 `old_join_one` 函数
 - 移除 `borax.finance` 模块
+- 开发SOP
+  - 更新依赖库，参见 *requirements_dev.txt*
 
 ## v3.4.4 (20210410)
 

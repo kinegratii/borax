@@ -8,8 +8,6 @@
 ## 概述
  
 `borax.calendars.festivals2` 模块是实现常见节日的节日库，你可以使用它进行节日的计算和推导。
-
-`festivals2` 和 `festivals` 模块的差别和改进。
  
 ### 常量定义
  
@@ -35,10 +33,10 @@ LeapConst表示农历闰月的标志，用于 `Period` 、`Festival` 对象初�
 | LeapConst.MIXED = 2  | 混合 |
 
 
-## 基础数据结构
+## 基础数据结构 - WrappedDate
  
  
-### WrappedDate：通用日期类
+### 定义
  
 `WrappedDate` 是公历日期和农历日期的包裹类。属性定义如下：
  
@@ -64,6 +62,7 @@ ld = wd.lunar
 print(sd) # 2021-01-01
 print(ld) # LunarDate(2020, 11, 18, 0)
 ```
+ ### 日期计算
  
 `WrappedDate` 也支持日期的计算。原则是 **只要操作数中有一个是WrappedDate对象，结果就是WrappedDate对象**。
  
@@ -76,9 +75,12 @@ print(ld) # LunarDate(2020, 11, 18, 0)
 | WappedDate       | -      | timedelta        | WappedDate  |
 
  
+ ### 序列化
+ 
+ `WrappedDate` 支持编码序列化，参见 日期序列化 一节。
  
  
-### Period：期间工具类
+## 基础数据结构 - Period
  
 Period 是一个工具类，提供了一系列方法，这些方法均返回一个包含起始日期和终止日期的二元素元组。
  
@@ -196,7 +198,7 @@ for wd in chuxi.list_days(start_date=date.today()):
 ### list_days
  
 ```python
-Festival.list_days(start_date=None, end_date=None, reverse=False, count=-1)
+Festival.list_days(start_date=None, end_date=None, reverse=False, count=-1) -> List[WrappedDate]
 ```
  
 返回在 start_date 和 end_date 之间（含起止日期）匹配本 Festival 的日期列表。
@@ -208,7 +210,7 @@ Festival.list_days(start_date=None, end_date=None, reverse=False, count=-1)
 ### get_one_day
  
 ```python
-Festival.get_one_day(start_date=None, end_date=None)
+Festival.get_one_day(start_date=None, end_date=None) -> Optional[WrappedDate]
 ```
  
 返回在 start_date 和 end_date 之间（含起止日期）匹配本 Festival 的第一个日期。
@@ -228,7 +230,6 @@ Festival.countdown(date_obj: MixedDate = None) -> Tuple[int, Optional[WrappedDat
 from borax.calendars.festivals2 import LunarFestival
  
 spring_festival = LunarFestival(month=1, day=1)
- 
 print(spring_festival.countdown()) # (273, <WrappedDate:2022-02-01(二〇二二年正月初一)>)
 ```
 
@@ -240,8 +241,6 @@ print(spring_festival.countdown()) # (273, <WrappedDate:2022-02-01(二〇二二�
 class FestivalLibrary(collections.UserList):
     pass
 ```
-
-## FestivalLibrary API
 
 ### load_file
 

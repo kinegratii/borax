@@ -30,7 +30,7 @@ Borax 是一个Python3工具集合库。包括了以下几个话题：
 
 ## 安装 (Installation)
 
-Borax 要求 Python3.5+ 。
+Borax 要求 Python3.6+ 。
 
 可以通过以下两种方式安装 ：
 

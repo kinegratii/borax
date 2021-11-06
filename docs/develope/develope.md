@@ -1,24 +1,38 @@
 # 技术文档
 
-本节描述了Borax开源项目使用的技术思想、规范和工具。本页是一个简要的工具清单，具体可以查看[《python项目持续集成与包发布》](https://kinegratii.github.io/2017/04/25/python-project-ci-publish/) 这篇文章。
+本节描述了Borax开源项目使用的技术思想、规范和工具。
 
 ## 开发基本SOP
 
+1.  提出需求
+1.  设计方案
 1.  编写模块代码
 1.  编写测试代码
 1.  更新文档
 1.  变更版本号
 1.  执行单元测试： unittest / pytest
-1.  代码静态检查 `flake8 borax tests`
-1.  推送代码 commit信息： `:bookmark: release v3.4.0` ,emojj 意义参见 [gitmoji | git 提交信息的 emoji 指南](https://gitmoji.js.org/) 。
-1.  检查确认 github action 的构建结果
-1.  创建合并PR 标题    `Release v3.4.0 `
-1.  创建 tag 和 release ，tag名称格式：`vx.y.z`
+1.  代码静态检查 `flake8 borax tests` 或者 `pylint borax`
+1.  提交代码。commit信息： `:bookmark: release v3.4.0` ,emojj 意义参见 [gitmoji | git 提交信息的 emoji 指南](https://gitmoji.js.org/) 。
+1.  githb仓库：推送代码
+1.  githb仓库：检查确认 github action 的构建结果
+1.  githb仓库：创建合并PR 标题    `Release v3.4.0 `
+1.  githb仓库：创建 tag 和 release ，tag名称格式：`vx.y.z`
 1.  构建wheel包
 1.  上传到pypi，命令：`twine upload dist/borax-3.4.0-py2.py3.whl`
-1.  同步到gitee仓库
+1.  gitee仓库：同步代码
+1.  gitee仓库：创建Release
 
-## 编码实现
+## 分支管理
+
+| 分支类别               | 描述           | 备注                               |
+| ---------------------- | -------------- | ---------------------------------- |
+| master                 | 主分支         | 版本Tag/Release所在分支            |
+| develop                | 主开发分支     |                                    |
+| release/<版本号>       | 版本候选分支   | 以次版本号为基准，如 release/v350  |
+| feature/<功能名称标识> | 功能性开发分支 | 不进行持续构建，由创建者在本地执行 |
+| bugfix                 | bug修正分支    | 非必需                             |
+
+## 编码规范
 
 **关键字参数**
 
@@ -31,6 +45,8 @@
 > PEP484: https://www.python.org/dev/peps/pep-0484/
 
 类型提示是python3.5引入的功能。
+
+## 静态检查
 
 **代码风格 - Flake8**
 
