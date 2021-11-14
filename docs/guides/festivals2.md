@@ -378,19 +378,3 @@ for year in range(MIN_LUNAR_YEAR, MAX_LUNAR_YEAR):
 ...
 ```
 
-
-## 附录：新旧API对比
- 
-体系结构
- 
-| 旧版API        | 新版API       | 变化 |
-| -------------- | ------------- | ---- |
-| SolarSchema    | SolarFestival |      |
-| WeekSchema     | WeekFestival  |      |
-| TermSchema     | TermFestival  |      |
-| LunarSchema    | LunarFestival |      |
-| DayLunarSchema |               |      |
- 
- 
- 
- 
