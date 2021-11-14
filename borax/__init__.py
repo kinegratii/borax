@@ -1,4 +1,4 @@
 # coding=utf8
 
-__version__ = '3.4.4'
+__version__ = '3.5.0'
 __author__ = 'kinegratii'
