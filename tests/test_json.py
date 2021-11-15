@@ -21,7 +21,7 @@ class EPoint:
         self.y = y
 
 
-@cjson.to_serializable.register(EPoint)
+@cjson.encoder.register(EPoint)
 def encode_epoint(o):
     return [o.x, o.y]
 
@@ -52,7 +52,7 @@ class CJsonTestCase(unittest.TestCase):
             def __json__(self):
                 return [self.x, self.y]
 
-        @cjson.to_serializable.register(Pt)
+        @cjson.encoder.register(Pt)
         def encode_pt(p):
             return {'x': p.x, 'y': p.y}
 

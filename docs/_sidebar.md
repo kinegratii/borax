@@ -2,18 +2,20 @@
   - [快速开始](quickstart)
 - **● Borax.Calendar**
   - [农历](guides/lunardate)
-  - [节日](guides/festival)
+  - [节日(festivals2) <sup style="color:red">New!<sup>](guides/festivals2)
+  - [日期节日序列化](guides/festivals2-serialize)
+  - [节日综合示例](guides/festivals2-usage)
+  - [节日(festivals)](guides/festival)
   - [生日](guides/birthday)
   - [工具类](guides/calendars-utils)
 - **● Borax.Datasets**
-  - [数据连接(Join)<sup style="color:red">New!<sup>](guides/join)
+  - [数据连接(Join)](guides/join)
   - [列选择器(fetch)](guides/fetch)
 - **● Borax.DataStructures**
   - [树形结构](guides/tree)
-  - [bjson](guides/bjson)
   - [cjson](guides/cjson)
 - **● Borax.Numbers**
-  - [中文数字 <sup style="color:red">New!<sup>](guides/numbers)
+  - [中文数字](guides/numbers)
   - [百分数](guides/percentage)
 - **● Borax.Pattern**
   - [单例模式](guides/singleton)
@@ -21,9 +23,10 @@
 - **● Borax.Utils**
   - [字符串工具模块](guides/strings)
 - **● 其他**
-  - [序列号生成器](guides/serial_generator)
   - [序列号生成器(Pool)](guides/serial_pool)
   - [Tkinter界面](guides/ui)
+- **● 发布日志**
+  - [v3.5](release-note/v350)
 - **● 项目开发**
   - [版本日志](changelog)
   - [技术文档](develope/develope)

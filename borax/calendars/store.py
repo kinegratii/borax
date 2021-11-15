@@ -1,5 +1,7 @@
 # coding=utf8
 
+import warnings
+
 
 class Field:
     def __init__(self, name=None, length=None, required=True):
@@ -44,6 +46,8 @@ class EncoderMixin:
 
     @classmethod
     def decode(cls, raw, short=False):
+        warnings.warn('This method is deprecated, use borax.festivals2.Wrapped.decode instead.', DeprecationWarning,
+                      stacklevel=2)
         i = 0
         data = {}
         for field in cls.fields:
@@ -55,6 +59,8 @@ class EncoderMixin:
         return cls(**data)
 
     def encode(self, short=False):
+        warnings.warn('This method is deprecated, use borax.festivals2.Wrapped.encode instead.', DeprecationWarning,
+                      stacklevel=2)
         ds = []
         for field in self.fields:
             if field.name:

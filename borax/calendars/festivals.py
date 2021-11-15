@@ -1,4 +1,6 @@
 # coding=utf8
+
+import warnings
 import calendar
 import csv
 from collections import defaultdict
@@ -10,6 +12,8 @@ from .lunardate import LunarDate, LCalendars, TERMS_CN
 from .store import (
     Field, EncoderMixin, f_year, f_month, f_day, f_leap, f_index, f_reverse, f_schema
 )
+
+warnings.warn('This module is deprecated, use borax.calendars.festivals2 instead.', DeprecationWarning, stacklevel=2)
 
 MDate = Union[date, LunarDate]
 FestivalCountdownIterable = Iterator[Tuple[int, List]]
@@ -259,7 +263,7 @@ class DateSchemaFactory:
 
 # -------------------- Festival Dataset  ---------------------------------
 LANG_FILES = {
-    'zh-Hans': 'FestivalData.txt'
+    'zh-Hans': 'FestivalData.csv'
 }
 
 

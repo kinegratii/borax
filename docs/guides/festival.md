@@ -2,6 +2,8 @@
 
 > 模块： `borax.calendars.festivals`
 
+> 本模块已经标记为 废弃 状态，请使用 `festivals2` 模块。
+
 ## 日期模式类(DateSchema)
 
 在 Borax.Calendars 中，使用 `DateSchema` 表示和定义一个节假日、生日等日期，称之为 **日期模式** 。日期模式是与年份无关的，在给定的年份中，可以计算推导出一个或多个具体的日期。

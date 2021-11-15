@@ -117,8 +117,8 @@ catalogs_list = [
 | 参数      | 类型           | 说明                             |
 | --------- | -------------- | -------------------------------- |
 | ldata     | List[Dict]     | 左边数据集                       |
-| rdata     | Dict / List    | 右边数据集                       |
-| on        | str / callable | 使用左边的连接字段，支持回调函数 |
+| rdata     | Union[Dict,List]    | 右边数据集                       |
+| on        | Union[str,callable] | 使用左边的连接字段，支持回调函数 |
 | select_as | str            | 右边数据在结果的字段名称         |
 | default   | Any            | 右边数据集找不到时的默认值       |
 
@@ -152,8 +152,8 @@ join_one(books, catalog_dict, on='catalog', select_as='catalog_name')
 | --------- | ------------------------- | -------------------------------- |
 | ldata     | List[Dict]                | 左边数据集                       |
 | rdata     | List[Dict]                | 右边数据集                       |
-| on        | List[OnClause] / callback | 使用左边的连接字段，支持回调函数 |
-| select_as | str / List[SelectClause]  | 右边数据在结果的字段名称         |
+| on        | Union[List[OnClause], Callback] | 使用左边的连接字段，支持回调函数 |
+| select_as | Union[str,List[SelectClause]]  | 右边数据在结果的字段名称         |
 | defaults | Dict  | 右边数据无匹配的默认值字典         |
 
 > Update in v3.4.2 : 新增 `defaults` 参数。

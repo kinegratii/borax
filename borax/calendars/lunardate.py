@@ -1,15 +1,13 @@
 # coding=utf8
-import re
 import datetime
-import warnings
+import re
+from typing import Optional, Iterator, Tuple
 
 from .store import (
     EncoderMixin, f_year, f_month, f_day, f_leap
 )
 
-from typing import Optional, Iterator, Tuple
-
-__all__ = ['LunarDate', 'LCalendars', 'InvalidLunarDateError']
+__all__ = ['LunarDate', 'LCalendars', 'InvalidLunarDateError', 'TermUtils']
 
 
 # Exception
@@ -75,7 +73,7 @@ def _parse_leap(year_info):
 def parse_year_days(year_info):
     """Parse year days from a year info.
     """
-    leap_month, leap_days = _parse_leap(year_info)
+    _, leap_days = _parse_leap(year_info)
     res = leap_days
     for month in range(1, 13):
         res += (year_info >> (16 - month)) % 2 + 29
@@ -105,12 +103,6 @@ def _iter_year_month(year_info):
 class LCalendars:
     """A public API for lunar calendar.
     """
-
-    @staticmethod
-    def is_leap_month(year: int, month: int) -> bool:
-        warnings.warn('This method is deprecated, use LCalendars.leap_month instead.', DeprecationWarning, stacklevel=2)
-        _check_year_range(year)
-        return YEAR_INFOS[year - MIN_LUNAR_YEAR] % 16 == month
 
     @staticmethod
     def leap_month(year: int) -> int:
@@ -161,14 +153,15 @@ class LCalendars:
 
     @staticmethod
     def cast_date(date_obj, target_class):
-        if not isinstance(date_obj, (datetime.date, LunarDate)):
+        if not (isinstance(date_obj, (datetime.date, LunarDate)) or (
+                hasattr(date_obj, 'solar') and hasattr(date_obj, 'lunar'))):
             raise TypeError('Unsupported type: {}'.format(date_obj.__class__.__name__))
         if isinstance(date_obj, target_class):
             return date_obj
         if isinstance(date_obj, LunarDate):
-            return date_obj.to_solar_date()
+            return getattr(date_obj, 'lunar', date_obj.to_solar_date())
         else:
-            return LunarDate.from_solar(date_obj)
+            return getattr(date_obj, 'solar', LunarDate.from_solar(date_obj))
 
     @staticmethod
     def delta(date1, date2):
@@ -321,6 +314,11 @@ class TermUtils:
 
         next_gz_month = day >= day1
         return term_name, next_gz_month
+
+    @staticmethod
+    def get_index_for_name(name: str):
+        name = name.rstrip("节")
+        return TERMS_CN.index(name)
 
 
 # ------ Stems and Branches ------
@@ -541,7 +539,9 @@ class LunarDate(EncoderMixin):
         :param other: a instance of LunarDate / date / timedelta
         :return:
         """
-        if isinstance(other, LunarDate):
+        if hasattr(other, 'solar'):
+            return self.to_solar_date() - other.solar
+        elif isinstance(other, LunarDate):
             return self.to_solar_date() - other.to_solar_date()
         elif isinstance(other, datetime.date):
             return self.to_solar_date() - other
@@ -551,8 +551,9 @@ class LunarDate(EncoderMixin):
         raise TypeError
 
     def __rsub__(self, other):
-        if isinstance(other, datetime.date):
+        if isinstance(other, datetime.date) or (hasattr(other, 'solar') and hasattr(other, 'lunar')):
             return other - self.to_solar_date()
+        raise TypeError
 
     def __add__(self, other):
         if isinstance(other, datetime.timedelta):
@@ -566,8 +567,8 @@ class LunarDate(EncoderMixin):
     def __lt__(self, other):
         try:
             return self - other < datetime.timedelta(0)
-        except TypeError:
-            raise TypeError("can't compare LunarDate to %s" % (type(other).__name__,))
+        except TypeError as ex:
+            raise TypeError("can't compare LunarDate to %s" % (type(other).__name__,)) from ex
 
     def __le__(self, other):
         return self < other or self == other
@@ -594,8 +595,8 @@ class LunarDate(EncoderMixin):
         self._year, self._month, self._day, self._leap = state
 
 
-LunarDate.min = LunarDate(1900, 1, 1, False)
-LunarDate.max = LunarDate(2100, 12, 29, False)
+LunarDate.min = LunarDate(1900, 1, 1, 0)
+LunarDate.max = LunarDate(2100, 12, 29, 0)
 
 
 class Formatter:

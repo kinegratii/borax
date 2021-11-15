@@ -11,6 +11,12 @@
 
 ## 概述 (Overview)
 
+> github  https://github.com/kinegratii/borax
+>
+> gitee  https://gitee.com/kinegratii/borax
+
+
+
 Borax 是一个Python3工具集合库。包括了以下几个话题：
 
 | 话题（Topics）      | 内容                                                  |
@@ -24,7 +30,7 @@ Borax 是一个Python3工具集合库。包括了以下几个话题：
 
 ## 安装 (Installation)
 
-Borax 要求 Python3.5+ 。
+Borax 要求 Python3.6+ 。
 
 可以通过以下两种方式安装 ：
 
@@ -78,14 +84,36 @@ print(today.strftime('今天的干支表示法为：%G')) # '今天的干支表�
 分别计算距离 “春节”、“除夕（农历十二月的最后一天）” 还有多少天
 
 ```python
-from borax.calendars.festivals import get_festival, LunarSchema, DayLunarSchema
+from borax.calendars.festivals2 import SolarFestival
 
-festival = get_festival('春节')
-print(festival.countdown()) # 7
-
-dls = DayLunarSchema(month=12, day=1, reverse=1)
-print(dls.countdown()) # 344
+festival = SolarFestival(month=1, day=1)
+print(festival.countdown()) # (273, <GeneralDate:2022-02-01(二〇二二年正月初一)>)
 ```
+
+计算节日及其距离今天（2021年5月4日）的天数
+```python
+
+from borax.calendars.festivals2 import FestivalLibrary
+
+library = FestivalLibrary.load_builtin()
+for nday, gd_list in library.iter_festival_countdown():
+    for gd in gd_list:
+        print('{:>3d} {} {}'.format(nday, gd.name, gd))
+```
+
+输出结果
+
+```
+  0 青年节 2021-05-04(二〇二一年三月廿三)
+  5 母亲节 2021-05-09(二〇二一年三月廿八)
+  8 护士节 2021-05-12(二〇二一年四月初一)
+ 28 儿童节 2021-06-01(二〇二一年四月廿一)
+<...>
+336 清明 2022-04-05(二〇二二年三月初五) 
+362 劳动节 2022-05-01(二〇二二年四月初一)
+
+```
+
 
 ### Borax.Numbers: 中文数字处理
 
@@ -109,9 +137,9 @@ print(ChineseNumbers.to_chinese_number(204, upper=True, order=True)) # '贰佰�
 
 ```python
 from borax.numbers import FinanceNumbers
+
 print(FinanceNumbers.to_capital_str(100000000)) # '壹亿元整'
 print(FinanceNumbers.to_capital_str(4578442.23)) # '肆佰伍拾柒万捌仟肆佰肆拾贰元贰角叁分'
-
 print(FinanceNumbers.to_capital_str(107000.53)) # '壹拾万柒仟元伍角叁分'
 
 ```

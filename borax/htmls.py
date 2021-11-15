@@ -50,5 +50,4 @@ def html_params(**kwargs) -> str:
 def html_tag(tag_name, content=None, **kwargs):
     if content:
         return HTMLString('<{0} {1}>{2}</{0}>'.format(tag_name, html_params(**kwargs), content))
-    else:
-        return HTMLString('<{0} {1}>'.format(tag_name, html_params(**kwargs)))
+    return HTMLString('<{0} {1}>'.format(tag_name, html_params(**kwargs)))
