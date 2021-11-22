@@ -177,6 +177,15 @@ class Festival:
 
         self._cyear = 0
 
+    def gets(self, *args):
+        def _get(_f):
+            return getattr(self, '_' + _f)
+
+        values = list(map(_get, args))
+        if len(args) == 1:
+            return values[0]
+        return values
+
     def set_name(self, name):
         self._name = name
         return self
@@ -630,13 +639,15 @@ def decode(raw: Union[str, bytes]) -> Union[WrappedDate, Festival]:
     if festival.cyear == 0:
         return festival
     if isinstance(festival, SolarFestival):
-        return WrappedDate(date(festival._cyear, festival._month, festival._day))
+        year, month, day = festival.gets('cyear', 'month', 'day')
+        return WrappedDate(date(year, month, day))
     elif isinstance(festival, LunarFestival):
-        if festival._leap == 1:
+        if festival.gets('leap') == 1:
             leap = 1
         else:
             leap = 0
-        return WrappedDate(LunarDate(festival._cyear, festival._month, festival._day, leap))
+        year, month, day = festival.gets('cyear', 'month', 'day')
+        return WrappedDate(LunarDate(year, month, day, leap))
     else:
         raise FestivalError('Invalid FestivalSchema', '')
 

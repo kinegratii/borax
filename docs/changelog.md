@@ -1,5 +1,10 @@
 # 更新日志
 
+## v3.5.1
+
+- `borax.calendars.festivals2`
+  - 新增 `Festival.gets` 获取属性方法
+
 ## v3.5.0 (20211115)
 
 > 新增 Python3.10构建支持

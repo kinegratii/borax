@@ -12,6 +12,11 @@ from borax.calendars.lunardate import LunarDate, LCalendars
 class SolarFestivalTestCase(unittest.TestCase):
     def test_yearly(self):
         sf = SolarFestival(month=2, day=4)
+        month, day = sf.gets('month', 'day')
+        self.assertEqual(2, month)
+        self.assertEqual(4, day)
+        freq = sf.gets('freq')
+        self.assertEqual(0, freq)
         self.assertEqual(date(2021, 2, 4), sf.at(year=2021))
         self.assertEqual(date(2021, 2, 4), sf.at(year=2021, month=2))
         with self.assertRaises(FestivalError):
