@@ -4,6 +4,7 @@
 
 - `borax.calendars.festivals2`
   - 新增 `Festival.gets` 获取属性方法
+  - 新增 `Festival.description` 属性，表示规范化中文描述
 
 ## v3.5.0 (20211115)
 

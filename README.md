@@ -22,7 +22,8 @@ Borax 是一个Python3工具集合库。包括了以下几个话题：
 
 | 话题（Topics）      | 内容                                                  |
 | ------------------- | ----------------------------------------------------- |
-| Borax.Calendars     | 1900-2100年的中国农历日期库                           |
+| Borax.LunarDate     | 1900-2100年的中国农历日期库                           |
+| Borax.Festivals     | 实现常见节日（公历、农历、星期、节气）的工具库                           |
 | Borax.Choices       | 声明式的选项类。适用于Django.models.choices 定义。    |
 | Borax.Datasets      | 记录型数据操作库，包括连结（Join）、列选择（fetch）等 |
 | Borax.DataStuctures | 树形结构，json数据                                    |

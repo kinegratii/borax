@@ -320,6 +320,10 @@ class TermUtils:
         name = name.rstrip("节")
         return TERMS_CN.index(name)
 
+    @staticmethod
+    def get_name_for_index(index:int):
+        return TERMS_CN[index]
+
 
 # ------ Stems and Branches ------
 
