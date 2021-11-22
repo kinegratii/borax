@@ -18,7 +18,7 @@ class RuntimeMeasurerTestCase(unittest.TestCase):
         rm.end('xt')
         data = rm.get_measure_result()
         self.assertEqual(1, data['xt'].count)
-        self.assertTrue(data['xt'].avg > 0)
+        self.assertIsNotNone(data['xt'].avg)
 
     def test_with(self):
         rm = RuntimeMeasurer()
@@ -26,7 +26,7 @@ class RuntimeMeasurerTestCase(unittest.TestCase):
             long_operate()
         data = rm.get_measure_result()
         self.assertEqual(1, data['xt'].count)
-        self.assertTrue(data['xt'].avg > 0)
+        self.assertIsNotNone(data['xt'].avg)
 
     def test_multiple_tags(self):
         rm = RuntimeMeasurer()
