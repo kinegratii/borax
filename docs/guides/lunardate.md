@@ -128,6 +128,7 @@ LunarDate(2100, 12, 29, 0)
 | cn_day | `str` | 中文日 | 廿六 | %D | (3) |
 | cn_leap | `str` | 中文闰月标识 | "闰" 或 "" | %L |  |
 | cn_month_num | `str` | 中文月（数字） | "十一" | %N | v3.4.0新增(4) |
+| cn_week | `str` | 中文星期 | "一" | %W | v3.5.1新增 |
 | gz_year | `str` | 干支年 | 戊戌 | %o | |
 | gz_month | `str` | 干支月 | 庚申 | %p | |
 | gz_day | `str` | 干支日 | 辛未 | %q | |

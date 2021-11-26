@@ -2,6 +2,8 @@
 
 ## v3.5.1
 
+- `borax.calendars.lunardate`
+  - `LunarDate.strftime` 新增 `%W` 中文星期格式化
 - `borax.calendars.festivals2`
   - 新增 `Festival.gets` 获取属性方法
   - 新增 `Festival.description` 属性，表示规范化中文描述

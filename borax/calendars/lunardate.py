@@ -321,7 +321,7 @@ class TermUtils:
         return TERMS_CN.index(name)
 
     @staticmethod
-    def get_name_for_index(index:int):
+    def get_name_for_index(index: int):
         return TERMS_CN[index]
 
 
@@ -467,6 +467,10 @@ class LunarDate(EncoderMixin):
 
     def isoweekday(self) -> int:
         return (self.offset + 3) % 7 or 7
+
+    @property
+    def cn_week(self) -> str:
+        return TextUtils.DAYS_CN[self.weekday()]
 
     def cn_str(self) -> str:
         return '{}年{}{}月{}'.format(self.cn_year, self.cn_leap, self.cn_month, self.cn_day)
@@ -626,6 +630,7 @@ class Formatter:
         '%C': 'cn_str',
         '%G': 'gz_str',
         '%N': 'cn_month_num',
+        '%W': 'cn_week',
         '%%': '%'
     }
 
