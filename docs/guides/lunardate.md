@@ -113,7 +113,7 @@ LunarDate(2100, 12, 29, 0)
 
 ### 属性表
 
-和公历日期对象 `datetime.date` 类似，`LunarDate` 是不可变对象(Immutable Object)，可以作为字典的键值。全部属性如下表（以 `LunarDate(2018, 6, 26, False)` 为例）：
+和公历日期对象 `datetime.date` 类似，`LunarDate` 是不可变对象(Immutable Object)，可以作为字典的键值。全部属性如下表（以 `LunarDate(2018, 6, 26, 0)` 为例）：
 
 | 属性 | 类型 | 描述 | 示例值 | 格式描述符 | 备注 |
 | ------ | ------ | ------ | ------ | ------ | ------ |

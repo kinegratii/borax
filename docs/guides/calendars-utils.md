@@ -15,8 +15,3 @@ Borax.Calendars 提供了一系列适用于常见场景的工具方法。这些�
 - `SCalendars.get_fist_day_of_year_week(year: int, week: int) -> date`
 
 返回year年第week个星期第一天的日期。
-
-
-
-## 农历日期LCalendars
-

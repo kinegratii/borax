@@ -86,16 +86,25 @@ print(today.strftime('今天的干支表示法为：%G')) # '今天的干支表�
 
 ### Borax.Festival: 国内外节日
 
-分别计算距离 “春节”、“除夕（农历十二月的最后一天）” 还有多少天
+创建春节（每年正月初一）对应的节日对象
 
 ```python
-from borax.calendars.festivals2 import SolarFestival
+from borax.calendars.festivals2 import LunarFestival
 
-festival = SolarFestival(month=1, day=1)
+festival = LunarFestival(month=1, day=1)
+print(festival.description) # '农历每年正月初一'
+
+# 下一次春节的具体日期以及距离天数
 print(festival.countdown()) # (273, <GeneralDate:2022-02-01(二〇二二年正月初一)>)
+
+# 接下来5个春节的日期 ['2022-02-01(二〇二二年正月初一)', '2023-01-22(二〇二三年正月初一)', '2024-02-10(二〇二四年正月初一)', '2025-01-29(二〇二五年正月初一)', '2026-02-17(二〇二六年正月初一)']
+print([str(wd) for wd in festival.list_days(start_date=date.today(), count=5)])
 ```
 
+### Borax.FestivalLibrary：内置节日库
+
 计算节日及其距离今天（2021年5月4日）的天数
+
 ```python
 
 from borax.calendars.festivals2 import FestivalLibrary
@@ -185,28 +194,7 @@ print(names) # ['Alice', 'Bob', 'Charlie']
 
 ## 开源协议 (License)
 
-```
 The MIT License (MIT)
-
-Copyright (c) 2015-2021 kinegratii
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-```
 
 ## 捐赠 (Donate)
 
