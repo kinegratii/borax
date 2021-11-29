@@ -4,7 +4,8 @@
 import unittest
 from datetime import date
 
-from borax.calendars.utils import SCalendars
+from borax.calendars.lunardate import LunarDate
+from borax.calendars.utils import SCalendars, ThreeNineUtils
 
 
 class LastDayTestCase(unittest.TestCase):
@@ -16,3 +17,11 @@ class LastDayTestCase(unittest.TestCase):
     def test_fist_day_of_week(self):
         self.assertEqual(date(2020, 2, 24), SCalendars.get_fist_day_of_year_week(2020, 8))
         self.assertEqual(date(2020, 1, 6), SCalendars.get_fist_day_of_year_week(2020, 1))
+
+
+class ThreeNineTestCase(unittest.TestCase):
+    def test_get_39label(self):
+        self.assertEqual('九九', ThreeNineUtils.get_39label(date(2022, 3, 12)))
+        self.assertEqual('', ThreeNineUtils.get_39label(date(2022, 4, 12)))
+        self.assertEqual('九九', ThreeNineUtils.get_39label(LunarDate.from_solar(date(2022, 3, 12))))
+        self.assertEqual('中伏', ThreeNineUtils.get_39label(date(2021, 7, 21)))
