@@ -26,6 +26,9 @@ lib_classifiers = [
     'Operating System :: OS Independent'
 ]
 
+with open('README.md', encoding='utf8') as f:
+    long_description = f.read()
+
 setup(
     name='borax',
     version=version,
@@ -38,4 +41,6 @@ setup(
     author_email='kinegratii@gmail.com',
     classifiers=lib_classifiers,
     description='A tool collections for Python3.',
+    long_description=long_description,
+    long_description_content_type='text/markdown'
 )
