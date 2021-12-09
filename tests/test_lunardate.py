@@ -175,9 +175,9 @@ class FormatterTestCase(unittest.TestCase):
 
     def test_cn_calendar_day(self):
         ld = LunarDate(2017, 6, 1, 1)
-        self.assertEqual('闰六', ld.strftime('%F'))
+        self.assertEqual('闰六月', ld.strftime('%F'))
         ld1 = LunarDate(2017, 11, 1, 0)
-        self.assertEqual('冬月', ld1.strftime('%F'))
+        self.assertEqual('十一月', ld1.strftime('%F'))
 
     def test_cn_week(self):
         ld = LunarDate(2017, 6, 1, 1)

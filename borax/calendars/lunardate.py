@@ -456,9 +456,9 @@ class LunarDate(EncoderMixin):
     def cn_day_calendar(self) -> str:
         if self.day == 1:
             if self.leap:
-                return '闰{}'.format(self.cn_month)
+                return '闰{}月'.format(self.cn_month_num)
             else:
-                return '{}月'.format(self.cn_month)
+                return '{}月'.format(self.cn_month_num)
         else:
             return self.cn_day
 

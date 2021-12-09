@@ -4,6 +4,7 @@
 
 - `borax.calendars.lunardate`
   - `LunarDate.strftime` 新增 `%W` 中文星期格式化
+  - 修改 `%F` 在“闰月/冬月/腊月”情况下表述为“闰X月/十一月/十二月”
 - `borax.calendars.festivals2`
   - 新增 `Festival.gets` 获取属性方法
   - 新增 `Festival.description` 属性，表示规范化中文描述
