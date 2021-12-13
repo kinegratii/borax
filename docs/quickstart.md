@@ -3,6 +3,8 @@
 
 ## 安装
 
+> 从 v3.5.1开始，安装包文件格式为 *borax-3.5.1-py3-none-any.whl*（移除py2标识）以区别于之前的 *borax-3.5.0-py2.py3-none-any.whl*。
+
 可以通过以下两种方式安装 Borax ：
 
 1) 使用 *pip* ：
