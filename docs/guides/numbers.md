@@ -2,23 +2,40 @@
 
 > 模块：`borax.numbers`
 
-> Added in v3.3.0
-
 ## 常量定义
 
 `numbers` 提供了下列的模块级常量。 
 
-- **numbers.MAX_VALUE_LIMIT**
+- **numbers.MAX_VALUE_LIMIT = 1_0000_0000_0000 **
 
-本模块可以处理的数字上限，值为 `1_0000_0000_0000` （一万亿，10^12） 。 超过该值将抛出 `ValueError` 异常。
+本模块可以处理的数字上限，值为一万亿（10^12） ， 超过该值将抛出 `ValueError` 异常，适用本模块的所有函数。
+
+- **LOWER_DIGITS = '零一二三四五六七八九'**
+
+1-9小写数字。
+
+- **UPPER_DIGITS = '零壹贰叁肆伍陆柒捌玖'**
+
+1-9大写数字。
 
 ## 中文数字
 
 > Add in v3.4.0
 
-`ChineseNumbers` 类将整数转化为对应的中文小写数字。
+### 数字用法规定
 
-根据《出版物上数字用法(GB/T-15835-2011)》的规定，汉字 “零” 和 “〇” 是有严格的使用场景。
+中文数字按照 **大写/小写** 、**计量/编号** 的方式划分为四种形式。
+
+| 形式       | 示例（以204为例） | 使用场景               |
+| ---------- | ----------------- | ---------------------- |
+| 小写、计量 | 二百零四          | 汉字数字形式、法条序号 |
+| 大写、计量 | 贰佰零肆          | 财务相关               |
+| 小写、编号 | 二百〇四          | 年份                   |
+| 大写、编号 | 贰佰〇肆          |                        |
+
+
+
+根据 [《出版物上数字用法(GB/T-15835-2011)》](http://www.moe.gov.cn/ewebeditor/uploadfile/2015/01/13/20150113091154536.pdf) 的规定，汉字 “零” 和 “〇” 是有严格的使用场景。
 
 ```
 阿拉伯数字“0”有“零”和“〇”两种汉字书写形式。一个数字用作计量时，其中“0”的汉字书写形式为“零”，用作编号时，“0”的汉字书写形式为“〇”。
@@ -32,14 +49,19 @@
 ---- 出版物上数字用法(GB/T-15835-2011)
 ```
 
-基于该标准,Borax v3.4 引入了中文数字的 *计量(measuring)* 和 *编号(numbering)* 两种不同用法，对于数字 “0” 使用不同的中文汉字描述。
+### API
 
-| 函数                             | 0的中文汉字 | 备注         |
+基于上述使用规定， `ChineseNumbers` 类将整数转化为对应的中文数字。
+
+| 函数                             | 结果 | 备注         |
 | -------------------------------- | ----------- | ------------ |
-| ChineseNumbers.to_chinese_number | 零          | 计量数字 |
-| ChineseNumbers.measure_number    | 零          | 计量数字     |
-| ChineseNumbers.order_number      | 〇          | 编号数字     |
- 
+| ChineseNumbers.to_chinese_number(204) | 二百零四     | 小写、计量 |
+| ChineseNumbers.to_chinese_number(204, , upper=True) | 贰佰零肆 | 大写、计量 |
+| ChineseNumbers.to_chinese_number(204, , upper=False) | 二百〇四 | 小写、编号 |
+| ChineseNumbers.to_chinese_number(204, , upper=True, order=True) | 贰佰〇肆 | 大写、编号 |
+| ChineseNumbers.measure_number(204) | 二百零四       | 计量数字     |
+| ChineseNumbers.order_number(204) | 二百〇四       | 编号数字     |
+
 
 
 ```python
@@ -51,8 +73,9 @@ print(ChineseNumbers.order_number(1056)) # 一千〇五十六
 
 ```
 
-
 ## 财务大写金额
+
+> Add in v3.3.0
 
 finance 提供了一系列的财务金融工具。
 
@@ -101,3 +124,4 @@ to_capital_str(num: Union[int, float, Decimal, str]) -> str
 >>>FinanceNumbers.to_capital_str(107000.53)
 壹拾万柒仟元伍角叁分
 ```
+
