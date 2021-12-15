@@ -6,8 +6,6 @@ import unittest
 from borax.calendars.lunardate import LunarDate
 from borax.calendars.festivals2 import encode, decode, WrappedDate
 
-
-
 sqlite3.register_adapter(WrappedDate, encode)
 sqlite3.register_converter("WrappedDate", decode)
 
