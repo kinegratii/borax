@@ -4,7 +4,7 @@ from datetime import date, datetime, timedelta
 
 from borax.calendars.lunardate import LunarDate, LCalendars, TextUtils
 
-from typing import Union
+from typing import Union, Dict
 
 __all__ = ['SCalendars', 'ThreeNineUtils']
 
@@ -31,7 +31,7 @@ class ThreeNineUtils:
         return term_day + timedelta(days=day_offset)
 
     @staticmethod
-    def get_39days(year: int) -> dict[str, date]:
+    def get_39days(year: int) -> Dict[str, date]:
         day13 = ThreeNineUtils.get_start_date(year, '夏至', 3, '庚')
         day23 = day13 + timedelta(days=10)
         day33 = ThreeNineUtils.get_start_date(year, '立秋', 1, '庚')
