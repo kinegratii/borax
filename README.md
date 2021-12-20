@@ -105,6 +105,17 @@ print([str(wd) for wd in festival.list_days(start_date=date.today(), count=5)])
 
 ### Borax.FestivalLibrary：内置节日库
 
+2020年国庆节和中秋节是同一天
+
+```python
+from datetime import date
+from borax.calendars.festivals2 import FestivalLibrary
+
+library = FestivalLibrary.load_builtin()
+names = library.get_festival_names(date(2020, 10, 1))
+print(names) # ['国庆节', '中秋节']
+```
+
 计算节日及其距离今天（2021年5月4日）的天数
 
 ```python

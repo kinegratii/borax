@@ -274,12 +274,32 @@ print(spring_festival.countdown()) # (273, <WrappedDate:2022-02-01(二〇二二�
 
 ## FestivalLibrary：节日集合库
 
-`FestivalLibrary` 是集合容器类，提供了一些常用的节日。此类继承自 `collections.UserList` 。
+`FestivalLibrary` 是集合容器类，提供了一些常用的节日。此类继承自 `collections.UserList` ，拥有  append/remove/extend/insert等方法。
 
 ```python
 class FestivalLibrary(collections.UserList):
     pass
 ```
+
+### get_code_set
+
+> v3.5.1添加。
+
+```
+FestivalLibrary.get_code_set()
+```
+
+获取当前所有节日的code集合。
+
+### extend_unique
+
+> v3.5.1添加。
+
+```
+FestivalLibrary.extend_unique(other)
+```
+
+添加多个节日对象，类似于 extend 方法，但是如果code已经存在则不再加入。
 
 ### load_file
 

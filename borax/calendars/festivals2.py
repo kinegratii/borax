@@ -6,7 +6,7 @@ import csv
 import enum
 from datetime import date, timedelta
 from pathlib import Path
-from typing import List, Tuple, Optional, Union, Iterator
+from typing import List, Tuple, Optional, Union, Iterator, Set
 
 from borax.calendars.lunardate import LunarDate, LCalendars, TermUtils, TextUtils
 
@@ -710,6 +710,24 @@ def decode(raw: Union[str, bytes]) -> Union[WrappedDate, Festival]:
 
 class FestivalLibrary(collections.UserList):
 
+    def get_code_set(self) -> Set[str]:
+        """获取当前所有节日的code集合
+        """
+        return set([f.encode() for f in self.data])
+
+    def extend_unique(self, other):
+        """添加新的节日对象，如果code已经存在则不在加入
+        :param other:
+        :return:
+        """
+        f_codes = set({f.encode() for f in self.data})
+        if isinstance(other, collections.UserList):
+            new_data = other.data
+        else:
+            new_data = other
+        f_dict = {f.encode(): f for f in new_data}
+        self.data.extend([v for k, v in f_dict.items() if k not in f_codes])
+
     def get_festival(self, name: str) -> Optional[Festival]:
         for festival in self:
             if festival.name == name:
@@ -742,7 +760,12 @@ class FestivalLibrary(collections.UserList):
         field_names = ['raw', 'name']
         with file_path.open(encoding='utf8') as f:
             reader = csv.DictReader(f, fieldnames=field_names)
+            code_set = fl.get_code_set()
             for row in reader:
+                code = row['raw']
+                if code in code_set:
+                    continue
+                code_set.add(code)
                 try:
                     festival = decode_festival(row['raw'])
                     festival.set_name(row['name'])

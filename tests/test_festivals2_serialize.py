@@ -101,3 +101,14 @@ class FestivalLibraryTestCase(unittest.TestCase):
             gd_days.extend(gd_list)
 
         self.assertIn('元旦', [g.name for g in gd_days])
+
+
+class FestivalLibraryUniqueTestCase(unittest.TestCase):
+    def test_unique(self):
+        fl = FestivalLibrary()
+        ft1 = TermFestival(name='冬至')
+        fl.append(ft1)
+        self.assertEqual(1, len(fl.get_code_set()))
+        ft2 = TermFestival(index=23)
+        fl.extend_unique([ft2])
+        self.assertEqual(1, len(fl.get_code_set()))
