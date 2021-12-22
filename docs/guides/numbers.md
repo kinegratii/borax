@@ -53,6 +53,24 @@
 
 基于上述使用规定， `ChineseNumbers` 类将整数转化为对应的中文数字。
 
+- **ChineseNumbers.measure_number(num: Union[int, str], upper: bool = False) -> str**
+
+> Update in v3.5.1: 新增upper参数。
+
+将数字转化为 *计量大/小写* 的中文数字，数字0的中文形式为“零”。
+
+- **ChineseNumbers.order_number(num: Union[int, str], upper: bool = False) -> str**
+
+将数字转化为 *编号大/小写* 的中文数字，数字0的中文形式为“〇”。
+
+> Update in v3.5.1: 新增upper参数。
+
+- **ChineseNumbers.order_number(num: Union[int, str], upper: bool = False) -> str**
+
+将数字转化为 *计量/编号 + 大/小写* 的中文数字，数字0的中文形式为“〇”。 本函数不再推荐直接使用。
+
+总结
+
 | 函数                             | 结果 | 备注         |
 | -------------------------------- | ----------- | ------------ |
 | ChineseNumbers.to_chinese_number(204) | 二百零四     | 小写、计量 |
@@ -63,6 +81,7 @@
 | ChineseNumbers.order_number(204) | 二百〇四       | 编号数字     |
 
 
+例子
 
 ```python
 from borax.numbers import ChineseNumbers
