@@ -171,22 +171,7 @@ print(FinanceNumbers.to_capital_str(107000.53)) # '壹拾万柒仟元伍角叁�
 
 ```
 
-### Borax.Datasets: 数据列选择
-
-从数据序列中选择一个或多个字段的数据。
-
-```python
-from borax.datasets.fetch import fetch
-
-objects = [
-    {'id': 282, 'name': 'Alice', 'age': 30},
-    {'id': 217, 'name': 'Bob', 'age': 56},
-    {'id': 328, 'name': 'Charlie', 'age': 56},
-]
-
-names = fetch(objects, 'name')
-print(names) # ['Alice', 'Bob', 'Charlie']
-```
+更多模块功能参见文档。
 
 ## 文档 (Document)
 

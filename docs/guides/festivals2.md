@@ -147,6 +147,8 @@ class LunarFestival(day, freq=FreqConst.YEARLY, year=0, month=0, leap=0)
 
 ### description
 
+> Add in v3.5.1
+
 类型：str，节日的标准化描述，如“公历每年1月1日”、“公历每年八月十五”、“公历每年6月第2个星期六”等。
 
 设置节日对象的 name。
@@ -179,6 +181,8 @@ Festival.set_name(name:str)
 设置节日对象的 name。
 
 ### gets
+
+> Add in v3.5.1
 
 方法签名
 
@@ -283,7 +287,7 @@ class FestivalLibrary(collections.UserList):
 
 ### get_code_set
 
-> v3.5.1添加。
+> Add in v3.5.1
 
 ```
 FestivalLibrary.get_code_set()
@@ -293,7 +297,7 @@ FestivalLibrary.get_code_set()
 
 ### extend_unique
 
-> v3.5.1添加。
+> Add in v3.5.1
 
 ```
 FestivalLibrary.extend_unique(other)
