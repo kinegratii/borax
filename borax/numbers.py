@@ -6,6 +6,8 @@ from decimal import Decimal
 
 from typing import Union
 
+__all__ = ['MAX_VALUE_LIMIT', 'LOWER_DIGITS', 'UPPER_DIGITS', 'ChineseNumbers', 'FinanceNumbers']
+
 MAX_VALUE_LIMIT = 1000000000000  # 10^12
 
 LOWER_UNITS = '千百十亿千百十万千百十_'
@@ -26,7 +28,12 @@ class ChineseNumbers:
     ]
 
     @staticmethod
-    def measure_number(num: Union[int, str]) -> str:
+    def measure_number(num: Union[int, str], upper: bool = False) -> str:
+        """将数字转化为计量大/小写的中文数字，数字0的中文形式为“零”。
+        :param num: 数字
+        :param upper: 是否大写
+        :return: 计量大/小写的中文数字
+        """
         if isinstance(num, str):
             _n = int(num)
         else:
@@ -42,23 +49,28 @@ class ChineseNumbers:
             o = re.sub(p, d, o)
         if 10 <= _n < 20:
             o.replace('一十', '十')
+        if upper:
+            for _ld, _ud in zip(LOWER_DIGITS + LOWER_UNITS[:3], UPPER_DIGITS + UPPER_UNITS[:3]):
+                o = o.replace(_ld, _ud)
         return o
 
     @staticmethod
-    def order_number(num: Union[int, str]) -> str:
-        val = ChineseNumbers.measure_number(num)
-        return val.replace('零', '〇')
+    def order_number(num: Union[int, str], upper: bool = False) -> str:
+        """将数字转化为编号大/小写的中文数字，数字0的中文形式为“〇”。
+        :param num: 数字
+        :param upper: 是否大写
+        :return: 编号大/小写的中文数字
+        """
+        val = ChineseNumbers.measure_number(num, upper)
+        ns = val.replace('零', '〇')
+        return ns
 
     @staticmethod
     def to_chinese_number(num: Union[int, str], upper: bool = False, order: bool = False) -> str:
         if order:
-            lower_string = ChineseNumbers.order_number(num)
+            return ChineseNumbers.order_number(num, upper)
         else:
-            lower_string = ChineseNumbers.measure_number(num)
-        if upper:
-            for _ld, _ud in zip(LOWER_DIGITS + LOWER_UNITS[:3], UPPER_DIGITS + UPPER_UNITS[:3]):
-                lower_string = lower_string.replace(_ld, _ud)
-        return lower_string
+            return ChineseNumbers.measure_number(num, upper)
 
 
 class FinanceNumbers:
