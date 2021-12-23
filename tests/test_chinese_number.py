@@ -1,11 +1,8 @@
 # coding=utf8
 
-import decimal
 import unittest
 
 from borax.numbers import ChineseNumbers
-
-decimal.getcontext().prec = 2
 
 
 class ChineseNumberTestCase(unittest.TestCase):

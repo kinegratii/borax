@@ -34,20 +34,10 @@ Borax 是一个Python3工具集合库。包括了以下几个话题：
 
 > 从 v3.5.1开始，安装包文件格式为 *borax-3.5.1-py3-none-any.whl*（移除py2标识）以区别于之前的 *borax-3.5.0-py2.py3-none-any.whl*。
 
-Borax 要求 Python3.6+ 。
-
-可以通过以下两种方式安装 ：
-
-1) 使用 *pip* ：
+Borax 要求 Python3.6+ ,可以通过 *pip* 安装 ：
 
 ```shell
 $ pip install borax
-```
-
-2) 使用 [poetry](https://poetry.eustace.io/) 工具：
-
-```shell
-$ poetry add borax
 ```
 
 ## 使用示例 (Usage)
@@ -105,15 +95,22 @@ print([str(wd) for wd in festival.list_days(start_date=date.today(), count=5)])
 
 ### Borax.FestivalLibrary：内置节日库
 
-2020年国庆节和中秋节是同一天
+基本使用示例
 
 ```python
 from datetime import date
-from borax.calendars.festivals2 import FestivalLibrary
+from borax.calendars.festivals2 import FestivalLibrary, WrappedDate
 
 library = FestivalLibrary.load_builtin()
+
+# 2020年国庆节和中秋节是同一天
 names = library.get_festival_names(date(2020, 10, 1))
 print(names) # ['国庆节', '中秋节']
+
+# 2021年七夕
+festival = library.get_festival('七夕')
+print(festival.description) # '农历每年七月初七'
+print(WrappedDate(festival.at(year=2021))) # '2021-08-14(二〇二一年七月初七)'
 ```
 
 计算节日及其距离今天（2021年5月4日）的天数
@@ -138,7 +135,6 @@ for nday, gd_list in library.iter_festival_countdown():
 <...>
 336 清明 2022-04-05(二〇二二年三月初五) 
 362 劳动节 2022-05-01(二〇二二年四月初一)
-
 ```
 
 
@@ -151,24 +147,28 @@ for nday, gd_list in library.iter_festival_countdown():
 from borax.numbers import ChineseNumbers
 
 # 小写、计量
-print(ChineseNumbers.to_chinese_number(204)) # '二百零四'
+print(ChineseNumbers.measure_number(204)) # '二百零四'
 # 小写、编号
 print(ChineseNumbers.order_number(204)) # '二百〇四'
 # 大写、计量
-print(ChineseNumbers.to_chinese_number(204, upper=True)) # '贰佰零肆'
+print(ChineseNumbers.measure_number(204, upper=True)) # '贰佰零肆'
 # 大写、编号
-print(ChineseNumbers.to_chinese_number(204, upper=True, order=True)) # '贰佰〇肆'
+print(ChineseNumbers.order_number(204, upper=True)) # '贰佰〇肆'
 ```
 
 财务金额
 
 ```python
+import decimal
+
 from borax.numbers import FinanceNumbers
+
+decimal.getcontext().prec = 2
 
 print(FinanceNumbers.to_capital_str(100000000)) # '壹亿元整'
 print(FinanceNumbers.to_capital_str(4578442.23)) # '肆佰伍拾柒万捌仟肆佰肆拾贰元贰角叁分'
 print(FinanceNumbers.to_capital_str(107000.53)) # '壹拾万柒仟元伍角叁分'
-
+print(FinanceNumbers.to_capital_str(decimal.Decimal(4.50))) # '肆元伍角零分'
 ```
 
 更多模块功能参见文档。

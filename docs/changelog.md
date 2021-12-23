@@ -11,6 +11,8 @@
   - 新增 `FestivalLibrary.extend_unique` ，支持以去重方式添加新节日
 - `borax.calendars.utils`
   - 新增 `ThreeNineUtils` 三伏九九天解析工具
+- `borax.numbers`
+  - measure_number/order_number新增upper参数
 - 开发SOP
   - 移除whl安装包文件的py2标识 
 
