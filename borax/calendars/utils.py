@@ -1,6 +1,7 @@
 # coding=utf8
 import calendar
 from datetime import date, datetime, timedelta
+from collections import OrderedDict
 
 from borax.calendars.lunardate import LunarDate, LCalendars, TextUtils
 
@@ -21,9 +22,14 @@ class SCalendars:
 
 
 class ThreeNineUtils:
+    """三伏数九天工具函数
+    """
+
     @staticmethod
-    def get_start_date(year, term_name, after_index, day_stem):
+    def _get_start_date(year, term_name, after_index, day_stem):
         term_day = LCalendars.create_solar_date(year, term_name=term_name)
+        if after_index == 0:
+            return term_day
         term_lday = LunarDate.from_solar(term_day)
         term_stem_index = TextUtils.STEMS.find(term_lday.gz_day[0])
         day_stem_index = TextUtils.STEMS.find(day_stem)
@@ -32,22 +38,30 @@ class ThreeNineUtils:
 
     @staticmethod
     def get_39days(year: int) -> Dict[str, date]:
-        day13 = ThreeNineUtils.get_start_date(year, '夏至', 3, '庚')
+        """获取公历year年的三伏数九天对应的公历日期。
+        :param year: 公历年份
+        :return: 一个 label-date 字典
+        """
+        day13 = ThreeNineUtils._get_start_date(year, '夏至', 3, '庚')
         day23 = day13 + timedelta(days=10)
-        day33 = ThreeNineUtils.get_start_date(year, '立秋', 1, '庚')
-        day19 = ThreeNineUtils.get_start_date(year, '冬至', 1, '壬')
-        days = {
+        day33 = ThreeNineUtils._get_start_date(year, '立秋', 1, '庚')
+        day19 = ThreeNineUtils._get_start_date(year, '冬至', 0, '')
+        days = OrderedDict({
             '初伏': day13,
             '中伏': day23,
             '末伏': day33,
             '一九': day19
-        }
+        })
         for i, dc in enumerate(TextUtils.DAYS_CN[1:10], start=1):
             days['{}九'.format(dc)] = day19 + timedelta(days=(i - 1) * 9)
         return days
 
     @staticmethod
     def get_39label(date_obj: Union[date, LunarDate]) -> str:
+        """返回三伏数九天对应的标签，如果不是，返回空字符串。
+        :param date_obj: 日期
+        :return: 三伏数九天标签，如“XX第X天”
+        """
         if isinstance(date_obj, LunarDate):
             sd = date_obj.to_solar_date()
         else:
@@ -56,4 +70,17 @@ class ThreeNineUtils:
             return ''
         year = sd.year - bool(sd.month < 4)
         days = ThreeNineUtils.get_39days(year)
-        return {v: k for k, v in days.items()}.get(sd, '')
+        date_tuples = [(k, v) for k, v in days.items()]
+        for i, vs in enumerate(date_tuples):
+            label, sd = vs
+            range_len = -1
+            if label in ['初伏', '末伏']:
+                range_len = 10
+            elif label == '中伏':
+                range_len = (days['末伏'] - days['中伏']).days
+            elif '九' in label:
+                range_len = 9
+            offset = (date_obj - sd).days
+            if 0 <= offset <= range_len - 1:
+                return '{}第{}天'.format(label, offset + 1)
+        return ''

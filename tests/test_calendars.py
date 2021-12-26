@@ -2,7 +2,7 @@
 
 
 import unittest
-from datetime import date
+from datetime import date, timedelta
 
 from borax.calendars.lunardate import LunarDate
 from borax.calendars.utils import SCalendars, ThreeNineUtils
@@ -21,7 +21,14 @@ class LastDayTestCase(unittest.TestCase):
 
 class ThreeNineTestCase(unittest.TestCase):
     def test_get_39label(self):
-        self.assertEqual('九九', ThreeNineUtils.get_39label(date(2022, 3, 12)))
+        self.assertEqual('九九第1天', ThreeNineUtils.get_39label(date(2022, 3, 3)))
         self.assertEqual('', ThreeNineUtils.get_39label(date(2022, 4, 12)))
-        self.assertEqual('九九', ThreeNineUtils.get_39label(LunarDate.from_solar(date(2022, 3, 12))))
-        self.assertEqual('中伏', ThreeNineUtils.get_39label(date(2021, 7, 21)))
+        self.assertEqual('九九第1天', ThreeNineUtils.get_39label(LunarDate.from_solar(date(2022, 3, 3))))
+        self.assertEqual('中伏第1天', ThreeNineUtils.get_39label(date(2021, 7, 21)))
+
+    def test_39label_for_one_day(self):
+        d = ThreeNineUtils.get_39days(2022)['初伏']
+        self.assertEqual(date(2022, 7, 26), d)
+        self.assertEqual('庚', LunarDate.from_solar(d).gz_day[0])
+        self.assertEqual('初伏第10天', ThreeNineUtils.get_39label(d + timedelta(days=9)))
+        self.assertEqual('中伏第1天', ThreeNineUtils.get_39label(d + timedelta(days=10)))
