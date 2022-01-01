@@ -1,5 +1,21 @@
 # 更新日志
 
+## v3.5.1 (20220101)
+
+- `borax.calendars.lunardate`
+  - `LunarDate.strftime` 新增 `%W` 中文星期格式化
+  - 修改 `%F` 在“闰月/冬月/腊月”情况下表述为“闰X月/十一月/十二月”
+- `borax.calendars.festivals2`
+  - 新增 `Festival.gets` 获取属性方法
+  - 新增 `Festival.description` 属性，表示规范化中文描述
+  - 新增 `FestivalLibrary.extend_unique` ，支持以去重方式添加新节日
+- `borax.calendars.utils`
+  - 新增 `ThreeNineUtils` 三伏九九天解析工具
+- `borax.numbers`
+  - measure_number/order_number新增upper参数
+- 开发SOP
+  - 移除whl安装包文件的py2标识 
+
 ## v3.5.0 (20211115)
 
 > 新增 Python3.10构建支持
@@ -178,7 +194,7 @@
   - 新增 `weekday` 和 `isoweekday` 方法
   - 补充公历2101年日期的干支、节气信息
   - 修正无节气的日期格式化的bug
-  - 新增 sqlte3 自定义字段支持
+  - 新增 sqlite3 自定义字段支持
   - 新增 `%F` 字符串描述符
 - `calendars.festivals` 模块
   - 新增 `encode` / `decode` 方法，支持序列化

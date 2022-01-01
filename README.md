@@ -1,11 +1,12 @@
-# Borax - python3工具集合库
+# Borax - python3工具库 - 中国农历/中文数字/设计模式/树形结构
 
 
 [![PyPI](https://img.shields.io/pypi/v/borax.svg)](https://pypi.org/project/borax) 
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/borax.svg)](https://pypi.org/project/borax)
-[![PyPI - Status](https://img.shields.io/pypi/status/borax.svg)](https://github.com/kinegratii/borax)
 ![Python package](https://github.com/kinegratii/borax/workflows/Python%20package/badge.svg)
 ![Codecov](https://codecov.io/github/kinegratii/borax/coverage.svg)
+![GitHub license](https://img.shields.io/github/license/kinegratii/borax)
+![Document](https://img.shields.io/badge/%E6%96%87%E6%A1%A3-docsify%20%7C%20%E8%AF%AD%E9%9B%80-brightgreen)
 
 
 
@@ -21,7 +22,8 @@ Borax 是一个Python3工具集合库。包括了以下几个话题：
 
 | 话题（Topics）      | 内容                                                  |
 | ------------------- | ----------------------------------------------------- |
-| Borax.Calendars     | 1900-2100年的中国农历日期库                           |
+| Borax.LunarDate     | 1900-2100年的中国农历日期库                           |
+| Borax.Festivals     | 实现常见节日（公历、农历、星期、节气）的工具库                           |
 | Borax.Choices       | 声明式的选项类。适用于Django.models.choices 定义。    |
 | Borax.Datasets      | 记录型数据操作库，包括连结（Join）、列选择（fetch）等 |
 | Borax.DataStuctures | 树形结构，json数据                                    |
@@ -30,20 +32,12 @@ Borax 是一个Python3工具集合库。包括了以下几个话题：
 
 ## 安装 (Installation)
 
-Borax 要求 Python3.6+ 。
+> 从 v3.5.1开始，安装包文件格式为 *borax-3.5.1-py3-none-any.whl*（移除py2标识）以区别于之前的 *borax-3.5.0-py2.py3-none-any.whl*。
 
-可以通过以下两种方式安装 ：
-
-1) 使用 *pip* ：
+Borax 要求 Python3.6+ ,可以通过 *pip* 安装 ：
 
 ```shell
 $ pip install borax
-```
-
-2) 使用 [poetry](https://poetry.eustace.io/) 工具：
-
-```shell
-$ poetry add borax
 ```
 
 ## 使用示例 (Usage)
@@ -57,6 +51,7 @@ $ poetry add borax
 创建日期，日期推算
 
 ```python
+from datetime import timedelta
 from borax.calendars import LunarDate
 
 # 获取今天的农历日期（农历2018年七月初一）
@@ -67,8 +62,10 @@ ld = LunarDate.from_solar_date(2018, 8, 11)
 print(ld) # LunarDate(2018, 7, 1, 0)
 
 # 日期推算，返回10天后的农历日期
-
 print(ld.after(10)) # LunarDate(2018, 7, 11, 0)
+
+# 可以直接与 datetime.timedelta 直接相加减
+print(ld + timedelta(days=10)) # LunarDate(2018, 7, 11, 0)
 ```
 
 格式化字符串
@@ -81,16 +78,43 @@ print(today.strftime('今天的干支表示法为：%G')) # '今天的干支表�
 
 ### Borax.Festival: 国内外节日
 
-分别计算距离 “春节”、“除夕（农历十二月的最后一天）” 还有多少天
+创建春节（每年正月初一）对应的节日对象
 
 ```python
-from borax.calendars.festivals2 import SolarFestival
+from borax.calendars.festivals2 import LunarFestival
 
-festival = SolarFestival(month=1, day=1)
+festival = LunarFestival(month=1, day=1)
+print(festival.description) # '农历每年正月初一'
+
+# 下一次春节的具体日期以及距离天数
 print(festival.countdown()) # (273, <GeneralDate:2022-02-01(二〇二二年正月初一)>)
+
+# 接下来5个春节的日期 ['2022-02-01(二〇二二年正月初一)', '2023-01-22(二〇二三年正月初一)', '2024-02-10(二〇二四年正月初一)', '2025-01-29(二〇二五年正月初一)', '2026-02-17(二〇二六年正月初一)']
+print([str(wd) for wd in festival.list_days(start_date=date.today(), count=5)])
+```
+
+### Borax.FestivalLibrary：内置节日库
+
+基本使用示例
+
+```python
+from datetime import date
+from borax.calendars.festivals2 import FestivalLibrary, WrappedDate
+
+library = FestivalLibrary.load_builtin()
+
+# 2020年国庆节和中秋节是同一天
+names = library.get_festival_names(date(2020, 10, 1))
+print(names) # ['国庆节', '中秋节']
+
+# 2021年七夕
+festival = library.get_festival('七夕')
+print(festival.description) # '农历每年七月初七'
+print(WrappedDate(festival.at(year=2021))) # '2021-08-14(二〇二一年七月初七)'
 ```
 
 计算节日及其距离今天（2021年5月4日）的天数
+
 ```python
 
 from borax.calendars.festivals2 import FestivalLibrary
@@ -111,7 +135,6 @@ for nday, gd_list in library.iter_festival_countdown():
 <...>
 336 清明 2022-04-05(二〇二二年三月初五) 
 362 劳动节 2022-05-01(二〇二二年四月初一)
-
 ```
 
 
@@ -124,42 +147,31 @@ for nday, gd_list in library.iter_festival_countdown():
 from borax.numbers import ChineseNumbers
 
 # 小写、计量
-print(ChineseNumbers.to_chinese_number(204)) # '二百零四'
+print(ChineseNumbers.measure_number(204)) # '二百零四'
 # 小写、编号
 print(ChineseNumbers.order_number(204)) # '二百〇四'
 # 大写、计量
-print(ChineseNumbers.to_chinese_number(204, upper=True)) # '贰佰零肆'
+print(ChineseNumbers.measure_number(204, upper=True)) # '贰佰零肆'
 # 大写、编号
-print(ChineseNumbers.to_chinese_number(204, upper=True, order=True)) # '贰佰〇肆'
+print(ChineseNumbers.order_number(204, upper=True)) # '贰佰〇肆'
 ```
 
 财务金额
 
 ```python
+import decimal
+
 from borax.numbers import FinanceNumbers
+
+decimal.getcontext().prec = 2
 
 print(FinanceNumbers.to_capital_str(100000000)) # '壹亿元整'
 print(FinanceNumbers.to_capital_str(4578442.23)) # '肆佰伍拾柒万捌仟肆佰肆拾贰元贰角叁分'
 print(FinanceNumbers.to_capital_str(107000.53)) # '壹拾万柒仟元伍角叁分'
-
+print(FinanceNumbers.to_capital_str(decimal.Decimal(4.50))) # '肆元伍角零分'
 ```
 
-### Borax.Datasets: 数据列选择
-
-从数据序列中选择一个或多个字段的数据。
-
-```python
-from borax.datasets.fetch import fetch
-
-objects = [
-    {'id': 282, 'name': 'Alice', 'age': 30},
-    {'id': 217, 'name': 'Bob', 'age': 56},
-    {'id': 328, 'name': 'Charlie', 'age': 56},
-]
-
-names = fetch(objects, 'name')
-print(names) # ['Alice', 'Bob', 'Charlie']
-```
+更多模块功能参见文档。
 
 ## 文档 (Document)
 
@@ -180,28 +192,7 @@ print(names) # ['Alice', 'Bob', 'Charlie']
 
 ## 开源协议 (License)
 
-```
 The MIT License (MIT)
-
-Copyright (c) 2015-2021 kinegratii
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-```
 
 ## 捐赠 (Donate)
 

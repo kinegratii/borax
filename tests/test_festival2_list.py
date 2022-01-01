@@ -12,6 +12,11 @@ from borax.calendars.lunardate import LunarDate, LCalendars
 class SolarFestivalTestCase(unittest.TestCase):
     def test_yearly(self):
         sf = SolarFestival(month=2, day=4)
+        month, day = sf.gets('month', 'day')
+        self.assertEqual(2, month)
+        self.assertEqual(4, day)
+        freq = sf.gets('freq')
+        self.assertEqual(0, freq)
         self.assertEqual(date(2021, 2, 4), sf.at(year=2021))
         self.assertEqual(date(2021, 2, 4), sf.at(year=2021, month=2))
         with self.assertRaises(FestivalError):
@@ -240,6 +245,42 @@ class FestivalListDaysTestCase(unittest.TestCase):
 
 class CountdownTestCase(unittest.TestCase):
     def test_countdown(self):
-        sf = SolarFestival(day=256)
+        self.festival = SolarFestival(day=256)
+        sf = self.festival
         nday, gd = sf.countdown(date(2020, 1, 1))
         self.assertEqual(255, nday)
+
+
+class FestivalDescriptionTestCase(unittest.TestCase):
+    def test_term_and_week_festivals(self):
+        tf = TermFestival(index=1)
+        self.assertEqual('公历每年大寒节气', tf.description)
+
+        month_day = WeekFestival(month=5, index=2, week=calendar.SUNDAY, name='母亲节')
+        self.assertEqual('公历5月第2个星期日', month_day.description)
+
+    def test_solar_festival(self):
+        festival2description_tuples = [
+            (SolarFestival(month=1, day=1), '公历每年1月1日'),
+            (SolarFestival(month=1, day=-1), '公历每年1月倒数第1天'),
+            (SolarFestival(day=1), '公历每年第1天'),
+            (SolarFestival(day=-1), '公历每年倒数第1天'),
+            (SolarFestival(freq=FreqConst.MONTHLY, day=1), '公历每月1日'),
+            (SolarFestival(freq=FreqConst.MONTHLY, day=-1), '公历每月倒数第1天')
+        ]
+        for f, d in festival2description_tuples:
+            with self.subTest(f=f, d=d):
+                self.assertEqual(d, f.description)
+
+    def test_lunar_festival(self):
+        festival2description_tuples = [
+            (LunarFestival(month=1, day=1), '农历每年正月初一'),
+            (LunarFestival(month=1, day=-1), '农历每年正月倒数第1天'),
+            (LunarFestival(day=1), '农历每年第1天'),
+            (LunarFestival(day=-1), '农历每年倒数第1天'),
+            (LunarFestival(freq=FreqConst.MONTHLY, day=1), '农历每月初一'),
+            (LunarFestival(freq=FreqConst.MONTHLY, day=-1), '农历每月倒数第1天')
+        ]
+        for f, d in festival2description_tuples:
+            with self.subTest(f=f, d=d):
+                self.assertEqual(d, f.description)

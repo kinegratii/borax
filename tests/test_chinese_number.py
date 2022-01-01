@@ -1,11 +1,8 @@
 # coding=utf8
 
-import decimal
 import unittest
 
 from borax.numbers import ChineseNumbers
-
-decimal.getcontext().prec = 2
 
 
 class ChineseNumberTestCase(unittest.TestCase):
@@ -23,7 +20,9 @@ class ChineseNumberTestCase(unittest.TestCase):
         self.assertEqual('一千〇五十六', ChineseNumbers.order_number(1056))
 
     def test_chinese_number_upper_measure(self):
+        self.assertEqual('贰佰零肆', ChineseNumbers.measure_number(204, True))
         self.assertEqual('贰佰零肆', ChineseNumbers.to_chinese_number(204, upper=True))
 
     def test_chinese_number_upper_order(self):
+        self.assertEqual('贰佰〇肆', ChineseNumbers.order_number(204, upper=True))
         self.assertEqual('贰佰〇肆', ChineseNumbers.to_chinese_number(204, upper=True, order=True))

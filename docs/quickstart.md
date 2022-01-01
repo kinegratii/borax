@@ -3,17 +3,12 @@
 
 ## 安装
 
-可以通过以下两种方式安装 Borax ：
+> 从 v3.5.1开始，安装包文件格式为 *borax-3.5.1-py3-none-any.whl*（移除py2标识）以区别于之前的 *borax-3.5.0-py2.py3-none-any.whl*。
 
-1) 使用 *pip* ：
+Borax 要求 Python3.6+ ,可以通过 *pip* 安装 ：
 
 ```shell
 $ pip install borax
-```
-2) 使用 [poetry](https://poetry.eustace.io/) 工具：
-
-```shell
-$ poetry add borax
 ```
 
 ## 导入

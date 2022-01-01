@@ -12,7 +12,6 @@ version = re.findall(r"^__version__ = '([^']+)'\r?$", txt, re.M)[0]
 lib_classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.5",
     "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
@@ -26,6 +25,9 @@ lib_classifiers = [
     'Operating System :: OS Independent'
 ]
 
+with open('README.md', encoding='utf8') as f:
+    long_description = f.read()
+
 setup(
     name='borax',
     version=version,
@@ -35,7 +37,9 @@ setup(
     url='https://github.com/kinegratii/borax',
     license='MIT',
     author='kinegratii',
-    author_email='kinegratii@gmail.com',
+    author_email='zhenwei.yan@hotmail.com',
     classifiers=lib_classifiers,
     description='A tool collections for Python3.',
+    long_description=long_description,
+    long_description_content_type='text/markdown'
 )

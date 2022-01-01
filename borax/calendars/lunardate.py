@@ -320,6 +320,10 @@ class TermUtils:
         name = name.rstrip("节")
         return TERMS_CN.index(name)
 
+    @staticmethod
+    def get_name_for_index(index: int):
+        return TERMS_CN[index]
+
 
 # ------ Stems and Branches ------
 
@@ -452,9 +456,9 @@ class LunarDate(EncoderMixin):
     def cn_day_calendar(self) -> str:
         if self.day == 1:
             if self.leap:
-                return '闰{}'.format(self.cn_month)
+                return '闰{}月'.format(self.cn_month_num)
             else:
-                return '{}月'.format(self.cn_month)
+                return '{}月'.format(self.cn_month_num)
         else:
             return self.cn_day
 
@@ -463,6 +467,10 @@ class LunarDate(EncoderMixin):
 
     def isoweekday(self) -> int:
         return (self.offset + 3) % 7 or 7
+
+    @property
+    def cn_week(self) -> str:
+        return TextUtils.DAYS_CN[self.weekday()]
 
     def cn_str(self) -> str:
         return '{}年{}{}月{}'.format(self.cn_year, self.cn_leap, self.cn_month, self.cn_day)
@@ -622,6 +630,7 @@ class Formatter:
         '%C': 'cn_str',
         '%G': 'gz_str',
         '%N': 'cn_month_num',
+        '%W': 'cn_week',
         '%%': '%'
     }
 

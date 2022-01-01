@@ -6,9 +6,9 @@ import csv
 import enum
 from datetime import date, timedelta
 from pathlib import Path
-from typing import List, Tuple, Optional, Union, Iterator
+from typing import List, Tuple, Optional, Union, Iterator, Set
 
-from borax.calendars.lunardate import LunarDate, LCalendars, TermUtils
+from borax.calendars.lunardate import LunarDate, LCalendars, TermUtils, TextUtils
 
 __all__ = [
     'FestivalError', 'WrappedDate', 'Period',
@@ -176,6 +176,16 @@ class Festival:
         self._freq = kwargs.get('freq', 0)
 
         self._cyear = 0
+        self._tmp = {}
+
+    def gets(self, *args):
+        def _get(_f):
+            return getattr(self, '_' + _f)
+
+        values = list(map(_get, args))
+        if len(args) == 1:
+            return values[0]
+        return values
 
     def set_name(self, name):
         self._name = name
@@ -192,6 +202,13 @@ class Festival:
     @property
     def name(self):
         return self._name
+
+    def _get_description(self) -> str:
+        pass
+
+    @property
+    def description(self) -> str:
+        return self._get_description()
 
     def is_(self, date_obj: MixedDate) -> bool:
         date_obj = self._normalize(date_obj)
@@ -352,6 +369,26 @@ class SolarFestival(Festival):
             reverse = 0
         super().__init__(name=name, freq=freq, month=month, day=day, reverse=reverse)
 
+    def _get_description(self) -> str:
+        cn_list = ['公历']
+        day_order = False
+        if self._freq == FreqConst.YEARLY:
+            if self._month != 0:
+                cn_list.append('每年{}月'.format(self._month))
+            else:
+                cn_list.append('每年')
+                day_order = True
+        else:
+            cn_list.append('每月')
+        if self._reverse:
+            cn_list.append('倒数第{}天'.format(self._day))
+        else:
+            if day_order:
+                cn_list.append('第{}天'.format(self._day))
+            else:
+                cn_list.append('{}日'.format(self._day))
+        return ''.join(cn_list)
+
     def _resolve_yearly(self, year) -> List[Union[date, LunarDate]]:
         if self._month == 0:
             if self._reverse == 0:
@@ -409,6 +446,9 @@ class WeekFestival(Festival):
     def __init__(self, *, month, index, week, name=None):
         super().__init__(name=name, freq=FreqConst.YEARLY, month=month, index=index, week=week)
 
+    def _get_description(self) -> str:
+        return '公历{}月第{}个星期{}'.format(self._month, self._week_index, '一二三四五六日'[self._week_no])
+
     def _resolve_yearly(self, year) -> List[Union[date, LunarDate]]:
         day = WeekFestival.week_day(year, self._month, self._week_index, self._week_no)
         return [date(year, self._month, day)]
@@ -435,7 +475,12 @@ class TermFestival(Festival):
     def __init__(self, *, index=None, name=None):
         if index is None:
             index = TermUtils.get_index_for_name(name)
+        else:
+            name = TermUtils.get_name_for_index(index)
         super().__init__(freq=FreqConst.YEARLY, name=name, index=index)
+
+    def _get_description(self) -> str:
+        return '公历每年{}节气'.format(self.name)
 
     def _resolve_yearly(self, year) -> List[Union[date, LunarDate]]:
         try:
@@ -461,6 +506,26 @@ class LunarFestival(Festival):
         else:
             reverse = 0
         super().__init__(freq=freq, name=name, month=month, day=day, leap=leap, reverse=reverse)
+
+    def _get_description(self) -> str:
+        cn_list = ['农历']
+        day_order = False
+        if self._freq == FreqConst.YEARLY:
+            if self._month != 0:
+                cn_list.append('每年{}月'.format(TextUtils.month_cn(self._month)))
+            else:
+                cn_list.append('每年')
+                day_order = True
+        else:
+            cn_list.append('每月')
+        if self._reverse:
+            cn_list.append('倒数第{}天'.format(self._day))
+        else:
+            if day_order:
+                cn_list.append('第{}天'.format(self._day))
+            else:
+                cn_list.append('{}'.format(TextUtils.day_cn(self._day)))
+        return ''.join(cn_list)
 
     def _resolve_yearly(self, year: int) -> List[Union[date, LunarDate]]:
         month_meta = list(LCalendars.iter_year_month(year))
@@ -630,18 +695,38 @@ def decode(raw: Union[str, bytes]) -> Union[WrappedDate, Festival]:
     if festival.cyear == 0:
         return festival
     if isinstance(festival, SolarFestival):
-        return WrappedDate(date(festival._cyear, festival._month, festival._day))
+        year, month, day = festival.gets('cyear', 'month', 'day')
+        return WrappedDate(date(year, month, day))
     elif isinstance(festival, LunarFestival):
-        if festival._leap == 1:
+        if festival.gets('leap') == 1:
             leap = 1
         else:
             leap = 0
-        return WrappedDate(LunarDate(festival._cyear, festival._month, festival._day, leap))
+        year, month, day = festival.gets('cyear', 'month', 'day')
+        return WrappedDate(LunarDate(year, month, day, leap))
     else:
         raise FestivalError('Invalid FestivalSchema', '')
 
 
 class FestivalLibrary(collections.UserList):
+
+    def get_code_set(self) -> Set[str]:
+        """获取当前所有节日的code集合
+        """
+        return set([f.encode() for f in self.data])
+
+    def extend_unique(self, other):
+        """添加新的节日对象，如果code已经存在则不在加入
+        :param other:
+        :return:
+        """
+        f_codes = set({f.encode() for f in self.data})
+        if isinstance(other, collections.UserList):
+            new_data = other.data
+        else:
+            new_data = other
+        f_dict = {f.encode(): f for f in new_data}
+        self.data.extend([v for k, v in f_dict.items() if k not in f_codes])
 
     def get_festival(self, name: str) -> Optional[Festival]:
         for festival in self:
@@ -675,7 +760,12 @@ class FestivalLibrary(collections.UserList):
         field_names = ['raw', 'name']
         with file_path.open(encoding='utf8') as f:
             reader = csv.DictReader(f, fieldnames=field_names)
+            code_set = fl.get_code_set()
             for row in reader:
+                code = row['raw']
+                if code in code_set:
+                    continue
+                code_set.add(code)
                 try:
                     festival = decode_festival(row['raw'])
                     festival.set_name(row['name'])
