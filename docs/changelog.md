@@ -1,6 +1,6 @@
 # 更新日志
 
-## v3.5.1
+## v3.5.1 (20220101)
 
 - `borax.calendars.lunardate`
   - `LunarDate.strftime` 新增 `%W` 中文星期格式化

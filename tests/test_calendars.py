@@ -32,3 +32,4 @@ class ThreeNineTestCase(unittest.TestCase):
         self.assertEqual('庚', LunarDate.from_solar(d).gz_day[0])
         self.assertEqual('初伏第10天', ThreeNineUtils.get_39label(d + timedelta(days=9)))
         self.assertEqual('中伏第1天', ThreeNineUtils.get_39label(d + timedelta(days=10)))
+        self.assertEqual('', ThreeNineUtils.get_39label(date(2021, 9, 30)))
