@@ -210,6 +210,12 @@ class Festival:
     def description(self) -> str:
         return self._get_description()
 
+    def __str__(self):
+        return '{} {}'.format(self.name, self.description)
+
+    def __repr__(self):
+        return '<{} {} {}>'.format(self.__class__.__name__, self.name, self.description)
+
     def is_(self, date_obj: MixedDate) -> bool:
         date_obj = self._normalize(date_obj)
         try:

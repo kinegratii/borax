@@ -258,6 +258,8 @@ class FestivalDescriptionTestCase(unittest.TestCase):
 
         month_day = WeekFestival(month=5, index=2, week=calendar.SUNDAY, name='母亲节')
         self.assertEqual('公历5月第2个星期日', month_day.description)
+        self.assertEqual('母亲节 公历5月第2个星期日', str(month_day))
+        self.assertEqual('<WeekFestival 母亲节 公历5月第2个星期日>', repr(month_day))
 
     def test_solar_festival(self):
         festival2description_tuples = [
