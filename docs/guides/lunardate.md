@@ -385,7 +385,10 @@ ValueError: Invalid month for the year 2017
 
 ### 节气
 
+- **TermUtils.nth_term_day(year: int, term_index: Optional[int] = None, term_name: Optional[str] = None) -> datetime.date**
 - **LCalendars.create_solar_date(year: int, term_index: Optional[int] = None, term_name: Optional[str] = None) -> datetime.date**
+
+> Updated in v3.5.2: 新增TermUtils.nth_term_day，原函数LCalendars.create_solar_date将在v3.6.0移除。
 
 根据节气名称或者序号获取对应的公历日期对象(`dateitime.date`)。`term_index` 和 `term_name` 只需传入一个参数，
 

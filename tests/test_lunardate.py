@@ -4,7 +4,9 @@ import datetime
 import unittest
 from datetime import date, timedelta
 
-from borax.calendars.lunardate import LunarDate, parse_year_days, LCalendars, InvalidLunarDateError, TextUtils
+from borax.calendars.lunardate import (
+    LunarDate, parse_year_days, LCalendars, InvalidLunarDateError, TextUtils, TermUtils
+)
 
 
 class TextUtilsTestCase(unittest.TestCase):
@@ -127,7 +129,7 @@ class LunarDateTestCase(unittest.TestCase):
         ld = LunarDate.from_solar(sd)
         self.assertEqual('小寒', ld.term)
 
-        sd1 = LCalendars.create_solar_date(2101, 1)
+        sd1 = TermUtils.nth_term_day(2101, 1)
         self.assertEqual(date(2101, 1, 20), sd1)
         ld1 = LunarDate.from_solar(sd1)
         self.assertEqual('大寒', ld1.term)

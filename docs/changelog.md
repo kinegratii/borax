@@ -1,5 +1,13 @@
 # 更新日志
 
+## v3.5.2
+
+- `borax.calendars.lunardate`
+  - 新增 `TermUtils.nth_term_day` 获取节气日期函数
+- `borax.calendars.festivals2`
+  - Festival新增str/repr方法
+
+
 ## v3.5.1 (20220101)
 
 - `borax.calendars.lunardate`

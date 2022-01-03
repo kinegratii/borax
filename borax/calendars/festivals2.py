@@ -490,7 +490,7 @@ class TermFestival(Festival):
 
     def _resolve_yearly(self, year) -> List[Union[date, LunarDate]]:
         try:
-            date_obj = LCalendars.create_solar_date(year, term_index=self._term_index, term_name=self._name)
+            date_obj = TermUtils.nth_term_day(year, term_index=self._term_index, term_name=self._name)
             return [date_obj]
         except ValueError as e:
             if str(e).startswith('Invalid'):

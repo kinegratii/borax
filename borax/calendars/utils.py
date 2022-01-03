@@ -1,11 +1,10 @@
 # coding=utf8
 import calendar
-from datetime import date, datetime, timedelta
 from collections import OrderedDict
-
-from borax.calendars.lunardate import LunarDate, LCalendars, TextUtils
-
+from datetime import date, datetime, timedelta
 from typing import Union, Dict
+
+from borax.calendars.lunardate import LunarDate, TextUtils, TermUtils
 
 __all__ = ['SCalendars', 'ThreeNineUtils']
 
@@ -27,7 +26,7 @@ class ThreeNineUtils:
 
     @staticmethod
     def _get_start_date(year, term_name, after_index, day_stem):
-        term_day = LCalendars.create_solar_date(year, term_name=term_name)
+        term_day = TermUtils.nth_term_day(year, term_name=term_name)
         if after_index == 0:
             return term_day
         term_lday = LunarDate.from_solar(term_day)
