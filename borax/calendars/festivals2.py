@@ -758,6 +758,41 @@ class FestivalLibrary(collections.UserList):
         for offset in sorted(ndays2festivals.keys()):
             yield offset, ndays2festivals[offset]
 
+    def iter_month_daytuples(self, year: int, month: int, firstweekday: int = 0):
+        """迭代返回公历月份（含前后完整日期）中每个日期信息
+        :param year: 公历年
+        :param month: 公历月
+        :param firstweekday: 星期首日
+        :return:
+        """
+        cal = calendar.Calendar(firstweekday=firstweekday)
+        for days in cal.monthdayscalendar(year, month):
+            weekdays = []
+            for col, day in enumerate(days):
+                if day == 0:
+                    yield day, '', None
+                else:
+                    ld = LunarDate.from_solar_date(year, month, day)
+                    text = ''
+                    names = self.get_festival_names(ld)
+                    if names:
+                        text = names[0]
+                    if ld.term and not text:
+                        text = ld.term
+                    elif not text:
+                        text = ld.cn_day_calendar
+                    yield day, text, WrappedDate(ld)
+
+    def monthdaycalendar(self, year: int, month: int, firstweekday: int = 0):
+        """返回二维列表，每一行表示一个星期。逻辑同iter_month_daytuples。
+        :param year:
+        :param month:
+        :param firstweekday:
+        :return:
+        """
+        days = list(self.iter_month_daytuples(year, month, firstweekday))
+        return [days[i:i + 7] for i in range(0, len(days), 7)]
+
     @classmethod
     def load_file(cls, file_path: Union[str, Path]) -> 'FestivalLibrary':
         if isinstance(file_path, str):

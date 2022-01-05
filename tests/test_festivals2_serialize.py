@@ -112,3 +112,10 @@ class FestivalLibraryUniqueTestCase(unittest.TestCase):
         ft2 = TermFestival(index=23)
         fl.extend_unique([ft2])
         self.assertEqual(1, len(fl.get_code_set()))
+
+
+class FestivalLibraryCalendarTestCase(unittest.TestCase):
+    def test_calendar(self):
+        fl = FestivalLibrary.load_builtin()
+        days = fl.monthdaycalendar(2022, 1)
+        self.assertEqual(6, len(days))

@@ -6,6 +6,7 @@
   - 新增 `TermUtils.nth_term_day` 获取节气日期函数
 - `borax.calendars.festivals2`
   - Festival新增str/repr方法
+  - `FestivalLibrary`新增日历月相关函数 iter_month_daytuples/monthdaycalendar
 
 
 ## v3.5.1 (20220101)
