@@ -111,7 +111,12 @@ class FestivalLibraryUniqueTestCase(unittest.TestCase):
         self.assertEqual(1, len(fl.get_code_set()))
         ft2 = TermFestival(index=23)
         fl.extend_unique([ft2])
-        self.assertEqual(1, len(fl.get_code_set()))
+        self.assertEqual(1, len(fl))
+        ft3 = TermFestival(name='小寒')
+        fl.extend_unique([ft3])
+        self.assertEqual(2, len(fl))
+        fl.extend_unique(['205026', '89005'])
+        self.assertEqual(3, len(fl))
 
 
 class FestivalLibraryCalendarTestCase(unittest.TestCase):

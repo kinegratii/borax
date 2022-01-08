@@ -731,8 +731,17 @@ class FestivalLibrary(collections.UserList):
             new_data = other.data
         else:
             new_data = other
-        f_dict = {f.encode(): f for f in new_data}
-        self.data.extend([v for k, v in f_dict.items() if k not in f_codes])
+        for item in new_data:
+            if isinstance(item, Festival):
+                if item.encode() not in f_codes:
+                    self.data.append(item)
+            elif isinstance(item, str):
+                try:
+                    festival = decode_festival(item)
+                    if item not in f_codes:
+                        self.data.append(festival)
+                except ValueError:
+                    pass
 
     def get_festival(self, name: str) -> Optional[Festival]:
         for festival in self:
