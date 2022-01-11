@@ -742,6 +742,7 @@ class FestivalLibrary(collections.UserList):
                         self.data.append(festival)
                 except ValueError:
                     pass
+        return self
 
     def get_festival(self, name: str) -> Optional[Festival]:
         for festival in self:
@@ -823,6 +824,9 @@ class FestivalLibrary(collections.UserList):
                 except ValueError:
                     continue
         return fl
+
+    def load_term_festivals(self):
+        return self.extend_unique(['400{:02d}0'.format(i) for i in range(24)])
 
     @classmethod
     def load_builtin(cls, identifier: str = 'zh-Hans') -> 'FestivalLibrary':
