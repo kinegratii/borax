@@ -13,3 +13,10 @@ class HtmlTagTest(unittest.TestCase):
         self.assertEqual(html, '<div id="idDemo" data-my-attr="23">Test</div>')
 
         self.assertEqual('test', HTMLString.escape('test'))
+
+    def test_fixed_html(self):
+        # Add v3.5.2
+        self.assertEqual('<div id="demo"></div>', html_tag('div', id_='demo'))
+        self.assertEqual('<div id="demo" style="width:2px;"></div>',
+                         html_tag('div', id_='demo', style={'width': '2px'}))
+        self.assertEqual('<div id="demo" class="a1 a2"></div>', html_tag('div', id_='demo', class_=['a1', 'a2']))

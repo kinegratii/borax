@@ -7,7 +7,8 @@
 - `borax.calendars.festivals2`
   - Festival新增str/repr方法
   - `FestivalLibrary`新增日历月相关函数 iter_month_daytuples/monthdaycalendar
-
+- `borax.htmls`
+  - `html_tag` 函数支持style/css参数解析
 
 ## v3.5.1 (20220101)
 
