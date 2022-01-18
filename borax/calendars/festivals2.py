@@ -777,7 +777,6 @@ class FestivalLibrary(collections.UserList):
         """
         cal = calendar.Calendar(firstweekday=firstweekday)
         for days in cal.monthdayscalendar(year, month):
-            weekdays = []
             for col, day in enumerate(days):
                 if day == 0:
                     yield day, '', None

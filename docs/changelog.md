@@ -1,6 +1,6 @@
 # 更新日志
 
-## v3.5.2
+## v3.5.2 (20220118)
 
 - `borax.calendars.lunardate`
   - 新增 `TermUtils.nth_term_day` 获取节气日期函数
