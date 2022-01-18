@@ -210,6 +210,12 @@ class Festival:
     def description(self) -> str:
         return self._get_description()
 
+    def __str__(self):
+        return '{} {}'.format(self.name, self.description)
+
+    def __repr__(self):
+        return '<{} {} {}>'.format(self.__class__.__name__, self.name, self.description)
+
     def is_(self, date_obj: MixedDate) -> bool:
         date_obj = self._normalize(date_obj)
         try:
@@ -484,7 +490,7 @@ class TermFestival(Festival):
 
     def _resolve_yearly(self, year) -> List[Union[date, LunarDate]]:
         try:
-            date_obj = LCalendars.create_solar_date(year, term_index=self._term_index, term_name=self._name)
+            date_obj = TermUtils.nth_term_day(year, term_index=self._term_index, term_name=self._name)
             return [date_obj]
         except ValueError as e:
             if str(e).startswith('Invalid'):
@@ -725,8 +731,18 @@ class FestivalLibrary(collections.UserList):
             new_data = other.data
         else:
             new_data = other
-        f_dict = {f.encode(): f for f in new_data}
-        self.data.extend([v for k, v in f_dict.items() if k not in f_codes])
+        for item in new_data:
+            if isinstance(item, Festival):
+                if item.encode() not in f_codes:
+                    self.data.append(item)
+            elif isinstance(item, str):
+                try:
+                    festival = decode_festival(item)
+                    if item not in f_codes:
+                        self.data.append(festival)
+                except ValueError:
+                    pass
+        return self
 
     def get_festival(self, name: str) -> Optional[Festival]:
         for festival in self:
@@ -752,6 +768,40 @@ class FestivalLibrary(collections.UserList):
         for offset in sorted(ndays2festivals.keys()):
             yield offset, ndays2festivals[offset]
 
+    def iter_month_daytuples(self, year: int, month: int, firstweekday: int = 0):
+        """迭代返回公历月份（含前后完整日期）中每个日期信息
+        :param year: 公历年
+        :param month: 公历月
+        :param firstweekday: 星期首日
+        :return:
+        """
+        cal = calendar.Calendar(firstweekday=firstweekday)
+        for days in cal.monthdayscalendar(year, month):
+            for col, day in enumerate(days):
+                if day == 0:
+                    yield day, '', None
+                else:
+                    ld = LunarDate.from_solar_date(year, month, day)
+                    text = ''
+                    names = self.get_festival_names(ld)
+                    if names:
+                        text = names[0]
+                    if ld.term and not text:
+                        text = ld.term
+                    elif not text:
+                        text = ld.cn_day_calendar
+                    yield day, text, WrappedDate(ld)
+
+    def monthdaycalendar(self, year: int, month: int, firstweekday: int = 0):
+        """返回二维列表，每一行表示一个星期。逻辑同iter_month_daytuples。
+        :param year:
+        :param month:
+        :param firstweekday:
+        :return:
+        """
+        days = list(self.iter_month_daytuples(year, month, firstweekday))
+        return [days[i:i + 7] for i in range(0, len(days), 7)]
+
     @classmethod
     def load_file(cls, file_path: Union[str, Path]) -> 'FestivalLibrary':
         if isinstance(file_path, str):
@@ -773,6 +823,9 @@ class FestivalLibrary(collections.UserList):
                 except ValueError:
                     continue
         return fl
+
+    def load_term_festivals(self):
+        return self.extend_unique(['400{:02d}0'.format(i) for i in range(24)])
 
     @classmethod
     def load_builtin(cls, identifier: str = 'zh-Hans') -> 'FestivalLibrary':

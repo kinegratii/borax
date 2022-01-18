@@ -34,13 +34,19 @@ Borax.Calendars 提供了一系列适用于常见场景的工具方法。这些�
 
 - **ThreeNineUtils.get_39label(date_obj: Union[date, LunarDate]) -> str**
 
-判断某一个日期是否是“初伏/中伏/末伏/一九/二九/.../八九/九九”的第一天。
+返回某一个日期的相关标签，该标签格式为“初伏/中伏/末伏/一九/二九/.../八九/九九第x天”。如果不是，则返回空字符串。
+
+```python
+from datetime import date
+from borax.calendars.utils import ThreeNineUtils
+print(ThreeNineUtils.get_39label(date(2021, 7, 21))) # '中伏第1天'
+```
 
 - **ThreeNineUtils.get_39days(year: int) -> Dict[str, date]**
 
 返回某一个公历年份的三伏数九天起始日期的全部信息，如 `ThreeNineUtils.get_39days(2021)` 的返回值如下：
 
-```python
+```pythonconsole
 {'一九': datetime.date(2021, 12, 21),
  '七九': datetime.date(2022, 2, 13),
  '三九': datetime.date(2022, 1, 8),

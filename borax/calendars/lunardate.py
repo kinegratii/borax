@@ -1,13 +1,14 @@
 # coding=utf8
 import datetime
 import re
+import warnings
 from typing import Optional, Iterator, Tuple
 
 from .store import (
     EncoderMixin, f_year, f_month, f_day, f_leap
 )
 
-__all__ = ['LunarDate', 'LCalendars', 'InvalidLunarDateError', 'TermUtils']
+__all__ = ['LunarDate', 'LCalendars', 'InvalidLunarDateError', 'TermUtils', 'TextUtils']
 
 
 # Exception
@@ -139,17 +140,9 @@ class LCalendars:
     @staticmethod
     def create_solar_date(year: int, term_index: Optional[int] = None,
                           term_name: Optional[str] = None) -> datetime.date:
-        if term_name:
-            term_index = TERMS_CN.index(term_name)
-        if not ((1900 <= year <= 2100) or (year == 2101 and term_index in (0, 1))):
-            raise ValueError('Invalid year-index: {},{}'.format(year, term_index))
-        if term_index % 2 == 0:
-            month = term_index // 2 + 1
-        else:
-            month = (term_index + 1) // 2
-        days = TermUtils.parse_term_days(year)
-        day = days[term_index]
-        return datetime.date(year, month, day)
+        warnings.warn('This function is deprecated, use TermUtils.nth_term_day instead.', DeprecationWarning,
+                      stacklevel=2)
+        return TermUtils.nth_term_day(year, term_index, term_name)
 
     @staticmethod
     def cast_date(date_obj, target_class):
@@ -323,6 +316,26 @@ class TermUtils:
     @staticmethod
     def get_name_for_index(index: int):
         return TERMS_CN[index]
+
+    @staticmethod
+    def nth_term_day(year: int, term_index: Optional[int] = None, term_name: Optional[str] = None) -> datetime.date:
+        """返回公历year年第term_index个或者term_name对应的节气所在公历日期
+        :param year: 公历年份
+        :param term_index: 节气序号，0小寒，1大寒，23冬至
+        :param term_name: 节气名称
+        :return: 一个date对象
+        """
+        if term_name:
+            term_index = TERMS_CN.index(term_name)
+        if not ((1900 <= year <= 2100) or (year == 2101 and term_index in (0, 1))):
+            raise ValueError('Invalid year-index: {},{}'.format(year, term_index))
+        if term_index % 2 == 0:
+            month = term_index // 2 + 1
+        else:
+            month = (term_index + 1) // 2
+        days = TermUtils.parse_term_days(year)
+        day = days[term_index]
+        return datetime.date(year, month, day)
 
 
 # ------ Stems and Branches ------

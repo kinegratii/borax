@@ -194,9 +194,3 @@ print(FinanceNumbers.to_capital_str(decimal.Decimal(4.50))) # '肆元伍角零�
 
 The MIT License (MIT)
 
-## 捐赠 (Donate)
-
-如果你觉得这个项目帮助到了你，你可以帮作者们买一杯咖啡表示感谢！
-
-![donation-wechat](docs/images/donation-wechat.png)
-
