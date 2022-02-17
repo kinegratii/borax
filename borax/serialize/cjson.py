@@ -5,7 +5,7 @@ import json
 from datetime import datetime, date
 from functools import singledispatch
 
-__all__ = ['encode_object', 'encoder', 'dumps', 'dump']
+__all__ = ['encode_object', 'encoder', 'dumps', 'dump', 'CJSONEncoder']
 
 
 def encode_object(obj):
@@ -32,3 +32,8 @@ def dump(obj, fp, **kwargs):
 
 encoder.register(datetime, lambda obj: obj.strftime('%Y-%m-%d %H:%M:%S'))
 encoder.register(date, lambda obj: obj.strftime('%Y-%m-%d'))
+
+
+class CJSONEncoder(json.JSONEncoder):
+    def default(self, o):
+        return encoder(o)
