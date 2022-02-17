@@ -141,9 +141,11 @@ encoder.register(datetime, lambda obj: obj.strftime('%Y-%m-%d %H:%M:%S'))
 encoder.register(date, lambda obj: obj.strftime('%Y-%m-%d'))
 ```
 
-### cjson.to_serializable
+### cjson.CJSONEncoder
 
-`cjson.encoder` 的别名引用。 将于 v4.0 移除。
+> Add in v3.5.3
+
+可用于 `json.dump` 函数cls参数。
 
 ### cjson.dumps/dump
 
@@ -156,6 +158,8 @@ cjson 还提供了类似的 `dumps` / `dump` 方法，默认使用 `cjson.encode
 
 ```
 json.dump(obj, default=cjson.encoder)
+
+json.dump(obj, cls=cjson.CJSONEncoder)
 
 cjson.dump(obj)
 ```

@@ -1,5 +1,10 @@
 # 更新日志
 
+## v3.5.3
+
+- `borax.serialize.cjson`
+  - 新增用于`json.dump`函数cls参数的 `CJSONEncoder` 类
+
 ## v3.5.2 (20220118)
 
 - `borax.calendars.lunardate`
