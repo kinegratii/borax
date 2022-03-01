@@ -4,6 +4,8 @@
 
 - `borax.serialize.cjson`
   - 新增用于`json.dump`函数cls参数的 `CJSONEncoder` 类
+- `borax.datasets.fetch` 模块
+  - 修正 `fetch` 解析列表型数据错误的bug （[#39](https://github.com/kinegratii/borax/issues/39)）
 
 ## v3.5.2 (20220118)
 

@@ -17,14 +17,14 @@ EMPTY = Empty()
 
 def bget(obj, key, default=Empty):
     try:
-        return getattr(obj, key)
-    except AttributeError:
-        pass
-
-    try:
         return obj[key]
     except KeyError:
         pass
+    try:
+        return getattr(obj, key)
+    except (AttributeError, TypeError):
+        pass
+
     if default is not EMPTY:
         return default
 
