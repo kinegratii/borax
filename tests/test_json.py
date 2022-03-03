@@ -65,3 +65,8 @@ class CJsonTestCase(unittest.TestCase):
         obj = {'point': Pt(1, 2)}
         output = cjson.dumps(obj)
         self.assertEqual('{"point": [1, 2]}', output)
+
+    def test_encoder_class(self):
+        obj = {'point': Point(1, 2)}
+        output = json.dumps(obj, cls=cjson.CJSONEncoder)
+        self.assertEqual('{"point": [1, 2]}', output)

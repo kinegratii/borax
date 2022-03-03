@@ -73,3 +73,15 @@ class FetchAsDictTestCase(unittest.TestCase):
         ]
         data_dict = fetch_as_dict(objects, 'id', 'name')
         self.assertDictEqual({282: 'Alice', 217: 'Bob', 328: 'Charlie'}, data_dict)
+
+
+class FetchFromTuplesTestCase(unittest.TestCase):
+    def test_fetch_from_tuples(self):
+        data = [
+            [1, 2, 3, 4, 5, 6, 7, 8, 9],
+            [11, 12, 13, 14, 15, 16, 17, 18, 19],
+            [21, 22, 23, 24, 25, 26, 27, 28, 29]
+        ]
+        ones, threes = fetch(data, 0, 2)
+        self.assertListEqual(ones, [1, 11, 21])
+        self.assertListEqual(threes, [3, 13, 23])
