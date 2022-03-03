@@ -17,6 +17,9 @@ def load_class(s):
     return getattr(mod, class_)
 
 
+load_object = load_class  # Only a alias name.
+
+
 def check_path_variables(execute_filename: str) -> bool:
     try:
         user_paths = os.environ['PYTHONPATH'].split(os.pathsep)
