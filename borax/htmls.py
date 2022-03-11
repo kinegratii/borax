@@ -1,7 +1,7 @@
 # coding=utf8
 
 import html
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
 
 def _escape(s):
@@ -58,7 +58,7 @@ SINGLE_TAGS = ('br', 'hr', 'img', 'input', 'param', 'meta', 'link')
 
 
 def html_tag(tag_name: str, content: str = None,
-             *, id_: str = None, style: Dict = None, class_: Optional[List] = None, **kwargs) -> HTMLString:
+             *, id_: str = None, style: Dict = None, class_: Union[List, str, None] = None, **kwargs) -> HTMLString:
     """生成元素的html字符串"""
     kw = {}
     if id_:

@@ -1,5 +1,10 @@
 # 更新日志
 
+## v3.5.4
+
+- `borax.htmls`
+  - `html_tag` 函数css参数支持str类型（函数逻辑已支持，本次仅添加typing hints）
+
 ## v3.5.3 (20220303)
 
 - `borax.serialize.cjson`
