@@ -5,7 +5,7 @@ fetch is a enhance module with fetch. And adjust the parameter order of calling 
 from functools import partial
 from itertools import tee
 
-__all__ = ['Empty', 'fetch', 'ifetch', 'fetch_single', 'ifetch_multiple', 'ifetch_single', 'fetch_as_dict']
+__all__ = ['Empty', 'bget', 'fetch', 'ifetch', 'fetch_single', 'ifetch_multiple', 'ifetch_single', 'fetch_as_dict']
 
 
 class Empty:
@@ -18,7 +18,7 @@ EMPTY = Empty()
 def bget(obj, key, default=Empty):
     try:
         return obj[key]
-    except KeyError:
+    except (TypeError, KeyError):
         pass
     try:
         return getattr(obj, key)
