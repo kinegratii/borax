@@ -1,5 +1,12 @@
 # 更新日志
 
+## v3.5.4 (20220314)
+
+- `borax.htmls`
+  - `html_tag` 函数css参数支持str类型（函数逻辑已支持，本次仅添加typing hints）
+- `borax.datasets.fetch` 模块
+  - 修正 `fetch` 解析错误的bug （[#39](https://github.com/kinegratii/borax/issues/39)）
+
 ## v3.5.3 (20220303)
 
 - `borax.serialize.cjson`

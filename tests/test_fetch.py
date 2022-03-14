@@ -3,13 +3,29 @@
 
 import unittest
 
-from borax.datasets.fetch import fetch, fetch_single, ifetch_multiple, fetch_as_dict
+from borax.datasets.fetch import fetch, fetch_single, ifetch_multiple, fetch_as_dict, bget
 
 DICT_LIST_DATA = [
     {'id': 282, 'name': 'Alice', 'age': 30, 'sex': 'female'},
     {'id': 217, 'name': 'Bob', 'age': 56},
     {'id': 328, 'name': 'Charlie', 'age': 56, 'sex': 'male'},
 ]
+
+
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+
+class GetterTestCase(unittest.TestCase):
+    def test_default_getter(self):
+        p = Point(1, 2)
+        self.assertEqual(1, bget(p, 'x'))
+        p2 = [2, 4]
+        self.assertEqual(4, bget(p2, 1))
+        p3 = {'x': 5, 'y': 10}
+        self.assertEqual(5, bget(p3, 'x'))
 
 
 class FetchTestCase(unittest.TestCase):

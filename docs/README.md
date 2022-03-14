@@ -6,8 +6,8 @@
 ![Python package](https://github.com/kinegratii/borax/workflows/Python%20package/badge.svg)
 ![Codecov](https://codecov.io/github/kinegratii/borax/coverage.svg)
 ![GitHub license](https://img.shields.io/github/license/kinegratii/borax)
-![Document](https://img.shields.io/badge/%E6%96%87%E6%A1%A3-docsify%20%7C%20%E8%AF%AD%E9%9B%80-brightgreen)
-
+![Document](https://img.shields.io/badge/%E6%96%87%E6%A1%A3-docsify-brightgreen)
+[![borax](https://snyk.io/advisor/python/borax/badge.svg)](https://snyk.io/advisor/python/borax)
 
 
 
@@ -38,4 +38,4 @@ Borax 是一个Python3工具集合库。
 ## 开发(Development)
 
 - **代码仓库**：[Github](https://github.com/kinegratii/borax/) | [Gitee (镜像)](https://gitee.com/kinegratii/borax)
-- **项目开发**:  [版本日志](changelog) | [技术文档](develope/develope)
+- **项目开发**:  [版本日志](changelog) | [技术文档(外链)](http://fd8cc08f.wiz06.com/wapp/pages/view/share/s/3Zzc2f0LJQ3w2TWIQb0ZMSna1zg4gs1vPQmb2vlh9M2zhqK8)

@@ -6,8 +6,8 @@
 ![Python package](https://github.com/kinegratii/borax/workflows/Python%20package/badge.svg)
 ![Codecov](https://codecov.io/github/kinegratii/borax/coverage.svg)
 ![GitHub license](https://img.shields.io/github/license/kinegratii/borax)
-![Document](https://img.shields.io/badge/%E6%96%87%E6%A1%A3-docsify%20%7C%20%E8%AF%AD%E9%9B%80-brightgreen)
-
+![Document](https://img.shields.io/badge/%E6%96%87%E6%A1%A3-docsify-brightgreen)
+[![borax](https://snyk.io/advisor/python/borax/badge.svg)](https://snyk.io/advisor/python/borax)
 
 
 ## 概述 (Overview)

@@ -39,7 +39,7 @@ setup(
     author='kinegratii',
     author_email='zhenwei.yan@hotmail.com',
     classifiers=lib_classifiers,
-    description='A tool collections for Python3.',
+    description='A tool collections.(Chinese-Lunar-Calendars/Python-Patterns)',
     long_description=long_description,
     long_description_content_type='text/markdown'
 )

@@ -5,6 +5,13 @@ import unittest
 from borax.htmls import HTMLString, html_tag
 
 
+class HtmlStringTestCase(unittest.TestCase):
+    def test_html_string(self):
+        s = HTMLString('<div>Hello</div>')
+        s2 = HTMLString(s)
+        self.assertEqual(s.__html__(), s2.__html__())
+
+
 class HtmlTagTest(unittest.TestCase):
     def test_html_tags(self):
         html = html_tag('img', id_='idDemoImg', src='/demo.png')
@@ -20,3 +27,11 @@ class HtmlTagTest(unittest.TestCase):
         self.assertEqual('<div id="demo" style="width:2px;"></div>',
                          html_tag('div', id_='demo', style={'width': '2px'}))
         self.assertEqual('<div id="demo" class="a1 a2"></div>', html_tag('div', id_='demo', class_=['a1', 'a2']))
+
+    def test_css_attr(self):
+        self.assertEqual('<div class="one two"></div>', html_tag('div', class_=['one', 'two']))
+        self.assertEqual('<div class="one two"></div>', html_tag('div', class_='one two'))
+
+    def test_bool_attr(self):
+        self.assertEqual('<div id="sk" checked>Demo</div>', html_tag('div', id_='sk', content='Demo', checked=True))
+        self.assertEqual('<div id="sk">Demo</div>', html_tag('div', id_='sk', content='Demo', checked=False))
