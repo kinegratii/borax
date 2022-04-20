@@ -1,5 +1,10 @@
 # 更新日志
 
+## v3.5.5
+
+- `borax.calendars.festivals2`
+  - `FestivalLibrary.iter_month_daytuples` 新增 `return_pos` 参数，可返回日期位置
+
 ## v3.5.4 (20220314)
 
 - `borax.htmls`

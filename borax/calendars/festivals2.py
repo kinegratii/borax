@@ -768,18 +768,16 @@ class FestivalLibrary(collections.UserList):
         for offset in sorted(ndays2festivals.keys()):
             yield offset, ndays2festivals[offset]
 
-    def iter_month_daytuples(self, year: int, month: int, firstweekday: int = 0):
+    def iter_month_daytuples(self, year: int, month: int, firstweekday: int = 0, return_pos: bool = False):
         """迭代返回公历月份（含前后完整日期）中每个日期信息
-        :param year: 公历年
-        :param month: 公历月
-        :param firstweekday: 星期首日
-        :return:
         """
+        row = 0
         cal = calendar.Calendar(firstweekday=firstweekday)
         for days in cal.monthdayscalendar(year, month):
             for col, day in enumerate(days):
                 if day == 0:
-                    yield day, '', None
+                    text = ''
+                    wd = None
                 else:
                     ld = LunarDate.from_solar_date(year, month, day)
                     text = ''
@@ -790,7 +788,12 @@ class FestivalLibrary(collections.UserList):
                         text = ld.term
                     elif not text:
                         text = ld.cn_day_calendar
-                    yield day, text, WrappedDate(ld)
+                    wd = WrappedDate(ld)
+                if return_pos:
+                    yield day, text, wd, row, col
+                else:
+                    yield day, text, wd
+            row += 1
 
     def monthdaycalendar(self, year: int, month: int, firstweekday: int = 0):
         """返回二维列表，每一行表示一个星期。逻辑同iter_month_daytuples。
