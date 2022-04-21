@@ -35,3 +35,7 @@ class HtmlTagTest(unittest.TestCase):
     def test_bool_attr(self):
         self.assertEqual('<div id="sk" checked>Demo</div>', html_tag('div', id_='sk', content='Demo', checked=True))
         self.assertEqual('<div id="sk">Demo</div>', html_tag('div', id_='sk', content='Demo', checked=False))
+
+    def test_style_none(self):
+        html_str = html_tag('div', style={'width': '200px', 'height': None})
+        self.assertNotIn('height', html_str)

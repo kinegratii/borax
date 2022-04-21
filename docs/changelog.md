@@ -4,6 +4,8 @@
 
 - `borax.calendars.festivals2`
   - `FestivalLibrary.iter_month_daytuples` 新增 `return_pos` 参数，可返回日期位置
+- `borax.htmls`
+  - 修正 `html_tag` 函数style参数解析空值的BUG
 
 ## v3.5.4 (20220314)
 

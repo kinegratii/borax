@@ -44,6 +44,7 @@ def html_params(**kwargs) -> str:
         elif v is False:
             pass
         elif isinstance(v, dict):
+            v = {k_: v_ for k_, v_ in v.items() if v_ not in (None, '', [], ())}
             vs = ''.join(['{}:{};'.format(k, v) for k, v in v.items()])
             params.append('%s="%s"' % (str(k), vs))
         elif isinstance(v, list):
