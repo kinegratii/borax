@@ -39,3 +39,10 @@ class HtmlTagTest(unittest.TestCase):
     def test_style_none(self):
         html_str = html_tag('div', style={'width': '200px', 'height': None})
         self.assertNotIn('height', html_str)
+        html_str = html_tag('div', style_width='200px')
+        self.assertIn('width:200px', html_str)
+        html_str = html_tag('div', style_width='200px', style_height='800px', style={'width': '500px'})
+        self.assertIn('width:200px', html_str)
+        self.assertIn('height:800px', html_str)
+        html_str = html_tag('div', width='200px')
+        self.assertIn('width="200px"', html_str)

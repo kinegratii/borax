@@ -59,12 +59,17 @@ SINGLE_TAGS = ('br', 'hr', 'img', 'input', 'param', 'meta', 'link')
 
 
 def html_tag(tag_name: str, content: str = None,
-             *, id_: str = None, style: Dict = None, class_: Union[List, str, None] = None, **kwargs) -> HTMLString:
-    """生成元素的html字符串"""
+             *, id_: str = None, style: Dict = None, class_: Union[List, str, None] = None, style_width: str = None,
+             style_height: str = None, **kwargs) -> HTMLString:
+    """Generate a HTML-safe string for a html element."""
     kw = {}
     if id_:
         kw['id_'] = id_
     style = style or {}
+    if style_width is not None:
+        style.update({'width': style_width})
+    if style_height is not None:
+        style.update({'height': style_height})
     if style:
         kw['style'] = style
     class_ = class_ or []
