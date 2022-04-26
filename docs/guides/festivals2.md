@@ -225,7 +225,7 @@ Festival.iter_days(start_date:Option[MixedDate]=None, end_date:Option[MixedDate]
 
 - 日期期间的最大范围为 [LunarDate.min, LunarDate.max]
 - 返回的是一个迭代器，而不是包含具体日期对象的列表
-- reverse 表示是否反向
+- reverse=False，时间正序；reverse=False，时间倒序。
 
 例如，获取未来每年除夕节日的公历和公历日期：
 
@@ -249,6 +249,26 @@ Festival.list_days(start_date=None, end_date=None, reverse=False, count=-1) -> L
 - start_date, end_date, reverse 的参数意义同 iter_days 方法
 - 返回一个日期列表。
 - count表示日期列表的长度。
+
+### list_days_in_future
+
+> Add in v3.5.5
+
+```python
+Festival.list_days_in_future(end_date=None, reverse: bool = False, count: int = -1) -> List[WrappedDate]
+```
+
+返回今后时间（[today, end_date]）之间（含起止日期）匹配本 Festival 的日期列表。
+
+### list_days_in_past
+
+> Add in v3.5.5
+
+```python
+Festival.list_days_in_past(end_date=None, reverse: bool = False, count: int = -1) -> List[WrappedDate]
+```
+
+返回今后时间（[today, end_date]）之间（含起止日期）匹配本 Festival 的日期列表。
 
 ### get_one_day
 

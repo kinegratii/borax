@@ -4,6 +4,9 @@
 
 - `borax.calendars.festivals2`
   - `FestivalLibrary.iter_month_daytuples` 新增 `return_pos` 参数，可返回日期位置
+  - `Festival` 新增 `list_days_in_future` / `list_days_in_past` 函数
+- `borax.calendars.utils`
+  - 修正 `ThreeNineUtils` 内部计算错误的BUG
 - `borax.htmls`
   - `html_tag` 函数新增 width / height 参数
   - 修正 `html_tag` 函数style参数解析空值的BUG

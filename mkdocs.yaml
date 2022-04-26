@@ -1,7 +1,7 @@
 site_name: Borax
 theme:
   icon:
-    logo: material/monitor-dashboard
+    logo: material/calendar
   name: material
   palette:
     primary: pink
