@@ -137,7 +137,7 @@ LunarDate(2100, 12, 29, 0)
 | - | `str` | 两位数字的日期 | 26 | %B | |
 | cn_day_calendar | `str` | 用于日历显示的中文日 | 廿六 | %F | v1.3.0新增 (5)(6) |
 | `str(ld)` | `str` | 默认表示法 | LunarDate(2018, 6, 26, False) | - |  |
-| `ld.cn_str()` | `str` | 汉字表示法 | 2018年六月廿六 | %C |  |
+| `ld.cn_str()` | `str` | 汉字表示法 | 二〇一八年六月廿六 | %C |  |
 | `ld.gz_str()` | `str` | 干支表示法 | 戊戌年庚申月辛未日 | %G |  |
 
 备注信息：
@@ -148,22 +148,6 @@ LunarDate(2100, 12, 29, 0)
 - (4) 和'%M' 相比，将“冬”、“腊” 显示为“十一”、“十二”，其余不变
 - (5) '%F' 将“初一”改为相应的中文月份，如“七月”、“闰六”、“冬月”、“闰冬”。通常用于日历打印，如“廿八  廿九 三十 七月 初二 初三”。
 - (6) 从v3.5.1开始，修改部分日期表述，允许出现三个汉字表述，如 “冬月” -> “十一月”，“闰六” -> “闰六月”等。
-
-### 格式化
-
-- **LunarDate.strftime(fmt)** 
-
-`strftime`通过描述符(Directive)格式化给定的日期字符串。在“属性”一节中已经列出所有属性的格式描述符。
-
-例子：
-
-```
->>>today = LunarDate.today()
->>>today.strftime（'%Y-%L%M-%D')
-'二〇一八-六-廿六'
->>>today.strftime('今天的干支表示法为：%G')
-'今天的干支表示法为：戊戌年庚申月辛未日'
-```
 
 下表是从年月日的角度显示各个描述符之间的关系，以便更快的找到所需要的描述符：
 
@@ -177,6 +161,37 @@ LunarDate(2100, 12, 29, 0)
 | 生肖                       | %a   |      |      |          |
 | 日历显示（廿九-七月-初二） |      |      | %F   |          |
 |                            |      |      |      |          |
+
+
+### 格式化:strftime
+
+- **LunarDate.strftime(fmt)** 
+
+`strftime`通过描述符(Directive)格式化给定的日期字符串。在“属性”一节中已经列出所有属性的格式描述符。
+
+例子：
+
+```
+>>>today = LunarDate.today()
+>>>today.strftime('%Y年%L%M月%D')
+'二〇一八年六月廿六'
+>>>today.strftime('今天的干支表示法为：%G')
+'今天的干支表示法为：戊戌年庚申月辛未日'
+```
+
+### 格式化:f-string
+
+`LunarDate` 实现了 `__format__` 协议方法，可以适用于下列方法。
+
+```
+>>> today = LunarDate.today()
+>>>f'{today:%C}'
+'二〇一八年六月廿六'
+>>>'0:%C'.format(today)
+'二〇一八年六月廿六'
+>>>f'今天的干支表示法为：{today:%C}'
+'今天的干支表示法为：戊戌年庚申月辛未日'
+```
 
 ## 公历转化
 
@@ -275,46 +290,6 @@ with open('data.pickle', 'wb') as f:
 with open('data.pickle', 'rb') as f:
     l2 = pickle.load(f)
     print(l2) # LunarDate(2018, 7, 24, 0)
-
-```
-
-### sqlite3自定义字段
-
-> 从 Borax3.5开始，为了增加公历日期（`datetime.date`）和农历日期（`LunarDate`）的序列化， `LunarDate` 将不再支持直接序列化，需转化为 `WrappedDate` 对象。
-
-`LunarDate` 继承自 `store.EncoderMixin` 接口，为 sqlite3 自定义字段提供支持，更多细节参考 [sqlite3文档](https://docs.python.org/3.7/library/sqlite3.html#converting-sqlite-values-to-custom-python-types)。
-
-下面是一个简单的例子：
-
-```python
-import sqlite3
-
-from borax.calendars.lunardate import LunarDate
-
-
-def adapt_lunardate(ld):
-    return ld.encode()
-
-sqlite3.register_adapter(LunarDate, adapt_lunardate)
-sqlite3.register_converter("lunardate", LunarDate.decode)
-
-con = sqlite3.connect(":memory:", detect_types=sqlite3.PARSE_DECLTYPES)
-cur = con.cursor()
-cur.execute('CREATE TABLE member (pid INT AUTO_INCREMENT PRIMARY KEY,birthday lunardate);')
-
-ld = LunarDate(2018, 5, 3)
-cur.execute("INSERT INTO member(birthday) VALUES (?)", (ld,))
-
-cur.execute("SELECT pid, birthday FROM member;")
-my_birthday = cur.fetchone()[1]
-
-cur.close()
-con.close()
-
-print(my_birthday.year) # 2018
-print(my_birthday.month) # 5
-print(my_birthday.day) # 3
-print(my_birthday.leap) # 0
 
 ```
 
