@@ -1,5 +1,5 @@
 - **● 入门**
-  - [快速开始](quickstart)
+  - [首页](README)
 - **● Borax.Calendar**
   - [农历](guides/lunardate)
   - [节日(festivals2) <sup style="color:red">New!<sup>](guides/festivals2)

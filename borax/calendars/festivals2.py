@@ -47,6 +47,7 @@ class FestivalSchema(enum.IntEnum):
 
 
 class WrappedDate:
+    """A date object with solar and lunar calendars."""
     __slots__ = ['solar', 'lunar', 'name', '_fl']
 
     def __init__(self, date_obj: MixedDate, name: str = ''):
@@ -162,6 +163,7 @@ class FestivalError(Exception):
 
 
 class Festival:
+    """A object standard for a festival."""
     date_class = None
 
     def __init__(self, *args, **kwargs):
@@ -260,15 +262,6 @@ class Festival:
             return date_list
 
     def iter_days(self, start_date=None, end_date=None, reverse=False) -> Iterator[WrappedDate]:
-        """
-        Festival.iter_days(*Period.solar_year(2021))
-
-        :param start_date:
-        :param end_date:
-        :param reverse:
-        :return:
-        """
-        # Use WrappedDate
 
         if start_date is None:
             start_date = LunarDate.min
@@ -285,7 +278,16 @@ class Festival:
                 if start_date <= day <= end_date:
                     yield WrappedDate(day, name=self.name)
 
-    def list_days(self, start_date=None, end_date=None, reverse=False, count=-1) -> List[WrappedDate]:
+    def list_days(self, start_date=None, end_date=None, reverse: bool = False, count: int = -1) -> List[WrappedDate]:
+        """Return the day list for this festival in day range [start_date, end_date].(Include start/end date)
+
+        Example:
+            Festival.list_days(start_date=date(2022, 1, 1))
+
+            Festival.list_days(start_date=LunarDate.today(),count=10)
+
+            Festival.list_days(*Period.solar_year(2021))
+        """
         days_list = []
         ncount = 0
         for day in self.iter_days(start_date=start_date, end_date=end_date, reverse=reverse):
@@ -295,12 +297,21 @@ class Festival:
             ncount += 1
         return days_list
 
+    def list_days_in_future(self, end_date=None, reverse: bool = False, count: int = -1) -> List[WrappedDate]:
+        """Return the day list for this festival in future days."""
+        return self.list_days(start_date=date.today(), end_date=end_date, reverse=reverse, count=count)
+
+    def list_days_in_past(self, start_date=None, reverse: bool = False, count: int = -1) -> List[WrappedDate]:
+        """Return the day list for this festival in past days."""
+        return self.list_days(start_date=start_date, end_date=date.today(), reverse=reverse, count=count)
+
     def get_one_day(self, start_date=None, end_date=None) -> Optional[WrappedDate]:
         days = self.list_days(start_date, end_date, count=1)
         if days:
             return days[0]
 
     def countdown(self, date_obj: MixedDate = None) -> Tuple[int, Optional[WrappedDate]]:
+        """Return the offset-date tuple of the first day for this festival in future days."""
         if date_obj is None:
             date_obj = date.today()
         days = list(self.list_days(start_date=date_obj))
@@ -715,16 +726,15 @@ def decode(raw: Union[str, bytes]) -> Union[WrappedDate, Festival]:
 
 
 class FestivalLibrary(collections.UserList):
+    """A festival collection."""
 
     def get_code_set(self) -> Set[str]:
-        """获取当前所有节日的code集合
+        """Get codes for all festivals.
         """
         return set([f.encode() for f in self.data])
 
     def extend_unique(self, other):
-        """添加新的节日对象，如果code已经存在则不在加入
-        :param other:
-        :return:
+        """Add a new festival if code does not exist.
         """
         f_codes = set({f.encode() for f in self.data})
         if isinstance(other, collections.UserList):
@@ -745,12 +755,14 @@ class FestivalLibrary(collections.UserList):
         return self
 
     def get_festival(self, name: str) -> Optional[Festival]:
+        """Get a Festival object by the name."""
         for festival in self:
             if festival.name == name:
                 return festival
         return None
 
     def get_festival_names(self, date_obj: MixedDate) -> list:
+        """Get name list for a date object."""
         names = []
         for festival in self:
             if festival.is_(date_obj):
@@ -768,18 +780,16 @@ class FestivalLibrary(collections.UserList):
         for offset in sorted(ndays2festivals.keys()):
             yield offset, ndays2festivals[offset]
 
-    def iter_month_daytuples(self, year: int, month: int, firstweekday: int = 0):
+    def iter_month_daytuples(self, year: int, month: int, firstweekday: int = 0, return_pos: bool = False):
         """迭代返回公历月份（含前后完整日期）中每个日期信息
-        :param year: 公历年
-        :param month: 公历月
-        :param firstweekday: 星期首日
-        :return:
         """
+        row = 0
         cal = calendar.Calendar(firstweekday=firstweekday)
         for days in cal.monthdayscalendar(year, month):
             for col, day in enumerate(days):
                 if day == 0:
-                    yield day, '', None
+                    text = ''
+                    wd = None
                 else:
                     ld = LunarDate.from_solar_date(year, month, day)
                     text = ''
@@ -790,7 +800,12 @@ class FestivalLibrary(collections.UserList):
                         text = ld.term
                     elif not text:
                         text = ld.cn_day_calendar
-                    yield day, text, WrappedDate(ld)
+                    wd = WrappedDate(ld)
+                if return_pos:
+                    yield day, text, wd, row, col
+                else:
+                    yield day, text, wd
+            row += 1
 
     def monthdaycalendar(self, year: int, month: int, firstweekday: int = 0):
         """返回二维列表，每一行表示一个星期。逻辑同iter_month_daytuples。
@@ -825,10 +840,12 @@ class FestivalLibrary(collections.UserList):
         return fl
 
     def load_term_festivals(self):
+        """Add 24-term festivals."""
         return self.extend_unique(['400{:02d}0'.format(i) for i in range(24)])
 
     @classmethod
     def load_builtin(cls, identifier: str = 'zh-Hans') -> 'FestivalLibrary':
+        """Load builtin library in borax project."""
         file_dict = {
             'zh-Hans': 'FestivalData.csv'
         }

@@ -242,6 +242,14 @@ class FestivalListDaysTestCase(unittest.TestCase):
         days = list(sf.list_days(start_date=ld, end_date=date(2024, 1, 1)))
         self.assertEqual(4, len(days))
 
+    def test_future_and_past(self):
+        new_year_festival = SolarFestival(month=1, day=1)
+        new_year_day = list(new_year_festival.list_days_in_future(count=1))[0]
+        today = date.today()
+        self.assertTrue(0 <= new_year_day.solar.year - today.year <= 1)
+        this_new_year = list(new_year_festival.list_days_in_past(count=1, reverse=True))[0]
+        self.assertTrue(0 <= today.year - this_new_year.solar.year <= 1)
+
 
 class CountdownTestCase(unittest.TestCase):
     def test_countdown(self):

@@ -32,7 +32,8 @@ class ThreeNineUtils:
         term_lday = LunarDate.from_solar(term_day)
         term_stem_index = TextUtils.STEMS.find(term_lday.gz_day[0])
         day_stem_index = TextUtils.STEMS.find(day_stem)
-        day_offset = (day_stem_index - term_stem_index) + 10 * bool(6 - term_stem_index) + 10 * (after_index - 1)
+        index_offset = day_stem_index - term_stem_index
+        day_offset = index_offset + 10 * bool(index_offset) + 10 * (after_index - 1)
         return term_day + timedelta(days=day_offset)
 
     @staticmethod

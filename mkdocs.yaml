@@ -1,0 +1,41 @@
+site_name: Borax
+theme:
+  icon:
+    logo: material/calendar
+  name: material
+  palette:
+    primary: pink
+  features:
+    - navigation.tabs
+    - navigation.sections
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/kinegratii/borax
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/borax
+copyright: Copyright &copy; 2018 - 2022 Samuel.Yan
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+nav:
+  - 首页: README.md
+  - 中国农历:
+    - 农历: guides/lunardate.md
+    - 节日: guides/festivals2.md
+    - 日期节日序列化: guides/festivals2-serialize.md
+    - 节日综合示例: guides/festivals2-usage.md
+    - 生日: guides/birthday.md
+    - 工具类: guides/calendars-utils.md
+  - 数据结构:
+    - 数据连接(Join): guides/join.md
+    - 列选择器(fetch): guides/fetch.md
+    - 树形结构: guides/tree.md
+    - cjson: guides/cjson.md
+  - 数字:
+    - 中文数字: guides/numbers.md
+    - 百分数: guides/percentage.md
+  - 项目日志:
+    - 更新日志: changelog.md
+    - 发布日志:
+      - v3.5.0: release-note/v350.md
