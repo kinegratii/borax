@@ -75,6 +75,8 @@
 >>>from borax.calendars.lunardate import LunarDate
 >>>LunarDate(2018, 7, 1)
 LunarDate(2018, 7, 1, 0)
+>>>LunarDate(2020, 4, 1， 1)
+LunarDate(2020, 4, 1, 1)
 ```
 
 **▶ 公历日期**
@@ -84,6 +86,8 @@ LunarDate(2018, 7, 1, 0)
 ```
 >>>ld = LunarDate.from_solar_date(2018, 8, 11)
 >>>ld
+LunarDate(2018, 7, 1, 0)
+>>>LunarDate.from_solar(date(2018, 8, 11))
 LunarDate(2018, 7, 1, 0)
 ```
 
@@ -146,7 +150,7 @@ LunarDate(2100, 12, 29, 0)
 - (2) 当 term为None时，将格式化为 '-'。
 - (3) '%Y'、'%M'、'%D' 三个中文名称不包含“年”、“月”、“日”后缀汉字
 - (4) 和'%M' 相比，将“冬”、“腊” 显示为“十一”、“十二”，其余不变
-- (5) '%F' 将“初一”改为相应的中文月份，如“七月”、“闰六”、“冬月”、“闰冬”。通常用于日历打印，如“廿八  廿九 三十 七月 初二 初三”。
+- (5) '%F' 将“初一”改为相应的中文月份，如“七月”、“闰六月”、“十一月月”、“闰十一月”。通常用于日历打印，如“廿八  廿九 三十 七月 初二 初三”。
 - (6) 从v3.5.1开始，修改部分日期表述，允许出现三个汉字表述，如 “冬月” -> “十一月”，“闰六” -> “闰六月”等。
 
 下表是从年月日的角度显示各个描述符之间的关系，以便更快的找到所需要的描述符：
@@ -257,7 +261,7 @@ LunarDate(2018, 6, 1, 0)
 >>>ld = LunarDate(2018, 5, 3)
 >>>ld.replace(year=2019)
 LunarDate(2019, 5, 3, 0)
->>>ld.replace(leap=True)
+>>>ld.replace(leap=1)
 borax.calendars.lunardate.InvalidLunarDateError: [year=2018,month=5,leap=1]: Invalid month.
 ```
 

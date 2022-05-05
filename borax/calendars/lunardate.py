@@ -220,6 +220,8 @@ TERMS_CN = [
     "小寒", "大寒", "立春", "雨水", "惊蛰", "春分", "清明", "谷雨", "立夏", "小满", "芒种", "夏至",
     "小暑", "大暑", "立秋", "处暑", "白露", "秋分", "寒露", "霜降", "立冬", "小雪", "大雪", "冬至"
 ]
+TERM_PINYIN = ['xh', 'dh', 'lc', 'ys', 'jz', 'cf', 'qm', 'gy', 'lx', 'xm', 'mz', 'xz', 'xs', 'ds', 'lq', 'cs', 'bl',
+               'qf', 'hl', 'sj', 'ld', 'xx', 'dx', 'dz']
 
 # solar year 1900~2100
 TERM_INFO = [
@@ -279,6 +281,13 @@ TERM_INFO = [
 
 class TermUtils:
     @staticmethod
+    def name2index(name: str):
+        try:
+            return TERMS_CN.index(name)
+        except ValueError:
+            return TERM_PINYIN.index(name)
+
+    @staticmethod
     def parse_term_days(year):
         if year == 2101:
             return [5, 20]
@@ -311,7 +320,7 @@ class TermUtils:
     @staticmethod
     def get_index_for_name(name: str):
         name = name.rstrip("节")
-        return TERMS_CN.index(name)
+        return TermUtils.name2index(name)
 
     @staticmethod
     def get_name_for_index(index: int):
@@ -326,7 +335,7 @@ class TermUtils:
         :return: 一个date对象
         """
         if term_name:
-            term_index = TERMS_CN.index(term_name)
+            term_index = TermUtils.name2index(term_name)
         if not ((1900 <= year <= 2100) or (year == 2101 and term_index in (0, 1))):
             raise ValueError('Invalid year-index: {},{}'.format(year, term_index))
         if term_index % 2 == 0:

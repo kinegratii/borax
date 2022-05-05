@@ -1,5 +1,10 @@
 # 更新日志
 
+## v3.5.6
+
+- `borax.calendars.festivals2`
+    - 节气名称支持拼音首字母形式
+
 ## v3.5.5 (20220504)
 
 - `borax.calendars.festivals2`
