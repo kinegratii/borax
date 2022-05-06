@@ -297,9 +297,9 @@ with open('data.pickle', 'rb') as f:
 
 ```
 
-## LCalendars工具接口
+## 工具函数
 
-`LCalendars` 提供了一系列的工具方法。`LCalendars` 类中的函数参数 year 和 month 均为农历年份、月份。
+`LCalendars` 提供了一系列的工具方法。
 
 ### 闰月月份
 
@@ -367,11 +367,16 @@ ValueError: Invalid month for the year 2017
 - **TermUtils.nth_term_day(year: int, term_index: Optional[int] = None, term_name: Optional[str] = None) -> datetime.date**
 - **LCalendars.create_solar_date(year: int, term_index: Optional[int] = None, term_name: Optional[str] = None) -> datetime.date**
 
-> Updated in v3.5.2: 新增TermUtils.nth_term_day，原函数LCalendars.create_solar_date将在v3.6.0移除。
+> Updated in v3.5.6: TermUtils.nth_term_day函数term_name参数支持拼音首字母
+
+> Updated in v3.5.2: 新增TermUtils.nth_term_day
+
+> Deprecated in v3.5.2: 原函数LCalendars.create_solar_date将在v3.6.0移除
 
 根据节气名称或者序号获取对应的公历日期对象(`dateitime.date`)。`term_index` 和 `term_name` 只需传入一个参数，
 
-`term_index` 取值为 0-23 。其中 小寒的序号为0，立春的序号为2，...冬至的序号为23。
+- `term_index` 取值为 0-23 。其中 小寒的序号为0，立春的序号为2，...冬至的序号为23。
+- `term_name` 可以传入节气的两字中文或者拼音首字母，如 "清明" 或 "qm"。
 
 如果传入的参数无法创建对应的日期，将抛出 `ValueError` 异常。
 

@@ -211,3 +211,14 @@ class LCalendarTestCase(unittest.TestCase):
         self.assertEqual(-1, LCalendars.delta(sd, date(2018, 12, 2)))
         self.assertEqual(-1, LCalendars.delta(LunarDate.from_solar(sd), date(2018, 12, 2)))
         self.assertEqual(4, LCalendars.delta(LunarDate(2018, 1, 6), LunarDate(2018, 1, 2)))
+
+
+class GZTestCase(unittest.TestCase):
+    def test_gz_str(self):
+        for offset in range(60):
+            text = TextUtils.offset2gz(offset)
+            ex_offset = TextUtils.gz2offset(text)
+            self.assertEqual(ex_offset, offset)
+
+        with self.assertRaises(ValueError):
+            TextUtils.gz2offset('甲丑')  # No gz string

@@ -382,6 +382,24 @@ class TextUtils:
     def get_gz_cn(offset: int) -> str:
         """Get n-th(0-based) GanZhi
         """
+        warnings.warn('This method is deprecated.Use TextUtils.offset2gz instead.', DeprecationWarning)
+        return TextUtils.STEMS[offset % 10] + TextUtils.BRANCHES[offset % 12]
+
+    @staticmethod
+    def gz2offset(gz: str) -> int:
+        """Get the index of given string in gz_list. ['甲子', '乙丑',..., '癸亥']"""
+        try:
+            x = TextUtils.STEMS.index(gz[0])
+            y = TextUtils.BRANCHES.index(gz[1])
+            if x % 2 != y % 2:
+                raise ValueError
+            return (6 * x - 5 * y) % 60
+        except (TypeError, ValueError):
+            raise ValueError(f'Invalid gz string: {gz}')
+
+    @staticmethod
+    def offset2gz(offset: int) -> str:
+        """Get nth element of gz_list. ['甲子', '乙丑',..., '癸亥']"""
         return TextUtils.STEMS[offset % 10] + TextUtils.BRANCHES[offset % 12]
 
 
@@ -445,12 +463,12 @@ class LunarDate(EncoderMixin):
         sy, sm, sd = solar_date.year, solar_date.month, solar_date.day
         s_offset = (datetime.date(sy, sm, sd) - MIN_SOLAR_DATE).days
         gz_year = TextUtils.STEMS[(self.year - 4) % 10] + TextUtils.BRANCHES[(self.year - 4) % 12]
-        gz_day = TextUtils.get_gz_cn((s_offset + 40) % 60)
+        gz_day = TextUtils.offset2gz((s_offset + 40) % 60)
         term_name, next_gz_month = TermUtils.get_term_info(sy, sm, sd)
         if next_gz_month:
-            gz_month = TextUtils.get_gz_cn((sy - 1900) * 12 + sm + 12)
+            gz_month = TextUtils.offset2gz((sy - 1900) * 12 + sm + 12)
         else:
-            gz_month = TextUtils.get_gz_cn((sy - 1900) * 12 + sm + 11)
+            gz_month = TextUtils.offset2gz((sy - 1900) * 12 + sm + 11)
         return gz_year, gz_month, gz_day, term_name
 
     @property

@@ -2,6 +2,8 @@
 
 ## v3.5.6
 
+- `borax.calendars.lunardate`
+    - 新增 `TextUtils.gz2offset` / `TextUtils.offset2gz` 干支转化方法
 - `borax.calendars.festivals2`
     - 节气名称支持拼音首字母形式
 
