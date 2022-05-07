@@ -2,6 +2,8 @@
 
 > 模块： `borax.calendars.festivals2`
 
+> Updated in 3.5.6: 星期型节日(WeekFestival)类支持倒数序号。如：“国际麻风节(1月最后一个星期天)”
+
 > Add in 3.5.0
 
 
@@ -104,18 +106,22 @@ Period 是一个工具类，提供了一系列方法，这些方法均返回一�
 
 ## 节日定义
 
-节日是对日期（公历和农历）的进一步抽象。
+节日是对日期（公历和农历）的进一步抽象，Borax支持下列几种形式的节日。
 
-| 节日                        | 表示法                                               | 规范化描述             |
-| --------------------------- | ---------------------------------------------------- | ---------------------- |
-| 元旦                        | SolarFestival(month=1, day=1)                        | 农历每年正月初一       |
-| 中秋节                      | LunarFestival(month=8, day=15)                       | 农历每年八月十五       |
-| 母亲节（每年5月第二个周日） | WeekFestival(month=5, index=2, week=calendar.SUNDAY) | 公历每年5月第2个星期日 |
-| 除夕                        | LunarFestival(month=12, day=-1)                      | 农历每年腊月最后一天   |
-|                             | LunarFestival(day=-1)                                | 农历每年最后一天       |
+| 节日                        | 表示法                                                | 规范化描述             |
+| --------------------------- | ----------------------------------------------------- | ---------------------- |
+| 元旦                        | SolarFestival(month=1, day=1)                         | 农历每年正月初一       |
+| 中秋节                      | LunarFestival(month=8, day=15)                        | 农历每年八月十五       |
+| 母亲节（每年5月第二个周日） | WeekFestival(month=5, index=2, week=calendar.SUNDAY)  | 公历每年5月第2个星期日 |
+| 除夕 <sup>1</sup>           | LunarFestival(month=12, day=-1)                       | 农历每年腊月最后一天   |
+|                             | LunarFestival(day=-1)                                 | 农历每年最后一天       |
 | 程序员节                    | SolarFestival(freq=FreqConst.YEARLY，day=256)         | 公历每年第256天        |
-| 清明节                      | TemFestival(name="清明")                             | 公历每年清明           |
-| 每月5日                     | SolarFestival(freq=FreqConst.MONTHLY， day=5)       | 公历每月5日            |
+| 清明节                      | TemFestival(name="清明")                              | 公历每年清明           |
+| 每月5日                     | SolarFestival(freq=FreqConst.MONTHLY， day=5)         | 公历每月5日            |
+| 国际麻风节 <sup>2</sup>     | WeekFestival(month=1, index=-1, week=calendar.SUNDAY) | 公历1月倒数第1个星期日 |
+
+1. 两种形式在有闰十二月的年份有所区别。
+2. 自v3.5.6引入。
 
 festivals模块使用4个类表示节日，各个类的初始化函数签名如下：
 
@@ -136,7 +142,7 @@ class LunarFestival(day, freq=FreqConst.YEARLY, year=0, month=0, leap=0)
 | month | 月份。取值为 0 ~ 12                                          | 0                |
 | leap  | 闰月标记。取值参见 `LeapConst`。                             | LeapConst.MIXED  |
 | day   | 日期序号。当month未设置时，表示一年的第几天；否则表示该月的第几天。允许取负值，表示一年/一个月的倒数 第几天。 | 必要参数         |
-| index | 序号。从1开始计数。                                          | 必要参数         |
+| index | 序号。支持正向计数和倒数计数。                               | 必要参数         |
 | week  | 星期表示。同`calendar.MONTHDAY` 等。                         | 必要参数         |
 
 ## Festival属性
@@ -490,6 +496,17 @@ FestivalLibrary.monthdaycalendar(year: int, month: int, firstweekday: int = 0)
 ```
 
 返回二维列表，每一行表示一个星期。逻辑同iter_month_daytuples。
+
+### to_csv
+
+> Add in v3.5.6
+
+```python
+FestivalLibrary.to_csv(path_or_buf)
+```
+
+保存到 csv 文件。
+
 
 
 ## 序列化和存储

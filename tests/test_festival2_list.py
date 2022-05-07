@@ -250,6 +250,10 @@ class FestivalListDaysTestCase(unittest.TestCase):
         this_new_year = list(new_year_festival.list_days_in_past(count=1, reverse=True))[0]
         self.assertTrue(0 <= today.year - this_new_year.solar.year <= 1)
 
+    def test_week_reverse(self):
+        fs = WeekFestival(month=1, index=-1, week=calendar.SUNDAY)
+        self.assertEqual(date(2022, 1, 30), fs.at(2022))
+
 
 class CountdownTestCase(unittest.TestCase):
     def test_countdown(self):

@@ -6,6 +6,7 @@
     - 新增 `TextUtils.gz2offset` / `TextUtils.offset2gz` 干支转化方法
 - `borax.calendars.festivals2`
     - 节气名称支持拼音首字母形式
+    - 星期型节日支持倒数序号 （[#43](https://github.com/kinegratii/borax/issues/43)）
 
 ## v3.5.5 (20220504)
 
