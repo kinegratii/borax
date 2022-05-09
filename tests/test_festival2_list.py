@@ -61,6 +61,15 @@ class WeekFestivalTestCase(unittest.TestCase):
         with self.assertRaises(FestivalError):
             month_day.at(year=2021, month=3)
 
+    def test_monthly(self):
+        # Add in v3.5.6
+        last_sunday = WeekFestival(month=0, index=-1, week=6)
+        self.assertEqual(date(2022, 4, 24), last_sunday.at(2022, 4))
+        self.assertEqual(12, len(last_sunday.list_days(*Period.solar_year(2022))))
+
+        week_festival2 = WeekFestival(month=0, index=5, week=6)
+        self.assertEqual(4, len(week_festival2.list_days(*Period.solar_year(2022))))
+
 
 class TermFestivalTestCase(unittest.TestCase):
     def test_basic_logic(self):

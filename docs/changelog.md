@@ -3,10 +3,11 @@
 ## v3.5.6
 
 - `borax.calendars.lunardate`
+    - 新增格式化修饰符 `%c`
     - 新增 `TextUtils.gz2offset` / `TextUtils.offset2gz` 干支转化方法
 - `borax.calendars.festivals2`
     - 节气名称支持拼音首字母形式
-    - 星期型节日支持倒数序号 （[#43](https://github.com/kinegratii/borax/issues/43)）
+    - 星期型节日支持倒数序号 和 每月频率（[#43](https://github.com/kinegratii/borax/issues/43)）
 
 ## v3.5.5 (20220504)
 
@@ -199,7 +200,7 @@
     - `StringSerialGenerator` 支持2/8/10/16进制格式
 - `borax.decorators.admin` 模块
     - 修复默认值的bug
-  
+
 ## v1.4.1 (20190602)
 
 - `borax.system` 模块
@@ -278,7 +279,7 @@
     - 新增 `select_as_dict` 方法，废弃 `data_dict` 方法
 - `loader` 模块
     - 新增 `load_class` 类加载器
-  
+
 ## v1.1.7 (20190102)
 
 - `calendar` 模块

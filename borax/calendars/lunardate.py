@@ -515,6 +515,10 @@ class LunarDate(EncoderMixin):
     def cn_str(self) -> str:
         return '{}年{}{}月{}'.format(self.cn_year, self.cn_leap, self.cn_month, self.cn_day)
 
+    @property
+    def cn_md(self) -> str:
+        return f'{self.cn_leap}{self.cn_month}月{self.cn_day}'
+
     def gz_str(self) -> str:
         return '{}年{}月{}日'.format(self.gz_year, self.gz_month, self.gz_day)
 
@@ -668,6 +672,7 @@ class Formatter:
         '%p': 'gz_month',
         '%q': 'gz_day',
         '%C': 'cn_str',
+        '%c': 'cn_md',
         '%G': 'gz_str',
         '%N': 'cn_month_num',
         '%W': 'cn_week',

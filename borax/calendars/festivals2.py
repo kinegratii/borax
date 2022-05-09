@@ -121,6 +121,15 @@ class WrappedDate:
         _year, _month, _day = state
         self.solar = date(_year, _month, _day)
 
+    def simple_str(self):
+        """Display as solar and lunar.
+
+        Example:
+            >>>WrappedDate(LunarDate(2022, 3, 4))
+            '2022-04-04(三月初四)'
+        """
+        return f'{self.solar}({self.lunar:%c})'
+
     def encode(self) -> str:
         if self._fl == 'l':
             festival = LunarFestival(month=self.lunar.month, day=self.lunar.day, leap=self.lunar.leap)
@@ -390,6 +399,9 @@ class Festival:
         return []
 
     def _resolve_monthly(self, year, month, leap=0) -> List[Union[date, LunarDate]]:
+        """A core method.
+        A day list in the year when month=0.
+        """
         return []
 
     def encode(self) -> str:
@@ -481,22 +493,39 @@ class SolarFestival(Festival):
 class WeekFestival(Festival):
     date_class = date
 
-    def __init__(self, *, month, index, week, name=None):
+    def __init__(self, *, month, index, week, name=None, freq=FreqConst.YEARLY):
         if index < 0:
             index = -index
             reverse = 1
         else:
             reverse = 0
-        super().__init__(name=name, freq=FreqConst.YEARLY, month=month, index=index, week=week, reverse=reverse)
+        if month > 0 and freq == FreqConst.MONTHLY:
+            raise ValueError('freq must be FreqConst.YEARLY when month is not 0.')
+        if month == 0:
+            freq = FreqConst.MONTHLY
+        super().__init__(name=name, freq=freq, month=month, index=index, week=week, reverse=reverse)
 
     def _get_description(self) -> str:
-        re_str = '倒数' if self._reverse == 1 else ''
-        return '公历{}月{}第{}个星期{}'.format(self._month, re_str, self._week_index, '一二三四五六日'[self._week_no])
+        index_str = '倒数' if self._reverse == 1 else ''
+        month_str = f'{self._month}月' if self._month > 0 else '每月'
+        return '公历{}{}第{}个星期{}'.format(month_str, index_str, self._week_index, '一二三四五六日'[self._week_no])
 
     def _resolve_yearly(self, year) -> List[Union[date, LunarDate]]:
         s_i = -self._week_index if self._reverse == 1 else self._week_index
         day = WeekFestival.week_day(year, self._month, s_i, self._week_no)
         return [date(year, self._month, day)]
+
+    def _resolve_monthly(self, year, month, leap=0) -> List[Union[date, LunarDate]]:
+        assert self._month == 0
+        s_i = -self._week_index if self._reverse == 1 else self._week_index
+        day_list = []
+        for month in range(1, 13):
+            try:
+                day_no = WeekFestival.week_day(year, month, s_i, self._week_no)
+                day_list.append(date(year, month, day_no))
+            except FestivalError:
+                pass
+        return day_list
 
     @staticmethod
     def week_day(year: int, month: int, index: int, week: int) -> int:
@@ -510,7 +539,7 @@ class WeekFestival(Festival):
         ll = len(ds)
         if -ll <= index < 0:
             return ds[index]
-        elif 0 < index < ll:
+        elif 0 < index <= ll:
             return ds[index - 1]
         else:
             raise FestivalError('InvalidIndex', f'Invalid index: {index}')
