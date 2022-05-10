@@ -581,6 +581,12 @@ class LunarDate(EncoderMixin):
         sd = datetime.date.today() + datetime.timedelta(days=1)
         return cls.from_solar_date(sd.year, sd.month, sd.day)
 
+    @classmethod
+    def strptime(cls, date_str: str, date_fmt: str) -> 'LunarDate':
+        """Parse a LunarDate object from a whole string."""
+        from .data_parser import strptime
+        return strptime(date_str, date_fmt)
+
     def __str__(self):
         return 'LunarDate(%d, %d, %d, %d)' % (self.year, self.month, self.day, self.leap)
 

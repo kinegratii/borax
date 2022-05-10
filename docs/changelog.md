@@ -3,6 +3,7 @@
 ## v3.5.6
 
 - `borax.calendars.lunardate`
+    - 新增文本解析函数 `LunarDate.strptime` （[#44](https://github.com/kinegratii/borax/issues/44)）
     - 新增格式化修饰符 `%c`
     - 新增 `TextUtils.gz2offset` / `TextUtils.offset2gz` 干支转化方法
 - `borax.calendars.festivals2`
