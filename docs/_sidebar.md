@@ -26,6 +26,7 @@
   - [序列号生成器(Pool)](guides/serial_pool)
   - [Tkinter界面](guides/ui)
 - **● 发布日志**
+  - [v3.5.6](release-note/v356)
   - [v3.5](release-note/v350)
 - **● 项目开发**
   - [版本日志](changelog)

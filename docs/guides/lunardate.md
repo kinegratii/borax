@@ -195,7 +195,7 @@ LunarDate(2100, 12, 29, 0)
 '二〇一八年六月廿六'
 >>>'0:%C'.format(today)
 '二〇一八年六月廿六'
->>>f'今天的干支表示法为：{today:%C}'
+>>>f'今天的干支表示法为：{today:%G}'
 '今天的干支表示法为：戊戌年庚申月辛未日'
 ```
 
@@ -207,13 +207,14 @@ LunarDate(2100, 12, 29, 0)
 LunarDate.strptime(cls, date_str: str, date_fmt: str) -> 'LunarDate'
 ```
 
-示例
+从文本字符串解析出农历日期对象，该方法为正则全匹配方式。如果无法解析，则抛出 `ValueError` 异常。示例
 
 ```python
 ld = LunarDate.strptime('二〇二〇年闰四月廿三', '%Y年%L%M月%D')
 print(ld) # 'LunarDate(2020, 4, 23, 1)'
 ```
 
+可用的修饰符包括：`y m l d Y M L D N C`。
 
 
 ## 公历转化
@@ -404,6 +405,36 @@ ValueError: Invalid month for the year 2017
 2019-04-05
 ```
 
+### 干支
+
+> Add in 3.5.6
+
+```python
+TextUtils.gz2offset(gz: str) -> int
+
+TextUtils.offset2gz(offset: int) -> str
+```
+
+实现干支序号(0-59)和干支文字之间的转化，对应关系如下：
+
+```text
+ 0 甲子
+ 1 乙丑
+ ...
+59 癸亥
+```
+
+示例
+ 
+ 
+```
+>>>TextUtils.offset2gz(0)
+"甲子"
+>>>TextUtils.gz2offset("癸亥")
+59
+>>>TextUtils.gz2offset("甲丑")
+ValueError("Invalid gz string:甲丑.")
+```
 
 ## 参考资料
 

@@ -38,4 +38,5 @@ nav:
   - 项目日志:
     - 更新日志: changelog.md
     - 发布日志:
+      - v3.5.6: release-note/v356.md
       - v3.5.0: release-note/v350.md

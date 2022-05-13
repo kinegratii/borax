@@ -2,6 +2,8 @@
 
 ## v3.5.6
 
+[发布日志](/release-note/v356)
+
 - `borax.calendars.lunardate`
     - 新增文本解析函数 `LunarDate.strptime` （[#44](https://github.com/kinegratii/borax/issues/44)）
     - 新增格式化修饰符 `%c`
