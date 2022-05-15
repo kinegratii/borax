@@ -4,8 +4,9 @@ import calendar
 import collections
 import csv
 import enum
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 from pathlib import Path
+import warnings
 from typing import List, Tuple, Optional, Union, Iterator, Set, Generator
 
 from borax.calendars.lunardate import LunarDate, LCalendars, TermUtils, TextUtils
@@ -47,8 +48,9 @@ class FestivalSchema(enum.IntEnum):
 
 
 class FestivalCatalog:
-    birthday = 'birthday'
+    event = 'event'
     foundation = 'foundation'
+    life = 'life'
     public = 'public'
     tradition = 'tradition'
     term = 'term'
@@ -130,6 +132,12 @@ class WrappedDate:
         """
         return f'{self.solar}({self.lunar:%c})'
 
+    @classmethod
+    def from_simple_str(cls, date_str: str) -> 'WrappedDate':
+        end_index = date_str.index('(')
+        solar_str = date_str[:end_index]
+        return cls(datetime.strptime(solar_str, '%Y-%m-%d').date())
+
     def encode(self) -> str:
         if self._fl == 'l':
             festival = LunarFestival(month=self.lunar.month, day=self.lunar.day, leap=self.lunar.leap)
@@ -146,6 +154,8 @@ class WrappedDate:
 
 
 class Period:
+    """A shortcut methods for some specified date Period."""
+
     @staticmethod
     def solar_year(year):
         return date(year, 1, 1), date(year, 12, 31)
@@ -836,7 +846,12 @@ class FestivalLibrary(collections.UserList):
 
     def iter_festival_countdown(
             self, countdown: Optional[int] = None, date_obj: MixedDate = None
-    ) -> Generator[Tuple[int, List], None, None]:
+    ) -> Generator[Tuple[int, List[WrappedDate]], None, None]:
+        """Return day delta and its day list."""
+
+        warnings.warn('This method is deprecated. Use FestivalLibrary.list_days_in_countdown instead.',
+                      DeprecationWarning)
+
         ndays2festivals = collections.defaultdict(list)
         for festival in self:
             ndays, gd = festival.countdown(date_obj)
@@ -844,6 +859,35 @@ class FestivalLibrary(collections.UserList):
                 ndays2festivals[ndays].append(gd)
         for offset in sorted(ndays2festivals.keys()):
             yield offset, ndays2festivals[offset]
+
+    def list_days_in_countdown(
+            self, countdown: Optional[int] = None, date_obj: MixedDate = None
+    ) -> List[Tuple[int, WrappedDate, Festival]]:
+        """List the days in countdown and their festivals.
+
+        Example:
+            [
+                (18, <WrappedDate:2022-06-01(二〇二二年五月初三)>, <SolarFestival 儿童节 公历每年6月1日>),
+                ...
+            ]
+        """
+        data_items = []
+        for festival in self:
+            ndays, gd = festival.countdown(date_obj)
+            if countdown is None or ndays <= countdown:
+                data_items.append((ndays, gd, festival))
+        data_items.sort(key=lambda item: item[0])
+        return data_items
+
+    def list_days(self, start_date=None, end_date=None):
+        """Return the day list matched festivals in this library."""
+        data_items = []
+        for festival in self:
+            day_list = festival.list_days(start_date, end_date)
+            for day in day_list:
+                data_items.append([day, festival])
+        data_items.sort(key=lambda item: item[0].solar)
+        return data_items
 
     def iter_month_daytuples(self, year: int, month: int, firstweekday: int = 0, return_pos: bool = False):
         """迭代返回公历月份（含前后完整日期）中每个日期信息
@@ -883,6 +927,7 @@ class FestivalLibrary(collections.UserList):
         return [days[i:i + 7] for i in range(0, len(days), 7)]
 
     def to_csv(self, path_or_buf):
+        """Save festival list data to a csv file."""
         if isinstance(path_or_buf, str):
             fileobj = open(path_or_buf, 'w', encoding='utf8', newline='')
         elif isinstance(path_or_buf, Path):
@@ -896,6 +941,7 @@ class FestivalLibrary(collections.UserList):
 
     @classmethod
     def load_file(cls, file_path: Union[str, Path], unique: bool = False) -> 'FestivalLibrary':
+        """Load festival list from a external file."""
         if isinstance(file_path, str):
             file_path = Path(file_path)
         fl = cls()
@@ -926,9 +972,13 @@ class FestivalLibrary(collections.UserList):
 
     @classmethod
     def load_builtin(cls, identifier: str = 'zh-Hans') -> 'FestivalLibrary':
-        """Load builtin library in borax project."""
+        """Load builtin library in borax project.
+
+        Available Identifiers: core, zh-Hans, ext1
+        """
         file_dict = {
             'zh-Hans': 'FestivalData.csv',
+            'core': 'FestivalData.csv',
             'ext1': 'dataset/festivals_ext1.csv'
         }
         file_path = Path(__file__).parent / file_dict.get(identifier)

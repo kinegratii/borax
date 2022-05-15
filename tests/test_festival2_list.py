@@ -171,6 +171,13 @@ class WrappedDateTestCase(unittest.TestCase):
         self.assertEqual(timedelta(days=2), wd - LunarDate(2021, 3, 18))
         self.assertEqual(WrappedDate(date(2021, 4, 30)), wd - timedelta(days=1))
 
+    def test_wd(self):
+        wd = WrappedDate(LunarDate(2022, 4, 1))
+        self.assertEqual('四月初一', wd.lunar.cn_md)
+        ss = wd.simple_str()
+        wd2 = WrappedDate.from_simple_str(ss)
+        self.assertEqual(wd2.simple_str(), ss)
+
 
 class FestivalListDaysTestCase(unittest.TestCase):
     def test_solar(self):

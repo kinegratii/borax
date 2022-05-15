@@ -119,21 +119,21 @@ print(WrappedDate(festival.at(year=2021))) # '2021-08-14(二〇二一年七月�
 from borax.calendars.festivals2 import FestivalLibrary
 
 library = FestivalLibrary.load_builtin()
-for nday, gd_list in library.iter_festival_countdown():
-    for gd in gd_list:
-        print('{:>3d} {} {}'.format(nday, gd.name, gd))
+for ndays, wd, festival in library.list_days_in_countdown(countdown=365):
+    print(f'{ndays:>3d} {wd.simple_str()} {festival.name}')
 ```
 
 输出结果
 
 ```
-  0 青年节 2021-05-04(二〇二一年三月廿三)
-  5 母亲节 2021-05-09(二〇二一年三月廿八)
-  8 护士节 2021-05-12(二〇二一年四月初一)
- 28 儿童节 2021-06-01(二〇二一年四月廿一)
-<...>
-336 清明 2022-04-05(二〇二二年三月初五) 
-362 劳动节 2022-05-01(二〇二二年四月初一)
+  0 2022-05-04(四月初四) 青年节
+  4 2022-05-08(四月初八) 母亲节
+  8 2022-05-12(四月十二) 护士节
+...
+332 2023-04-01(闰二月十一) 愚人节
+336 2023-04-05(闰二月十五) 清明
+362 2023-05-01(三月十二) 劳动节
+
 ```
 
 
@@ -180,6 +180,7 @@ print(FinanceNumbers.to_capital_str(decimal.Decimal(4.50))) # '肆元伍角零�
 | ---- | ---- |
 | github | [https://kinegratii.github.io/borax](https://kinegratii.github.io/borax) |
 | gitee | [https://kinegratii.gitee.io/borax](https://kinegratii.gitee.io/borax) |
+| read-the-docs | [https://borax.readthedocs.io/zh_CN/latest/](https://borax.readthedocs.io/zh_CN/latest/) |
 
 ## 开发特性和规范 (Development Features)
 

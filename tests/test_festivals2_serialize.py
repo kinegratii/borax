@@ -102,6 +102,16 @@ class FestivalLibraryTestCase(unittest.TestCase):
 
         self.assertIn('元旦', [g.name for g in gd_days])
 
+    def test_list_days(self):
+        fl = FestivalLibrary.load_builtin()
+        fes_list = []
+        for _, wd, festival in fl.list_days_in_countdown(countdown=365):
+            fes_list.append(festival.name)
+        self.assertIn('元旦', fes_list)
+
+        festival_names = [items[1].name for items in fl.list_days(date(2022, 1, 1), date(2022, 12, 31))]
+        self.assertIn('元旦', festival_names)
+
 
 class FestivalLibraryUniqueTestCase(unittest.TestCase):
     def test_unique(self):

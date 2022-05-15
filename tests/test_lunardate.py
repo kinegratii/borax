@@ -137,6 +137,16 @@ class LunarDateTestCase(unittest.TestCase):
         with self.assertRaises(ValueError):
             LCalendars.create_solar_date(2101, 2)
 
+    def test_day_start_from_term(self):
+        day = TermUtils.day_start_from_term(2022, '芒种', 1, '甲')
+        self.assertEqual(date(2022, 6, 10), day)
+        day2 = TermUtils.day_start_from_term(2022, '小暑', 1, '未')
+        self.assertEqual(date(2022, 7, 17), day2)
+        day3 = TermUtils.day_start_from_term(2022, '芒种', 0, '未')
+        self.assertEqual(date(2022, 6, 6), day3)
+        with self.assertRaises(ValueError):
+            TermUtils.day_start_from_term(2022, '冬至', 2, '某')
+
 
 class PrivateMethodsTestCase(unittest.TestCase):
     def test_year_info(self):

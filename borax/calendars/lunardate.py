@@ -2,13 +2,14 @@
 import datetime
 import re
 import warnings
-from typing import Optional, Iterator, Tuple
+from typing import Optional, Iterator, Tuple, TypeVar, Sequence, Union
 
 from .store import (
     EncoderMixin, f_year, f_month, f_day, f_leap
 )
 
 __all__ = ['LunarDate', 'LCalendars', 'InvalidLunarDateError', 'TermUtils', 'TextUtils']
+T = TypeVar('T')
 
 
 # Exception
@@ -107,17 +108,20 @@ class LCalendars:
 
     @staticmethod
     def leap_month(year: int) -> int:
+        """Get the leap month in a lunar year.Return 0 if there is not leap month."""
         _check_year_range(year)
         leap_month, _ = _parse_leap(YEAR_INFOS[year - MIN_LUNAR_YEAR])
         return leap_month
 
     @staticmethod
     def iter_year_month(year: int) -> Iterator[Tuple[int, int, int]]:
+        """Yield month info in a lunar year. (month, ndays, leap)"""
         _check_year_range(year)
         return _iter_year_month(YEAR_INFOS[year - MIN_LUNAR_YEAR])
 
     @staticmethod
     def ndays(year: int, month: Optional[int] = None, leap: int = 0) -> int:
+        """Return the total days of a lunar year or a lunar month."""
         _check_year_range(year)
         if month is None:
             return YEAR_DAYS[year - MIN_LUNAR_YEAR]
@@ -130,6 +134,7 @@ class LCalendars:
 
     @staticmethod
     def get_leap_years(month: int = 0) -> tuple:
+        """Get year list which has the leap month."""
         res = []
         for yoffset, yinfo in enumerate(YEAR_INFOS):
             leap_month = yinfo % 16
@@ -279,7 +284,23 @@ TERM_INFO = [
 ]
 
 
+def delta_in_cycle(data_list: Sequence[T], start_ele: T, nth: int, end_ele: T) -> int:
+    if nth == 0:
+        return 0
+    tl = len(data_list)
+    start_index = data_list.index(start_ele)
+    end_index = data_list.index(end_ele)
+    index_offset = end_index - start_index
+    if nth > 0:
+        start_at = index_offset + tl * bool(index_offset < 0)
+        return start_at + tl * (nth - 1)
+    else:
+        start_at = index_offset - tl * bool(index_offset > 0)
+        return start_at - tl * (-nth - 1)
+
+
 class TermUtils:
+    """API entry for term related logic."""
     @staticmethod
     def name2index(name: str):
         try:
@@ -345,6 +366,30 @@ class TermUtils:
         days = TermUtils.parse_term_days(year)
         day = days[term_index]
         return datetime.date(year, month, day)
+
+    @staticmethod
+    def day_start_from_term(year: int, term: Union[int, str], nth: int = 0, day_gz: str = ''):
+        """Return the day starts from a term.
+
+        day_start_from_term(2022, '芒种', 1, '甲') => The 1st '甲' day after term '芒种' in year 2022.
+        """
+        if isinstance(term, int):
+            term_day = TermUtils.nth_term_day(year, term_index=term)
+        else:
+            term_day = TermUtils.nth_term_day(year, term_name=term)
+        if nth == 0:
+            return term_day
+        term_lday = LunarDate.from_solar(term_day)
+        if day_gz in TextUtils.STEMS:
+            data_list = TextUtils.STEMS
+            start_ele = term_lday.gz_day[0]
+        elif day_gz in TextUtils.BRANCHES:
+            data_list = TextUtils.BRANCHES
+            start_ele = term_lday.gz_day[1]
+        else:
+            raise ValueError(f'Invalid stem or branch: {day_gz}')
+        day_delta = delta_in_cycle(data_list, start_ele=start_ele, nth=nth, end_ele=day_gz)
+        return term_day + datetime.timedelta(days=day_delta)
 
 
 # ------ Stems and Branches ------
