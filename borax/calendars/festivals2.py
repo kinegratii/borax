@@ -239,7 +239,7 @@ class Festival:
 
     @property
     def description(self) -> str:
-        return self._get_description()
+        return self._get_description().replace('倒数第1', '最后1')
 
     @property
     def catalog(self) -> str:

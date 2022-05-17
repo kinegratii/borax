@@ -292,11 +292,11 @@ class FestivalDescriptionTestCase(unittest.TestCase):
     def test_solar_festival(self):
         festival2description_tuples = [
             (SolarFestival(month=1, day=1), '公历每年1月1日'),
-            (SolarFestival(month=1, day=-1), '公历每年1月倒数第1天'),
+            (SolarFestival(month=1, day=-1), '公历每年1月最后1天'),
             (SolarFestival(day=1), '公历每年第1天'),
-            (SolarFestival(day=-1), '公历每年倒数第1天'),
+            (SolarFestival(day=-1), '公历每年最后1天'),
             (SolarFestival(freq=FreqConst.MONTHLY, day=1), '公历每月1日'),
-            (SolarFestival(freq=FreqConst.MONTHLY, day=-1), '公历每月倒数第1天')
+            (SolarFestival(freq=FreqConst.MONTHLY, day=-1), '公历每月最后1天')
         ]
         for f, d in festival2description_tuples:
             with self.subTest(f=f, d=d):
@@ -305,11 +305,11 @@ class FestivalDescriptionTestCase(unittest.TestCase):
     def test_lunar_festival(self):
         festival2description_tuples = [
             (LunarFestival(month=1, day=1), '农历每年正月初一'),
-            (LunarFestival(month=1, day=-1), '农历每年正月倒数第1天'),
+            (LunarFestival(month=1, day=-1), '农历每年正月最后1天'),
             (LunarFestival(day=1), '农历每年第1天'),
-            (LunarFestival(day=-1), '农历每年倒数第1天'),
+            (LunarFestival(day=-1), '农历每年最后1天'),
             (LunarFestival(freq=FreqConst.MONTHLY, day=1), '农历每月初一'),
-            (LunarFestival(freq=FreqConst.MONTHLY, day=-1), '农历每月倒数第1天')
+            (LunarFestival(freq=FreqConst.MONTHLY, day=-1), '农历每月最后1天')
         ]
         for f, d in festival2description_tuples:
             with self.subTest(f=f, d=d):

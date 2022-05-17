@@ -115,8 +115,7 @@ Period 是一个工具类，提供了一系列方法，这些方法均返回一�
 | 元旦                          | SolarFestival(month=1, day=1)                         | 农历每年正月初一          |
 | 中秋节                        | LunarFestival(month=8, day=15)                        | 农历每年八月十五          |
 | 母亲节（每年5月第二个周日）   | WeekFestival(month=5, index=2, week=calendar.SUNDAY)  | 公历每年5月第2个星期日    |
-| 除夕 <sup>1</sup>             | LunarFestival(month=12, day=-1)                       | 农历每年腊月最后一天      |
-|                               | LunarFestival(day=-1)                                 | 农历每年最后一天          |
+| 除夕 <sup>1</sup>             | LunarFestival(day=-1)                                 | 农历每年最后一天          |
 | 程序员节                      | SolarFestival(freq=FreqConst.YEARLY，day=256)         | 公历每年第256天           |
 | 清明节                        | TemFestival(name="清明")                              | 公历每年清明              |
 |                               | TermFestival(name='qm')                               | 公历每年清明 <sup>2</sup> |
@@ -124,7 +123,7 @@ Period 是一个工具类，提供了一系列方法，这些方法均返回一�
 | 国际麻风节 <sup>3</sup>       | WeekFestival(month=1, index=-1, week=calendar.SUNDAY) | 公历1月倒数第1个星期日    |
 | 每月最后一个周日 <sup>4</sup> | WeekFestival(month=0, index=-1, week=calendar.SUNDAY) | 公历每月倒数第1个星期日   |
 
-1. 两种形式在有闰十二月的年份有所区别。
+1. 自v3.5.6开始，除夕修改为“每年的最后一天”，而不是“十二月的最后一天”。
 1. 可取值节气名称拼音首字母（两个字母）。自v3.5.6引入。
 2. 自v3.5.6引入。
 2. 自v3.5.6引入。用户无需额外传入freq参数。

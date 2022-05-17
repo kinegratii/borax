@@ -92,6 +92,20 @@ print(festival.countdown()) # (273, <GeneralDate:2022-02-01(二〇二二年正�
 print([str(wd) for wd in festival.list_days(start_date=date.today(), count=5)])
 ```
 
+### 可支持的节日类型
+
+| 节日                          | 表示法                                                | 规范化描述                |
+| ----------------------------- | ----------------------------------------------------- | ------------------------- |
+| 元旦                          | SolarFestival(month=1, day=1)                         | 农历每年正月初一          |
+| 中秋节                        | LunarFestival(month=8, day=15)                        | 农历每年八月十五          |
+| 母亲节（每年5月第二个周日）   | WeekFestival(month=5, index=2, week=calendar.SUNDAY)  | 公历每年5月第2个星期日    |
+| 除夕             | LunarFestival(day=-1)                                 | 农历每年最后一天          |
+| 程序员节                      | SolarFestival(freq=FreqConst.YEARLY，day=256)         | 公历每年第256天           |
+| 清明节                        | TemFestival(name="清明")                              | 公历每年清明              |
+| 每月5日                       | SolarFestival(freq=FreqConst.MONTHLY， day=5)         | 公历每月5日               |
+| 国际麻风节       | WeekFestival(month=1, index=-1, week=calendar.SUNDAY) | 公历1月倒数第1个星期日    |
+| 每月最后一个周日 | WeekFestival(month=0, index=-1, week=calendar.SUNDAY) | 公历每月倒数第1个星期日   |
+
 ### Borax.FestivalLibrary：内置节日库
 
 基本使用示例
