@@ -1,8 +1,4 @@
-# festivals2综合示例
-
-> 模块： `borax.calendars.festivals2`
-
-> Add in 3.5.0
+# 文章：综合使用示例
 
 ## 常规日期
 
@@ -20,7 +16,7 @@ print(new_year.is_(date.today())) # False
 农历“除夕”
 
 ```python
-new_year_eve = LunarFestival(month=12, day=-1)  # 每年农历十二月最后一天
+new_year_eve = LunarFestival(day=-1)  # 每年农历最后一天
 next_eve = new_year_eve.at(year=2021)
 print(repr(next_eve)) # LunarDate(2021, 12, 29, 0)
 ```
@@ -28,7 +24,7 @@ print(repr(next_eve)) # LunarDate(2021, 12, 29, 0)
 冬至节日
 
 ```python
-tf = TermFestival(name='冬至')
+tf = TermFestival('冬至')
 dz = tf.at(year=2021)
 print(repr(dz)) # datetime.date(2021, 12, 21)
 ```
@@ -41,7 +37,7 @@ print(repr(dz)) # datetime.date(2021, 12, 21)
 
 ```python
 new_year_eve = LunarFestival(month=12, day=-1)
-for ld in new_year_eve.list_days(start_date=LunarDate.today(), count=10):
+for ld in new_year_eve.list_days_in_future(count=10):
     print(ld)
 ```
 

@@ -53,7 +53,9 @@ class FestivalDecodeTestCase(unittest.TestCase):
             decode_festival('654321')
 
     def test_all(self):
-        all_codes = ['001010', '009100', '105050', '205026', '400230', '00002A', '00112A', '00003C', '201116']
+        all_codes = [
+            '001010', '009100', '105050', '205026', '400230', '00002A', '00112A', '00003C', '201116',
+            '411102', '421102', '43110B', '44110B']
         for raw in all_codes:
             with self.subTest(raw=raw):
                 f = decode_festival(raw)

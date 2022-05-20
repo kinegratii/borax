@@ -110,23 +110,25 @@ Period 是一个工具类，提供了一系列方法，这些方法均返回一�
 
 节日是对日期（公历和农历）的进一步抽象，Borax支持下列几种形式的节日。
 
-| 节日                          | 表示法                                                | 规范化描述                |
-| ----------------------------- | ----------------------------------------------------- | ------------------------- |
-| 元旦                          | SolarFestival(month=1, day=1)                         | 农历每年正月初一          |
-| 中秋节                        | LunarFestival(month=8, day=15)                        | 农历每年八月十五          |
-| 母亲节（每年5月第二个周日）   | WeekFestival(month=5, index=2, week=calendar.SUNDAY)  | 公历每年5月第2个星期日    |
-| 除夕                          | LunarFestival(day=-1)                                 | 农历每年最后一天          |
-| 程序员节                      | SolarFestival(freq=FreqConst.YEARLY，day=256)         | 公历每年第256天           |
-| 清明节                        | TemFestival(name="清明")                              | 公历每年清明              |
-|                               | TermFestival(name='qm')                               | 公历每年清明 <sup>1</sup> |
-|                               | TermFestival('清明')                                  | 公历每年清明 <sup>2</sup> |
-| 每月5日                       | SolarFestival(freq=FreqConst.MONTHLY， day=5)         | 公历每月5日               |
-| 国际麻风节 <sup>3</sup>       | WeekFestival(month=1, index=-1, week=calendar.SUNDAY) | 公历1月倒数第1个星期日    |
-| 每月最后一个周日 <sup>4</sup> | WeekFestival(month=0, index=-1, week=calendar.SUNDAY) | 公历每月倒数第1个星期日   |
+| 节日                          | 表示法                                                     | 规范化描述                |
+| ----------------------------- | ---------------------------------------------------------- | ------------------------- |
+| 元旦                          | SolarFestival(month=1, day=1)                              | 农历每年正月初一          |
+| 中秋节                        | LunarFestival(month=8, day=15)                             | 农历每年八月十五          |
+| 母亲节（每年5月第二个周日）   | WeekFestival(month=5, index=2, week=calendar.SUNDAY)       | 公历每年5月第2个星期日    |
+| 除夕                          | LunarFestival(day=-1)                                      | 农历每年最后一天          |
+| 程序员节                      | SolarFestival(freq=FreqConst.YEARLY，day=256)              | 公历每年第256天           |
+| 清明节                        | TemFestival(name="清明")                                   | 公历每年清明              |
+|                               | TermFestival(name='qm')                                    | 公历每年清明 <sup>1</sup> |
+|                               | TermFestival('清明')                                       | 公历每年清明 <sup>2</sup> |
+| 入梅 <sup>3</sup>             | TermFestival(term='芒种', nth=1, day_gz='丙', name='入梅') | 公历每年芒种之后第1个丙日 |
+| 每月5日                       | SolarFestival(freq=FreqConst.MONTHLY， day=5)              | 公历每月5日               |
+| 国际麻风节 <sup>4</sup>       | WeekFestival(month=1, index=-1, week=calendar.SUNDAY)      | 公历1月倒数第1个星期日    |
+| 每月最后一个周日 <sup>5</sup> | WeekFestival(month=0, index=-1, week=calendar.SUNDAY)      | 公历每月倒数第1个星期日   |
 
 
 
 1. (v3.5.6新增)。参见 `TermFestival`。
+2. (v3.5.6新增)。参见 `TermFestival`。
 2. (v3.5.6新增)。参见 `TermFestival`。
 2. (v3.5.6新增)。参见 `WeekFestival` 。
 2. (v3.5.6新增)。参见 `WeekFestival` 。
@@ -200,7 +202,7 @@ class WeekFestival(*, month: int, index: int, week: int, name: str = None)
 v3.5.6以上。
 
 ```python
-class TermFestival(term: Union[int, str] = None, **kwargs)
+class TermFestival(term: Union[int, str] = None, nth: int = 0, day_gz: str = None, **kwargs
 ```
 
 v3.5.1-v3.5.5
@@ -223,11 +225,13 @@ TermFestival(index=0)
 
 参数定义
 
-| 参数  | 描述                                       | 备注      |
-| ----- | ------------------------------------------ | --------- |
-| term  | 节气，取值节气序号、中文名称、拼音首字母。 | 3.5.6新增 |
-| index | 节气序号。                                 |           |
-| name  | 节气名称。                                 |           |
+| 参数   | 描述                                       | 备注      |
+| ------ | ------------------------------------------ | --------- |
+| term   | 节气，取值节气序号、中文名称、拼音首字母。 | 3.5.6新增 |
+| index  | 节气序号。                                 |           |
+| name   | 节气名称。                                 |           |
+| nth    | 计数，可取值负数，表示倒数计数。           |           |
+| day_gz | 天干或地支标签。                           |           |
 
 ## Festival属性
 
@@ -250,7 +254,7 @@ import calendar
 from borax.calendars.festivals2 import SolarFestival, LunarFestival, WeekFestival
 
 print(SolarFestival(month=1, day=1).description) # '公历每年1月1日'
-print(SolarFestival(month=1, day=-1).description) # '公历每年1月倒数第1天'
+print(SolarFestival(month=1, day=-1).description) # '公历每年1月最后1天'
 print(SolarFestival(day=1).description) # '公历每年第1天'
 print(LunarFestival(month=1, day=1).description) # '农历每年正月初一'
 print(WeekFestival(month=5, index=2, week=calendar.SUNDAY, name='母亲节').description) # '公历5月第2个星期日'

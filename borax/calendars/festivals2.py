@@ -570,7 +570,7 @@ class WeekFestival(Festival):
 class TermFestival(Festival):
     date_class = date
 
-    def __init__(self, term: Union[int, str] = None, **kwargs):
+    def __init__(self, term: Union[int, str] = None, nth: int = 0, day_gz: str = None, **kwargs):
         index = kwargs.get('index')
         name = kwargs.get('name')
         values = [term, index, name]
@@ -584,13 +584,28 @@ class TermFestival(Festival):
         t_index = TermUtils.name2index(val)
         t_name = TERMS_CN[t_index]
         super().__init__(freq=FreqConst.YEARLY, name=t_name, index=t_index)
+        self._nth = nth
+        self._day_gz = day_gz
+        self._term_name = t_name
+        if self._nth != 0 and not (self._day_gz in TextUtils.BRANCHES or self._day_gz in TextUtils.STEMS):
+            raise ValueError('Invalid day_gz: {}'.format(day_gz))
+        if self._nth == 0:
+            self.set_name(t_name)
+        else:
+            self.set_name(name)
 
     def _get_description(self) -> str:
-        return '公历每年{}节气'.format(self.name)
+        if self._nth == 0:
+            return '公历每年{}节气'.format(self._term_name)
+        else:
+            if self._nth > 0:
+                return '公历每年{}起第{}个{}日'.format(self._term_name, self._nth, self._day_gz)
+            else:
+                return '公历每年{}前第{}个{}日'.format(self._term_name, -self._nth, self._day_gz)
 
     def _resolve_yearly(self, year) -> List[Union[date, LunarDate]]:
         try:
-            date_obj = TermUtils.nth_term_day(year, term_index=self._term_index, term_name=self._name)
+            date_obj = TermUtils.day_start_from_term(year, term=self._term_index, nth=self._nth, day_gz=self._day_gz)
             return [date_obj]
         except ValueError as e:
             if str(e).startswith('Invalid'):
@@ -599,7 +614,20 @@ class TermFestival(Festival):
                 raise ValueError from e
 
     def encode(self) -> str:
-        return '400{:02d}0'.format(self._term_index)
+        if self._nth == 0:
+            return '400{:02d}0'.format(self._term_index)
+
+        gi, zi = TextUtils.STEMS.find(self._day_gz), TextUtils.BRANCHES.find(self._day_gz)
+        # g=1,2; z=3,4
+        if gi != -1:
+            x = 1 + int(self._nth < 0)
+            y = abs(self._nth)
+            z = gi
+        else:
+            x = 3 + int(self._nth < 0)
+            y = abs(self._nth)
+            z = zi
+        return '4{}{}{:02d}{:X}'.format(x, y, self._term_index, z)
 
 
 class LunarFestival(Festival):
@@ -791,7 +819,23 @@ def decode_festival(raw: Union[str, bytes]) -> Festival:
             attrs['index'] = day
         attrs['week'] = flag
     elif schema == FestivalSchema.TERM:
-        attrs['index'] = day
+        attrs['term'] = day
+        nth_val = month
+        day_gz_v = flag
+        if nth_val != 0:
+            nth = nth_val % 10
+            nth_t = nth_val // 10
+            if nth_t % 2 == 0:
+                nth = -nth
+            attrs['nth'] = nth
+            if nth_t in (1, 2):
+                day_gz = TextUtils.STEMS[day_gz_v]
+            elif nth_t in (3, 4):
+                day_gz = TextUtils.BRANCHES[day_gz_v]
+            else:
+                raise ValueError('Invalid day_gz')
+            attrs['day_gz'] = day_gz
+
     obj = cls(**attrs)
     if cyear:
         obj.cyear = cyear

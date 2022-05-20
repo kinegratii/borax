@@ -79,6 +79,12 @@ class TermFestivalTestCase(unittest.TestCase):
         with self.assertRaises(FestivalError):
             tt.at(year=2021, month=3)
 
+    def test_new_api2(self):
+        tf = TermFestival(term='芒种', nth=1, day_gz='丙')
+        self.assertEqual('公历每年芒种起第1个丙日', tf.description)
+        tf2 = TermFestival(term='芒种', nth=-1, day_gz='丙')
+        self.assertEqual('公历每年芒种前第1个丙日', tf2.description)
+
     def test_new_api_356(self):
         ts = [
             TermFestival(0),

@@ -9,11 +9,12 @@
     - 新增格式化修饰符 `%c`
     - 新增 `TextUtils.gz2offset` / `TextUtils.offset2gz` 干支转化方法
 - `borax.calendars.festivals2`
-    - 节气名称支持拼音首字母形式
     - 星期型节日支持倒数序号 和 每月频率（[#43](https://github.com/kinegratii/borax/issues/43)）
     - "除夕"节日修改为“农历年最后一天”而不是“十二月最后一天”
     - 修正三伏九九天计算错误的BUG（[#45](https://github.com/kinegratii/borax/issues/45)）
+    - `TermFestival` 支持干支日推算的节日 （[#46](https://github.com/kinegratii/borax/issues/46)）
     - `TermFestival` 新增 term 参数
+    - 节气名称支持拼音首字母形式
 
 ## v3.5.5 (20220504)
 
