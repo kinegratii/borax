@@ -79,6 +79,20 @@ class TermFestivalTestCase(unittest.TestCase):
         with self.assertRaises(FestivalError):
             tt.at(year=2021, month=3)
 
+    def test_new_api_356(self):
+        ts = [
+            TermFestival(0),
+            TermFestival('小寒'),
+            TermFestival('xh'),
+            TermFestival('XH'),
+            TermFestival(name='小寒'),
+            TermFestival(name='xh'),
+            TermFestival(index=0),
+        ]
+        self.assertEqual(1, len(set((f.encode() for f in ts))))
+        with self.assertRaises(ValueError):
+            TermFestival()
+
 
 class LunarFestivalTestCase(unittest.TestCase):
     def test_yearly(self):

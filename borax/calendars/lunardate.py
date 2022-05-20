@@ -301,8 +301,18 @@ def delta_in_cycle(data_list: Sequence[T], start_ele: T, nth: int, end_ele: T) -
 
 class TermUtils:
     """API entry for term related logic."""
+
     @staticmethod
-    def name2index(name: str):
+    def name2index(name: Union[int, str]) -> int:
+        """Return term index from term name.
+
+        TermUtils.name2index(1) => 1 \n
+        TermUtils.name2index('小寒') => 1 \n
+        TernUtils.name2index('xh') => 1
+        """
+        if isinstance(name, int):
+            return name
+        name = name.lower()
         try:
             return TERMS_CN.index(name)
         except ValueError:
@@ -348,6 +358,19 @@ class TermUtils:
         return TERMS_CN[index]
 
     @staticmethod
+    def _nth_term_day(year: int, term_index: int) -> datetime.date:
+        valid = (1900 <= year <= 2100 and 0 <= term_index < 24) or (year == 2101 and term_index in (0, 1))
+        if not valid:
+            raise ValueError('Invalid year-index: {},{}'.format(year, term_index))
+        if term_index % 2 == 0:
+            month = term_index // 2 + 1
+        else:
+            month = (term_index + 1) // 2
+        days = TermUtils.parse_term_days(year)
+        day = days[term_index]
+        return datetime.date(year, month, day)
+
+    @staticmethod
     def nth_term_day(year: int, term_index: Optional[int] = None, term_name: Optional[str] = None) -> datetime.date:
         """返回公历year年第term_index个或者term_name对应的节气所在公历日期
         :param year: 公历年份
@@ -357,15 +380,7 @@ class TermUtils:
         """
         if term_name:
             term_index = TermUtils.name2index(term_name)
-        if not ((1900 <= year <= 2100) or (year == 2101 and term_index in (0, 1))):
-            raise ValueError('Invalid year-index: {},{}'.format(year, term_index))
-        if term_index % 2 == 0:
-            month = term_index // 2 + 1
-        else:
-            month = (term_index + 1) // 2
-        days = TermUtils.parse_term_days(year)
-        day = days[term_index]
-        return datetime.date(year, month, day)
+        return TermUtils._nth_term_day(year, term_index)
 
     @staticmethod
     def day_start_from_term(year: int, term: Union[int, str], nth: int = 0, day_gz: str = ''):
@@ -444,7 +459,7 @@ class TextUtils:
 
     @staticmethod
     def offset2gz(offset: int) -> str:
-        """Get nth element of gz_list. ['甲子', '乙丑',..., '癸亥']"""
+        """Get nth(0-based) element of gz_list. ['甲子', '乙丑',..., '癸亥']"""
         return TextUtils.STEMS[offset % 10] + TextUtils.BRANCHES[offset % 12]
 
 

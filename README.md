@@ -39,6 +39,14 @@ Borax 要求 Python3.6+ ,可以通过 *pip* 安装 ：
 $ pip install borax
 ```
 
+## 版本 (Version)
+
+Borax的版本符合语义规范，格式为 `<主版本号>.<副版本号>.<修正版本号>`， 推荐使用下面方式定义Borax的依赖版本号。
+
+```text
+borax~=3.5
+```
+
 ## 使用示例 (Usage)
 
 ### Borax.LunarDate: 中国农历日期

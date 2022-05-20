@@ -115,40 +115,119 @@ Period 是一个工具类，提供了一系列方法，这些方法均返回一�
 | 元旦                          | SolarFestival(month=1, day=1)                         | 农历每年正月初一          |
 | 中秋节                        | LunarFestival(month=8, day=15)                        | 农历每年八月十五          |
 | 母亲节（每年5月第二个周日）   | WeekFestival(month=5, index=2, week=calendar.SUNDAY)  | 公历每年5月第2个星期日    |
-| 除夕 <sup>1</sup>             | LunarFestival(day=-1)                                 | 农历每年最后一天          |
+| 除夕                          | LunarFestival(day=-1)                                 | 农历每年最后一天          |
 | 程序员节                      | SolarFestival(freq=FreqConst.YEARLY，day=256)         | 公历每年第256天           |
 | 清明节                        | TemFestival(name="清明")                              | 公历每年清明              |
-|                               | TermFestival(name='qm')                               | 公历每年清明 <sup>2</sup> |
+|                               | TermFestival(name='qm')                               | 公历每年清明 <sup>1</sup> |
+|                               | TermFestival('清明')                                  | 公历每年清明 <sup>2</sup> |
 | 每月5日                       | SolarFestival(freq=FreqConst.MONTHLY， day=5)         | 公历每月5日               |
 | 国际麻风节 <sup>3</sup>       | WeekFestival(month=1, index=-1, week=calendar.SUNDAY) | 公历1月倒数第1个星期日    |
 | 每月最后一个周日 <sup>4</sup> | WeekFestival(month=0, index=-1, week=calendar.SUNDAY) | 公历每月倒数第1个星期日   |
 
-1. 自v3.5.6开始，除夕修改为“每年的最后一天”，而不是“十二月的最后一天”。
-1. 可取值节气名称拼音首字母（两个字母）。自v3.5.6引入。
-2. 自v3.5.6引入。
-2. 自v3.5.6引入。用户无需额外传入freq参数。
 
-festivals模块使用4个类表示节日，各个类的初始化函数签名如下：
 
+1. (v3.5.6新增)。参见 `TermFestival`。
+2. (v3.5.6新增)。参见 `TermFestival`。
+2. (v3.5.6新增)。参见 `WeekFestival` 。
+2. (v3.5.6新增)。参见 `WeekFestival` 。
+
+festivals模块使用4个类表示节日。
+
+### SolarFestival
 
 ```python
-class SolarFestival(day, freq=FreqConst.YEARLY, year=0, month=0)
-class WeekFestival(month, index, week)
-class TermFestival(name)
-class LunarFestival(day, freq=FreqConst.YEARLY, year=0, month=0, leap=0)
+class SolarFestival(*, day: int, freq: int = FreqConst.YEARLY, month: int = 0, name: str = None)
 ```
 
-各参数定义如下：
+参数定义
 
-| 参数  | 描述                                                         | 默认值           |
-| ----- | ------------------------------------------------------------ | ---------------- |
-| freq  | 节日频率，“每年”或“每月”，默认“每年”。取值参见 `FreqConst`。 | FreqConst.YEARLY |
-| year  | 年份。默认不设置                                             |                  |
-| month | 月份。取值为 0 ~ 12                                          | 0                |
-| leap  | 闰月标记。取值参见 `LeapConst`。                             | LeapConst.MIXED  |
-| day   | 日期序号。当month未设置时，表示一年的第几天；否则表示该月的第几天。允许取负值，表示一年/一个月的倒数 第几天。 | 必要参数         |
-| index | 序号。支持正向计数和倒数计数。                               | 必要参数         |
-| week  | 星期表示。同`calendar.MONTHDAY` 等。                         | 必要参数         |
+| 参数  | 描述                                                         | 取值           |
+| ----- | ------------------------------------------------------------ | -------------- |
+| freq  | 节日频率，“每年”或“每月”，默认“每年”。                       | 0:每年；1:每月 |
+| month | 月份。默认为0，表示每年。                                    | 0,1-12         |
+| day   | 日期序号。当month取值0时，表示一年的第几天；否则表示该月的第几天。允许取负值，表示一年/一个月的倒数 第几天。 |                |
+
+6种形式定义
+
+| 定义 | 描述 |
+| ---- | ---- |
+| SolarFestival(month=1, day=1) | '公历每年1月1日' |
+| SolarFestival(month=1, day=-1) | '公历每年1月最后1天' |
+| SolarFestival(day=1) | '公历每年第1天' |
+| SolarFestival(day=-1) | '公历每年最后1天' |
+| SolarFestival(freq=FreqConst.MONTHLY, day=1) | '公历每月1日' |
+| SolarFestival(freq=FreqConst.MONTHLY, day=-1) | '公历每月最后1天' |
+
+### LunarFestival
+
+```python
+class LunarFestival(*, day:int, freq:int=FreqConst.YEARLY, month:int=0, leap:int=_IGNORE_LEAP_MONTH, name: str=None)
+```
+
+参数定义
+
+| 参数  | 描述                                                         | 默认值          |
+| ----- | ------------------------------------------------------------ | --------------- |
+| freq  | 节日频率，“每年”或“每月”，默认“每年”。                       | 0:每年；1:每月  |
+| month | 月份。                                                       | 0,1-12          |
+| leap  | 闰月标记。取值参见 `LeapConst`。                             | LeapConst.MIXED |
+| day   | 日期序号。当month未设置时，表示一年的第几天；否则表示该月的第几天。允许取负值，表示一年/一个月的倒数 第几天。 |                 |
+
+### WeekFestival
+
+> Updated in 3.5.6: index参数支持负数，表示倒数计数。
+
+> Updated in 3.5.6: month支持取值0，表示每月性节日。
+
+```python
+class WeekFestival(*, month: int, index: int, week: int, name: str = None)
+```
+
+参数定义
+
+| 参数  | 描述                                 | 默认值    |
+| ----- | ------------------------------------ | --------- |
+| month | 月份。取值为 0 ~ 12                  | 0,1-12    |
+| index | 序号。支持正向计数和倒数计数。       | 1-9,-1--9 |
+| week  | 星期表示。同`calendar.MONTHDAY` 等。 | 0-6       |
+
+### TermFestival
+
+> Updated in 3.5.6: 新增term参数，原有的index参数被废弃。
+>
+> Updated in 3.5.6: term和name参数支持拼音首字符形式。
+
+v3.5.6以上。
+
+```python
+class TermFestival(term: Union[int, str] = None, **kwargs)
+```
+
+v3.5.1-v3.5.5
+
+```python
+class TermFestival(*，index:int=None, name:str=None)
+```
+
+支持以下几种方式定义，（以小寒为例子）。
+
+```python
+TermFestival(0) # 仅3.5.6+
+TermFestival('小寒') # 仅3.5.6+
+TermFestival('xh') # 仅3.5.6+
+TermFestival('XH') # 仅3.5.6+
+
+TermFestival(name='小寒')
+TermFestival(index=0)
+```
+
+参数定义
+
+| 参数  | 描述                                       | 备注      |
+| ----- | ------------------------------------------ | --------- |
+| term  | 节气，取值节气序号、中文名称、拼音首字母。 | 3.5.6新增 |
+| index | 节气序号。                                 |           |
+| name  | 节气名称。                                 |           |
 
 ## Festival属性
 
@@ -158,7 +237,7 @@ class LunarFestival(day, freq=FreqConst.YEARLY, year=0, month=0, leap=0)
 
 ### description
 
-> Add in v3.5.1
+> Add in 3.5.1
 
 类型：str，节日的标准化描述，如“公历每年1月1日”、“公历每年八月十五”、“公历每年6月第2个星期六”等。
 
