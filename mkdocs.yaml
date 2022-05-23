@@ -26,7 +26,6 @@ nav:
     - 日期节日序列化: guides/festivals2-serialize.md
     - 生日: guides/birthday.md
     - 工具类: guides/calendars-utils.md
-    - 文章：综合使用示例: guides/festivals2-usage.md
   - 数据结构:
     - 数据连接(Join): guides/join.md
     - 列选择器(fetch): guides/fetch.md
@@ -40,6 +39,8 @@ nav:
     - 单例模式: guides/singleton.md
     - 序列号池: guides/serial_pool.md
     - json: guides/cjson.md
+  - 文章:
+    - 农历与节日: guides/festivals2-usage.md
   - 项目日志:
     - 更新日志: changelog.md
     - 发布日志:

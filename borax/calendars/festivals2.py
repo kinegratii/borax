@@ -765,16 +765,14 @@ def encode(obj: Union[WrappedDate, Festival]) -> str:
 def decode_festival(raw: Union[str, bytes]) -> Festival:
     if isinstance(raw, bytes):
         raw = raw.decode()
-    if not raw[:-1].isdigit() or raw[-1] not in '0123456789ABCDEF':
+    if not (len(raw) in (6, 10) and raw[:-1].isdigit() and raw[-1] in '0123456789ABCDEF'):
         raise ValueError('Invalid raw:{}'.format(raw))
     cyear = 0
     if len(raw) == 10:
         schema, month, day, flag = int(raw[0]), int(raw[5:7]), int(raw[7:9]), int(raw[9], 16)
         cyear = int(raw[1:5])
-    elif len(raw) == 6:
-        schema, month, day, flag = int(raw[0]), int(raw[1:3]), int(raw[3:5]), int(raw[5], 16)
     else:
-        raise ValueError('Invalid length.')
+        schema, month, day, flag = int(raw[0]), int(raw[1:3]), int(raw[3:5]), int(raw[5], 16)
     if schema == FestivalSchema.LUNAR_OLD:
         if flag == 1:
             schema, flag = FestivalSchema.LUNAR, 2
@@ -1021,7 +1019,7 @@ class FestivalLibrary(collections.UserList):
                     festival.set_name(row['name'])
                     festival.catalog = row.get('catalog')
                     fl.append(festival)
-                except ValueError as e:
+                except ValueError:
                     continue
         fl.sort(key=lambda x: x.encode())
         return fl

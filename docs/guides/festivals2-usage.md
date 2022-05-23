@@ -1,6 +1,119 @@
-# 文章：综合使用示例
+# 农历与节日
 
-## 常规日期
+## 引言
+
+Borax是一个比较完备的python农历库，覆盖了农历、闰月、干支、节日等内容。相关代码模块如下：
+
+- borax.calendars.lunardate 农历日期
+- borax.calendars.festivals2 支持常见类型的节日
+- borax.calendars.utils 包含工具函数
+
+## 农历日期
+
+### 创建新日期
+
+一个农历日期由年份、月份、日期、闰月标记等组成，依次传入这四个属性就可以创建一个农历日期对象。
+
+```python
+from borax.calendars.lunardate import LunarDate
+
+ld = LunarDate(2022,4,1,0)
+print(ld) # LunarDate(2022, 4, 1, 0)
+```
+
+正如 `datetime.date` 一样， `LunarDate.strftime` 提供了日期字符串格式化功能。
+
+```python
+print(ld.strftime('%Y年%L%M月%D')) # '二〇二二年四月初一'
+print(ld.strftime('%G')) # '壬寅年甲辰月甲寅日'
+```
+
+### 特性和运算
+
+`LunarDate` 被设计为不可变对象，可以作为字典的key使用，也可以比较大小。
+
+`LunarDate` 也可以和 `date` 、`timedelta` 进行日期大小计算。
+
+```python
+ld2 = ld + timedelta(days=10)
+print(ld) # LunarDate(2022, 4, 11, 0)
+```
+
+## 农历闰月
+
+### 闰月计算
+
+为了协调回归年与农历年的矛盾，防止农历年月与回归年即四季脱节，每2~3年置1闰。Borax提供了一系列有关闰月的计算方法。
+
+```python
+from borax.calanders.lunardate import LCalendars
+
+print(LCalendars.leap_month(2020) == 3) # False；2020年3月不是闰月
+print(LCalendars.leap_month(2020) == 4) # True；2020年4月是闰月
+print(LCalendars.leap_month(2023) == 2) # True；2023年2月也是闰月
+```
+
+获取有某个闰月的年份。
+
+```python
+# 在1900~2100两百年中只有2033年是闰十一月
+print(LCalendars.get_leap_years(11)) # (2033, )
+
+# 在1900~2100两百年没有闰正月的情况
+print(LCalendars.get_leap_years(1)) # ( )
+```
+
+某个农历月份的天数，（29天为小月，30天为大月）。
+
+```python
+# 农历2022年四月小，五月大
+print(LCalendars.ndays(2022, 4)) # 29
+print(LCalendars.ndays(2022, 5)) # 30
+```
+
+计算农历年的天数。
+
+```python
+# 2023年有闰二月。
+print(LCalendars.ndays(2022)) # 355
+print(LCalendars.ndays(2023)) # 384
+```
+
+### 打印闰月表
+
+打印某个时间段内的闰月表：
+
+```python
+from borax.calendars.lunardate import TextUtils, LCalendars
+for year in range(2021, 2050):
+    leap_month = LCalendars.leap_month(year)
+    if leap_month == 0:
+        continue
+    if LCalendars.ndays(year, leap_month, 1) == 30:
+        label = '大'
+    else:
+        label = '小'
+    print('{}年闰{}月{}'.format(year, TextUtils.MONTHS_CN[leap_month], label))
+```
+
+结果输出
+
+```text
+2023年闰二月小
+2025年闰六月小
+2028年闰五月小
+2031年闰三月小
+2033年闰冬月小
+2036年闰六月大
+2039年闰五月小
+2042年闰二月小
+2044年闰七月小
+2047年闰五月大
+```
+
+## 节日
+
+### 创建节日
 
 公历节日
 
@@ -13,7 +126,7 @@ print(repr(next_new_year)) # datetime.date(2022, 1, 1)
 print(new_year.is_(date.today())) # False
 ```
 
-农历“除夕”
+农历除夕
 
 ```python
 new_year_eve = LunarFestival(day=-1)  # 每年农历最后一天
@@ -29,19 +142,17 @@ dz = tf.at(year=2021)
 print(repr(dz)) # datetime.date(2021, 12, 21)
 ```
 
-
-
-## 日期列举
+### 日期列举
 
 获取接下去10年的除夕日期
 
 ```python
-new_year_eve = LunarFestival(month=12, day=-1)
+new_year_eve = LunarFestival(day=-1)
 for ld in new_year_eve.list_days_in_future(count=10):
     print(ld)
 ```
 
-结果
+输出结果：
 
 ```
 2022-01-31(二〇二一年腊月廿九)
@@ -56,27 +167,61 @@ for ld in new_year_eve.list_days_in_future(count=10):
 2031-01-22(二〇三〇年腊月廿九)
 ```
 
-## sqlite3整合
+## 综合示例
 
-`festival2` 内置了对sqlite3数据库自定义字段的支持。在示例中可以在同一个字段存储公历生日日期和农历生日日期。
+### 两头春
+
+两头春：一个农历年中，有两个立春。无春年，一个农历年没有立春。
 
 ```python
-import sqlite3
+from borax.calendars.festivals2 import Period, TermFestival, WrappedDate
+licun = TermFestival('立春')
 
-from borax.calendars.lunardate import LunarDate
-from borax.calendars.festivals2 import encode, decode, WrappedDate
-
-sqlite3.register_adapter(WrappedDate, encode)
-sqlite3.register_converter("WrappedDate", decode)
-
-con = sqlite3.connect(":memory:", detect_types=sqlite3.PARSE_DECLTYPES)
-cur = con.cursor()
-cur.execute('CREATE TABLE member (pid INT AUTO_INCREMENT PRIMARY KEY,birthday WrappedDate);')
-ld = LunarDate(2018, 5, 3)
-cur.execute("INSERT INTO member(birthday) VALUES (?)", (WrappedDate(ld),))
-cur.execute("SELECT pid, birthday FROM member;")
-my_birthday = cur.fetchone()[1]
-cur.close()
-con.close()
-print(my_birthday)
+for lunar_year in range(2000, 2030):
+    star_date, end_date = Period.lunar_year(lunar_year)
+    festival_days = licun.list_days(star_date, end_date)
+    line = '{} {}-{} {} | {}'.format(
+        lunar_year,
+        WrappedDate(star_date).simple_str(),
+        WrappedDate(end_date).simple_str(),
+        len(festival_days),
+        ' '.join([wd.simple_str() for wd in festival_days])
+    )
+    print(line)
 ```
+
+结果输出
+
+```text
+2000 2000-02-05(正月初一)-2001-01-23(腊月廿九) 0 |
+2001 2001-01-24(正月初一)-2002-02-11(腊月三十) 2 | 2001-02-04(正月十二) 2002-02-04(腊月廿三)
+2002 2002-02-12(正月初一)-2003-01-31(腊月廿九) 0 |
+2003 2003-02-01(正月初一)-2004-01-21(腊月三十) 1 | 2003-02-04(正月初四)
+2004 2004-01-22(正月初一)-2005-02-08(腊月三十) 2 | 2004-02-04(正月十四) 2005-02-04(腊月廿六)
+2005 2005-02-09(正月初一)-2006-01-28(腊月廿九) 0 |
+2006 2006-01-29(正月初一)-2007-02-17(腊月三十) 2 | 2006-02-04(正月初七) 2007-02-04(腊月十七)
+2007 2007-02-18(正月初一)-2008-02-06(腊月三十) 1 | 2008-02-04(腊月廿八)
+2008 2008-02-07(正月初一)-2009-01-25(腊月三十) 0 |
+2009 2009-01-26(正月初一)-2010-02-13(腊月三十) 2 | 2009-02-04(正月初十) 2010-02-04(腊月廿一)
+2010 2010-02-14(正月初一)-2011-02-02(腊月三十) 0 |
+2011 2011-02-03(正月初一)-2012-01-22(腊月廿九) 1 | 2011-02-04(正月初二)
+2012 2012-01-23(正月初一)-2013-02-09(腊月廿九) 2 | 2012-02-04(正月十三) 2013-02-04(腊月廿四)
+2013 2013-02-10(正月初一)-2014-01-30(腊月三十) 0 |
+2014 2014-01-31(正月初一)-2015-02-18(腊月三十) 2 | 2014-02-04(正月初五) 2015-02-04(腊月十六)
+2015 2015-02-19(正月初一)-2016-02-07(腊月廿九) 1 | 2016-02-04(腊月廿六)
+2016 2016-02-08(正月初一)-2017-01-27(腊月三十) 0 |
+2017 2017-01-28(正月初一)-2018-02-15(腊月三十) 2 | 2017-02-03(正月初七) 2018-02-04(腊月十九)
+2018 2018-02-16(正月初一)-2019-02-04(腊月三十) 1 | 2019-02-04(腊月三十)
+2019 2019-02-05(正月初一)-2020-01-24(腊月三十) 0 |
+2020 2020-01-25(正月初一)-2021-02-11(腊月三十) 2 | 2020-02-04(正月十一) 2021-02-03(腊月廿二)
+2021 2021-02-12(正月初一)-2022-01-31(腊月廿九) 0 |
+2022 2022-02-01(正月初一)-2023-01-21(腊月三十) 1 | 2022-02-04(正月初四)
+2023 2023-01-22(正月初一)-2024-02-09(腊月三十) 2 | 2023-02-04(正月十四) 2024-02-04(腊月廿五)
+2024 2024-02-10(正月初一)-2025-01-28(腊月廿九) 0 |
+2025 2025-01-29(正月初一)-2026-02-16(腊月廿九) 2 | 2025-02-03(正月初六) 2026-02-04(腊月十七)
+2026 2026-02-17(正月初一)-2027-02-05(腊月廿九) 1 | 2027-02-04(腊月廿八)
+2027 2027-02-06(正月初一)-2028-01-25(腊月廿九) 0 |
+2028 2028-01-26(正月初一)-2029-02-12(腊月廿九) 2 | 2028-02-04(正月初十) 2029-02-03(腊月二十)
+2029 2029-02-13(正月初一)-2030-02-02(腊月三十) 0 |
+```
+

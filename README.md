@@ -113,6 +113,7 @@ print([str(wd) for wd in festival.list_days(start_date=date.today(), count=5)])
 | 每月5日                       | SolarFestival(freq=FreqConst.MONTHLY， day=5)         | 公历每月5日               |
 | 国际麻风节       | WeekFestival(month=1, index=-1, week=calendar.SUNDAY) | 公历1月倒数第1个星期日    |
 | 每月最后一个周日 | WeekFestival(month=0, index=-1, week=calendar.SUNDAY) | 公历每月倒数第1个星期日   |
+| 初伏 | TemFestival('夏至', nth=3, day_gz='庚') | 公历每年夏至起第三个庚日   |
 
 ### Borax.FestivalLibrary：内置节日库
 
