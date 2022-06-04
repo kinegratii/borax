@@ -12,7 +12,7 @@
 - 1900-2100年农历月份信息
 - 干支纪年算法
 
-关于本模块的更多资料可参考文章 [《Borax-Lunar开发笔记》](https://kinegratii.github.io/2019/01/05/lunardate-module/)。
+关于本模块的更多资料可参考文章 [《Borax.Lunardate开发笔记》](/posts/lunardate-development)。
 
 ## 异常
 
@@ -425,8 +425,8 @@ TextUtils.offset2gz(offset: int) -> str
 ```
 
 示例
- 
- 
+
+
 ```
 >>>TextUtils.offset2gz(0)
 "甲子"

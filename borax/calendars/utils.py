@@ -27,8 +27,6 @@ class ThreeNineUtils:
     @staticmethod
     def get_39days(year: int) -> Dict[str, date]:
         """获取公历year年的三伏数九天对应的公历日期。
-        :param year: 公历年份
-        :return: 一个 label-date 字典
         """
         day13 = TermUtils.day_start_from_term(year, '夏至', 3, '庚')
         day23 = day13 + timedelta(days=10)
@@ -47,8 +45,6 @@ class ThreeNineUtils:
     @staticmethod
     def get_39label(date_obj: Union[date, LunarDate]) -> str:
         """返回三伏数九天对应的标签，如果不是，返回空字符串。
-        :param date_obj: 日期
-        :return: 三伏数九天标签，如“XX第X天”
         """
         if isinstance(date_obj, LunarDate):
             sd = date_obj.to_solar_date()

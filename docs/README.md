@@ -18,13 +18,17 @@ Borax 是一个Python3工具集合库。
 
 ## 话题(Topics)
 
-- **Borax.Calendar**:  [农历](guides/lunardate) | [节日(festivals2)](guides/festivals2)  | [日期节日序列化](guides/festivals2-serialize)  | [节日综合示例](guides/festivals2-usage) | [生日](guides/birthday) | [工具类](guides/calendars-utils)
+- **Borax.Calendar**:  [农历](guides/lunardate) | [节日(festivals2)](guides/festivals2)  | [日期节日序列化](guides/festivals2-serialize) | [生日](guides/birthday) | [工具类](guides/calendars-utils)
 - **Borax.Datasets**: [数据连接(Join)](guides/join) | [列选择器(fetch)](guides/fetch) 
 - **Borax.DataStructures**:  [树形结构](guides/tree) | [cjson](guides/cjson) 
 - **Borax.Numbers:**: [中文数字](guides/numbers) |  [百分数](guides/percentage)
 - **Borax.Pattern**: [单例模式](guides/singleton) | [选项Choices](guides/choices)
 - **其他**: [序列号生成器(Pool)](guides/serial_pool) | [Tkinter界面](guides/ui)
 - **已废弃**: [节日](guides/festival)
+
+## 文章(Posts)
+
+-  [农历与节日](guides/festivals2-usage) 
 
 ## 开发(Development)
 
@@ -37,9 +41,7 @@ Borax 是一个Python3工具集合库。
 
 ### 安装
 
-> 从 v3.5.1开始，安装包文件格式为 *borax-3.5.1-py3-none-any.whl*（移除py2标识）以区别于之前的 *borax-3.5.0-py2.py3-none-any.whl*。
-
-Borax 要求 Python3.6+ ,可以通过 *pip* 安装 ：
+Borax 要求 Python3.5+ ,可以通过 *pip* 安装 ：
 
 ```shell
 $ pip install borax

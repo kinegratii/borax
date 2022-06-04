@@ -5,7 +5,7 @@
 Borax是一个比较完备的python农历库，覆盖了农历、闰月、干支、节日等内容。相关代码模块如下：
 
 - borax.calendars.lunardate 农历日期
-- borax.calendars.festivals2 支持常见类型的节日
+- borax.calendars.festivals2 节日及其序列化
 - borax.calendars.utils 包含工具函数
 
 ## 农历日期
@@ -28,7 +28,7 @@ print(ld.strftime('%Y年%L%M月%D')) # '二〇二二年四月初一'
 print(ld.strftime('%G')) # '壬寅年甲辰月甲寅日'
 ```
 
-### 特性和运算
+### 日期推算
 
 `LunarDate` 被设计为不可变对象，可以作为字典的key使用，也可以比较大小。
 
@@ -39,11 +39,27 @@ ld2 = ld + timedelta(days=10)
 print(ld) # LunarDate(2022, 4, 11, 0)
 ```
 
+### 传统日期
+
+`TermUtils` 支持从特定的节气按照干支的顺序计算日期。如初伏、出梅。节气隶属于公历系统，相关函数返回值为 `datetime.date`。
+
+```python
+dz2022 = TermUtils.day_start_from_term(2022, '冬至') # 计算2022年的冬至是那一天
+print(dz2022) # 2022-12-22
+
+day13 = TermUtils.day_start_from_term(2022, '夏至', 3, '庚') # 初伏：夏至起第3个庚日
+print(day13) # 2022-07-16
+```
+
+
+
 ## 农历闰月
 
 ### 闰月计算
 
-为了协调回归年与农历年的矛盾，防止农历年月与回归年即四季脱节，每2~3年置1闰。Borax提供了一系列有关闰月的计算方法。
+为了协调回归年与农历年的矛盾，防止农历年月与回归年即四季脱节，每19年置7闰。Borax提供了一系列有关闰月的计算方法。
+
+判断某个月份是否是闰月。
 
 ```python
 from borax.calanders.lunardate import LCalendars
@@ -115,6 +131,8 @@ for year in range(2021, 2050):
 
 ### 创建节日
 
+`borax.calendars.festivals2` 模块包含了多种节日类（均继承自 `Festival`），这些类覆盖了大多数类型的公共和传统节日。
+
 公历节日
 
 ```python
@@ -134,12 +152,18 @@ next_eve = new_year_eve.at(year=2021)
 print(repr(next_eve)) # LunarDate(2021, 12, 29, 0)
 ```
 
-冬至节日
+国际麻风节
 
 ```python
-tf = TermFestival('冬至')
-dz = tf.at(year=2021)
-print(repr(dz)) # datetime.date(2021, 12, 21)
+import calendar
+from borax.calendars.festivals2 import WeekFestival
+
+leprosy_festival = WeekFestival(
+    month=1, index=-1, week=calendar.SUNDAY, name='国际麻风节'
+)
+print(leprosy_festival.description) # '公历1月最后1个星期日'
+for w in leprosy_festival.list_days_in_future(count=5):
+    print(w.simple_str())
 ```
 
 ### 日期列举

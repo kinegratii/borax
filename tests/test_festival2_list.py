@@ -66,9 +66,18 @@ class WeekFestivalTestCase(unittest.TestCase):
         last_sunday = WeekFestival(month=0, index=-1, week=6)
         self.assertEqual(date(2022, 4, 24), last_sunday.at(2022, 4))
         self.assertEqual(12, len(last_sunday.list_days(*Period.solar_year(2022))))
+        day1 = last_sunday.get_one_day(*Period.solar_year(2022))
+        self.assertEqual(date(2022, 1, 30), day1.solar)
 
         week_festival2 = WeekFestival(month=0, index=5, week=6)
         self.assertEqual(4, len(week_festival2.list_days(*Period.solar_year(2022))))
+
+    def test_no_day(self):
+        wt = WeekFestival(month=1, index=8, week=8)
+        cvs = wt.countdown()
+        self.assertEqual(-1, cvs[0])
+        # day_list = wt.list_days(*Period.solar_year(2022))
+        # self.assertEqual(0, len(day_list))
 
 
 class TermFestivalTestCase(unittest.TestCase):

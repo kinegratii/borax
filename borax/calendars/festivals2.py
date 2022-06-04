@@ -7,7 +7,7 @@ import enum
 from datetime import date, timedelta, datetime
 from pathlib import Path
 import warnings
-from typing import List, Tuple, Optional, Union, Iterator, Set, Generator
+from typing import List, Tuple, Optional, Union, Iterator, Set, Generator, Sequence
 
 from borax.calendars.lunardate import LunarDate, LCalendars, TermUtils, TextUtils, TERMS_CN
 
@@ -358,6 +358,7 @@ class Festival:
         days = self.list_days(start_date, end_date, count=1)
         if days:
             return days[0]
+        return None
 
     def countdown(self, date_obj: MixedDate = None) -> Tuple[int, Optional[WrappedDate]]:
         """Return the offset-date tuple of the first day for this festival in future days."""
@@ -424,6 +425,7 @@ class Festival:
         return []
 
     def encode(self) -> str:
+        """Encode as a string."""
         pass
 
 
@@ -763,6 +765,7 @@ def encode(obj: Union[WrappedDate, Festival]) -> str:
 
 
 def decode_festival(raw: Union[str, bytes]) -> Festival:
+    """Create a festival object from encoded string."""
     if isinstance(raw, bytes):
         raw = raw.decode()
     if not (len(raw) in (6, 10) and raw[:-1].isdigit() and raw[-1] in '0123456789ABCDEF'):
@@ -871,7 +874,7 @@ class FestivalLibrary(collections.UserList):
     def extend_unique(self, other):
         """Add a new festival if code does not exist.
         """
-        f_codes = set({f.encode() for f in self.data})
+        f_codes = {f.encode() for f in self.data}
         if isinstance(other, collections.UserList):
             new_data = other.data
         else:
@@ -978,10 +981,6 @@ class FestivalLibrary(collections.UserList):
 
     def monthdaycalendar(self, year: int, month: int, firstweekday: int = 0):
         """返回二维列表，每一行表示一个星期。逻辑同iter_month_daytuples。
-        :param year:
-        :param month:
-        :param firstweekday:
-        :return:
         """
         days = list(self.iter_month_daytuples(year, month, firstweekday))
         return [days[i:i + 7] for i in range(0, len(days), 7)]
@@ -1022,6 +1021,16 @@ class FestivalLibrary(collections.UserList):
                 except ValueError:
                     continue
         fl.sort(key=lambda x: x.encode())
+        return fl
+
+    def filter(self, catalogs: Sequence = None) -> 'FestivalLibrary':
+        """Return a new FestivalLibrary object filtered by query conditions."""
+        if isinstance(catalogs, str):
+            catalogs = catalogs,
+        fl = FestivalLibrary()
+        for festival in self:
+            if catalogs and festival.catalog in catalogs:
+                fl.append(festival)
         return fl
 
     def load_term_festivals(self):

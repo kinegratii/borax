@@ -8,7 +8,7 @@ from .store import (
     EncoderMixin, f_year, f_month, f_day, f_leap
 )
 
-__all__ = ['LunarDate', 'LCalendars', 'InvalidLunarDateError', 'TermUtils', 'TextUtils']
+__all__ = ['LunarDate', 'LCalendars', 'InvalidLunarDateError', 'TermUtils', 'TextUtils', 'TERMS_CN']
 T = TypeVar('T')
 
 

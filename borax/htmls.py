@@ -1,7 +1,7 @@
 # coding=utf8
 
 import html
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Union
 
 
 def _escape(s):
@@ -14,7 +14,7 @@ class HTMLString(str):
     """Implement __html__ protocol for str class.inspired by SafeData in django and Markup in jinja2.
     """
 
-    def __new__(cls, base=u'', encoding=None, errors='strict'):
+    def __new__(cls, base='', encoding=None, errors='strict'):
         if hasattr(base, '__html__'):
             base = base.__html__()
         if encoding is None:

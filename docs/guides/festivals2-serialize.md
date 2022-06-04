@@ -1,4 +1,4 @@
-# 日期节日序列化
+# 序列化
 
 > 模块： `borax.calendars.festivals2`
 
