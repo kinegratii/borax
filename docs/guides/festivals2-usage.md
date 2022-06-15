@@ -209,7 +209,7 @@ for lunar_year in range(2000, 2030):
         WrappedDate(star_date).simple_str(),
         WrappedDate(end_date).simple_str(),
         len(festival_days),
-        ' '.join([wd.simple_str() for wd in festival_days])
+        ' '.join([str(wd) for wd in festival_days])
     )
     print(line)
 ```

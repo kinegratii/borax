@@ -141,7 +141,7 @@ from borax.calendars.festivals2 import FestivalLibrary
 
 library = FestivalLibrary.load_builtin()
 for ndays, wd, festival in library.list_days_in_countdown(countdown=365):
-    print(f'{ndays:>3d} {wd.simple_str()} {festival.name}')
+    print(f'{ndays:>3d} {wd} {festival.name}')
 ```
 
 输出结果

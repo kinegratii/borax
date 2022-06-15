@@ -77,10 +77,10 @@ class WrappedDate:
         yield self.lunar
 
     def __str__(self):
-        return '{}({})'.format(self.solar, self.lunar.cn_str())
+        return self.simple_str()
 
     def __repr__(self):
-        return '<WrappedDate:{}>'.format(self.__str__())
+        return '<WrappedDate:{}>'.format(self.simple_str())
 
     def __add__(self, other):
         if isinstance(other, timedelta):
@@ -125,14 +125,17 @@ class WrappedDate:
         _year, _month, _day = state
         self.solar = date(_year, _month, _day)
 
+    def full_str(self):
+        return '{}({})'.format(self.solar, self.lunar.cn_str())
+
     def simple_str(self):
         """Display as solar and lunar.
 
         Example:
-            >>>WrappedDate(LunarDate(2022, 3, 4))
+            >>>WrappedDate(LunarDate(2022, 3, 4)).simple_str()
             '2022-04-04(三月初四)'
         """
-        return f'{self.solar}({self.lunar:%c})'
+        return '{}({})'.format(self.solar, self.lunar.strftime('%c'))
 
     @classmethod
     def from_simple_str(cls, date_str: str) -> 'WrappedDate':
@@ -430,6 +433,11 @@ class Festival:
 
 
 class SolarFestival(Festival):
+    """A festival with solar.
+
+    >>> SolarFestival(month=1, day=1, name='元旦')
+    >>> SolarFestival(freq=FreqConst.YEARLY, day=256, name='程序员节')
+    """
     date_class = date
 
     def __init__(self, *, day: int, freq: int = FreqConst.YEARLY, month: int = 0, name: str = None):
@@ -472,6 +480,7 @@ class SolarFestival(Festival):
                     return [date(year, month, _index)]
                 else:
                     _index -= ndays
+            return []
         else:
             if self._reverse == 0:
                 day = self._day
@@ -512,6 +521,11 @@ class SolarFestival(Festival):
 
 
 class WeekFestival(Festival):
+    """A festival with week info.
+
+    >>> WeekFestival(month=5, index=2, week=calendar.SUNDAY, name='母亲节')
+    >>> WeekFestival(month=1, index=-1, week=calendar.SUNDAY, name='国际麻风节')
+    """
     date_class = date
 
     def __init__(self, *, month: int, index: int, week: int, name: str = None):
@@ -570,6 +584,11 @@ class WeekFestival(Festival):
 
 
 class TermFestival(Festival):
+    """A festival with term.
+
+    >>> TermFestival(name="清明")
+    >>> TermFestival(term='芒种', nth=1, day_gz='丙', name='入梅')
+    """
     date_class = date
 
     def __init__(self, term: Union[int, str] = None, nth: int = 0, day_gz: str = None, **kwargs):
@@ -633,6 +652,11 @@ class TermFestival(Festival):
 
 
 class LunarFestival(Festival):
+    """A festival with lunar date.
+
+    >>> LunarFestival(day=-1, name='除夕')
+    >>> LunarFestival(month=8, day=15, name='中秋节')
+    """
     date_class = LunarDate
 
     def __init__(self, *, day: int, freq: int = FreqConst.YEARLY, month: int = 0, leap: int = _IGNORE_LEAP_MONTH,
@@ -930,7 +954,7 @@ class FestivalLibrary(collections.UserList):
 
         Example:
             [
-                (18, <WrappedDate:2022-06-01(二〇二二年五月初三)>, <SolarFestival 儿童节 公历每年6月1日>),
+                (18, <WrappedDate:2022-06-01(五月初三)>, <SolarFestival 儿童节 公历每年6月1日>),
                 ...
             ]
         """

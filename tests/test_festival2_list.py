@@ -61,6 +61,9 @@ class WeekFestivalTestCase(unittest.TestCase):
         with self.assertRaises(FestivalError):
             month_day.at(year=2021, month=3)
 
+        day2 = month_day.get_one_day(*Period.solar_month(2022, 4))
+        self.assertIsNone(day2)
+
     def test_monthly(self):
         # Add in v3.5.6
         last_sunday = WeekFestival(month=0, index=-1, week=6)
@@ -206,6 +209,7 @@ class WrappedDateTestCase(unittest.TestCase):
         ss = wd.simple_str()
         wd2 = WrappedDate.from_simple_str(ss)
         self.assertEqual(wd2.simple_str(), ss)
+        self.assertEqual('2022-05-01(二〇二二年四月初一)', wd2.full_str())
 
 
 class FestivalListDaysTestCase(unittest.TestCase):

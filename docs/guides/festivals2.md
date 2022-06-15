@@ -146,7 +146,7 @@ class SolarFestival(*, day: int, freq: int = FreqConst.YEARLY, month: int = 0, n
 | 参数  | 描述                                                         | 取值           |
 | ----- | ------------------------------------------------------------ | -------------- |
 | freq  | 节日频率，“每年”或“每月”，默认“每年”。                       | 0:每年；1:每月 |
-| month | 月份。默认为0，表示每年。                                    | 0,1-12         |
+| month | 月份。                                    | 0,1-12         |
 | day   | 日期序号。当month取值0时，表示一年的第几天；否则表示该月的第几天。允许取负值，表示一年/一个月的倒数 第几天。 |                |
 
 6种形式定义
@@ -177,9 +177,7 @@ class LunarFestival(*, day:int, freq:int=FreqConst.YEARLY, month:int=0, leap:int
 
 ### WeekFestival
 
-> Updated in 3.5.6: index参数支持负数，表示倒数计数。
-
-> Updated in 3.5.6: month支持取值0，表示每月性节日。
+> Updated in 3.5.6: index参数支持负数，表示倒数计数。month支持取值0，表示每月性节日。
 
 ```python
 class WeekFestival(*, month: int, index: int, week: int, name: str = None)
@@ -195,9 +193,7 @@ class WeekFestival(*, month: int, index: int, week: int, name: str = None)
 
 ### TermFestival
 
-> Updated in 3.5.6: 新增term参数，原有的index参数被废弃。
->
-> Updated in 3.5.6: term和name参数支持拼音首字符形式。
+> Updated in 3.5.6: 新增term参数，原有的index参数被废弃。term和name参数支持拼音首字符形式。
 
 v3.5.6以上。
 
@@ -472,7 +468,7 @@ from borax.calendars.festivals2 import FestivalLibrary
 
 library = FestivalLibrary.load_builtin()
 for ndays, wd, festival in library.list_days_in_countdown(countdown=365):
-    print(f'{ndays:>3d} {wd.simple_str()} {festival.name}')
+    print(f'{ndays:>3d} {wd} {festival.name}')
 ```
 
 输出结果
@@ -488,6 +484,8 @@ for ndays, wd, festival in library.list_days_in_countdown(countdown=365):
 ```
 
 ### iter_festival_countdown
+
+> Deprecated in 3.5.6: 可使用 `list_days_in_countdown` 方法。
 
 ```python
 FestivalLibrary.iter_festival_countdown(self, countdown: Optional[int] = None, date_obj: MixedDate = None) -> Iterator[Tuple[int, List]]
@@ -509,20 +507,20 @@ for nday, gd_list in fl.iter_festival_countdown():
 输出
 
 ```
-  7 儿童节 2021-06-01(二〇二一年四月廿一)
- 20 端午节 2021-06-14(二〇二一年五月初五)
- 26 父亲节 2021-06-20(二〇二一年五月十一)
+  7 儿童节 2021-06-01(四月廿一)
+ 20 端午节 2021-06-14(五月初五)
+ 26 父亲节 2021-06-20(五月十一)
 ...
-344 青年节 2022-05-04(二〇二二年四月初四)
-348 母亲节 2022-05-08(二〇二二年四月初八)
-352 护士节 2022-05-12(二〇二二年四月十二)
+344 青年节 2022-05-04(四月初四)
+348 母亲节 2022-05-08(四月初八)
+352 护士节 2022-05-12(四月十二)
 ```
 
 ### iter_month_daytuples
 
-> Updated in v3.5.5: 新增 `return_pos` 参数
+> Updated in 3.5.5: 新增 `return_pos` 参数
 
-> Added in v3.5.2
+> Added in 3.5.2
 
 ```python
 FestivalLibrary.iter_month_daytuples(year: int, month: int, firstweekday: int = 0, return_pos:bool = False)
@@ -592,7 +590,7 @@ pprint.pprint(days)
 
 ### monthdaycalendar
 
-> Added in v3.5.2
+> Added in 3.5.2
 
 ```python
 FestivalLibrary.monthdaycalendar(year: int, month: int, firstweekday: int = 0)
@@ -602,7 +600,7 @@ FestivalLibrary.monthdaycalendar(year: int, month: int, firstweekday: int = 0)
 
 ### to_csv
 
-> Add in v3.5.6
+> Add in 3.5.6
 
 ```python
 FestivalLibrary.to_csv(path_or_buf)

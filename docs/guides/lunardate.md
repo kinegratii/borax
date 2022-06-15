@@ -6,7 +6,6 @@
 
 `lunardate` 模块是一个处理中国农历日期的工具库。支持1900 - 2100 农历年范围的日期、干支纪年、节气等历法信息。
 
-
 本模块的数据和算法引用自项目 [jjonline/calendar.js](https://github.com/jjonline/calendar.js) ，具体内容包括：
 
 - 1900-2100年农历月份信息
@@ -32,13 +31,13 @@
 
 `lunardate` 提供了下列的模块级常量。 
 
-- **lunardate.MIN_LUNAR_YEAR**
+- **lunardate.MIN_LUNAR_YEAR = 2100**
 
-农历可表示的最大年份，值为 2100 。
+农历可表示的最大年份 。
 
-- **lunardate.MAX_LUNAR_YEAR**
+- **lunardate.MAX_LUNAR_YEAR= 1900**
 
-农历可表示的最小年份，值为 1900 。
+农历可表示的最小年份 。
 
 - **lunardate.MIN_SOLAR_DATE**
 
@@ -56,12 +55,12 @@
 
 `LunarDate` 实例表示一个具体日期，该类可以表示的日期起止范围如下表：
 
-| 项目 | 起始日 | ... | 2100年 | 2101年 | ... | 截止日 |
-| ------ | ------ | ------ | ------ | ------ | ------ | ------ |
-| 公历 | 1990年1月31日 | ... | 2100年12月31日 | 2101年1月1日 | ... | 2101年1月28日 |
-| 农历 | 1900年正月初一 | ... | 2100年腊月初一 | 2100年腊月初二 | ... | 2100年腊月廿九 |
-| offset | 0 | ... | 73383 | 73384 | ... | 73411 |
-| 干支 | 庚午年丙子月壬辰日 | ... | 庚申年戊子月丁未日 | 庚申年戊子月戊申日 | ... | 庚申年己丑月乙亥日 |
+| 项目     | 起始日        | ... | 2100年       | 2101年     | ... | 截止日        |
+| ------ | ---------- | --- | ----------- | --------- | --- | ---------- |
+| 公历     | 1990年1月31日 | ... | 2100年12月31日 | 2101年1月1日 | ... | 2101年1月28日 |
+| 农历     | 1900年正月初一  | ... | 2100年腊月初一   | 2100年腊月初二 | ... | 2100年腊月廿九  |
+| offset | 0          | ... | 73383       | 73384     | ... | 73411      |
+| 干支     | 庚午年丙子月壬辰日  | ... | 庚申年戊子月丁未日   | 庚申年戊子月戊申日 | ... | 庚申年己丑月乙亥日  |
 
 ## 创建日期对象
 
@@ -119,30 +118,30 @@ LunarDate(2100, 12, 29, 0)
 
 和公历日期对象 `datetime.date` 类似，`LunarDate` 是不可变对象(Immutable Object)，可以作为字典的键值。全部属性如下表（以 `LunarDate(2018, 6, 26, 0)` 为例）：
 
-| 属性 | 类型 | 描述 | 示例值 | 格式描述符 | 备注 |
-| ------ | ------ | ------ | ------ | ------ | ------ |
-| year | `int` | 农历年 | 2018 | %y | |
-| month | `int` | 农历月 | 6 | %m | |
-| day | `int` | 农历日 | 26 | %d | |
-| leap | `int` | 是否闰月 | 0 | %l | (1) |
-| offset | `int` | 距下限的偏移量 | 43287 | - | |
-| term | `str` 或 `None` | 节气名称 | 立秋 | %t | (2) |
-| cn_year | `str` | 中文年 | 二〇一八 | %Y | (3) |
-| cn_month | `str` | 中文月 | 六 | %M | (3) |
-| cn_day | `str` | 中文日 | 廿六 | %D | (3) |
-| cn_leap | `str` | 中文闰月标识 | "闰" 或 "" | %L |  |
-| cn_month_num | `str` | 中文月（数字） | "十一" | %N | v3.4.0新增(4) |
-| cn_week | `str` | 中文星期 | "一" | %W | v3.5.1新增 |
-| gz_year | `str` | 干支年 | 戊戌 | %o | |
-| gz_month | `str` | 干支月 | 庚申 | %p | |
-| gz_day | `str` | 干支日 | 辛未 | %q | |
-| animal | `str` | 年生肖 | 狗 | %a | |
-| - | `str` | 两位数字的月份 | 06 | %A | |
-| - | `str` | 两位数字的日期 | 26 | %B | |
-| cn_day_calendar | `str` | 用于日历显示的中文日 | 廿六 | %F | v1.3.0新增 (5)(6) |
-| `str(ld)` | `str` | 默认表示法 | LunarDate(2018, 6, 26, False) | - |  |
-| `ld.cn_str()` | `str` | 汉字表示法 | 二〇一八年六月廿六 | %C |  |
-| `ld.gz_str()` | `str` | 干支表示法 | 戊戌年庚申月辛未日 | %G |  |
+| 属性              | 类型             | 描述         | 示例值                           | 格式描述符 | 备注              |
+| --------------- | -------------- | ---------- | ----------------------------- | ----- | --------------- |
+| year            | `int`          | 农历年        | 2018                          | %y    |                 |
+| month           | `int`          | 农历月        | 6                             | %m    |                 |
+| day             | `int`          | 农历日        | 26                            | %d    |                 |
+| leap            | `int`          | 是否闰月       | 0                             | %l    | (1)             |
+| offset          | `int`          | 距下限的偏移量    | 43287                         | -     |                 |
+| term            | `str` 或 `None` | 节气名称       | 立秋                            | %t    | (2)             |
+| cn_year         | `str`          | 中文年        | 二〇一八                          | %Y    | (3)             |
+| cn_month        | `str`          | 中文月        | 六                             | %M    | (3)             |
+| cn_day          | `str`          | 中文日        | 廿六                            | %D    | (3)             |
+| cn_leap         | `str`          | 中文闰月标识     | "闰" 或 ""                      | %L    |                 |
+| cn_month_num    | `str`          | 中文月（数字）    | "十一"                          | %N    | v3.4.0新增(4)     |
+| cn_week         | `str`          | 中文星期       | "一"                           | %W    | v3.5.1新增        |
+| gz_year         | `str`          | 干支年        | 戊戌                            | %o    |                 |
+| gz_month        | `str`          | 干支月        | 庚申                            | %p    |                 |
+| gz_day          | `str`          | 干支日        | 辛未                            | %q    |                 |
+| animal          | `str`          | 年生肖        | 狗                             | %a    |                 |
+| -               | `str`          | 两位数字的月份    | 06                            | %A    |                 |
+| -               | `str`          | 两位数字的日期    | 26                            | %B    |                 |
+| cn_day_calendar | `str`          | 用于日历显示的中文日 | 廿六                            | %F    | v1.3.0新增 (5)(6) |
+| `str(ld)`       | `str`          | 默认表示法      | LunarDate(2018, 6, 26, False) | -     |                 |
+| `ld.cn_str()`   | `str`          | 汉字表示法      | 二〇一八年六月廿六                     | %C    |                 |
+| `ld.gz_str()`   | `str`          | 干支表示法      | 戊戌年庚申月辛未日                     | %G    |                 |
 
 备注信息：
 
@@ -155,19 +154,18 @@ LunarDate(2100, 12, 29, 0)
 
 下表是从年月日的角度显示各个描述符之间的关系，以便更快的找到所需要的描述符：
 
-|                            | 年   | 月   | 日   | 闰月标记 |
-| -------------------------- | ---- | ---- | ---- | -------- |
-| **可用于strptime**         |      |      |      |          |
-| 数字                       | %y   | %m   | %d   | %l       |
-| 数字（前导零）             |      | %A   | %B   |          |
-| 中文数字（冬、腊）         | %Y   | %M   | %D   | %L       |
-| 中文数字（十一、十二）     |      | %N   |      |          |
-| 中文年月日 %C              |      |      |      |          |
-| **其他**                   |      |      |      |          |
-| 干支                       | %o   | %p   | %q   |          |
-| 生肖                       | %a   |      |      |          |
-| 日历显示（廿九-七月-初二） |      |      | %F   |          |
-
+|                 | 年   | 月   | 日   | 闰月标记 |
+| --------------- | --- | --- | --- | ---- |
+| **可用于strptime** |     |     |     |      |
+| 数字              | %y  | %m  | %d  | %l   |
+| 数字（前导零）         |     | %A  | %B  |      |
+| 中文数字（冬、腊）       | %Y  | %M  | %D  | %L   |
+| 中文数字（十一、十二）     |     | %N  |     |      |
+| 中文年月日 %C        |     |     |     |      |
+| **其他**          |     |     |     |      |
+| 干支              | %o  | %p  | %q  |      |
+| 生肖              | %a  |     |     |      |
+| 日历显示（廿九-七月-初二）  |     |     | %F  |      |
 
 ### 格式化:strftime
 
@@ -216,7 +214,6 @@ print(ld) # 'LunarDate(2020, 4, 23, 1)'
 
 可用的修饰符包括：`y m l d Y M L D N C`。
 
-
 ## 公历转化
 
 - **LunarDate.to_solar_date()**
@@ -233,18 +230,16 @@ datetime.date(2018, 8, 7)
 
 **▶ 加减操作符**
 
-
 `LunarDate` 支持和 `datetime.timedelta` 或 `datetime.date` 进行加减计算。
 
-
-| 左操作数类型 | 操作符 | 右操作数类型 | 结果类型 |
-| ------ | ------ | ------ | ------ |
-| `LunarDate` | + | `datetime.timedelta` | `LunarDate` |
-| `datetime.timedelta` | + | `LunarDate` | `LunarDate` |
-| `LunarDate` | - | `datetime.timedelta` | `LunarDate` |
-| `datetime.date` | - | `LunarDate` | `datetime.timedelta` |
-| `LunarDate` | - | `datetime.date` | `datetime.timedelta` |
-| `LunarDate` | - | `LunarDate` | `datetime.timedelta` |
+| 左操作数类型               | 操作符 | 右操作数类型               | 结果类型                 |
+| -------------------- | --- | -------------------- | -------------------- |
+| `LunarDate`          | +   | `datetime.timedelta` | `LunarDate`          |
+| `datetime.timedelta` | +   | `LunarDate`          | `LunarDate`          |
+| `LunarDate`          | -   | `datetime.timedelta` | `LunarDate`          |
+| `datetime.date`      | -   | `LunarDate`          | `datetime.timedelta` |
+| `LunarDate`          | -   | `datetime.date`      | `datetime.timedelta` |
+| `LunarDate`          | -   | `LunarDate`          | `datetime.timedelta` |
 
 例子：
 
@@ -314,7 +309,6 @@ with open('data.pickle', 'wb') as f:
 with open('data.pickle', 'rb') as f:
     l2 = pickle.load(f)
     print(l2) # LunarDate(2018, 7, 24, 0)
-
 ```
 
 ## 工具函数
@@ -322,7 +316,6 @@ with open('data.pickle', 'rb') as f:
 `LCalendars` 提供了一系列的工具方法。
 
 ### 闰月月份
-
 
 - **LCalendars.leap_month(year: int) -> int**
 
@@ -332,8 +325,7 @@ with open('data.pickle', 'rb') as f:
 
 - **LCalendars.get_leap_years(month: int = 0) -> tuple**
 
-> Add in v3.4.0
-
+> Add in 3.4.0
 
 返回含有给定农历闰月的年份列表。当 month == 0 时，返回所有含有闰月的年份。当 month 大于 12 时， 返回空列表。
 
@@ -376,22 +368,20 @@ ValueError: year out of range [1900, 2100]
 ValueError: Invalid month for the year 2017
 ```
 
-
 - **LCalendars.delta(date1:MDate, date2:MDate) -> int**
 
 计算两个日期相隔的天数，即 `(date1 - date2).days`。
-
 
 ### 节气
 
 - **TermUtils.nth_term_day(year: int, term_index: Optional[int] = None, term_name: Optional[str] = None) -> datetime.date**
 - **LCalendars.create_solar_date(year: int, term_index: Optional[int] = None, term_name: Optional[str] = None) -> datetime.date**
 
-> Updated in v3.5.6: TermUtils.nth_term_day函数term_name参数支持拼音首字母
+> Updated in 3.5.6: TermUtils.nth_term_day函数term_name参数支持拼音首字母
 
-> Updated in v3.5.2: 新增TermUtils.nth_term_day
+> Updated in 3.5.2: 新增TermUtils.nth_term_day
 
-> Deprecated in v3.5.2: 原函数LCalendars.create_solar_date将在v3.6.0移除
+> Deprecated in 3.5.2: 原函数LCalendars.create_solar_date将在v3.6.0移除
 
 根据节气名称或者序号获取对应的公历日期对象(`dateitime.date`)。`term_index` 和 `term_name` 只需传入一个参数，
 
@@ -425,7 +415,6 @@ TextUtils.offset2gz(offset: int) -> str
 ```
 
 示例
-
 
 ```
 >>>TextUtils.offset2gz(0)

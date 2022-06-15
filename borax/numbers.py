@@ -67,6 +67,15 @@ class ChineseNumbers:
 
     @staticmethod
     def to_chinese_number(num: Union[int, str], upper: bool = False, order: bool = False) -> str:
+        """
+
+        >>> ChineseNumbers.to_chinese_number(100000000)
+        '一亿'
+        >>> ChineseNumbers.to_chinese_number(204, upper=True)
+        '贰佰零肆'
+        >>> ChineseNumbers.to_chinese_number(204, upper=True, order=True)
+        '贰佰〇肆'
+        """
         if order:
             return ChineseNumbers.order_number(num, upper)
         else:

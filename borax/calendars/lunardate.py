@@ -372,12 +372,7 @@ class TermUtils:
 
     @staticmethod
     def nth_term_day(year: int, term_index: Optional[int] = None, term_name: Optional[str] = None) -> datetime.date:
-        """返回公历year年第term_index个或者term_name对应的节气所在公历日期
-        :param year: 公历年份
-        :param term_index: 节气序号，0小寒，1大寒，23冬至
-        :param term_name: 节气名称
-        :return: 一个date对象
-        """
+        """Return the solar date for a term in solar year."""
         if term_name:
             term_index = TermUtils.name2index(term_name)
         return TermUtils._nth_term_day(year, term_index)
@@ -386,7 +381,13 @@ class TermUtils:
     def day_start_from_term(year: int, term: Union[int, str], nth: int = 0, day_gz: str = ''):
         """Return the day starts from a term.
 
-        day_start_from_term(2022, '芒种', 1, '甲') => The 1st '甲' day after term '芒种' in year 2022.
+        Example:
+
+        >>> TermUtils.day_start_from_term(2022, '芒种')
+        >>> TermUtils.day_start_from_term(2022, 'mz')
+        >>> TermUtils.day_start_from_term(2022, 10)
+        >>> TermUtils.day_start_from_term(2022, '芒种', 1, '甲')
+        >>> TermUtils.day_start_from_term(2022, '芒种', 1, '子')
         """
         if isinstance(term, int):
             term_day = TermUtils.nth_term_day(year, term_index=term)
@@ -402,7 +403,7 @@ class TermUtils:
             data_list = TextUtils.BRANCHES
             start_ele = term_lday.gz_day[1]
         else:
-            raise ValueError(f'Invalid stem or branch: {day_gz}')
+            raise ValueError('Invalid stem or branch: {day_gz}'.format(day_gz=day_gz))
         day_delta = delta_in_cycle(data_list, start_ele=start_ele, nth=nth, end_ele=day_gz)
         return term_day + datetime.timedelta(days=day_delta)
 
@@ -455,7 +456,7 @@ class TextUtils:
                 raise ValueError
             return (6 * x - 5 * y) % 60
         except (TypeError, ValueError):
-            raise ValueError(f'Invalid gz string: {gz}')
+            raise ValueError('Invalid gz string: {gz}'.format(gz=gz))
 
     @staticmethod
     def offset2gz(offset: int) -> str:
@@ -464,6 +465,22 @@ class TextUtils:
 
 
 class LunarDate(EncoderMixin):
+    """A date for chinese lunar calendar.
+
+    >>> ld1 = LunarDate(2020, 4, 1)
+    >>> ld2 = LunarDate(2020, 4, 1, 1)
+    >>> ld3 = LunarDate.today()
+    >>> ld2.cn_str()
+    二〇二〇年闰四月初一
+    >>> ld2.strftime('%G')
+    庚子年辛巳月丙寅日
+
+    >>> from datetime import timedelta
+    >>> ld1 + timedelta(days=10)
+    LunarDate(2020, 4, 11, 0)
+    >>> ld1.after(day_delta=10)
+    LunarDate(2020, 4, 11, 0)
+    """
     fields = [f_year, f_month, f_day, f_leap]
 
     def __init__(self, year: int, month: int, day: int, leap: int = 0):
@@ -577,7 +594,7 @@ class LunarDate(EncoderMixin):
 
     @property
     def cn_md(self) -> str:
-        return f'{self.cn_leap}{self.cn_month}月{self.cn_day}'
+        return '{}{}月{}'.format(self.cn_leap, self.cn_month, self.cn_day)
 
     def gz_str(self) -> str:
         return '{}年{}月{}日'.format(self.gz_year, self.gz_month, self.gz_day)

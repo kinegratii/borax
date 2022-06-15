@@ -73,4 +73,4 @@ def fetch(iterable, key, *keys, default=EMPTY, defaults=None, getter=None):
 
 
 def fetch_as_dict(data, key_field, value_value):
-    return dict([(bget(item, key_field), bget(item, value_value)) for item in data])
+    return {bget(item, key_field): bget(item, value_value) for item in data}

@@ -7,7 +7,7 @@
 自v3.4.0 开始:
 
 1. 原来的 `bjson` 和 `cjson` 将合并为 `cjson`，`cjson` 现在也支持 `__json__` 定义。
-2.  编码函数 `cjson.to_serializable` 将重名为 `cjson.encoder`。
+2. 编码函数 `cjson.to_serializable` 将重名为 `cjson.encoder`。
 3. `bjson` 模块 和 `cjson.to_serializable` 函数别名将在v4.0版本移除。
 
 ## 使用方法
@@ -69,7 +69,6 @@ cjson.encoder.register(EPoint, lambda o: [o.x, o.y])
 
 ### 调用和序列化
 
-
 使用 `cjson.dumps` 即可。
 
 ```python
@@ -79,13 +78,12 @@ p1 = Point(1, 2)
 p2 = EPoint(1, 2)
 
 output1 = cjson.dumps({'point1':p1, 'point2':p2}) # 输出 {"point1": [1, 2], "point2": [1, 2]}
-
 ```
 
 该函数按照下列方式执行序列化逻辑 ：
 
 1. 调用 `encoder`，如果抛出 `TypeError` 将忽略这种方式。
-2.  `__json__` 
+2. `__json__` 
 
 即，对于具有两种定义方式的同一个类型， *集中定义* 方式将优先于 *分开定义* 方式。
 
@@ -111,7 +109,6 @@ cjson.encoder.register(Pt, cjson.encode_object)
 
 obj = {'point': Pt(1, 2)}
 print(cjson.dumps(obj)) # 输出：'{"point": [1, 2]}'
-
 ```
 
 ### encoder进阶: dispatch容器
@@ -129,8 +126,7 @@ print(cjson.dumps(obj)) # 输出：'{"point": [1, 2]}'
 
 cjson 默认的编码函数。调用 `__json__` 进行编码。
 
-
-###  cjson.encoder
+### cjson.encoder
 
 使用 [singledispatch](https://docs.python.org/3/library/functools.html#functools.singledispatch) 装饰的json encoder函数，可以直接用于 dump 的 default 参数。
 

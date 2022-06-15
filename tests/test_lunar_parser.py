@@ -12,9 +12,18 @@ class ParserTestCase(unittest.TestCase):
         self.assertEqual(LunarDate(2022, 4, 23, 0), strptime('二〇二二年四月廿三', '%Y年%M月%D'))
         self.assertEqual(LunarDate(2022, 4, 23, 0), strptime('二〇二二年四月廿三', '%Y年%L%M月%D'))
         self.assertEqual(LunarDate(2020, 4, 23, 1), strptime('二〇二〇年闰四月廿三', '%Y年%L%M月%D'))
+        self.assertEqual(LunarDate(2020, 4, 20, 1), strptime('二〇二〇年闰四月二十', '%Y年%L%M月%D'))
 
     def test_parse_with_cn(self):
         self.assertEqual(LunarDate(2020, 4, 23, 0), strptime('二〇二〇年四月廿三', '%C'))
         self.assertEqual(LunarDate(2020, 4, 23, 1), strptime('二〇二〇年闰四月廿三', '%C'))
 
         self.assertEqual(LunarDate(2020, 4, 23, 1), LunarDate.strptime('二〇二〇年闰四月廿三', '%C'))
+
+    def test_fail_parse(self):
+        with self.assertRaises(ValueError):
+            LunarDate.strptime('二〇二〇年闰四月二十 2021', '%Y年%L%M月%D %y')
+        with self.assertRaises(ValueError):
+            LunarDate.strptime('二〇二〇年闰四月廿十', '%Y年%L%M月%D')
+        with self.assertRaises(ValueError):
+            LunarDate.strptime('二〇二〇年闰四月二十00', '%Y年%L%M月%D')

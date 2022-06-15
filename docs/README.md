@@ -1,14 +1,11 @@
 # Borax - python3工具库 - 中国农历/中文数字/设计模式/树形结构
 
-
 [![PyPI](https://img.shields.io/pypi/v/borax.svg)](https://pypi.org/project/borax) 
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/borax.svg)](https://pypi.org/project/borax)
 ![Python package](https://github.com/kinegratii/borax/workflows/Python%20package/badge.svg)
 ![Codecov](https://codecov.io/github/kinegratii/borax/coverage.svg)
 ![GitHub license](https://img.shields.io/github/license/kinegratii/borax)
 [![borax](https://snyk.io/advisor/python/borax/badge.svg)](https://snyk.io/advisor/python/borax)
-
-
 
 Borax 是一个Python3工具集合库。
 
@@ -28,7 +25,7 @@ Borax 是一个Python3工具集合库。
 
 ## 文章(Posts)
 
--  [农历与节日](guides/festivals2-usage) 
+- [农历与节日](guides/festivals2-usage) 
 
 ## 开发(Development)
 
@@ -37,7 +34,6 @@ Borax 是一个Python3工具集合库。
 - **发布日志**: [v3.5](release-note/v350) | [v3.5.6](release-note/v356)
 
 ## 快速开始(Quickstart)
-
 
 ### 安装
 
