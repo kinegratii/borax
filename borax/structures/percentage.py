@@ -4,14 +4,21 @@
 def format_percentage(numerator: int, denominator: int, *, places: int = 2, null_val: str = '-') -> str:
     if denominator == 0:
         return null_val
-    percent_fmt = '{0:. f}%'.replace(' ', str(places))
+    percent_fmt = '{0:. %}'.replace(' ', str(places))
     val = round(numerator / denominator, places + 2)
-    return percent_fmt.format(val * 100)
+    return percent_fmt.format(val)
 
 
 class Percentage:
-    """
-    Percentage(completed=0, total=100, places=2,)
+    """A object representing a percentage.
+
+    >>> p = Percentage(34)
+    >>> p.completed
+    34
+    >>> p.percent_display
+    '34.00%'
+    >>> p.fraction_display
+    '34 / 100'
     """
 
     def __init__(self, *, total: int = 100, completed: int = 0, places: int = 2,
@@ -43,7 +50,7 @@ class Percentage:
 
     @property
     def fraction_display(self):
-        """return a fractor like '34 / 100'"""
+        """return a fraction like '34 / 100'"""
         return self._display_fmt.format(completed=self.completed, total=self.total)
 
     @property
@@ -62,7 +69,7 @@ class Percentage:
 
     def generate(self, char_total: int = 100) -> str:
         char_completed = int(self.percent * char_total)
-        return '|{0}{1}| {2:.2f}%'.format(
+        return '|{0}{1}| {2:.2%}'.format(
             '▇' * char_completed,
             '░' * (char_total - char_completed),
             self.percent * 100

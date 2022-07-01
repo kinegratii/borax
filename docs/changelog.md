@@ -1,9 +1,10 @@
 # 更新日志
 
-## v3.5.6 (20220704)
+## v3.5.6 (20220703)
 
 [发布日志](/release-note/v356)
 
+- 新增Docs Test
 - `borax.calendars.lunardate`
   - 新增文本解析函数 `LunarDate.strptime` （[#44](https://github.com/kinegratii/borax/issues/44)）
   - 新增格式化修饰符 `%c`
@@ -15,6 +16,10 @@
   - `TermFestival` 支持干支日推算的节日 （[#46](https://github.com/kinegratii/borax/issues/46)）
   - `TermFestival` 新增 term 参数
   - 节气名称支持拼音首字母形式
+- `borax.structures.percentage`
+  - 优化底层百分数格式化显示 
+- `borax.devtools`
+  - 新增 `RuntimeMeasurer.print_` 方法
 
 ## v3.5.5 (20220504)
 
