@@ -39,7 +39,7 @@ $ pip install borax
 
 ## 版本 (Version)
 
-Borax的版本符合语义规范，格式为 `<主版本号>.<副版本号>.<修正版本号>`， 推荐使用下面方式定义Borax的依赖版本号。
+Borax的版本符合 [语义化版本](https://semver.org/lang/zh-CN/) ，格式为 `<主版本号>.<副版本号>.<修正版本号>`， 推荐使用下面方式定义Borax的依赖版本号。
 
 ```text
 borax~=3.5

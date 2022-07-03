@@ -306,9 +306,12 @@ class TermUtils:
     def name2index(name: Union[int, str]) -> int:
         """Return term index from term name.
 
-        TermUtils.name2index(1) => 1 \n
-        TermUtils.name2index('小寒') => 1 \n
-        TernUtils.name2index('xh') => 1
+        >>> TermUtils.name2index(1)
+        1
+        >>> TermUtils.name2index('小寒')
+        1
+        >>> TermUtils.name2index('xh')
+        1
         """
         if isinstance(name, int):
             return name
@@ -460,7 +463,11 @@ class TextUtils:
 
     @staticmethod
     def offset2gz(offset: int) -> str:
-        """Get nth(0-based) element of gz_list. ['甲子', '乙丑',..., '癸亥']"""
+        """Get nth(0-based) element of gz_list. ['甲子', '乙丑',..., '癸亥']
+
+        >>> TextUtils.offset2gz(0)
+        '甲子'
+        """
         return TextUtils.STEMS[offset % 10] + TextUtils.BRANCHES[offset % 12]
 
 
@@ -660,7 +667,11 @@ class LunarDate(EncoderMixin):
 
     @classmethod
     def strptime(cls, date_str: str, date_fmt: str) -> 'LunarDate':
-        """Parse a LunarDate object from a whole string."""
+        """Parse a LunarDate object from a whole string.
+
+        >>> LunarDate.strptime('二〇二〇年闰四月廿三', '%C')
+        LunarDate(2020, 4, 23, 1)
+        """
         from .data_parser import strptime
         return strptime(date_str, date_fmt)
 

@@ -35,7 +35,7 @@ class HTMLString(str):
 def html_params(**kwargs) -> str:
     params = []
     for k, v in kwargs.items():
-        if k in ('class_', 'class__', 'for_', 'id_'):
+        if k in ('class_', 'for_', 'id_'):
             k = k[:-1]
         elif k.startswith('data_'):
             k = k.replace('_', '-')

@@ -244,6 +244,12 @@ class Festival:
 
     @property
     def description(self) -> str:
+        """Return the chinese description for this festival.
+
+        >>> ruankao_day = WeekFestival(month=5, index=-1, week=calendar.SATURDAY, name='软考上半年')
+        >>> ruankao_day.description
+        '公历5月最后1个星期六'
+        """
         return self._get_description().replace('倒数第1', '最后1')
 
     @property
@@ -888,7 +894,13 @@ def decode(raw: Union[str, bytes]) -> Union[WrappedDate, Festival]:
 
 
 class FestivalLibrary(collections.UserList):
-    """A festival collection."""
+    """A festival collection.
+
+    >>> fl = FestivalLibrary.load_builtin()
+    >>> new_year_festival = fl.get_festival('元旦')
+    >>> new_year_festival.list_days(*Period.solar_year(2022))
+    [<WrappedDate:2022-01-01(冬月廿九)>]
+    """
 
     def get_code_set(self) -> Set[str]:
         """Get codes for all festivals.

@@ -30,9 +30,11 @@ class ChineseNumbers:
     @staticmethod
     def measure_number(num: Union[int, str], upper: bool = False) -> str:
         """将数字转化为计量大/小写的中文数字，数字0的中文形式为“零”。
-        :param num: 数字
-        :param upper: 是否大写
-        :return: 计量大/小写的中文数字
+
+        >>> ChineseNumbers.measure_number(11)
+        '十一'
+        >>> ChineseNumbers.measure_number(204, True)
+        '贰佰零肆'
         """
         if isinstance(num, str):
             _n = int(num)
@@ -57,9 +59,9 @@ class ChineseNumbers:
     @staticmethod
     def order_number(num: Union[int, str], upper: bool = False) -> str:
         """将数字转化为编号大/小写的中文数字，数字0的中文形式为“〇”。
-        :param num: 数字
-        :param upper: 是否大写
-        :return: 编号大/小写的中文数字
+
+        >>> ChineseNumbers.order_number(1056)
+        '一千〇五十六'
         """
         val = ChineseNumbers.measure_number(num, upper)
         ns = val.replace('零', '〇')
@@ -95,6 +97,16 @@ class FinanceNumbers:
 
     @staticmethod
     def to_capital_str(num: Union[int, float, Decimal, str]) -> str:
+        """Convert a int or float object to finance numeric string.
+
+        >>> FinanceNumbers.to_capital_str(100000000)
+        '壹亿元整'
+        >>> FinanceNumbers.to_capital_str(80.02)
+        '捌拾元零角贰分'
+        >>> import decimal
+        >>> FinanceNumbers.to_capital_str(decimal.Decimal(4.50))
+        '肆元伍角零分'
+        """
         units = UPPER_UNITS[:-1] + '元角分'
         if isinstance(num, str):
             _n = Decimal(num)

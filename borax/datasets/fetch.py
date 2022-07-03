@@ -69,8 +69,27 @@ def ifetch(iterable, key, *keys, default=EMPTY, defaults=None, getter=None):
 
 
 def fetch(iterable, key, *keys, default=EMPTY, defaults=None, getter=None):
+    """Pick values from each field.
+
+    >>> persons = [{'id': 1, 'name': 'Alice', 'age': 30},{'id': 2, 'name': 'John', 'age': 24}]
+    >>> fetch(persons, 'name')
+    ['Alice', 'John']
+
+    >>> data = [[1, 2, 3, 4,], [11,12,13,14],[21,22,23,24]]
+    >>> ones, threes = fetch(data, 0, 2)
+    >>> ones
+    [1, 11, 21]
+    >>> threes
+    [3, 13, 23]
+    """
     return list(ifetch(iterable, key, *keys, default=default, defaults=defaults, getter=getter))
 
 
 def fetch_as_dict(data, key_field, value_value):
+    """Build a dict for a iterable data.
+
+    >>> persons = [{'id': 1, 'name': 'Alice', 'age': 30},{'id': 2, 'name': 'John', 'age': 24}]
+    >>> fetch_as_dict(persons, 'name', 'age')
+    {'Alice': 30, 'John': 24}
+    """
     return {bget(item, key_field): bget(item, value_value) for item in data}
