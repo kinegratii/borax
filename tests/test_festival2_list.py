@@ -61,6 +61,27 @@ class WeekFestivalTestCase(unittest.TestCase):
         with self.assertRaises(FestivalError):
             month_day.at(year=2021, month=3)
 
+        day2 = month_day.get_one_day(*Period.solar_month(2022, 4))
+        self.assertIsNone(day2)
+
+    def test_monthly(self):
+        # Add in v3.5.6
+        last_sunday = WeekFestival(month=0, index=-1, week=6)
+        self.assertEqual(date(2022, 4, 24), last_sunday.at(2022, 4))
+        self.assertEqual(12, len(last_sunday.list_days(*Period.solar_year(2022))))
+        day1 = last_sunday.get_one_day(*Period.solar_year(2022))
+        self.assertEqual(date(2022, 1, 30), day1.solar)
+
+        week_festival2 = WeekFestival(month=0, index=5, week=6)
+        self.assertEqual(4, len(week_festival2.list_days(*Period.solar_year(2022))))
+
+    def test_no_day(self):
+        wt = WeekFestival(month=1, index=8, week=8)
+        cvs = wt.countdown()
+        self.assertEqual(-1, cvs[0])
+        # day_list = wt.list_days(*Period.solar_year(2022))
+        # self.assertEqual(0, len(day_list))
+
 
 class TermFestivalTestCase(unittest.TestCase):
     def test_basic_logic(self):
@@ -69,6 +90,26 @@ class TermFestivalTestCase(unittest.TestCase):
 
         with self.assertRaises(FestivalError):
             tt.at(year=2021, month=3)
+
+    def test_new_api2(self):
+        tf = TermFestival(term='芒种', nth=1, day_gz='丙')
+        self.assertEqual('公历每年芒种起第1个丙日', tf.description)
+        tf2 = TermFestival(term='芒种', nth=-1, day_gz='丙')
+        self.assertEqual('公历每年芒种前第1个丙日', tf2.description)
+
+    def test_new_api_356(self):
+        ts = [
+            TermFestival(0),
+            TermFestival('小寒'),
+            TermFestival('xh'),
+            TermFestival('XH'),
+            TermFestival(name='小寒'),
+            TermFestival(name='xh'),
+            TermFestival(index=0),
+        ]
+        self.assertEqual(1, len(set((f.encode() for f in ts))))
+        with self.assertRaises(ValueError):
+            TermFestival()
 
 
 class LunarFestivalTestCase(unittest.TestCase):
@@ -162,6 +203,14 @@ class WrappedDateTestCase(unittest.TestCase):
         self.assertEqual(timedelta(days=2), wd - LunarDate(2021, 3, 18))
         self.assertEqual(WrappedDate(date(2021, 4, 30)), wd - timedelta(days=1))
 
+    def test_wd(self):
+        wd = WrappedDate(LunarDate(2022, 4, 1))
+        self.assertEqual('四月初一', wd.lunar.cn_md)
+        ss = wd.simple_str()
+        wd2 = WrappedDate.from_simple_str(ss)
+        self.assertEqual(wd2.simple_str(), ss)
+        self.assertEqual('2022-05-01(二〇二二年四月初一)', wd2.full_str())
+
 
 class FestivalListDaysTestCase(unittest.TestCase):
     def test_solar(self):
@@ -250,6 +299,10 @@ class FestivalListDaysTestCase(unittest.TestCase):
         this_new_year = list(new_year_festival.list_days_in_past(count=1, reverse=True))[0]
         self.assertTrue(0 <= today.year - this_new_year.solar.year <= 1)
 
+    def test_week_reverse(self):
+        fs = WeekFestival(month=1, index=-1, week=calendar.SUNDAY)
+        self.assertEqual(date(2022, 1, 30), fs.at(2022))
+
 
 class CountdownTestCase(unittest.TestCase):
     def test_countdown(self):
@@ -272,11 +325,11 @@ class FestivalDescriptionTestCase(unittest.TestCase):
     def test_solar_festival(self):
         festival2description_tuples = [
             (SolarFestival(month=1, day=1), '公历每年1月1日'),
-            (SolarFestival(month=1, day=-1), '公历每年1月倒数第1天'),
+            (SolarFestival(month=1, day=-1), '公历每年1月最后1天'),
             (SolarFestival(day=1), '公历每年第1天'),
-            (SolarFestival(day=-1), '公历每年倒数第1天'),
+            (SolarFestival(day=-1), '公历每年最后1天'),
             (SolarFestival(freq=FreqConst.MONTHLY, day=1), '公历每月1日'),
-            (SolarFestival(freq=FreqConst.MONTHLY, day=-1), '公历每月倒数第1天')
+            (SolarFestival(freq=FreqConst.MONTHLY, day=-1), '公历每月最后1天')
         ]
         for f, d in festival2description_tuples:
             with self.subTest(f=f, d=d):
@@ -285,11 +338,11 @@ class FestivalDescriptionTestCase(unittest.TestCase):
     def test_lunar_festival(self):
         festival2description_tuples = [
             (LunarFestival(month=1, day=1), '农历每年正月初一'),
-            (LunarFestival(month=1, day=-1), '农历每年正月倒数第1天'),
+            (LunarFestival(month=1, day=-1), '农历每年正月最后1天'),
             (LunarFestival(day=1), '农历每年第1天'),
-            (LunarFestival(day=-1), '农历每年倒数第1天'),
+            (LunarFestival(day=-1), '农历每年最后1天'),
             (LunarFestival(freq=FreqConst.MONTHLY, day=1), '农历每月初一'),
-            (LunarFestival(freq=FreqConst.MONTHLY, day=-1), '农历每月倒数第1天')
+            (LunarFestival(freq=FreqConst.MONTHLY, day=-1), '农历每月最后1天')
         ]
         for f, d in festival2description_tuples:
             with self.subTest(f=f, d=d):

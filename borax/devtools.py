@@ -11,17 +11,18 @@ TagMeasureResult = namedtuple('TagMeasureResult', 'name total count avg')
 
 
 class RuntimeMeasurer:
+    """A time measurer for a program."""
     def __init__(self):
         self._data = defaultdict(list)
         self._start_time_dict = {}
 
-    def start(self, *tags: List[str]) -> 'RuntimeMeasurer':
+    def start(self, *tags: str) -> 'RuntimeMeasurer':
         st = time.time()
         for _tag in tags:
             self._start_time_dict[_tag] = st
         return self
 
-    def end(self, *tags: List[str]) -> 'RuntimeMeasurer':
+    def end(self, *tags: str) -> 'RuntimeMeasurer':
         et = time.time()
         for _tag in tags:
             if _tag in self._start_time_dict:
@@ -29,7 +30,7 @@ class RuntimeMeasurer:
         return self
 
     @contextmanager
-    def measure(self, *tags: List[str]):
+    def measure(self, *tags: str):
         try:
             self.start(*tags)
             yield
@@ -43,3 +44,11 @@ class RuntimeMeasurer:
             cv = len(values)
             result[tag] = TagMeasureResult(tag, tv, cv, tv / cv)
         return result
+
+    def print_(self):
+        """Print statistics data for all tags."""
+        data = self.get_measure_result()
+        print("{:>8} {:>10} {:>10} {:>10}".format('name', 'total', 'count', 'avg'))
+        for k, v in data.items():
+            name, total, count, avg = v
+            print("{:>8} {:>.8f} {:>10} {:>.8f}".format(name, total, count, avg))

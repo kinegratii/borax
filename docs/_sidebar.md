@@ -1,10 +1,10 @@
-- **● 入门**
+- **● 入门与教程**
   - [首页](README)
+  - [农历与节日](guides/festivals2-usage)
 - **● Borax.Calendar**
   - [农历](guides/lunardate)
   - [节日(festivals2) <sup style="color:red">New!<sup>](guides/festivals2)
   - [日期节日序列化](guides/festivals2-serialize)
-  - [节日综合示例](guides/festivals2-usage)
   - [节日(festivals)](guides/festival)
   - [生日](guides/birthday)
   - [工具类](guides/calendars-utils)
@@ -26,6 +26,7 @@
   - [序列号生成器(Pool)](guides/serial_pool)
   - [Tkinter界面](guides/ui)
 - **● 发布日志**
+  - [v3.5.6](release-note/v356)
   - [v3.5](release-note/v350)
 - **● 项目开发**
   - [版本日志](changelog)

@@ -31,12 +31,18 @@ Borax 是一个Python3工具集合库。包括了以下几个话题：
 
 ## 安装 (Installation)
 
-> 从 v3.5.1开始，安装包文件格式为 *borax-3.5.1-py3-none-any.whl*（移除py2标识）以区别于之前的 *borax-3.5.0-py2.py3-none-any.whl*。
-
-Borax 要求 Python3.6+ ,可以通过 *pip* 安装 ：
+Borax 要求 Python3.5+ ,可以通过 *pip* 安装 ：
 
 ```shell
 $ pip install borax
+```
+
+## 版本 (Version)
+
+Borax的版本符合 [语义化版本](https://semver.org/lang/zh-CN/) ，格式为 `<主版本号>.<副版本号>.<修正版本号>`， 推荐使用下面方式定义Borax的依赖版本号。
+
+```text
+borax~=3.5
 ```
 
 ## 使用示例 (Usage)
@@ -92,6 +98,21 @@ print(festival.countdown()) # (273, <GeneralDate:2022-02-01(二〇二二年正�
 print([str(wd) for wd in festival.list_days(start_date=date.today(), count=5)])
 ```
 
+### 可支持的节日类型
+
+| 节日                          | 表示法                                                | 规范化描述                |
+| ----------------------------- | ----------------------------------------------------- | ------------------------- |
+| 元旦                          | SolarFestival(month=1, day=1)                         | 农历每年正月初一          |
+| 中秋节                        | LunarFestival(month=8, day=15)                        | 农历每年八月十五          |
+| 母亲节（每年5月第二个周日）   | WeekFestival(month=5, index=2, week=calendar.SUNDAY)  | 公历每年5月第2个星期日    |
+| 除夕             | LunarFestival(day=-1)                                 | 农历每年最后一天          |
+| 程序员节                      | SolarFestival(freq=FreqConst.YEARLY，day=256)         | 公历每年第256天           |
+| 清明节                        | TemFestival(name="清明")                              | 公历每年清明              |
+| 每月5日                       | SolarFestival(freq=FreqConst.MONTHLY， day=5)         | 公历每月5日               |
+| 国际麻风节       | WeekFestival(month=1, index=-1, week=calendar.SUNDAY) | 公历1月倒数第1个星期日    |
+| 每月最后一个周日 | WeekFestival(month=0, index=-1, week=calendar.SUNDAY) | 公历每月倒数第1个星期日   |
+| 初伏 | TemFestival('夏至', nth=3, day_gz='庚') | 公历每年夏至起第三个庚日   |
+
 ### Borax.FestivalLibrary：内置节日库
 
 基本使用示例
@@ -119,21 +140,21 @@ print(WrappedDate(festival.at(year=2021))) # '2021-08-14(二〇二一年七月�
 from borax.calendars.festivals2 import FestivalLibrary
 
 library = FestivalLibrary.load_builtin()
-for nday, gd_list in library.iter_festival_countdown():
-    for gd in gd_list:
-        print('{:>3d} {} {}'.format(nday, gd.name, gd))
+for ndays, wd, festival in library.list_days_in_countdown(countdown=365):
+    print(f'{ndays:>3d} {wd} {festival.name}')
 ```
 
 输出结果
 
 ```
-  0 青年节 2021-05-04(二〇二一年三月廿三)
-  5 母亲节 2021-05-09(二〇二一年三月廿八)
-  8 护士节 2021-05-12(二〇二一年四月初一)
- 28 儿童节 2021-06-01(二〇二一年四月廿一)
-<...>
-336 清明 2022-04-05(二〇二二年三月初五) 
-362 劳动节 2022-05-01(二〇二二年四月初一)
+  0 2022-05-04(四月初四) 青年节
+  4 2022-05-08(四月初八) 母亲节
+  8 2022-05-12(四月十二) 护士节
+...
+332 2023-04-01(闰二月十一) 愚人节
+336 2023-04-05(闰二月十五) 清明
+362 2023-05-01(三月十二) 劳动节
+
 ```
 
 
@@ -180,6 +201,7 @@ print(FinanceNumbers.to_capital_str(decimal.Decimal(4.50))) # '肆元伍角零�
 | ---- | ---- |
 | github | [https://kinegratii.github.io/borax](https://kinegratii.github.io/borax) |
 | gitee | [https://kinegratii.gitee.io/borax](https://kinegratii.gitee.io/borax) |
+| read-the-docs | [https://borax.readthedocs.io/zh_CN/latest/](https://borax.readthedocs.io/zh_CN/latest/) |
 
 ## 开发特性和规范 (Development Features)
 

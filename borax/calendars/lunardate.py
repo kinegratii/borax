@@ -2,13 +2,14 @@
 import datetime
 import re
 import warnings
-from typing import Optional, Iterator, Tuple
+from typing import Optional, Iterator, Tuple, TypeVar, Sequence, Union
 
 from .store import (
     EncoderMixin, f_year, f_month, f_day, f_leap
 )
 
-__all__ = ['LunarDate', 'LCalendars', 'InvalidLunarDateError', 'TermUtils', 'TextUtils']
+__all__ = ['LunarDate', 'LCalendars', 'InvalidLunarDateError', 'TermUtils', 'TextUtils', 'TERMS_CN']
+T = TypeVar('T')
 
 
 # Exception
@@ -107,17 +108,20 @@ class LCalendars:
 
     @staticmethod
     def leap_month(year: int) -> int:
+        """Get the leap month in a lunar year.Return 0 if there is not leap month."""
         _check_year_range(year)
         leap_month, _ = _parse_leap(YEAR_INFOS[year - MIN_LUNAR_YEAR])
         return leap_month
 
     @staticmethod
     def iter_year_month(year: int) -> Iterator[Tuple[int, int, int]]:
+        """Yield month info in a lunar year. (month, ndays, leap)"""
         _check_year_range(year)
         return _iter_year_month(YEAR_INFOS[year - MIN_LUNAR_YEAR])
 
     @staticmethod
     def ndays(year: int, month: Optional[int] = None, leap: int = 0) -> int:
+        """Return the total days of a lunar year or a lunar month."""
         _check_year_range(year)
         if month is None:
             return YEAR_DAYS[year - MIN_LUNAR_YEAR]
@@ -130,6 +134,7 @@ class LCalendars:
 
     @staticmethod
     def get_leap_years(month: int = 0) -> tuple:
+        """Get year list which has the leap month."""
         res = []
         for yoffset, yinfo in enumerate(YEAR_INFOS):
             leap_month = yinfo % 16
@@ -220,6 +225,8 @@ TERMS_CN = [
     "小寒", "大寒", "立春", "雨水", "惊蛰", "春分", "清明", "谷雨", "立夏", "小满", "芒种", "夏至",
     "小暑", "大暑", "立秋", "处暑", "白露", "秋分", "寒露", "霜降", "立冬", "小雪", "大雪", "冬至"
 ]
+TERM_PINYIN = ['xh', 'dh', 'lc', 'ys', 'jz', 'cf', 'qm', 'gy', 'lx', 'xm', 'mz', 'xz', 'xs', 'ds', 'lq', 'cs', 'bl',
+               'qf', 'hl', 'sj', 'ld', 'xx', 'dx', 'dz']
 
 # solar year 1900~2100
 TERM_INFO = [
@@ -277,7 +284,43 @@ TERM_INFO = [
 ]
 
 
+def delta_in_cycle(data_list: Sequence[T], start_ele: T, nth: int, end_ele: T) -> int:
+    if nth == 0:
+        return 0
+    tl = len(data_list)
+    start_index = data_list.index(start_ele)
+    end_index = data_list.index(end_ele)
+    index_offset = end_index - start_index
+    if nth > 0:
+        start_at = index_offset + tl * bool(index_offset < 0)
+        return start_at + tl * (nth - 1)
+    else:
+        start_at = index_offset - tl * bool(index_offset > 0)
+        return start_at - tl * (-nth - 1)
+
+
 class TermUtils:
+    """API entry for term related logic."""
+
+    @staticmethod
+    def name2index(name: Union[int, str]) -> int:
+        """Return term index from term name.
+
+        >>> TermUtils.name2index(1)
+        1
+        >>> TermUtils.name2index('小寒')
+        1
+        >>> TermUtils.name2index('xh')
+        1
+        """
+        if isinstance(name, int):
+            return name
+        name = name.lower()
+        try:
+            return TERMS_CN.index(name)
+        except ValueError:
+            return TERM_PINYIN.index(name)
+
     @staticmethod
     def parse_term_days(year):
         if year == 2101:
@@ -311,23 +354,16 @@ class TermUtils:
     @staticmethod
     def get_index_for_name(name: str):
         name = name.rstrip("节")
-        return TERMS_CN.index(name)
+        return TermUtils.name2index(name)
 
     @staticmethod
     def get_name_for_index(index: int):
         return TERMS_CN[index]
 
     @staticmethod
-    def nth_term_day(year: int, term_index: Optional[int] = None, term_name: Optional[str] = None) -> datetime.date:
-        """返回公历year年第term_index个或者term_name对应的节气所在公历日期
-        :param year: 公历年份
-        :param term_index: 节气序号，0小寒，1大寒，23冬至
-        :param term_name: 节气名称
-        :return: 一个date对象
-        """
-        if term_name:
-            term_index = TERMS_CN.index(term_name)
-        if not ((1900 <= year <= 2100) or (year == 2101 and term_index in (0, 1))):
+    def _nth_term_day(year: int, term_index: int) -> datetime.date:
+        valid = (1900 <= year <= 2100 and 0 <= term_index < 24) or (year == 2101 and term_index in (0, 1))
+        if not valid:
             raise ValueError('Invalid year-index: {},{}'.format(year, term_index))
         if term_index % 2 == 0:
             month = term_index // 2 + 1
@@ -336,6 +372,43 @@ class TermUtils:
         days = TermUtils.parse_term_days(year)
         day = days[term_index]
         return datetime.date(year, month, day)
+
+    @staticmethod
+    def nth_term_day(year: int, term_index: Optional[int] = None, term_name: Optional[str] = None) -> datetime.date:
+        """Return the solar date for a term in solar year."""
+        if term_name:
+            term_index = TermUtils.name2index(term_name)
+        return TermUtils._nth_term_day(year, term_index)
+
+    @staticmethod
+    def day_start_from_term(year: int, term: Union[int, str], nth: int = 0, day_gz: str = ''):
+        """Return the day starts from a term.
+
+        Example:
+
+        >>> TermUtils.day_start_from_term(2022, '芒种')
+        >>> TermUtils.day_start_from_term(2022, 'mz')
+        >>> TermUtils.day_start_from_term(2022, 10)
+        >>> TermUtils.day_start_from_term(2022, '芒种', 1, '甲')
+        >>> TermUtils.day_start_from_term(2022, '芒种', 1, '子')
+        """
+        if isinstance(term, int):
+            term_day = TermUtils.nth_term_day(year, term_index=term)
+        else:
+            term_day = TermUtils.nth_term_day(year, term_name=term)
+        if nth == 0:
+            return term_day
+        term_lday = LunarDate.from_solar(term_day)
+        if day_gz in TextUtils.STEMS:
+            data_list = TextUtils.STEMS
+            start_ele = term_lday.gz_day[0]
+        elif day_gz in TextUtils.BRANCHES:
+            data_list = TextUtils.BRANCHES
+            start_ele = term_lday.gz_day[1]
+        else:
+            raise ValueError('Invalid stem or branch: {day_gz}'.format(day_gz=day_gz))
+        day_delta = delta_in_cycle(data_list, start_ele=start_ele, nth=nth, end_ele=day_gz)
+        return term_day + datetime.timedelta(days=day_delta)
 
 
 # ------ Stems and Branches ------
@@ -373,10 +446,48 @@ class TextUtils:
     def get_gz_cn(offset: int) -> str:
         """Get n-th(0-based) GanZhi
         """
+        warnings.warn('This method is deprecated.Use TextUtils.offset2gz instead.', DeprecationWarning)
+        return TextUtils.STEMS[offset % 10] + TextUtils.BRANCHES[offset % 12]
+
+    @staticmethod
+    def gz2offset(gz: str) -> int:
+        """Get the index of given string in gz_list. ['甲子', '乙丑',..., '癸亥']"""
+        try:
+            x = TextUtils.STEMS.index(gz[0])
+            y = TextUtils.BRANCHES.index(gz[1])
+            if x % 2 != y % 2:
+                raise ValueError
+            return (6 * x - 5 * y) % 60
+        except (TypeError, ValueError):
+            raise ValueError('Invalid gz string: {gz}'.format(gz=gz))
+
+    @staticmethod
+    def offset2gz(offset: int) -> str:
+        """Get nth(0-based) element of gz_list. ['甲子', '乙丑',..., '癸亥']
+
+        >>> TextUtils.offset2gz(0)
+        '甲子'
+        """
         return TextUtils.STEMS[offset % 10] + TextUtils.BRANCHES[offset % 12]
 
 
 class LunarDate(EncoderMixin):
+    """A date for chinese lunar calendar.
+
+    >>> ld1 = LunarDate(2020, 4, 1)
+    >>> ld2 = LunarDate(2020, 4, 1, 1)
+    >>> ld3 = LunarDate.today()
+    >>> ld2.cn_str()
+    二〇二〇年闰四月初一
+    >>> ld2.strftime('%G')
+    庚子年辛巳月丙寅日
+
+    >>> from datetime import timedelta
+    >>> ld1 + timedelta(days=10)
+    LunarDate(2020, 4, 11, 0)
+    >>> ld1.after(day_delta=10)
+    LunarDate(2020, 4, 11, 0)
+    """
     fields = [f_year, f_month, f_day, f_leap]
 
     def __init__(self, year: int, month: int, day: int, leap: int = 0):
@@ -436,12 +547,12 @@ class LunarDate(EncoderMixin):
         sy, sm, sd = solar_date.year, solar_date.month, solar_date.day
         s_offset = (datetime.date(sy, sm, sd) - MIN_SOLAR_DATE).days
         gz_year = TextUtils.STEMS[(self.year - 4) % 10] + TextUtils.BRANCHES[(self.year - 4) % 12]
-        gz_day = TextUtils.get_gz_cn((s_offset + 40) % 60)
+        gz_day = TextUtils.offset2gz((s_offset + 40) % 60)
         term_name, next_gz_month = TermUtils.get_term_info(sy, sm, sd)
         if next_gz_month:
-            gz_month = TextUtils.get_gz_cn((sy - 1900) * 12 + sm + 12)
+            gz_month = TextUtils.offset2gz((sy - 1900) * 12 + sm + 12)
         else:
-            gz_month = TextUtils.get_gz_cn((sy - 1900) * 12 + sm + 11)
+            gz_month = TextUtils.offset2gz((sy - 1900) * 12 + sm + 11)
         return gz_year, gz_month, gz_day, term_name
 
     @property
@@ -487,6 +598,10 @@ class LunarDate(EncoderMixin):
 
     def cn_str(self) -> str:
         return '{}年{}{}月{}'.format(self.cn_year, self.cn_leap, self.cn_month, self.cn_day)
+
+    @property
+    def cn_md(self) -> str:
+        return '{}{}月{}'.format(self.cn_leap, self.cn_month, self.cn_day)
 
     def gz_str(self) -> str:
         return '{}年{}月{}日'.format(self.gz_year, self.gz_month, self.gz_day)
@@ -549,6 +664,16 @@ class LunarDate(EncoderMixin):
     def tomorrow(cls) -> 'LunarDate':
         sd = datetime.date.today() + datetime.timedelta(days=1)
         return cls.from_solar_date(sd.year, sd.month, sd.day)
+
+    @classmethod
+    def strptime(cls, date_str: str, date_fmt: str) -> 'LunarDate':
+        """Parse a LunarDate object from a whole string.
+
+        >>> LunarDate.strptime('二〇二〇年闰四月廿三', '%C')
+        LunarDate(2020, 4, 23, 1)
+        """
+        from .data_parser import strptime
+        return strptime(date_str, date_fmt)
 
     def __str__(self):
         return 'LunarDate(%d, %d, %d, %d)' % (self.year, self.month, self.day, self.leap)
@@ -641,6 +766,7 @@ class Formatter:
         '%p': 'gz_month',
         '%q': 'gz_day',
         '%C': 'cn_str',
+        '%c': 'cn_md',
         '%G': 'gz_str',
         '%N': 'cn_month_num',
         '%W': 'cn_week',

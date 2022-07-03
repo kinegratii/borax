@@ -137,6 +137,16 @@ class LunarDateTestCase(unittest.TestCase):
         with self.assertRaises(ValueError):
             LCalendars.create_solar_date(2101, 2)
 
+    def test_day_start_from_term(self):
+        day = TermUtils.day_start_from_term(2022, '芒种', 1, '甲')
+        self.assertEqual(date(2022, 6, 10), day)
+        day2 = TermUtils.day_start_from_term(2022, '小暑', 1, '未')
+        self.assertEqual(date(2022, 7, 17), day2)
+        day3 = TermUtils.day_start_from_term(2022, '芒种', 0, '未')
+        self.assertEqual(date(2022, 6, 6), day3)
+        with self.assertRaises(ValueError):
+            TermUtils.day_start_from_term(2022, '冬至', 2, '某')
+
 
 class PrivateMethodsTestCase(unittest.TestCase):
     def test_year_info(self):
@@ -153,7 +163,7 @@ class FormatterTestCase(unittest.TestCase):
         ld = LunarDate(2018, 4, 3)
         self.assertEqual('2018-4-3', ld.strftime('%y-%m-%d'))
         self.assertEqual('二〇一八', ld.strftime('%Y'))
-        self.assertEqual('2018%c', ld.strftime('%y%c'))  # Just ignore %c, no raise error
+        self.assertEqual('2018%z', ld.strftime('%y%z'))  # Just ignore %c, no raise error
 
         ld2 = LunarDate(2018, 11, 23)
         self.assertEqual('二〇一八/冬/廿三', ld2.strftime('%Y/%M/%D'))
@@ -211,3 +221,14 @@ class LCalendarTestCase(unittest.TestCase):
         self.assertEqual(-1, LCalendars.delta(sd, date(2018, 12, 2)))
         self.assertEqual(-1, LCalendars.delta(LunarDate.from_solar(sd), date(2018, 12, 2)))
         self.assertEqual(4, LCalendars.delta(LunarDate(2018, 1, 6), LunarDate(2018, 1, 2)))
+
+
+class GZTestCase(unittest.TestCase):
+    def test_gz_str(self):
+        for offset in range(60):
+            text = TextUtils.offset2gz(offset)
+            ex_offset = TextUtils.gz2offset(text)
+            self.assertEqual(ex_offset, offset)
+
+        with self.assertRaises(ValueError):
+            TextUtils.gz2offset('甲丑')  # No gz string

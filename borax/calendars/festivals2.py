@@ -4,11 +4,12 @@ import calendar
 import collections
 import csv
 import enum
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 from pathlib import Path
-from typing import List, Tuple, Optional, Union, Iterator, Set
+import warnings
+from typing import List, Tuple, Optional, Union, Iterator, Set, Generator, Sequence
 
-from borax.calendars.lunardate import LunarDate, LCalendars, TermUtils, TextUtils
+from borax.calendars.lunardate import LunarDate, LCalendars, TermUtils, TextUtils, TERMS_CN
 
 __all__ = [
     'FestivalError', 'WrappedDate', 'Period',
@@ -46,6 +47,18 @@ class FestivalSchema(enum.IntEnum):
     TERM = 4
 
 
+class FestivalCatalog:
+    basic = 'basic'
+    event = 'event'
+    life = 'life'
+    public = 'public'
+    tradition = 'tradition'
+    term = 'term'
+    other = 'other'
+
+    CATALOGS = ['basic', 'term', 'public', 'tradition', 'event', 'life', 'other']
+
+
 class WrappedDate:
     """A date object with solar and lunar calendars."""
     __slots__ = ['solar', 'lunar', 'name', '_fl']
@@ -64,10 +77,10 @@ class WrappedDate:
         yield self.lunar
 
     def __str__(self):
-        return '{}({})'.format(self.solar, self.lunar.cn_str())
+        return self.simple_str()
 
     def __repr__(self):
-        return '<WrappedDate:{}>'.format(self.__str__())
+        return '<WrappedDate:{}>'.format(self.simple_str())
 
     def __add__(self, other):
         if isinstance(other, timedelta):
@@ -112,6 +125,24 @@ class WrappedDate:
         _year, _month, _day = state
         self.solar = date(_year, _month, _day)
 
+    def full_str(self):
+        return '{}({})'.format(self.solar, self.lunar.cn_str())
+
+    def simple_str(self):
+        """Display as solar and lunar.
+
+        Example:
+            >>>WrappedDate(LunarDate(2022, 3, 4)).simple_str()
+            '2022-04-04(三月初四)'
+        """
+        return '{}({})'.format(self.solar, self.lunar.strftime('%c'))
+
+    @classmethod
+    def from_simple_str(cls, date_str: str) -> 'WrappedDate':
+        end_index = date_str.index('(')
+        solar_str = date_str[:end_index]
+        return cls(datetime.strptime(solar_str, '%Y-%m-%d').date())
+
     def encode(self) -> str:
         if self._fl == 'l':
             festival = LunarFestival(month=self.lunar.month, day=self.lunar.day, leap=self.lunar.leap)
@@ -128,21 +159,23 @@ class WrappedDate:
 
 
 class Period:
+    """A shortcut methods for some specified date Period."""
+
     @staticmethod
-    def solar_year(year):
+    def solar_year(year: int) -> Tuple[date, date]:
         return date(year, 1, 1), date(year, 12, 31)
 
     @staticmethod
-    def solar_month(year, month):
+    def solar_month(year: int, month: int) -> Tuple[date, date]:
         ndays = calendar.monthrange(year, month)[1]
         return date(year, month, 1), date(year, month, ndays)
 
     @staticmethod
-    def lunar_year(year):
+    def lunar_year(year: int) -> Tuple[LunarDate, LunarDate]:
         return LunarDate(year, 1, 1), LunarDate(year + 1, 1, 1) - timedelta(days=1)
 
     @staticmethod
-    def lunar_month(year, month, leap=_IGNORE_LEAP_MONTH):
+    def lunar_month(year: int, month: int, leap: int = _IGNORE_LEAP_MONTH) -> Tuple[LunarDate, LunarDate]:
         has_leap = LCalendars.leap_month(year) == month
         if has_leap:
             if leap == _IGNORE_LEAP_MONTH:
@@ -179,6 +212,7 @@ class Festival:
 
         self._cyear = 0
         self._tmp = {}
+        self._catalog = kwargs.get('catalog')
 
     def gets(self, *args):
         def _get(_f):
@@ -210,13 +244,37 @@ class Festival:
 
     @property
     def description(self) -> str:
-        return self._get_description()
+        """Return the chinese description for this festival.
+
+        >>> ruankao_day = WeekFestival(month=5, index=-1, week=calendar.SATURDAY, name='软考上半年')
+        >>> ruankao_day.description
+        '公历5月最后1个星期六'
+        """
+        return self._get_description().replace('倒数第1', '最后1')
+
+    @property
+    def catalog(self) -> str:
+        return self._catalog
+
+    @catalog.setter
+    def catalog(self, catalog: str):
+        self._catalog = catalog
+
+    @property
+    def catalog_order(self):
+        try:
+            return FestivalCatalog.CATALOGS.index(self.catalog)
+        except (IndexError, ValueError):
+            return 100
 
     def __str__(self):
         return '{} {}'.format(self.name, self.description)
 
     def __repr__(self):
         return '<{} {} {}>'.format(self.__class__.__name__, self.name, self.description)
+
+    def __eq__(self, other):
+        return isinstance(self, type(other)) and other.name == self.name
 
     def is_(self, date_obj: MixedDate) -> bool:
         date_obj = self._normalize(date_obj)
@@ -309,6 +367,7 @@ class Festival:
         days = self.list_days(start_date, end_date, count=1)
         if days:
             return days[0]
+        return None
 
     def countdown(self, date_obj: MixedDate = None) -> Tuple[int, Optional[WrappedDate]]:
         """Return the offset-date tuple of the first day for this festival in future days."""
@@ -369,16 +428,25 @@ class Festival:
         return []
 
     def _resolve_monthly(self, year, month, leap=0) -> List[Union[date, LunarDate]]:
+        """A core method.
+        A day list in the year when month=0.
+        """
         return []
 
     def encode(self) -> str:
+        """Encode as a string."""
         pass
 
 
 class SolarFestival(Festival):
+    """A festival with solar.
+
+    >>> SolarFestival(month=1, day=1, name='元旦')
+    >>> SolarFestival(freq=FreqConst.YEARLY, day=256, name='程序员节')
+    """
     date_class = date
 
-    def __init__(self, *, day, freq=FreqConst.YEARLY, month=0, name=None):
+    def __init__(self, *, day: int, freq: int = FreqConst.YEARLY, month: int = 0, name: str = None):
         if day < 0:
             day = -day
             reverse = 1
@@ -418,6 +486,7 @@ class SolarFestival(Festival):
                     return [date(year, month, _index)]
                 else:
                     _index -= ndays
+            return []
         else:
             if self._reverse == 0:
                 day = self._day
@@ -458,17 +527,46 @@ class SolarFestival(Festival):
 
 
 class WeekFestival(Festival):
+    """A festival with week info.
+
+    >>> WeekFestival(month=5, index=2, week=calendar.SUNDAY, name='母亲节')
+    >>> WeekFestival(month=1, index=-1, week=calendar.SUNDAY, name='国际麻风节')
+    """
     date_class = date
 
-    def __init__(self, *, month, index, week, name=None):
-        super().__init__(name=name, freq=FreqConst.YEARLY, month=month, index=index, week=week)
+    def __init__(self, *, month: int, index: int, week: int, name: str = None):
+        if index < 0:
+            index = -index
+            reverse = 1
+        else:
+            reverse = 0
+        if month == 0:
+            freq = FreqConst.MONTHLY
+        else:
+            freq = FreqConst.YEARLY
+        super().__init__(name=name, freq=freq, month=month, index=index, week=week, reverse=reverse)
 
     def _get_description(self) -> str:
-        return '公历{}月第{}个星期{}'.format(self._month, self._week_index, '一二三四五六日'[self._week_no])
+        index_str = '倒数' if self._reverse == 1 else ''
+        month_str = f'{self._month}月' if self._month > 0 else '每月'
+        return '公历{}{}第{}个星期{}'.format(month_str, index_str, self._week_index, '一二三四五六日'[self._week_no])
 
     def _resolve_yearly(self, year) -> List[Union[date, LunarDate]]:
-        day = WeekFestival.week_day(year, self._month, self._week_index, self._week_no)
+        s_i = -self._week_index if self._reverse == 1 else self._week_index
+        day = WeekFestival.week_day(year, self._month, s_i, self._week_no)
         return [date(year, self._month, day)]
+
+    def _resolve_monthly(self, year, month, leap=0) -> List[Union[date, LunarDate]]:
+        assert self._month == 0
+        s_i = -self._week_index if self._reverse == 1 else self._week_index
+        day_list = []
+        for month in range(1, 13):
+            try:
+                day_no = WeekFestival.week_day(year, month, s_i, self._week_no)
+                day_list.append(date(year, month, day_no))
+            except FestivalError:
+                pass
+        return day_list
 
     @staticmethod
     def week_day(year: int, month: int, index: int, week: int) -> int:
@@ -477,31 +575,64 @@ class WeekFestival(Festival):
             d0 = week - w + 1
         else:
             d0 = 8 - (w - week)
-        d = d0 + 7 * (index - 1)
-        if not 1 <= d <= ndays:
-            raise FestivalError("DateDoesNotExist", "The date({}, {}, {}) is not a valid date.".format(year, month, d))
-        return d
+
+        ds = list(range(d0, ndays + 1, 7))
+        ll = len(ds)
+        if -ll <= index < 0:
+            return ds[index]
+        elif 0 < index <= ll:
+            return ds[index - 1]
+        else:
+            raise FestivalError('InvalidIndex', f'Invalid index: {index}')
 
     def encode(self) -> str:
-        return '2{:02d}{:02d}{}'.format(self._month, self._week_index, self._week_no)
+        return '2{:02d}{}{}{}'.format(self._month, self._reverse, self._week_index, self._week_no)
 
 
 class TermFestival(Festival):
+    """A festival with term.
+
+    >>> TermFestival(name="清明")
+    >>> TermFestival(term='芒种', nth=1, day_gz='丙', name='入梅')
+    """
     date_class = date
 
-    def __init__(self, *, index=None, name=None):
-        if index is None:
-            index = TermUtils.get_index_for_name(name)
+    def __init__(self, term: Union[int, str] = None, nth: int = 0, day_gz: str = None, **kwargs):
+        index = kwargs.get('index')
+        name = kwargs.get('name')
+        values = [term, index, name]
+        val = None
+        for v in values:
+            if v is not None:
+                val = v
+                break
+        if val is None:
+            raise ValueError('Any fields is required.')
+        t_index = TermUtils.name2index(val)
+        t_name = TERMS_CN[t_index]
+        super().__init__(freq=FreqConst.YEARLY, name=t_name, index=t_index)
+        self._nth = nth
+        self._day_gz = day_gz
+        self._term_name = t_name
+        if self._nth != 0 and not (self._day_gz in TextUtils.BRANCHES or self._day_gz in TextUtils.STEMS):
+            raise ValueError('Invalid day_gz: {}'.format(day_gz))
+        if self._nth == 0:
+            self.set_name(t_name)
         else:
-            name = TermUtils.get_name_for_index(index)
-        super().__init__(freq=FreqConst.YEARLY, name=name, index=index)
+            self.set_name(name)
 
     def _get_description(self) -> str:
-        return '公历每年{}节气'.format(self.name)
+        if self._nth == 0:
+            return '公历每年{}节气'.format(self._term_name)
+        else:
+            if self._nth > 0:
+                return '公历每年{}起第{}个{}日'.format(self._term_name, self._nth, self._day_gz)
+            else:
+                return '公历每年{}前第{}个{}日'.format(self._term_name, -self._nth, self._day_gz)
 
     def _resolve_yearly(self, year) -> List[Union[date, LunarDate]]:
         try:
-            date_obj = TermUtils.nth_term_day(year, term_index=self._term_index, term_name=self._name)
+            date_obj = TermUtils.day_start_from_term(year, term=self._term_index, nth=self._nth, day_gz=self._day_gz)
             return [date_obj]
         except ValueError as e:
             if str(e).startswith('Invalid'):
@@ -510,13 +641,32 @@ class TermFestival(Festival):
                 raise ValueError from e
 
     def encode(self) -> str:
-        return '400{:02d}0'.format(self._term_index)
+        if self._nth == 0:
+            return '400{:02d}0'.format(self._term_index)
+
+        gi, zi = TextUtils.STEMS.find(self._day_gz), TextUtils.BRANCHES.find(self._day_gz)
+        # g=1,2; z=3,4
+        if gi != -1:
+            x = 1 + int(self._nth < 0)
+            y = abs(self._nth)
+            z = gi
+        else:
+            x = 3 + int(self._nth < 0)
+            y = abs(self._nth)
+            z = zi
+        return '4{}{}{:02d}{:X}'.format(x, y, self._term_index, z)
 
 
 class LunarFestival(Festival):
+    """A festival with lunar date.
+
+    >>> LunarFestival(day=-1, name='除夕')
+    >>> LunarFestival(month=8, day=15, name='中秋节')
+    """
     date_class = LunarDate
 
-    def __init__(self, *, day, freq=FreqConst.YEARLY, month=0, leap=_IGNORE_LEAP_MONTH, name=None):
+    def __init__(self, *, day: int, freq: int = FreqConst.YEARLY, month: int = 0, leap: int = _IGNORE_LEAP_MONTH,
+                 name: str = None):
         if day < 0:
             day = -day
             reverse = 1
@@ -645,18 +795,17 @@ def encode(obj: Union[WrappedDate, Festival]) -> str:
 
 
 def decode_festival(raw: Union[str, bytes]) -> Festival:
+    """Create a festival object from encoded string."""
     if isinstance(raw, bytes):
         raw = raw.decode()
-    if not raw[:-1].isdigit() or raw[-1] not in '0123456789ABCDEF':
+    if not (len(raw) in (6, 10) and raw[:-1].isdigit() and raw[-1] in '0123456789ABCDEF'):
         raise ValueError('Invalid raw:{}'.format(raw))
     cyear = 0
     if len(raw) == 10:
         schema, month, day, flag = int(raw[0]), int(raw[5:7]), int(raw[7:9]), int(raw[9], 16)
         cyear = int(raw[1:5])
-    elif len(raw) == 6:
-        schema, month, day, flag = int(raw[0]), int(raw[1:3]), int(raw[3:5]), int(raw[5], 16)
     else:
-        raise ValueError('Invalid length.')
+        schema, month, day, flag = int(raw[0]), int(raw[1:3]), int(raw[3:5]), int(raw[5], 16)
     if schema == FestivalSchema.LUNAR_OLD:
         if flag == 1:
             schema, flag = FestivalSchema.LUNAR, 2
@@ -695,10 +844,29 @@ def decode_festival(raw: Union[str, bytes]) -> Festival:
             del attrs['leap']
     elif schema == FestivalSchema.WEEK:
         attrs['month'] = month
-        attrs['index'] = day
+        if day > 10:
+            attrs['index'] = -(day % 10)
+        else:
+            attrs['index'] = day
         attrs['week'] = flag
     elif schema == FestivalSchema.TERM:
-        attrs['index'] = day
+        attrs['term'] = day
+        nth_val = month
+        day_gz_v = flag
+        if nth_val != 0:
+            nth = nth_val % 10
+            nth_t = nth_val // 10
+            if nth_t % 2 == 0:
+                nth = -nth
+            attrs['nth'] = nth
+            if nth_t in (1, 2):
+                day_gz = TextUtils.STEMS[day_gz_v]
+            elif nth_t in (3, 4):
+                day_gz = TextUtils.BRANCHES[day_gz_v]
+            else:
+                raise ValueError('Invalid day_gz')
+            attrs['day_gz'] = day_gz
+
     obj = cls(**attrs)
     if cyear:
         obj.cyear = cyear
@@ -726,7 +894,13 @@ def decode(raw: Union[str, bytes]) -> Union[WrappedDate, Festival]:
 
 
 class FestivalLibrary(collections.UserList):
-    """A festival collection."""
+    """A festival collection.
+
+    >>> fl = FestivalLibrary.load_builtin()
+    >>> new_year_festival = fl.get_festival('元旦')
+    >>> new_year_festival.list_days(*Period.solar_year(2022))
+    [<WrappedDate:2022-01-01(冬月廿九)>]
+    """
 
     def get_code_set(self) -> Set[str]:
         """Get codes for all festivals.
@@ -736,7 +910,7 @@ class FestivalLibrary(collections.UserList):
     def extend_unique(self, other):
         """Add a new festival if code does not exist.
         """
-        f_codes = set({f.encode() for f in self.data})
+        f_codes = {f.encode() for f in self.data}
         if isinstance(other, collections.UserList):
             new_data = other.data
         else:
@@ -771,7 +945,12 @@ class FestivalLibrary(collections.UserList):
 
     def iter_festival_countdown(
             self, countdown: Optional[int] = None, date_obj: MixedDate = None
-    ) -> Iterator[Tuple[int, List]]:
+    ) -> Generator[Tuple[int, List[WrappedDate]], None, None]:
+        """Return day delta and its day list."""
+
+        warnings.warn('This method is deprecated. Use FestivalLibrary.list_days_in_countdown instead.',
+                      DeprecationWarning)
+
         ndays2festivals = collections.defaultdict(list)
         for festival in self:
             ndays, gd = festival.countdown(date_obj)
@@ -779,6 +958,35 @@ class FestivalLibrary(collections.UserList):
                 ndays2festivals[ndays].append(gd)
         for offset in sorted(ndays2festivals.keys()):
             yield offset, ndays2festivals[offset]
+
+    def list_days_in_countdown(
+            self, countdown: Optional[int] = None, date_obj: MixedDate = None
+    ) -> List[Tuple[int, WrappedDate, Festival]]:
+        """List the days in countdown and their festivals.
+
+        Example:
+            [
+                (18, <WrappedDate:2022-06-01(五月初三)>, <SolarFestival 儿童节 公历每年6月1日>),
+                ...
+            ]
+        """
+        data_items = []
+        for festival in self:
+            ndays, gd = festival.countdown(date_obj)
+            if countdown is None or ndays <= countdown:
+                data_items.append((ndays, gd, festival))
+        data_items.sort(key=lambda item: (item[0], item[2].catalog_order))
+        return data_items
+
+    def list_days(self, start_date=None, end_date=None):
+        """Return the day list matched festivals in this library."""
+        data_items = []
+        for festival in self:
+            day_list = festival.list_days(start_date, end_date)
+            for day in day_list:
+                data_items.append([day, festival])
+        data_items.sort(key=lambda item: (item[0].solar, item[1].catalog_order))
+        return data_items
 
     def iter_month_daytuples(self, year: int, month: int, firstweekday: int = 0, return_pos: bool = False):
         """迭代返回公历月份（含前后完整日期）中每个日期信息
@@ -809,34 +1017,56 @@ class FestivalLibrary(collections.UserList):
 
     def monthdaycalendar(self, year: int, month: int, firstweekday: int = 0):
         """返回二维列表，每一行表示一个星期。逻辑同iter_month_daytuples。
-        :param year:
-        :param month:
-        :param firstweekday:
-        :return:
         """
         days = list(self.iter_month_daytuples(year, month, firstweekday))
         return [days[i:i + 7] for i in range(0, len(days), 7)]
 
+    def to_csv(self, path_or_buf):
+        """Save festival list data to a csv file."""
+        if isinstance(path_or_buf, str):
+            fileobj = open(path_or_buf, 'w', encoding='utf8', newline='')
+        elif isinstance(path_or_buf, Path):
+            fileobj = path_or_buf.open('w', encoding='utf8', newline='')
+        else:
+            fileobj = path_or_buf
+        writer = csv.writer(fileobj, )
+        for festival in self:
+            row = (festival.encode(), festival.name, festival.catalog)
+            writer.writerow(row)
+
     @classmethod
-    def load_file(cls, file_path: Union[str, Path]) -> 'FestivalLibrary':
+    def load_file(cls, file_path: Union[str, Path], unique: bool = False) -> 'FestivalLibrary':
+        """Load festival list from a external file."""
         if isinstance(file_path, str):
             file_path = Path(file_path)
         fl = cls()
-        field_names = ['raw', 'name']
+        field_names = ['raw', 'name', 'catalog']
         with file_path.open(encoding='utf8') as f:
             reader = csv.DictReader(f, fieldnames=field_names)
             code_set = fl.get_code_set()
             for row in reader:
                 code = row['raw']
-                if code in code_set:
+                if unique and code in code_set:
                     continue
                 code_set.add(code)
                 try:
                     festival = decode_festival(row['raw'])
                     festival.set_name(row['name'])
+                    festival.catalog = row.get('catalog')
                     fl.append(festival)
                 except ValueError:
                     continue
+        fl.sort(key=lambda x: x.encode())
+        return fl
+
+    def filter(self, catalogs: Sequence = None) -> 'FestivalLibrary':
+        """Return a new FestivalLibrary object filtered by query conditions."""
+        if isinstance(catalogs, str):
+            catalogs = catalogs,
+        fl = FestivalLibrary()
+        for festival in self:
+            if catalogs and festival.catalog in catalogs:
+                fl.append(festival)
         return fl
 
     def load_term_festivals(self):
@@ -844,10 +1074,16 @@ class FestivalLibrary(collections.UserList):
         return self.extend_unique(['400{:02d}0'.format(i) for i in range(24)])
 
     @classmethod
-    def load_builtin(cls, identifier: str = 'zh-Hans') -> 'FestivalLibrary':
-        """Load builtin library in borax project."""
+    def load_builtin(cls, identifier: str = 'basic') -> 'FestivalLibrary':
+        """Load builtin library in borax project.
+
+        Available Identifiers: basic, zh-Hans, ext1
+        """
+        if identifier == 'zh-Hans':  # Old identifier
+            identifier = 'basic'
         file_dict = {
-            'zh-Hans': 'FestivalData.csv'
+            'basic': 'FestivalData.csv',
+            'ext1': 'dataset/festivals_ext1.csv'
         }
         file_path = Path(__file__).parent / file_dict.get(identifier)
         return cls.load_file(file_path)

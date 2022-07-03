@@ -2,6 +2,10 @@
 
 > 模块： `borax.calendars.festivals2`
 
+> Updated in 3.5.6: 星期型节日(WeekFestival)类支持倒数序号。如：“国际麻风节(1月最后一个星期天)”
+
+> Updated in 3.5.6: 星期型节日(WeekFestival)类支持每月频率。
+
 > Add in 3.5.0
 
 
@@ -62,7 +66,7 @@ ld = wd.lunar
 print(sd) # 2021-01-01
 print(ld) # LunarDate(2020, 11, 18, 0)
 ```
- ### 日期计算
+### 日期计算
 
 `WrappedDate` 也支持日期的计算。原则是 **只要操作数中有一个是WrappedDate对象，结果就是WrappedDate对象**。
 
@@ -75,7 +79,7 @@ print(ld) # LunarDate(2020, 11, 18, 0)
 | WappedDate       | -      | timedelta        | WappedDate  |
 
 
- ### 序列化
+### 序列化
 
  `WrappedDate` 支持编码序列化，参见 日期序列化 一节。
 
@@ -104,40 +108,126 @@ Period 是一个工具类，提供了一系列方法，这些方法均返回一�
 
 ## 节日定义
 
-节日是对日期（公历和农历）的进一步抽象。
+节日是对日期（公历和农历）的进一步抽象，Borax支持下列几种形式的节日。
 
-| 节日                        | 表示法                                               | 规范化描述             |
-| --------------------------- | ---------------------------------------------------- | ---------------------- |
-| 元旦                        | SolarFestival(month=1, day=1)                        | 农历每年正月初一       |
-| 中秋节                      | LunarFestival(month=8, day=15)                       | 农历每年八月十五       |
-| 母亲节（每年5月第二个周日） | WeekFestival(month=5, index=2, week=calendar.SUNDAY) | 公历每年5月第2个星期日 |
-| 除夕                        | LunarFestival(month=12, day=-1)                      | 农历每年腊月最后一天   |
-|                             | LunarFestival(day=-1)                                | 农历每年最后一天       |
-| 程序员节                    | SolarFestival(freq=FreqConst.YEARLY，day=256)         | 公历每年第256天        |
-| 清明节                      | TemFestival(name="清明")                             | 公历每年清明           |
-| 每月5日                     | SolarFestival(freq=FreqConst.MONTHLY， day=5)       | 公历每月5日            |
+| 节日                          | 表示法                                                     | 规范化描述                |
+| ----------------------------- | ---------------------------------------------------------- | ------------------------- |
+| 元旦                          | SolarFestival(month=1, day=1)                              | 农历每年正月初一          |
+| 中秋节                        | LunarFestival(month=8, day=15)                             | 农历每年八月十五          |
+| 母亲节（每年5月第二个周日）   | WeekFestival(month=5, index=2, week=calendar.SUNDAY)       | 公历每年5月第2个星期日    |
+| 除夕                          | LunarFestival(day=-1)                                      | 农历每年最后一天          |
+| 程序员节                      | SolarFestival(freq=FreqConst.YEARLY，day=256)              | 公历每年第256天           |
+| 清明节                        | TemFestival(name="清明")                                   | 公历每年清明              |
+|                               | TermFestival(name='qm')                                    | 公历每年清明 <sup>1</sup> |
+|                               | TermFestival('清明')                                       | 公历每年清明 <sup>2</sup> |
+| 入梅 <sup>3</sup>             | TermFestival(term='芒种', nth=1, day_gz='丙', name='入梅') | 公历每年芒种之后第1个丙日 |
+| 每月5日                       | SolarFestival(freq=FreqConst.MONTHLY， day=5)              | 公历每月5日               |
+| 国际麻风节 <sup>4</sup>       | WeekFestival(month=1, index=-1, week=calendar.SUNDAY)      | 公历1月倒数第1个星期日    |
+| 每月最后一个周日 <sup>5</sup> | WeekFestival(month=0, index=-1, week=calendar.SUNDAY)      | 公历每月倒数第1个星期日   |
 
-festivals模块使用4个类表示节日，各个类的初始化函数签名如下：
 
+
+1. (v3.5.6新增)。参见 `TermFestival`。
+2. (v3.5.6新增)。参见 `TermFestival`。
+2. (v3.5.6新增)。参见 `TermFestival`。
+2. (v3.5.6新增)。参见 `WeekFestival` 。
+2. (v3.5.6新增)。参见 `WeekFestival` 。
+
+festivals模块使用4个类表示节日。
+
+### SolarFestival
 
 ```python
-class SolarFestival(day, freq=FreqConst.YEARLY, year=0, month=0)
-class WeekFestival(month, index, week)
-class TermFestival(name)
-class LunarFestival(day, freq=FreqConst.YEARLY, year=0, month=0, leap=0)
+class SolarFestival(*, day: int, freq: int = FreqConst.YEARLY, month: int = 0, name: str = None)
 ```
 
-各参数定义如下：
+参数定义
 
-| 参数  | 描述                                                         | 默认值           |
-| ----- | ------------------------------------------------------------ | ---------------- |
-| freq  | 节日频率，“每年”或“每月”，默认“每年”。取值参见 `FreqConst`。 | FreqConst.YEARLY |
-| year  | 年份。默认不设置                                             |                  |
-| month | 月份。取值为 0 ~ 12                                          | 0                |
-| leap  | 闰月标记。取值参见 `LeapConst`。                             | LeapConst.MIXED  |
-| day   | 日期序号。当month未设置时，表示一年的第几天；否则表示该月的第几天。允许取负值，表示一年/一个月的倒数 第几天。 | 必要参数         |
-| index | 序号。从1开始计数。                                          | 必要参数         |
-| week  | 星期表示。同`calendar.MONTHDAY` 等。                         | 必要参数         |
+| 参数  | 描述                                                         | 取值           |
+| ----- | ------------------------------------------------------------ | -------------- |
+| freq  | 节日频率，“每年”或“每月”，默认“每年”。                       | 0:每年；1:每月 |
+| month | 月份。                                    | 0,1-12         |
+| day   | 日期序号。当month取值0时，表示一年的第几天；否则表示该月的第几天。允许取负值，表示一年/一个月的倒数 第几天。 |                |
+
+6种形式定义
+
+| 定义 | 描述 |
+| ---- | ---- |
+| SolarFestival(month=1, day=1) | '公历每年1月1日' |
+| SolarFestival(month=1, day=-1) | '公历每年1月最后1天' |
+| SolarFestival(day=1) | '公历每年第1天' |
+| SolarFestival(day=-1) | '公历每年最后1天' |
+| SolarFestival(freq=FreqConst.MONTHLY, day=1) | '公历每月1日' |
+| SolarFestival(freq=FreqConst.MONTHLY, day=-1) | '公历每月最后1天' |
+
+### LunarFestival
+
+```python
+class LunarFestival(*, day:int, freq:int=FreqConst.YEARLY, month:int=0, leap:int=_IGNORE_LEAP_MONTH, name: str=None)
+```
+
+参数定义
+
+| 参数  | 描述                                                         | 默认值          |
+| ----- | ------------------------------------------------------------ | --------------- |
+| freq  | 节日频率，“每年”或“每月”，默认“每年”。                       | 0:每年；1:每月  |
+| month | 月份。                                                       | 0,1-12          |
+| leap  | 闰月标记。取值参见 `LeapConst`。                             | LeapConst.MIXED |
+| day   | 日期序号。当month未设置时，表示一年的第几天；否则表示该月的第几天。允许取负值，表示一年/一个月的倒数 第几天。 |                 |
+
+### WeekFestival
+
+> Updated in 3.5.6: index参数支持负数，表示倒数计数。month支持取值0，表示每月性节日。
+
+```python
+class WeekFestival(*, month: int, index: int, week: int, name: str = None)
+```
+
+参数定义
+
+| 参数  | 描述                                 | 默认值    |
+| ----- | ------------------------------------ | --------- |
+| month | 月份。取值为 0 ~ 12                  | 0,1-12    |
+| index | 序号。支持正向计数和倒数计数。       | 1-9,-1--9 |
+| week  | 星期表示。同`calendar.MONTHDAY` 等。 | 0-6       |
+
+### TermFestival
+
+> Updated in 3.5.6: 新增term参数，原有的index参数被废弃。term和name参数支持拼音首字符形式。
+
+v3.5.6以上。
+
+```python
+class TermFestival(term: Union[int, str] = None, nth: int = 0, day_gz: str = None, **kwargs
+```
+
+v3.5.1-v3.5.5
+
+```python
+class TermFestival(*，index:int=None, name:str=None)
+```
+
+支持以下几种方式定义，（以小寒为例子）。
+
+```python
+TermFestival(0) # 仅3.5.6+
+TermFestival('小寒') # 仅3.5.6+
+TermFestival('xh') # 仅3.5.6+
+TermFestival('XH') # 仅3.5.6+
+
+TermFestival(name='小寒')
+TermFestival(index=0)
+```
+
+参数定义
+
+| 参数   | 描述                                       | 备注      |
+| ------ | ------------------------------------------ | --------- |
+| term   | 节气，取值节气序号、中文名称、拼音首字母。 | 3.5.6新增 |
+| index  | 节气序号。                                 |           |
+| name   | 节气名称。                                 |           |
+| nth    | 计数，可取值负数，表示倒数计数。           |           |
+| day_gz | 天干或地支标签。                           |           |
 
 ## Festival属性
 
@@ -147,11 +237,9 @@ class LunarFestival(day, freq=FreqConst.YEARLY, year=0, month=0, leap=0)
 
 ### description
 
-> Add in v3.5.1
+> Add in 3.5.1
 
 类型：str，节日的标准化描述，如“公历每年1月1日”、“公历每年八月十五”、“公历每年6月第2个星期六”等。
-
-设置节日对象的 name。
 
 例子
 
@@ -160,13 +248,17 @@ import calendar
 from borax.calendars.festivals2 import SolarFestival, LunarFestival, WeekFestival
 
 print(SolarFestival(month=1, day=1).description) # '公历每年1月1日'
-print(SolarFestival(month=1, day=-1).description) # '公历每年1月倒数第1天'
+print(SolarFestival(month=1, day=-1).description) # '公历每年1月最后1天'
 print(SolarFestival(day=1).description) # '公历每年第1天'
 print(LunarFestival(month=1, day=1).description) # '农历每年正月初一'
 print(WeekFestival(month=5, index=2, week=calendar.SUNDAY, name='母亲节').description) # '公历5月第2个星期日'
 ```
 
+### catalog
 
+> Add in 3.5.6
+
+类型:str，节日的分类标识。
 
 ## Festival API
 
@@ -357,7 +449,43 @@ FestivalLibrary.get_festival_names(self, date_obj: MixedDate) -> list
 
 获取某一个日期的节日名称列表。
 
+### list_days_in_countdown
+
+> Add in 3.5.6
+
+```python
+FestivalLibrary.list_days_in_countdown(countdown: Optional[int] = None, date_obj: MixedDate = None
+    ) -> List[Tuple[int, WrappedDate, Festival]]
+```
+
+迭代获取某个时间的倒计时信息。
+
+计算节日及其距离今天（2021年5月4日）的天数
+
+```python
+
+from borax.calendars.festivals2 import FestivalLibrary
+
+library = FestivalLibrary.load_builtin()
+for ndays, wd, festival in library.list_days_in_countdown(countdown=365):
+    print(f'{ndays:>3d} {wd} {festival.name}')
+```
+
+输出结果
+
+```
+  0 2022-05-04(四月初四) 青年节
+  4 2022-05-08(四月初八) 母亲节
+  8 2022-05-12(四月十二) 护士节
+...
+332 2023-04-01(闰二月十一) 愚人节
+336 2023-04-05(闰二月十五) 清明
+362 2023-05-01(三月十二) 劳动节
+```
+
 ### iter_festival_countdown
+
+> Deprecated in 3.5.6: 可使用 `list_days_in_countdown` 方法。
 
 ```python
 FestivalLibrary.iter_festival_countdown(self, countdown: Optional[int] = None, date_obj: MixedDate = None) -> Iterator[Tuple[int, List]]
@@ -379,41 +507,20 @@ for nday, gd_list in fl.iter_festival_countdown():
 输出
 
 ```
-  7 儿童节 2021-06-01(二〇二一年四月廿一)
- 20 端午节 2021-06-14(二〇二一年五月初五)
- 26 父亲节 2021-06-20(二〇二一年五月十一)
- 68 建军节 2021-08-01(二〇二一年六月廿三)
- 81 七夕 2021-08-14(二〇二一年七月初七)
- 89 中元节 2021-08-22(二〇二一年七月十五)
-108 教师节 2021-09-10(二〇二一年八月初四)
-119 中秋节 2021-09-21(二〇二一年八月十五)
-129 国庆节 2021-10-01(二〇二一年八月廿五)
-142 重阳节 2021-10-14(二〇二一年九月初九)
-184 感恩节 2021-11-25(二〇二一年十月廿一)
-210 冬至 2021-12-21(二〇二一年冬月十八)
-213 平安夜 2021-12-24(二〇二一年冬月廿一)
-214 圣诞节 2021-12-25(二〇二一年冬月廿二)
-221 元旦 2022-01-01(二〇二一年冬月廿九)
-230 腊八节 2022-01-10(二〇二一年腊月初八)
-251 除夕 2022-01-31(二〇二一年腊月廿九)
-252 春节 2022-02-01(二〇二二年正月初一)
-265 情人节 2022-02-14(二〇二二年正月十四)
-266 元宵节 2022-02-15(二〇二二年正月十五)
-287 妇女节 2022-03-08(二〇二二年二月初六)
-291 植树节 2022-03-12(二〇二二年二月初十)
-311 愚人节 2022-04-01(二〇二二年三月初一)
-315 清明 2022-04-05(二〇二二年三月初五)
-341 劳动节 2022-05-01(二〇二二年四月初一)
-344 青年节 2022-05-04(二〇二二年四月初四)
-348 母亲节 2022-05-08(二〇二二年四月初八)
-352 护士节 2022-05-12(二〇二二年四月十二)
+  7 儿童节 2021-06-01(四月廿一)
+ 20 端午节 2021-06-14(五月初五)
+ 26 父亲节 2021-06-20(五月十一)
+...
+344 青年节 2022-05-04(四月初四)
+348 母亲节 2022-05-08(四月初八)
+352 护士节 2022-05-12(四月十二)
 ```
 
 ### iter_month_daytuples
 
-> Added in v3.5.2
+> Updated in 3.5.5: 新增 `return_pos` 参数
 
-> Updated in v3.5.5: 新增 `return_pos` 参数
+> Added in 3.5.2
 
 ```python
 FestivalLibrary.iter_month_daytuples(year: int, month: int, firstweekday: int = 0, return_pos:bool = False)
@@ -483,7 +590,7 @@ pprint.pprint(days)
 
 ### monthdaycalendar
 
-> Added in v3.5.2
+> Added in 3.5.2
 
 ```python
 FestivalLibrary.monthdaycalendar(year: int, month: int, firstweekday: int = 0)
@@ -491,56 +598,19 @@ FestivalLibrary.monthdaycalendar(year: int, month: int, firstweekday: int = 0)
 
 返回二维列表，每一行表示一个星期。逻辑同iter_month_daytuples。
 
+### to_csv
 
-## 序列化和存储
-
-
-## 综合使用示例
-
-###  两头春、无头春
+> Add in 3.5.6
 
 ```python
-# 农历两头春，无头春。在农历year年时间段，立春的个数。
-
-from borax.calendars.festivals2 import TermFestival, Period
-from borax.calendars.lunardate import MIN_LUNAR_YEAR, MAX_LUNAR_YEAR
-
-tf = TermFestival(name='立春')
-for year in range(MIN_LUNAR_YEAR, MAX_LUNAR_YEAR):
-    start_date, end_date = Period.lunar_year(year)
-    ncount = len(tf.list_days(start_date, end_date))
-    print('{}({}) - {}({})    {}'.format(
-        start_date.cn_str(),
-        start_date.to_solar_date(),
-        end_date.cn_str(),
-        end_date.to_solar_date(),
-        ncount
-    ))
-
+FestivalLibrary.to_csv(path_or_buf)
 ```
 
+保存到 csv 文件。
 
-输出
-```
-...
- 
-二〇一一年正月初一(2011-02-03) - 二〇一一年腊月廿九(2012-01-22)    1
-二〇一二年正月初一(2012-01-23) - 二〇一二年腊月廿九(2013-02-09)    2
-二〇一三年正月初一(2013-02-10) - 二〇一三年腊月三十(2014-01-30)    0
-二〇一四年正月初一(2014-01-31) - 二〇一四年腊月三十(2015-02-18)    2
-二〇一五年正月初一(2015-02-19) - 二〇一五年腊月廿九(2016-02-07)    1
-二〇一六年正月初一(2016-02-08) - 二〇一六年腊月三十(2017-01-27)    0
-二〇一七年正月初一(2017-01-28) - 二〇一七年腊月三十(2018-02-15)    2
-二〇一八年正月初一(2018-02-16) - 二〇一八年腊月三十(2019-02-04)    1
-二〇一九年正月初一(2019-02-05) - 二〇一九年腊月三十(2020-01-24)    0
-二〇二〇年正月初一(2020-01-25) - 二〇二〇年腊月三十(2021-02-11)    2
-二〇二一年正月初一(2021-02-12) - 二〇二一年腊月廿九(2022-01-31)    0
-二〇二二年正月初一(2022-02-01) - 二〇二二年腊月三十(2023-01-21)    1
-二〇二三年正月初一(2023-01-22) - 二〇二三年腊月三十(2024-02-09)    2
-二〇二四年正月初一(2024-02-10) - 二〇二四年腊月廿九(2025-01-28)    0
-二〇二五年正月初一(2025-01-29) - 二〇二五年腊月廿九(2026-02-16)    2
-二〇二六年正月初一(2026-02-17) - 二〇二六年腊月廿九(2027-02-05)    1
- 
-...
-```
+
+
+
+
+
 
