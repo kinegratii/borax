@@ -1,6 +1,3 @@
-# coding=utf8
-
-
 import re
 from decimal import Decimal
 

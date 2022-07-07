@@ -1,6 +1,3 @@
-# coding=utf8
-
-
 def format_percentage(numerator: int, denominator: int, *, places: int = 2, null_val: str = '-') -> str:
     if denominator == 0:
         return null_val

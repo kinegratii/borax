@@ -1,4 +1,3 @@
-# coding=utf8
 """
 fetch is a enhance module with fetch. And adjust the parameter order of calling to fit the habit.
 """

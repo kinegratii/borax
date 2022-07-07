@@ -1,5 +1,3 @@
-# coding=utf8
-
 import html
 from typing import Dict, List, Union
 

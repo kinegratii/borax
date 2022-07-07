@@ -1,5 +1,3 @@
-# coding=utf8
-
 import re
 from itertools import chain
 

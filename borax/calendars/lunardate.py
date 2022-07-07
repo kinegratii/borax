@@ -1,4 +1,3 @@
-# coding=utf8
 import datetime
 import re
 import warnings

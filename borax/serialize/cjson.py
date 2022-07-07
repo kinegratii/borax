@@ -1,6 +1,3 @@
-# coding=utf8
-
-
 import json
 from datetime import datetime, date
 from functools import singledispatch

@@ -1,5 +1,3 @@
-# coding=utf8
-
 class AttributeDict(dict):
     def __getattr__(self, key):
         try:

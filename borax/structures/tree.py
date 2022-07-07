@@ -1,5 +1,3 @@
-# coding=utf8
-
 __all__ = ['pll2cnl']
 
 

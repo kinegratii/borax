@@ -1,4 +1,3 @@
-# coding=utf8
 import calendar
 from collections import OrderedDict
 from datetime import date, datetime, timedelta

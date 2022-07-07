@@ -1,5 +1,3 @@
-# coding=utf8
-
 import unittest
 
 from borax.counters.serial_pool import serial_no_generator, LabelFormatOpts, SerialNoPool

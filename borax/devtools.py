@@ -1,6 +1,3 @@
-# coding=utf8
-
-
 import time
 from collections import defaultdict, namedtuple
 from contextlib import contextmanager
@@ -12,6 +9,7 @@ TagMeasureResult = namedtuple('TagMeasureResult', 'name total count avg')
 
 class RuntimeMeasurer:
     """A time measurer for a program."""
+
     def __init__(self):
         self._data = defaultdict(list)
         self._start_time_dict = {}
