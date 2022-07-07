@@ -31,7 +31,7 @@ with open('README.md', encoding='utf8') as f:
 setup(
     name='borax',
     version=version,
-    python_requires='>=3.5',
+    python_requires='>=3.7',
     packages=find_packages(exclude=['tests']),
     include_package_data=True,
     license='MIT',

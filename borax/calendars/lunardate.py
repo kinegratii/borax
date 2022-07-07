@@ -3,10 +3,6 @@ import re
 import warnings
 from typing import Optional, Iterator, Tuple, TypeVar, Sequence, Union
 
-from .store import (
-    EncoderMixin, f_year, f_month, f_day, f_leap
-)
-
 __all__ = ['LunarDate', 'LCalendars', 'InvalidLunarDateError', 'TermUtils', 'TextUtils', 'TERMS_CN']
 T = TypeVar('T')
 
@@ -470,7 +466,7 @@ class TextUtils:
         return TextUtils.STEMS[offset % 10] + TextUtils.BRANCHES[offset % 12]
 
 
-class LunarDate(EncoderMixin):
+class LunarDate:
     """A date for chinese lunar calendar.
 
     >>> ld1 = LunarDate(2020, 4, 1)
@@ -487,7 +483,6 @@ class LunarDate(EncoderMixin):
     >>> ld1.after(day_delta=10)
     LunarDate(2020, 4, 11, 0)
     """
-    fields = [f_year, f_month, f_day, f_leap]
 
     def __init__(self, year: int, month: int, day: int, leap: int = 0):
         offset = ymdl2offset(year, month, day, leap)
