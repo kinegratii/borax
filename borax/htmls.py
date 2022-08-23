@@ -43,13 +43,14 @@ def html_params(**kwargs) -> str:
             pass
         elif isinstance(v, dict):
             v = {k_: v_ for k_, v_ in v.items() if v_ not in (None, '', [], ())}
-            vs = ''.join(['{}:{};'.format(k, v) for k, v in v.items()])
-            params.append('%s="%s"' % (str(k), vs))
+            vs = ''.join([f'{k}:{v};' for k, v in v.items()])
+            params.append(f'{k}="{vs}"')
         elif isinstance(v, list):
             vs = ' '.join(map(str, v))
-            params.append('%s="%s"' % (str(k), vs))
+            params.append(f'{k}="{vs}"')
         else:
-            params.append('%s="%s"' % (str(k), html.escape(str(v), quote=True)))
+            vs = html.escape(str(v), quote=True)
+            params.append(f'{k}="{vs}"')
     return ' '.join(params)
 
 
@@ -75,7 +76,7 @@ def html_tag(tag_name: str, content: str = None,
         kw['class_'] = class_
     kw.update(kwargs)
     if tag_name in SINGLE_TAGS:
-        return HTMLString('<{0} {1}>'.format(tag_name, html_params(**kw)))
+        return HTMLString(f'<{tag_name} {html_params(**kw)}>')
     else:
         content = content or ''
-        return HTMLString('<{0} {1}>{2}</{0}>'.format(tag_name, html_params(**kw), content))
+        return HTMLString(f'<{tag_name} {html_params(**kw)}>{content}</{tag_name}>')

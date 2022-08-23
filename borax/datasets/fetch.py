@@ -27,7 +27,7 @@ def bget(obj, key, default=Empty):
     if default is not EMPTY:
         return default
 
-    raise ValueError('Item %r has no attr or key for %r' % (obj, key))
+    raise ValueError(f'Item {obj!r} has no attr or key for {key!r}')
 
 
 def ifetch_single(iterable, key, default=EMPTY, getter=None):

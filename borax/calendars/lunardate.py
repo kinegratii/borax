@@ -27,7 +27,7 @@ MAX_OFFSET = 73411  # (MAX_SOLAR_DATE - MIN_SOLAR_DATE).days
 
 def _check_year_range(year):
     if year < MIN_LUNAR_YEAR or year > MAX_LUNAR_YEAR:
-        raise InvalidLunarDateError('[year={}]: Year must be in the range [1900, 2100]'.format(year))
+        raise InvalidLunarDateError(f'[year={year}]: Year must be in the range [1900, 2100]')
 
 
 # lunar year 1900~2100
@@ -63,7 +63,7 @@ def _parse_leap(year_info):
     elif leap_month <= 12:
         leap_days = (year_info >> 16) % 2 + 29
     else:
-        raise ValueError("yearInfo 0x{0:x} mod 16 should in [0, 12]".format(year_info))
+        raise ValueError("yearInfo 0x{year_info:x} mod 16 should in [0, 12]")
     return leap_month, leap_days
 
 
@@ -125,7 +125,7 @@ class LCalendars:
             if (_month, _leap) == (month, leap):
                 return _days
         else:
-            raise InvalidLunarDateError('[year={},month={},leap={}]: Invalid month.'.format(year, month, leap))
+            raise InvalidLunarDateError(f'[year={year},month={month},leap={leap}]: Invalid month.')
 
     @staticmethod
     def get_leap_years(month: int = 0) -> tuple:
@@ -148,7 +148,7 @@ class LCalendars:
     def cast_date(date_obj, target_class):
         if not (isinstance(date_obj, (datetime.date, LunarDate)) or (
                 hasattr(date_obj, 'solar') and hasattr(date_obj, 'lunar'))):
-            raise TypeError('Unsupported type: {}'.format(date_obj.__class__.__name__))
+            raise TypeError(f'Unsupported type: {date_obj.__class__.__name__}')
         if isinstance(date_obj, target_class):
             return date_obj
         if isinstance(date_obj, LunarDate):
@@ -199,11 +199,10 @@ def ymdl2offset(year, month, day, leap):
                     res += _day - 1
                     return res
                 else:
-                    raise InvalidLunarDateError(
-                        "[year={},month={},day={},leap={}]:Invalid day".format(year, month, day, leap))
+                    raise InvalidLunarDateError(f"[year={year},month={month},day={day},leap={leap}]:Invalid day")
             res += _days_
 
-        raise InvalidLunarDateError('[year={},month={},leap={}]: Invalid month.'.format(year, month, leap))
+        raise InvalidLunarDateError(f'[year={year},month={month},leap={leap}]: Invalid month.')
 
     offset = 0
     _check_year_range(year)
@@ -359,7 +358,7 @@ class TermUtils:
     def _nth_term_day(year: int, term_index: int) -> datetime.date:
         valid = (1900 <= year <= 2100 and 0 <= term_index < 24) or (year == 2101 and term_index in (0, 1))
         if not valid:
-            raise ValueError('Invalid year-index: {},{}'.format(year, term_index))
+            raise ValueError(f'Invalid year-index: {year},{term_index}')
         if term_index % 2 == 0:
             month = term_index // 2 + 1
         else:
@@ -401,7 +400,7 @@ class TermUtils:
             data_list = TextUtils.BRANCHES
             start_ele = term_lday.gz_day[1]
         else:
-            raise ValueError('Invalid stem or branch: {day_gz}'.format(day_gz=day_gz))
+            raise ValueError(f'Invalid stem or branch: {day_gz}')
         day_delta = delta_in_cycle(data_list, start_ele=start_ele, nth=nth, end_ele=day_gz)
         return term_day + datetime.timedelta(days=day_delta)
 
@@ -454,7 +453,7 @@ class TextUtils:
                 raise ValueError
             return (6 * x - 5 * y) % 60
         except (TypeError, ValueError):
-            raise ValueError('Invalid gz string: {gz}'.format(gz=gz))
+            raise ValueError(f'Invalid gz string: {gz}')
 
     @staticmethod
     def offset2gz(offset: int) -> str:
@@ -551,15 +550,15 @@ class LunarDate:
 
     @property
     def cn_year(self) -> str:
-        return '{}'.format(TextUtils.year_cn(self.year))
+        return TextUtils.year_cn(self.year)
 
     @property
     def cn_month(self) -> str:
-        return '{}'.format(TextUtils.month_cn(self.month))
+        return TextUtils.month_cn(self.month)
 
     @property
     def cn_day(self) -> str:
-        return '{}'.format(TextUtils.day_cn(self.day))
+        return TextUtils.day_cn(self.day)
 
     @property
     def cn_leap(self) -> str:
@@ -574,9 +573,9 @@ class LunarDate:
     def cn_day_calendar(self) -> str:
         if self.day == 1:
             if self.leap:
-                return '闰{}月'.format(self.cn_month_num)
+                return f'闰{self.cn_month_num}月'
             else:
-                return '{}月'.format(self.cn_month_num)
+                return f'{self.cn_month_num}月'
         else:
             return self.cn_day
 
@@ -591,14 +590,14 @@ class LunarDate:
         return TextUtils.DAYS_CN[self.weekday()]
 
     def cn_str(self) -> str:
-        return '{}年{}{}月{}'.format(self.cn_year, self.cn_leap, self.cn_month, self.cn_day)
+        return f'{self.cn_year}年{self.cn_leap}{self.cn_month}月{self.cn_day}'
 
     @property
     def cn_md(self) -> str:
-        return '{}{}月{}'.format(self.cn_leap, self.cn_month, self.cn_day)
+        return f'{self.cn_leap}{self.cn_month}月{self.cn_day}'
 
     def gz_str(self) -> str:
-        return '{}年{}月{}日'.format(self.gz_year, self.gz_month, self.gz_day)
+        return f'{self.gz_year}年{self.gz_month}月{self.gz_day}日'
 
     def to_solar_date(self) -> datetime.date:
         return MIN_SOLAR_DATE + datetime.timedelta(days=self.offset)
@@ -628,7 +627,7 @@ class LunarDate:
 
     def __format__(self, fmt):
         if not isinstance(fmt, str):
-            raise TypeError("must be str, not %s" % type(fmt).__name__)
+            raise TypeError(f"must be str, not {type(fmt).__name__}")
         if len(fmt) != 0:
             return self.strftime(fmt)
         return str(self)
@@ -670,7 +669,7 @@ class LunarDate:
         return strptime(date_str, date_fmt)
 
     def __str__(self):
-        return 'LunarDate(%d, %d, %d, %d)' % (self.year, self.month, self.day, self.leap)
+        return f'LunarDate({self.year}, {self.month}, {self.day}, {self.leap})'
 
     __repr__ = __str__
 
@@ -708,7 +707,7 @@ class LunarDate:
         try:
             return self - other < datetime.timedelta(0)
         except TypeError as ex:
-            raise TypeError("can't compare LunarDate to %s" % (type(other).__name__,)) from ex
+            raise TypeError(f"can't compare LunarDate to {type(other).__name__}") from ex
 
     def __le__(self, other):
         return self < other or self == other
@@ -813,7 +812,7 @@ class Formatter:
             return ''
 
     def get_padding_month(self, obj: LunarDate) -> str:
-        return '{0:02d}'.format(obj.month)
+        return f'{obj.month:02d}'
 
     def get_padding_day(self, obj: LunarDate) -> str:
-        return '{0:02d}'.format(obj.day)
+        return f'{obj.day:02d}'

@@ -80,7 +80,7 @@ class WrappedDate:
         return self.simple_str()
 
     def __repr__(self):
-        return '<WrappedDate:{}>'.format(self.simple_str())
+        return f'<WrappedDate:{self.simple_str()}>'
 
     def __add__(self, other):
         if isinstance(other, timedelta):
@@ -126,7 +126,7 @@ class WrappedDate:
         self.solar = date(_year, _month, _day)
 
     def full_str(self):
-        return '{}({})'.format(self.solar, self.lunar.cn_str())
+        return f'{self.solar}({self.lunar.cn_str()})'
 
     def simple_str(self):
         """Display as solar and lunar.
@@ -191,7 +191,7 @@ class Period:
 class FestivalError(Exception):
     def __init__(self, label, message, **kwargs):
         self._label = label
-        self.message = '{}:{}'.format(label, message)
+        self.message = f'{label}:{message}'
         super().__init__(self.message)
 
 
@@ -459,19 +459,19 @@ class SolarFestival(Festival):
         day_order = False
         if self._freq == FreqConst.YEARLY:
             if self._month != 0:
-                cn_list.append('每年{}月'.format(self._month))
+                cn_list.append(f'每年{self._month}月')
             else:
                 cn_list.append('每年')
                 day_order = True
         else:
             cn_list.append('每月')
         if self._reverse:
-            cn_list.append('倒数第{}天'.format(self._day))
+            cn_list.append(f'倒数第{self._day}天')
         else:
             if day_order:
-                cn_list.append('第{}天'.format(self._day))
+                cn_list.append(f'第{self._day}天')
             else:
-                cn_list.append('{}日'.format(self._day))
+                cn_list.append(f'{self._day}日')
         return ''.join(cn_list)
 
     def _resolve_yearly(self, year) -> List[Union[date, LunarDate]]:
@@ -560,10 +560,10 @@ class WeekFestival(Festival):
         assert self._month == 0
         s_i = -self._week_index if self._reverse == 1 else self._week_index
         day_list = []
-        for month in range(1, 13):
+        for m_month in range(1, 13):
             try:
-                day_no = WeekFestival.week_day(year, month, s_i, self._week_no)
-                day_list.append(date(year, month, day_no))
+                day_no = WeekFestival.week_day(year, m_month, s_i, self._week_no)
+                day_list.append(date(year, m_month, day_no))
             except FestivalError:
                 pass
         return day_list
@@ -615,7 +615,7 @@ class TermFestival(Festival):
         self._day_gz = day_gz
         self._term_name = t_name
         if self._nth != 0 and not (self._day_gz in TextUtils.BRANCHES or self._day_gz in TextUtils.STEMS):
-            raise ValueError('Invalid day_gz: {}'.format(day_gz))
+            raise ValueError(f'Invalid day_gz: {day_gz}')
         if self._nth == 0:
             self.set_name(t_name)
         else:
@@ -623,12 +623,12 @@ class TermFestival(Festival):
 
     def _get_description(self) -> str:
         if self._nth == 0:
-            return '公历每年{}节气'.format(self._term_name)
+            return f'公历每年{self._term_name}节气'
         else:
             if self._nth > 0:
-                return '公历每年{}起第{}个{}日'.format(self._term_name, self._nth, self._day_gz)
+                return f'公历每年{self._term_name}起第{self._nth}个{self._day_gz}日'
             else:
-                return '公历每年{}前第{}个{}日'.format(self._term_name, -self._nth, self._day_gz)
+                return f'公历每年{self._term_name}前第{-self._nth}个{self._day_gz}日'
 
     def _resolve_yearly(self, year) -> List[Union[date, LunarDate]]:
         try:
@@ -686,12 +686,12 @@ class LunarFestival(Festival):
         else:
             cn_list.append('每月')
         if self._reverse:
-            cn_list.append('倒数第{}天'.format(self._day))
+            cn_list.append(f'倒数第{self._day}天')
         else:
             if day_order:
-                cn_list.append('第{}天'.format(self._day))
+                cn_list.append(f'第{self._day}天')
             else:
-                cn_list.append('{}'.format(TextUtils.day_cn(self._day)))
+                cn_list.append(TextUtils.day_cn(self._day))
         return ''.join(cn_list)
 
     def _resolve_yearly(self, year: int) -> List[Union[date, LunarDate]]:
@@ -799,7 +799,7 @@ def decode_festival(raw: Union[str, bytes]) -> Festival:
     if isinstance(raw, bytes):
         raw = raw.decode()
     if not (len(raw) in (6, 10) and raw[:-1].isdigit() and raw[-1] in '0123456789ABCDEF'):
-        raise ValueError('Invalid raw:{}'.format(raw))
+        raise ValueError(f'Invalid raw:{raw}')
     cyear = 0
     if len(raw) == 10:
         schema, month, day, flag = int(raw[0]), int(raw[5:7]), int(raw[7:9]), int(raw[9], 16)
@@ -813,7 +813,7 @@ def decode_festival(raw: Union[str, bytes]) -> Festival:
             schema, flag = FestivalSchema.LUNAR, 0
 
     if schema not in __SCHEMA_CLASS_DICT:
-        raise ValueError('Invalid schema: {}'.format(schema))
+        raise ValueError(f'Invalid schema: {schema}')
     cls = __SCHEMA_CLASS_DICT[schema]
 
     attrs = {}
@@ -1071,7 +1071,7 @@ class FestivalLibrary(collections.UserList):
 
     def load_term_festivals(self):
         """Add 24-term festivals."""
-        return self.extend_unique(['400{:02d}0'.format(i) for i in range(24)])
+        return self.extend_unique([f'400{i:02d}0' for i in range(24)])
 
     @classmethod
     def load_builtin(cls, identifier: str = 'basic') -> 'FestivalLibrary':

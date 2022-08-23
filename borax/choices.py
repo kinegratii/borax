@@ -33,7 +33,7 @@ class Item:
         return self._display
 
     def __str__(self):
-        return '<{0} value={1!r} label={2!r}>'.format(self.__class__.__name__, self.value, self.label)
+        return f'<{self.__class__.__name__} value={self.value!r} label={self.label!r}>'
 
     __repr__ = __str__
 

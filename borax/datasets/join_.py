@@ -43,7 +43,7 @@ class OnClause(tuple):
         elif cm == "tuple":
             return cls(*val[:2])
         else:
-            raise TypeError("Cannot build OnClause from a {} object.".format(cm))
+            raise TypeError(f"Cannot build OnClause from a {cm} object.")
 
 
 class SelectClause(tuple):
@@ -61,7 +61,7 @@ class SelectClause(tuple):
         elif cm == "tuple":
             return cls(*val[:3])
         else:
-            raise TypeError("Cannot build SelectClause from a {} object.".format(cm))
+            raise TypeError(f"Cannot build SelectClause from a {cm} object.")
 
 
 OC = OnClause

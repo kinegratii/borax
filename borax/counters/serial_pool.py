@@ -42,7 +42,7 @@ class LabelFormatOpts:
                 base_char = ft[0][-1]
                 base, digits = b2p_dict.get(base_char), int(ft[0][2:-1])
             else:
-                raise ValueError('{} Define different formatter for no variable.'.format(fmt_str))
+                raise ValueError(f'{fmt_str} Define different formatter for no variable.')
         new_field_fmt = '{{no:0{0}{1}}}'.format(digits, base_char)
 
         self.origin_fmt = fmt_str
@@ -68,6 +68,7 @@ class LabelFormatOpts:
         m = self.parse_re.match(label)
         if m:
             return int(m.group('no'), base=self.base)
+        raise ValueError(f'Error Value {label}')
 
 
 class SerialElement:
@@ -92,9 +93,9 @@ class SerialNoPool:
             digits = self._opts.digits
 
         if lower is not None and lower < 0:
-            raise ValueError('lower(={}) must be >= 0.'.format(lower))
+            raise ValueError(f'lower(={lower}) must be >= 0.')
         if upper is not None and upper <= 0:
-            raise ValueError('upper(={}) must be >= 0.'.format(upper))
+            raise ValueError(f'upper(={upper}) must be >= 0.')
         s_set = base and digits
         t_set = lower is not None and upper is not None
 
@@ -103,7 +104,7 @@ class SerialNoPool:
             if s_set:
                 cl, cu = 0, base ** digits
                 if not (lower >= cl and upper <= cu):
-                    raise ValueError('The lower-upper [{},{}) is not in [{},{})'.format(lower, upper, cl, cu))
+                    raise ValueError(f'The lower-upper [{lower},{upper}) is not in [{cl},{cu})')
         else:
             if s_set:
                 self._lower, self._upper = 0, base ** digits
@@ -154,11 +155,11 @@ class SerialNoPool:
             elif isinstance(ele, str):
                 value = self._opts.label2value(ele)
             else:
-                raise TypeError('Invalid element {}:unsupported type.'.format(ele))
+                raise TypeError(f'Invalid element {ele}:unsupported type.')
             if self._lower <= value < self._upper:
                 values.append(value)
             else:
-                raise ValueError('Invalid element {}: range error'.format(ele))
+                raise ValueError(f'Invalid element {ele}: range error')
         return values
 
     # ---------- Generate API ----------

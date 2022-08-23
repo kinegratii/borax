@@ -73,4 +73,4 @@ class Percentage:
         )
 
     def __str__(self):
-        return '<Percentage:{} {}>'.format(self.display, self.percent_display)
+        return f'<Percentage:{self.display} {self.percent_display}>'
