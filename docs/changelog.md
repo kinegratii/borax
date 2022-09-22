@@ -3,6 +3,7 @@
 ## v4.0.0
 
 - 修正 `LunarDate` 显示星期错误的问题 （[#49](https://github.com/kinegratii/borax/issues/49)）
+- `FestivalLibrary.list_days_in_countdown` 新增 `countdown_ordered` 参数，表示是否按倒计天数排序
 
 ## v3.5.6 (20220703)
 
