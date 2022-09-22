@@ -1080,6 +1080,8 @@ class FestivalLibrary(collections.UserList):
 
         Available Identifiers: basic, zh-Hans, ext1
         """
+        if identifier == 'empty':
+            return FestivalLibrary()
         if identifier == 'zh-Hans':  # Old identifier
             identifier = 'basic'
         file_dict = {
