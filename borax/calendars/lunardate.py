@@ -594,7 +594,7 @@ class LunarDate(EncoderMixin):
 
     @property
     def cn_week(self) -> str:
-        return TextUtils.DAYS_CN[self.weekday()]
+        return TextUtils.DAYS_CN[self.isoweekday()%7]
 
     def cn_str(self) -> str:
         return '{}年{}{}月{}'.format(self.cn_year, self.cn_leap, self.cn_month, self.cn_day)

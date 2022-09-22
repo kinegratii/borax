@@ -1,5 +1,9 @@
 # 更新日志
 
+## v4.0.0
+
+- 修正 `LunarDate` 显示星期错误的问题 （[#49](https://github.com/kinegratii/borax/issues/49)）
+
 ## v3.5.6 (20220703)
 
 [发布日志](/release-note/v356)
