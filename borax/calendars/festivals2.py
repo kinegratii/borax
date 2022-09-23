@@ -960,7 +960,7 @@ class FestivalLibrary(collections.UserList):
             yield offset, ndays2festivals[offset]
 
     def list_days_in_countdown(
-            self, countdown: Optional[int] = None, date_obj: MixedDate = None
+            self, countdown: Optional[int] = None, date_obj: MixedDate = None, countdown_ordered:bool = True
     ) -> List[Tuple[int, WrappedDate, Festival]]:
         """List the days in countdown and their festivals.
 
@@ -975,7 +975,8 @@ class FestivalLibrary(collections.UserList):
             ndays, gd = festival.countdown(date_obj)
             if countdown is None or ndays <= countdown:
                 data_items.append((ndays, gd, festival))
-        data_items.sort(key=lambda item: (item[0], item[2].catalog_order))
+        if countdown_ordered:
+            data_items.sort(key=lambda item: (item[0], item[2].catalog_order))
         return data_items
 
     def list_days(self, start_date=None, end_date=None):
@@ -1079,6 +1080,8 @@ class FestivalLibrary(collections.UserList):
 
         Available Identifiers: basic, zh-Hans, ext1
         """
+        if identifier == 'empty':
+            return FestivalLibrary()
         if identifier == 'zh-Hans':  # Old identifier
             identifier = 'basic'
         file_dict = {
