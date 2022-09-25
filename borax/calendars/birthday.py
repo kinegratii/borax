@@ -33,5 +33,5 @@ def actual_age_lunar(birthday, today=None):
     else:
         today = LunarDate.today()
     return today.year - birthday.year - (
-            (today.month, today.leap, today.day) < (birthday.month, birthday.leap, birthday.day)
+        (today.month, today.leap, today.day) < (birthday.month, birthday.leap, birthday.day)
     )

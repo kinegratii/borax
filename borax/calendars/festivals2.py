@@ -13,7 +13,7 @@ from borax.calendars.lunardate import LunarDate, LCalendars, TermUtils, TextUtil
 
 __all__ = [
     'FestivalError', 'WrappedDate', 'Period',
-    'FreqConst',
+    'FreqConst', 'Festival', 'FestivalSchema',
     'SolarFestival', 'LunarFestival', 'WeekFestival', 'TermFestival',
     'encode', 'decode', 'decode_festival',
     'FestivalLibrary',
@@ -960,7 +960,7 @@ class FestivalLibrary(collections.UserList):
             yield offset, ndays2festivals[offset]
 
     def list_days_in_countdown(
-            self, countdown: Optional[int] = None, date_obj: MixedDate = None, countdown_ordered:bool = True
+            self, countdown: Optional[int] = None, date_obj: MixedDate = None, countdown_ordered: bool = True
     ) -> List[Tuple[int, WrappedDate, Festival]]:
         """List the days in countdown and their festivals.
 

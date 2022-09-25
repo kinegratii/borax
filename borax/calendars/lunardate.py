@@ -587,7 +587,7 @@ class LunarDate:
 
     @property
     def cn_week(self) -> str:
-        return TextUtils.DAYS_CN[self.isoweekday()%7]
+        return TextUtils.DAYS_CN[self.isoweekday() % 7]
 
     def cn_str(self) -> str:
         return f'{self.cn_year}年{self.cn_leap}{self.cn_month}月{self.cn_day}'

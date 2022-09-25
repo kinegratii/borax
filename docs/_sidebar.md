@@ -3,11 +3,12 @@
   - [农历与节日](guides/festivals2-usage)
 - **● Borax.Calendar**
   - [农历](guides/lunardate)
-  - [节日(festivals2) <sup style="color:red">New!<sup>](guides/festivals2)
+  - [节日(festivals2)](guides/festivals2)
   - [日期节日序列化](guides/festivals2-serialize)
   - [节日(festivals)](guides/festival)
   - [生日](guides/birthday)
   - [工具类](guides/calendars-utils)
+  - [节日界面库 <sup style="color:red">New!<sup>](guides/festivals-ui)
 - **● Borax.Datasets**
   - [数据连接(Join)](guides/join)
   - [列选择器(fetch)](guides/fetch)

@@ -40,5 +40,10 @@ setup(
     classifiers=lib_classifiers,
     description='A tool collections.(Chinese-Lunar-Calendars/Python-Patterns)',
     long_description=long_description,
-    long_description_content_type='text/markdown'
+    long_description_content_type='text/markdown',
+    entry_points={
+        "gui_scripts": [
+            "festival_creator = borax.apps.festival_creator:main"
+        ]
+    },
 )
