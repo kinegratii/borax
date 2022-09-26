@@ -252,13 +252,13 @@ class FestivalCreatePanel(ttk.Frame):
     def _create(self, event=None):
         try:
             festival = self._vm.validate()
-            self._festival_table.add_new_festival(festival)
+            self._festival_table.add_festival(festival)
             self._festival_detail.set(f'{festival.description} {festival.encode()}')
         except ValidateError as e:
             self._msg_label.splash(str(e), foreground='red')
 
     def _delete(self, event=None):
-        self._festival_table.delete_selected()
+        self._festival_table.delete_selected_festivals()
 
     def _export(self, event=None):
         filename = filedialog.asksaveasfilename(parent=self, title='保存到', defaultextension='.csv',
@@ -281,7 +281,7 @@ class FestivalCreatePanel(ttk.Frame):
             self._load_new_festival_library(f_library)
 
     def _load_new_festival_library(self, f_library: FestivalLibrary):
-        self._festival_table.update_data(f_library)
+        self._festival_table.add_festivals_from_library(f_library)
         self._msg_label.splash('加载成功', foreground='green')
 
 

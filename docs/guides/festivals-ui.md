@@ -4,11 +4,18 @@
 
 本模块提供了若干个可重用的基于 `tkinter.ttk` 的界面组件。
 
+| 组件         | 类                                    |
+| ------------ | ------------------------------------- |
+| 日历组件     | borax.calendars.ui.CalendarFrame      |
+| 节日表格组件 | borax.calendars.ui.FestivalTableFrame |
+
+
+
 ## 日历组件：CalendarFrame
 
-```
-borax.calendars.ui.CalendarFrame
-```
+
+
+![calendar-frame](../images/calendar_frame.png)
 
 ### 创建组件
 
@@ -45,10 +52,11 @@ cf.pack(side='top', expand=True, fill=tk.X)
 例如：使用自定义节日源
 
 ```python
+from borax.calendars.festivals2 import FestivalLibrary
+from borax.calendars.ui import CalendarFrame
 
 my_library = FestivalLibrary.load_file('./my_festivals.csv')
-
-bcw = CalendarFrame(master, festival_source=my_library)
+cf = CalendarFrame(master, festival_source=my_library)
 ```
 
 
@@ -68,11 +76,11 @@ bcw = CalendarFrame(master, festival_source=my_library)
 
 ### 属性和方法
 
-**year_and_month**
+- **year_and_month**
 
 返回当前页面的年月。
 
-**翻页page_to**
+- **翻页page_to**
 
 将日历翻页到指定月份，trigger控制是否触发 PageChanged 事件。有以下四种使用方式：
 
@@ -93,24 +101,11 @@ cf.page_to(2022, 9)  # 指定月
 cf.page_to(2022, 9, 1)  # 2022年9月的下一个月
 ```
 
-更为复杂的起止日期选择。
 
-```python
-start_f = CalendarFrame()
-
-sy, sm = start_f.year_and_month
-end_f = CalendarFrame()
-end_f.page_to(sy, sm, 1) # 结束日期选择框设置为开始日期的下一个月
-
-```
 
 ## 节日表格组件 FestivalTableFrame
 
-```
-borax.calendars.ui.FestivalTableFrame
-```
-
-
+![image1](../images/festival_table.png)
 
 ### 概述
 
@@ -121,24 +116,18 @@ borax.calendars.ui.FestivalTableFrame
 - 添加新节日
 - 删除已有节日
 
-界面如下：
-
-![image1](../images/image1.png)
-
-
-
 ### 创建组件
 
 ```python
-ftf = FestivalTableFrame(master=None, colunms:Sequeue=None, source: str = 'empty',  **kwargs)
+ftf = FestivalTableFrame(master=None, colunms:Sequeue=None, festival_source:Union[str,FestivalLibrary]='empty',  **kwargs)
 ```
 
 构建参数及其意义如下：
 
-| 参数            | 描述             | 说明 |
-| --------------- | ---------------- | ---- |
-| colunms:Sequeue | 列定义           |      |
-| source:str      | 节日源，默认为空 |      |
+| 参数                                               | 描述             |
+| -------------------------------------------------- | ---------------- |
+| colunms:Sequeue                                    | 列定义           |
+| festival_source:Union[str,FestivalLibrary]='empty' | 节日源，默认为空 |
 
 表格列定义方式如下：
 
@@ -146,17 +135,40 @@ ftf = FestivalTableFrame(master=None, colunms:Sequeue=None, source: str = 'empty
 # 只定义列名，宽度默认为200px
 colums = ('name','description', 'code')
 
-# 定义列名合宽度
-columns = (("name", 100), ("description", 200), ("code", 120), ("next_day", 200), ("countdown", 100))
+# 定义列名和宽度
+columns = (("name", 100), ("description", 200), ("code", 120))
 ```
 
 可用的列如下表：
 
-| 名称        | 描述               | 示例 |
-| ----------- | ------------------ | ---- |
-| name        | 名称               |      |
-| code        | 编码               |      |
-| description | 描述字符串         |      |
-| next_day    | 下一个日期         |      |
-| ndays       | 下一个日期倒计天数 |      |
+| 名称        | 描述               |
+| ----------- | ------------------ |
+| name        | 名称               |
+| code        | 编码               |
+| description | 描述字符串         |
+| next_day    | 下一个日期         |
+| ndays       | 下一个日期倒计天数 |
 
+### 属性
+
+- **festival_library**
+
+组件关联的节日库对象。
+
+### 方法
+
+- `add_festival(festival:Festival)`
+
+添加新的节日。
+
+- `add_festivals_from_library(library:FestivalLibrary)`
+
+从另一个节日库添加多个节日。
+
+- `delete_selected_festivals()`
+
+删除所选择的节日，支持多选。
+
+- `notify_data_changed()`
+
+重新根据 `FestivalTableFrame.festival_library` 刷新表格数据。

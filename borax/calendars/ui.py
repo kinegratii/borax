@@ -179,10 +179,14 @@ class FestivalItemAdapter:
 class FestivalTableFrame(ttk.Frame):
     """A table frame displaying festivals with CURD feature."""
 
-    def __init__(self, master=None, columns: Sequence = None, source: str = 'empty', **kwargs):
+    def __init__(self, master=None, columns: Sequence = None, festival_source: Union[str, FestivalLibrary] = 'empty',
+                 **kwargs):
         super().__init__(master=master, **kwargs)
         self._adapter = FestivalItemAdapter(columns)
-        self._library = FestivalLibrary.load_builtin(source)
+        if isinstance(festival_source, FestivalLibrary):
+            self._library = festival_source
+        else:
+            self._library = FestivalLibrary.load_builtin(festival_source)
         self._tree = ttk.Treeview(self, column=self._adapter.displays, show='headings')
         self._tree.pack(side='left', fill='both')
         verscrlbar = ttk.Scrollbar(self, orient="vertical", command=self._tree.yview)
@@ -192,25 +196,27 @@ class FestivalTableFrame(ttk.Frame):
             self._tree.column(f"# {i}", anchor=tk.CENTER, width=self._adapter.widths[i - 1])
             self._tree.heading(f"# {i}", text=name)
 
+        self.notify_data_changed()
+
     @property
     def festival_library(self) -> FestivalLibrary:
         return self._library
 
-    def add_new_festival(self, festival: Festival):
+    def notify_data_changed(self):
+        for ndays, wd, festival in self._library.list_days_in_countdown():
+            values = self._adapter.object2values(festival, wd, ndays)
+            self._tree.insert('', 'end', text="1", values=values)
+
+    def add_festival(self, festival: Festival):
         values = self._adapter.object2values(festival)
         self._tree.insert('', 'end', text="1", values=values)
         self._library.append(festival)
 
-    def delete_selected(self):
+    def add_festivals_from_library(self, new_library: FestivalLibrary):
+        for festival in new_library:
+            self.add_festival(festival)
+
+    def delete_selected_festivals(self):
         # Get selected item to Delete
         for selected_item in self._tree.selection():
             self._tree.delete(selected_item)
-
-    def update_data(self, new_library: FestivalLibrary = None):
-        if new_library:
-            for festival in new_library:
-                self.add_new_festival(festival)
-        else:
-            for ndays, wd, festival in self._library.list_days_in_countdown():
-                values = self._adapter.object2values(festival, wd, ndays)
-                self._tree.insert('', 'end', text="1", values=values)

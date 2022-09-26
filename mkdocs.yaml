@@ -26,6 +26,7 @@ nav:
     - 序列化: guides/festivals2-serialize.md
     - 生日: guides/birthday.md
     - 工具类: guides/calendars-utils.md
+    - 日历界面库: guides/festivals-ui.md
   - 数据结构与数字:
     - 数据连接(Join): guides/join.md
     - 列选择器(fetch): guides/fetch.md
