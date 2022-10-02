@@ -902,6 +902,10 @@ class FestivalLibrary(collections.UserList):
     [<WrappedDate:2022-01-01(冬月廿九)>]
     """
 
+    def print_(self):
+        for festival in self:
+            print(festival)
+
     def get_code_set(self) -> Set[str]:
         """Get codes for all festivals.
         """
@@ -926,6 +930,14 @@ class FestivalLibrary(collections.UserList):
                         self.data.append(festival)
                 except ValueError:
                     pass
+        return self
+
+    def delete_by_indexes(self, indexes: list):
+        """Delete items by indexes."""
+        index_list = sorted(indexes, reverse=True)
+        for idx in index_list:
+            if idx < len(self):
+                self.pop(idx)
         return self
 
     def get_festival(self, name: str) -> Optional[Festival]:
@@ -1078,7 +1090,7 @@ class FestivalLibrary(collections.UserList):
     def load_builtin(cls, identifier: str = 'basic') -> 'FestivalLibrary':
         """Load builtin library in borax project.
 
-        Available Identifiers: basic, zh-Hans, ext1
+        Available Identifiers: basic, zh-Hans, ext1, empty
         """
         if identifier == 'empty':
             return FestivalLibrary()

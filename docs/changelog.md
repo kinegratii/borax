@@ -2,6 +2,8 @@
 
 ## v4.0.0
 
+- 移除源代码文件编码声明行
+- 移除 `borax.calendars.festival` 模块
 - 修正 `LunarDate` 显示星期错误的问题 （[#49](https://github.com/kinegratii/borax/issues/49)）
 - `FestivalLibrary.list_days_in_countdown` 新增 `countdown_ordered` 参数，表示是否按倒计天数排序
 - `FestivalLibrary.load_builtin` 支持创建空库

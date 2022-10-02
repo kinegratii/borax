@@ -417,6 +417,16 @@ FestivalLibrary.extend_unique(other)
 
 添加多个节日对象，类似于 extend 方法，但是如果code已经存在则不再加入。
 
+### delete_by_indexes
+
+> Add in v4.0.0
+
+```python
+FestivalLibrary.delete_by_indexes(indexes:list)
+```
+
+按照位置删除多个元素。
+
 ### load_file
 
 ```python

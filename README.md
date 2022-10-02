@@ -31,7 +31,14 @@ Borax 是一个Python3工具集合库。包括了以下几个话题：
 
 ## 安装 (Installation)
 
-Borax 要求 Python3.5+ ,可以通过 *pip* 安装 ：
+Borax 的 python 版本要求如下
+
+| borax 版本 | python版本 |
+| ------ | ------ |
+| 4.x | 3.7+ |
+| 3.x | 3.5+ |
+
+可以通过 *pip* 安装 ：
 
 ```shell
 $ pip install borax

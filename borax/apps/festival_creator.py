@@ -19,7 +19,7 @@ class ChoicesCombobox(ttk.Combobox):
         self._empty_value = empty_value
         choices = choices or ()
         self._values, displays = zip(*choices)
-        super(ChoicesCombobox, self).__init__(master=master, values=displays, state='readonly', **kw)
+        super().__init__(master=master, values=displays, state='readonly', **kw)
         self.bind('<<ComboboxSelected>>', self._widget2variable)
         if self._val_variable:
             # set trigger for self._val_variable.set(xxx)
@@ -37,7 +37,7 @@ class ChoicesCombobox(ttk.Combobox):
             if self._value_selected:
                 self._value_selected(val)
 
-    def _variable2widget(self, *args):
+    def _variable2widget(self):
         val = self._val_variable.get()
         try:
             pos = self._values.index(val)
@@ -246,7 +246,7 @@ class FestivalCreatePanel(ttk.Frame):
         ttk.Label(frame2, textvariable=self._festival_detail).pack(side='top')
 
         columns = (("name", 100), ("description", 200), ("code", 120), ("next_day", 200), ("countdown", 100))
-        self._festival_table = FestivalTableFrame(self, source='empty', columns=columns)
+        self._festival_table = FestivalTableFrame(self, festival_source='empty', columns=columns)
         self._festival_table.pack(side='top', expand=True, fill=tk.BOTH, padx=10, pady=10)
 
     def _create(self, event=None):
@@ -265,6 +265,7 @@ class FestivalCreatePanel(ttk.Frame):
                                                 filetypes=(('csv', 'csv'),))
         if filename:
             self._festival_table.festival_library.to_csv(filename)
+            self._msg_label.splash('导出成功', foreground='green')
 
     def _on_source_selected(self, val: str):
         if val == 'custom':

@@ -218,5 +218,8 @@ class FestivalTableFrame(ttk.Frame):
 
     def delete_selected_festivals(self):
         # Get selected item to Delete
+        indexes = []
         for selected_item in self._tree.selection():
+            indexes.append(self._tree.index(selected_item))
             self._tree.delete(selected_item)
+        self._library.delete_by_indexes(indexes)

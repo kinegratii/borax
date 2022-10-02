@@ -44,5 +44,6 @@ nav:
   - 更新日志:
     - 更新日志: changelog.md
     - 发布日志:
+      - v4.0.0: release-note/v400.md
       - v3.5.6: release-note/v356.md
       - v3.5.0: release-note/v350.md
