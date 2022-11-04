@@ -37,7 +37,7 @@ class ChoicesCombobox(ttk.Combobox):
             if self._value_selected:
                 self._value_selected(val)
 
-    def _variable2widget(self):
+    def _variable2widget(self, var, index, mode):
         val = self._val_variable.get()
         try:
             pos = self._values.index(val)
@@ -99,7 +99,7 @@ class VarModel:
         return festival
 
     def _validate_f1(self):
-        freq, leap, month, reverse, day = self.gets('l_freq', 'l_leap', 'l_reverse', 'l_month', 'l_day')
+        freq, leap, reverse, month, day = self.gets('l_freq', 'l_leap', 'l_reverse', 'l_month', 'l_day')
         festival = LunarFestival(day=reverse * day, freq=freq, leap=leap, month=month)
         return festival
 
@@ -222,7 +222,7 @@ class FestivalCreatePanel(ttk.Frame):
         ttk.Button(frame, text='创建节日', command=self._create).grid(row=btn_row, column=0)
         ttk.Button(frame, text='删除所选', command=self._delete).grid(row=btn_row, column=1)
         ttk.Label(frame, text='节日源：').grid(row=btn_row, column=3)
-        source_choices = (('empty', '空白'), ('basic', 'basic'), ('ext1', 'ext1'), ('custom', '自定义'))
+        source_choices = (('empty', '空白'), ('basic', '基础(basic)'), ('ext1', '扩展1(ext1)'), ('custom', '自定义'))
         self._source_var = tk.StringVar()
         source_cc = ChoicesCombobox(frame, choices=source_choices, val_variable=self._source_var,
                                     value_selected=self._on_source_selected, width=ccb_w)
@@ -283,7 +283,7 @@ class FestivalCreatePanel(ttk.Frame):
 
     def _load_new_festival_library(self, f_library: FestivalLibrary):
         self._festival_table.add_festivals_from_library(f_library)
-        self._msg_label.splash('加载成功', foreground='green')
+        self._msg_label.splash(f'加载成功,共{self._festival_table.row_count}条', foreground='green')
 
 
 def main():

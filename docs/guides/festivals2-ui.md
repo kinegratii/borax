@@ -8,6 +8,7 @@
 | ------------ | ------------------------------------- |
 | 日历组件     | borax.calendars.ui.CalendarFrame      |
 | 节日表格组件 | borax.calendars.ui.FestivalTableFrame |
+| 日期选择框   | borax.calendars.datepicker.ask_date   |
 
 
 
@@ -119,7 +120,7 @@ cf.page_to(2022, 9, 1)  # 2022年9月的下一个月
 ### 创建组件
 
 ```python
-ftf = FestivalTableFrame(master=None, colunms:Sequeue=None, festival_source:Union[str,FestivalLibrary]='empty',  **kwargs)
+FestivalTableFrame(master=None, colunms:Sequeue=None, festival_source:Union[str,FestivalLibrary]='empty',  **kwargs)
 ```
 
 构建参数及其意义如下：
@@ -151,9 +152,17 @@ columns = (("name", 100), ("description", 200), ("code", 120))
 
 ### 属性
 
+- **tree_view**
+
+关联的树形组件。
+
 - **festival_library**
 
 组件关联的节日库对象。
+
+- **row_count**
+
+表格的条目数。
 
 ### 方法
 
@@ -172,3 +181,44 @@ columns = (("name", 100), ("description", 200), ("code", 120))
 - `notify_data_changed()`
 
 重新根据 `FestivalTableFrame.festival_library` 刷新表格数据。
+
+## 日期选择框:ask_date
+
+```python
+def ask_date() -> Optional[WrappedDate]:
+    pass
+```
+
+显示日期选择框，并返回选择的日期（类型为 `WrappedDate`），如果未选择，则返回 `None`。
+
+```python
+import tkinter as tk
+from tkinter import ttk
+
+from borax.calendars.datepicker import ask_date
+
+
+def main():
+    root = tk.Tk()
+    root.title('日期选择器')
+    root.resizable(False, False)
+    date_var = tk.StringVar()
+    entry = ttk.Entry(root, textvariable=date_var)
+    entry.pack(side='left')
+
+    def askdate():
+        wd = ask_date()
+        print(wd)
+        if wd:
+            date_var.set(wd)
+
+    btn = ttk.Button(root, text='点击', command=askdate)
+    btn.pack(side='left')
+    root.mainloop()
+
+
+if __name__ == '__main__':
+    main()
+
+```
+

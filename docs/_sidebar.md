@@ -8,7 +8,7 @@
   - [节日(festivals)](guides/festival)
   - [生日](guides/birthday)
   - [工具类](guides/calendars-utils)
-  - [节日界面库 <sup style="color:red">New!<sup>](guides/festivals-ui)
+  - [节日界面库 <sup style="color:red">New!<sup>](guides/festivals2-ui)
 - **● Borax.Datasets**
   - [数据连接(Join)](guides/join)
   - [列选择器(fetch)](guides/fetch)

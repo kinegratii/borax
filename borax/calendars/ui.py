@@ -116,12 +116,12 @@ class CalendarFrame(ttk.Frame):
         if len(args) == 0:
             today = date.today()
             ny, nm = today.year, today.month
-        if len(args) == 1:
+        if len(args) == 1:  # month_offset
             month_offset = args[0]
             ny, nm = solar_month(cy, cm, month_offset)
-        elif len(args) == 2:
+        elif len(args) == 2:  # year,month
             ny, nm = args
-        elif len(args) == 3:
+        elif len(args) == 3:  # year, month, month_offset
             ny, nm = solar_month(*args)
         if ny != 0 and (cy, cm) != (ny, ny):
             self._v_year.set(ny)
@@ -144,13 +144,16 @@ class CalendarFrame(ttk.Frame):
             callback(*args, **kwargs)
 
     def bind_date_selected(self, callback: Callable):
+        """Set a callback when date cell is clicked."""
         self._callbacks['DateSelected'] = callback
 
     def bind_page_changed(self, callback: Callable):
+        """Set a callback when page is changed."""
         self._callbacks['PageChanged'] = callback
 
 
 class FestivalItemAdapter:
+    """A helper class for display list data."""
     FIELDS = {'name': '名称', 'description': '描述', 'code': '编码', 'next_day': '下一个日期', 'countdown': '倒计天数'}
 
     def __init__(self, columns: Sequence):
@@ -199,13 +202,26 @@ class FestivalTableFrame(ttk.Frame):
         self.notify_data_changed()
 
     @property
+    def tree_view(self):
+        return self._tree
+
+    @property
     def festival_library(self) -> FestivalLibrary:
         return self._library
 
+    @property
+    def row_count(self):
+        return len(self._tree.get_children())
+
     def notify_data_changed(self):
+        item_iids = self._tree.get_children()
+        if len(item_iids):
+            self._tree.delete(*item_iids)
         for ndays, wd, festival in self._library.list_days_in_countdown():
             values = self._adapter.object2values(festival, wd, ndays)
             self._tree.insert('', 'end', text="1", values=values)
+
+    # Data CRUD API.
 
     def add_festival(self, festival: Festival):
         values = self._adapter.object2values(festival)

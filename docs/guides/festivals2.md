@@ -168,7 +168,7 @@ class LunarFestival(*, day:int, freq:int=FreqConst.YEARLY, month:int=0, leap:int
 
 参数定义
 
-| 参数  | 描述                                                         | 默认值          |
+| 参数  | 描述                                                         | 取值            |
 | ----- | ------------------------------------------------------------ | --------------- |
 | freq  | 节日频率，“每年”或“每月”，默认“每年”。                       | 0:每年；1:每月  |
 | month | 月份。                                                       | 0,1-12          |
@@ -185,7 +185,7 @@ class WeekFestival(*, month: int, index: int, week: int, name: str = None)
 
 参数定义
 
-| 参数  | 描述                                 | 默认值    |
+| 参数  | 描述                                 | 取值      |
 | ----- | ------------------------------------ | --------- |
 | month | 月份。取值为 0 ~ 12                  | 0,1-12    |
 | index | 序号。支持正向计数和倒数计数。       | 1-9,-1--9 |
@@ -422,7 +422,7 @@ FestivalLibrary.extend_unique(other)
 > Add in v4.0.0
 
 ```python
-FestivalLibrary.delete_by_indexes(indexes:list)
+FestivalLibrary.delete_by_indexes(indexes:List[int])
 ```
 
 按照位置删除多个元素。
@@ -462,9 +462,11 @@ FestivalLibrary.get_festival_names(self, date_obj: MixedDate) -> list
 ### list_days_in_countdown
 
 > Add in 3.5.6
+>
+> Update in v4.0.0:新增 countdown_ordered 参数。如果为False，按节日原顺序输出。
 
 ```python
-FestivalLibrary.list_days_in_countdown(countdown: Optional[int] = None, date_obj: MixedDate = None
+FestivalLibrary.list_days_in_countdown(countdown: Optional[int] = None, date_obj: MixedDate = None,  countdown_ordered: bool = True
     ) -> List[Tuple[int, WrappedDate, Festival]]
 ```
 

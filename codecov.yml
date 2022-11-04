@@ -2,6 +2,7 @@ coverage:
   ignore:
     - borax/ui/*.py
     - borax/apps/festival_creator.py
+    - borax/calendars/datepicker.py
     - borax/calendars/ui.py
   status:
     project:
