@@ -1,6 +1,3 @@
-# coding=utf8
-
-
 import unittest
 
 from borax.structures.tree import pll2cnl, _parse_extra_data

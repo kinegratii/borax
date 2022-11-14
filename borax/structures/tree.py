@@ -1,5 +1,3 @@
-# coding=utf8
-
 __all__ = ['pll2cnl']
 
 
@@ -12,7 +10,7 @@ def _get(item, key):
         return item[key]
     except KeyError:
         pass
-    raise ValueError('Item %r has no attr or key for %r' % (item, key))
+    raise ValueError(f'Item {item!r} has no attr or key for {key!r}')
 
 
 def _parse_extra_data(item, *, flat_fields, extra_fields, extra_key, trs_fields=None):
@@ -49,7 +47,7 @@ def pll2cnl(
 
     for f in flat_fields:
         if f in (id_field, parent_field, children_field):
-            raise ValueError('Invalid field name: {}'.format(f))
+            raise ValueError(f'Invalid field name: {f}')
     if extra_key and extra_key in (id_field, parent_field, children_field):
         raise ValueError('extra_key can not be empty when flat is set to False.')
 

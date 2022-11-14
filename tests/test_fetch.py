@@ -1,6 +1,3 @@
-# coding=utf8
-
-
 import unittest
 
 from borax.datasets.fetch import fetch, fetch_single, ifetch_multiple, fetch_as_dict, bget

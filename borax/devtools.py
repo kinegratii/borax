@@ -1,17 +1,15 @@
-# coding=utf8
-
-
 import time
 from collections import defaultdict, namedtuple
 from contextlib import contextmanager
 
-from typing import List, Dict
+from typing import Dict
 
 TagMeasureResult = namedtuple('TagMeasureResult', 'name total count avg')
 
 
 class RuntimeMeasurer:
     """A time measurer for a program."""
+
     def __init__(self):
         self._data = defaultdict(list)
         self._start_time_dict = {}
@@ -49,6 +47,6 @@ class RuntimeMeasurer:
         """Print statistics data for all tags."""
         data = self.get_measure_result()
         print("{:>8} {:>10} {:>10} {:>10}".format('name', 'total', 'count', 'avg'))
-        for k, v in data.items():
+        for v in data.values():
             name, total, count, avg = v
-            print("{:>8} {:>.8f} {:>10} {:>.8f}".format(name, total, count, avg))
+            print(f"{name:>8} {total:>.8f} {count:>10} {avg:>.8f}")

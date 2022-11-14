@@ -1,5 +1,3 @@
-# coding=utf8
-
 import datetime
 import unittest
 from datetime import date, timedelta

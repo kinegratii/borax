@@ -12,7 +12,6 @@ version = re.findall(r"^__version__ = '([^']+)'\r?$", txt, re.M)[0]
 lib_classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
@@ -31,7 +30,7 @@ with open('README.md', encoding='utf8') as f:
 setup(
     name='borax',
     version=version,
-    python_requires='>=3.5',
+    python_requires='>=3.7',
     packages=find_packages(exclude=['tests']),
     include_package_data=True,
     license='MIT',
@@ -40,5 +39,10 @@ setup(
     classifiers=lib_classifiers,
     description='A tool collections.(Chinese-Lunar-Calendars/Python-Patterns)',
     long_description=long_description,
-    long_description_content_type='text/markdown'
+    long_description_content_type='text/markdown',
+    entry_points={
+        "gui_scripts": [
+            "festival_creator = borax.apps.festival_creator:main"
+        ]
+    },
 )

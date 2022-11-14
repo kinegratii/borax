@@ -1,4 +1,3 @@
-# coding=utf8
 import calendar
 from collections import OrderedDict
 from datetime import date, datetime, timedelta
@@ -16,7 +15,7 @@ class SCalendars:
 
     @staticmethod
     def get_fist_day_of_year_week(year: int, week: int) -> date:
-        fmt = '{}-W{}-1'.format(year, week)
+        fmt = f'{year}-W{week}-1'
         return datetime.strptime(fmt, "%Y-W%W-%w").date()
 
 
@@ -39,7 +38,7 @@ class ThreeNineUtils:
             '一九': day19
         })
         for i, dc in enumerate(TextUtils.DAYS_CN[1:10], start=1):
-            days['{}九'.format(dc)] = day19 + timedelta(days=(i - 1) * 9)
+            days[f'{dc}九'] = day19 + timedelta(days=(i - 1) * 9)
         return days
 
     @staticmethod
@@ -54,8 +53,7 @@ class ThreeNineUtils:
             return ''
         year = sd.year - bool(sd.month < 4)
         days = ThreeNineUtils.get_39days(year)
-        date_tuples = [(k, v) for k, v in days.items()]
-        for i, vs in enumerate(date_tuples):
+        for vs in list(days.items()):
             label, sd = vs
             range_len = -1
             if label in ['初伏', '末伏']:
@@ -66,5 +64,5 @@ class ThreeNineUtils:
                 range_len = 9
             offset = (date_obj - sd).days
             if 0 <= offset <= range_len - 1:
-                return '{}第{}天'.format(label, offset + 1)
+                return f'{label}第{offset + 1}天'
         return ''

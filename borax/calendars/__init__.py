@@ -1,5 +1,3 @@
-# coding=utf8
-
 from .lunardate import LunarDate, InvalidLunarDateError, LCalendars
 from .utils import SCalendars
 

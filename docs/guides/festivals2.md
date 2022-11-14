@@ -168,7 +168,7 @@ class LunarFestival(*, day:int, freq:int=FreqConst.YEARLY, month:int=0, leap:int
 
 参数定义
 
-| 参数  | 描述                                                         | 默认值          |
+| 参数  | 描述                                                         | 取值            |
 | ----- | ------------------------------------------------------------ | --------------- |
 | freq  | 节日频率，“每年”或“每月”，默认“每年”。                       | 0:每年；1:每月  |
 | month | 月份。                                                       | 0,1-12          |
@@ -185,7 +185,7 @@ class WeekFestival(*, month: int, index: int, week: int, name: str = None)
 
 参数定义
 
-| 参数  | 描述                                 | 默认值    |
+| 参数  | 描述                                 | 取值      |
 | ----- | ------------------------------------ | --------- |
 | month | 月份。取值为 0 ~ 12                  | 0,1-12    |
 | index | 序号。支持正向计数和倒数计数。       | 1-9,-1--9 |
@@ -417,6 +417,16 @@ FestivalLibrary.extend_unique(other)
 
 添加多个节日对象，类似于 extend 方法，但是如果code已经存在则不再加入。
 
+### delete_by_indexes
+
+> Add in v4.0.0
+
+```python
+FestivalLibrary.delete_by_indexes(indexes:List[int])
+```
+
+按照位置删除多个元素。
+
 ### load_file
 
 ```python
@@ -452,9 +462,11 @@ FestivalLibrary.get_festival_names(self, date_obj: MixedDate) -> list
 ### list_days_in_countdown
 
 > Add in 3.5.6
+>
+> Update in v4.0.0:新增 countdown_ordered 参数。如果为False，按节日原顺序输出。
 
 ```python
-FestivalLibrary.list_days_in_countdown(countdown: Optional[int] = None, date_obj: MixedDate = None
+FestivalLibrary.list_days_in_countdown(countdown: Optional[int] = None, date_obj: MixedDate = None,  countdown_ordered: bool = True
     ) -> List[Tuple[int, WrappedDate, Festival]]
 ```
 
@@ -607,6 +619,58 @@ FestivalLibrary.to_csv(path_or_buf)
 ```
 
 保存到 csv 文件。
+
+### filter_inplace
+
+> Add in 4.0.0
+
+```
+FestivalLibrary.filter_(**kwargs)
+```
+
+按条件过滤节日，保留符合参数条件的节日，返回实例本身。
+
+可用的参数条件
+
+| 参数名称              | 参数值类型 | 描述               |
+| --------------------- | ---------- | ------------------ |
+| schema                | int        | 节日类型值         |
+| schema__in            | List[int]  | 多个节日类型值     |
+| catalog               | str        | 节日分类标签       |
+| catalog__in           | List[str]  | 多个节日分类标签   |
+| name                  | str        | 名称，精确匹配     |
+| name__in              | List[str]  | 多个名称           |
+| name__contains        | str        | 节日名称，模糊匹配 |
+| description           | str        | 节日描述           |
+| description__contains | str        | 节日描述，模糊匹配 |
+
+### exclude_inplace
+
+> Add in 4.0.0
+
+```
+FestivalLibrary.exclude_(**kwargs)
+```
+
+按条件过滤节日，符合参数条件的节日将会被删除，返回实例本身。
+
+### filter_
+
+按条件过滤节日条目，保留符合参数条件的节日，返回新的 `FestivalLibray` 实例。
+
+### exclude_
+
+按条件过滤节日，符合参数条件的节日将会被删除，返回新的 `FestivalLibray` 实例。
+
+### sort_by_countdown
+
+> Add in 4.0.0
+
+```
+FestivalLibrary.sort_by_countdown(reverse=False)
+```
+
+按照距离今天的倒计天数 **原地排序**，返回实例本身。
 
 
 
