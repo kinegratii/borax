@@ -4,7 +4,7 @@ import calendar
 import tkinter as tk
 from datetime import date
 from tkinter import ttk
-from typing import Optional, Union, Tuple, Callable, Dict, Sequence
+from typing import Optional, Union, Tuple, Callable, Dict, Sequence, Any
 
 from borax.calendars.festivals2 import FestivalLibrary, WrappedDate, Festival
 
@@ -51,7 +51,7 @@ class CalendarFrame(ttk.Frame):
         bw, bh = 3, 1
         tool_row_no, head_row_no, week_row_no, day_row_no = range(4)
 
-        today_btn = tk.Button(self, text='今日', relief=tk.GROOVE, command=lambda: self._nav_current_month('today'))
+        today_btn = tk.Button(self, text='今日', relief=tk.GROOVE, command=lambda: self._nav_current_month())
         today_btn.grid(row=0, column=5, sticky='wens', columnspan=2, pady=4)
         pre_btn = tk.Button(self, text='\u25C4', width=bw, height=bh, command=lambda: self.page_to(-1),
                             relief=tk.GROOVE)
@@ -104,7 +104,7 @@ class CalendarFrame(ttk.Frame):
             for col in range(7):
                 self._v_day_matrix[r][col].set('')
 
-    def _nav_current_month(self, name: str):
+    def _nav_current_month(self):
         today = date.today()
         vy, vm = today.year, today.month
         self.page_to(vy, vm)
@@ -143,11 +143,11 @@ class CalendarFrame(ttk.Frame):
         if callback:
             callback(*args, **kwargs)
 
-    def bind_date_selected(self, callback: Callable):
+    def bind_date_selected(self, callback: Callable[[WrappedDate], Any]):
         """Set a callback when date cell is clicked."""
         self._callbacks['DateSelected'] = callback
 
-    def bind_page_changed(self, callback: Callable):
+    def bind_page_changed(self, callback: Callable[[int, int], Any]):
         """Set a callback when page is changed."""
         self._callbacks['PageChanged'] = callback
 
@@ -217,7 +217,7 @@ class FestivalTableFrame(ttk.Frame):
         item_iids = self._tree.get_children()
         if len(item_iids):
             self._tree.delete(*item_iids)
-        for ndays, wd, festival in self._library.list_days_in_countdown():
+        for ndays, wd, festival in self._library.list_days_in_countdown(countdown_ordered=False):
             values = self._adapter.object2values(festival, wd, ndays)
             self._tree.insert('', 'end', text="1", values=values)
 

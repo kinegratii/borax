@@ -145,8 +145,8 @@ class FestivalCreatePanel(ttk.Frame):
         leap_choices = [(3, '平/闰'), (0, '平'), (1, '闰')]
         month_choices = [(0, '---')] + [(m, str(m)) for m in range(1, 13)]
         day_reverse_choices = [(1, '正向'), (-1, '倒数')]
-        week_choices = [(i, text) for i, text in enumerate('一二三四五六日')]
-        term_choices = [(i, text) for i, text in enumerate(TERMS_CN)]
+        week_choices = list(enumerate('一二三四五六日'))
+        term_choices = list(enumerate(TERMS_CN))
         index_choices = [(i, f'第{i}个') for i in range(1, 10)]
         index2_choices = [(i, f'第{i}个') for i in range(1, 10)] + [(-i, f'倒数第{i}个') for i in range(1, 10)]
         delta_choices = [(0, '当日'), (-1, '之前'), (1, '之后')]

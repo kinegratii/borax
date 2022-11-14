@@ -182,6 +182,17 @@ columns = (("name", 100), ("description", 200), ("code", 120))
 
 重新根据 `FestivalTableFrame.festival_library` 刷新表格数据。
 
+例子
+
+```python
+ftf = FestivalTableFrame(festival_source='basic')
+# ...
+ftf.festival_library.sorted(key=lambda x:x.code)
+ftf.notifiy_data_changed()
+```
+
+
+
 ## 日期选择框:ask_date
 
 ```python

@@ -620,6 +620,58 @@ FestivalLibrary.to_csv(path_or_buf)
 
 保存到 csv 文件。
 
+### filter_inplace
+
+> Add in 4.0.0
+
+```
+FestivalLibrary.filter_(**kwargs)
+```
+
+按条件过滤节日，保留符合参数条件的节日，返回实例本身。
+
+可用的参数条件
+
+| 参数名称              | 参数值类型 | 描述               |
+| --------------------- | ---------- | ------------------ |
+| schema                | int        | 节日类型值         |
+| schema__in            | List[int]  | 多个节日类型值     |
+| catalog               | str        | 节日分类标签       |
+| catalog__in           | List[str]  | 多个节日分类标签   |
+| name                  | str        | 名称，精确匹配     |
+| name__in              | List[str]  | 多个名称           |
+| name__contains        | str        | 节日名称，模糊匹配 |
+| description           | str        | 节日描述           |
+| description__contains | str        | 节日描述，模糊匹配 |
+
+### exclude_inplace
+
+> Add in 4.0.0
+
+```
+FestivalLibrary.exclude_(**kwargs)
+```
+
+按条件过滤节日，符合参数条件的节日将会被删除，返回实例本身。
+
+### filter_
+
+按条件过滤节日条目，保留符合参数条件的节日，返回新的 `FestivalLibray` 实例。
+
+### exclude_
+
+按条件过滤节日，符合参数条件的节日将会被删除，返回新的 `FestivalLibray` 实例。
+
+### sort_by_countdown
+
+> Add in 4.0.0
+
+```
+FestivalLibrary.sort_by_countdown(reverse=False)
+```
+
+按照距离今天的倒计天数 **原地排序**，返回实例本身。
+
 
 
 
