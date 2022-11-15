@@ -1,5 +1,3 @@
-# coding=utf8
-
 import calendar
 import unittest
 from datetime import date

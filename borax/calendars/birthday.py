@@ -1,4 +1,3 @@
-# coding=utf8
 from datetime import date
 
 from .lunardate import LunarDate, LCalendars

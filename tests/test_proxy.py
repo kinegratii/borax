@@ -1,5 +1,3 @@
-# coding=utf8
-
 import unittest
 
 from borax.patterns.proxy import Proxy

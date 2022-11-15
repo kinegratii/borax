@@ -1,5 +1,3 @@
-# coding=utf8
-
 import unittest
 import json
 

@@ -1,6 +1,3 @@
-# coding=utf8
-
-
 class MetaSingleton(type):
     def __init__(cls, *args):
         type.__init__(cls, *args)

@@ -6,7 +6,7 @@ __all__ = ['strptime']
 
 class LunarDateParser(dict):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         super().__init__({
             'y': r'(?P<y>\d{4})',
             'l': r'(?P<l>[01])',

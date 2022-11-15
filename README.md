@@ -31,7 +31,14 @@ Borax 是一个Python3工具集合库。包括了以下几个话题：
 
 ## 安装 (Installation)
 
-Borax 要求 Python3.5+ ,可以通过 *pip* 安装 ：
+Borax 的 python 版本要求如下
+
+| borax 版本 | python版本 |
+| ------ | ------ |
+| 4.x | 3.7+ |
+| 3.x | 3.5+ |
+
+可以通过 *pip* 安装 ：
 
 ```shell
 $ pip install borax
@@ -195,13 +202,13 @@ print(FinanceNumbers.to_capital_str(decimal.Decimal(4.50))) # '肆元伍角零�
 
 ## 文档 (Document)
 
-文档由 [docsify](https://docsify.js.org/) 构建。
+文档由 [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) 构建，另外备用文档使用 [docsify](https://docsify.js.org/) 构建。
 
 | 源 | 网址 |
 | ---- | ---- |
+| read-the-docs | [https://borax.readthedocs.io/zh_CN/latest/](https://borax.readthedocs.io/zh_CN/latest/) |
 | github | [https://kinegratii.github.io/borax](https://kinegratii.github.io/borax) |
 | gitee | [https://kinegratii.gitee.io/borax](https://kinegratii.gitee.io/borax) |
-| read-the-docs | [https://borax.readthedocs.io/zh_CN/latest/](https://borax.readthedocs.io/zh_CN/latest/) |
 
 ## 开发特性和规范 (Development Features)
 

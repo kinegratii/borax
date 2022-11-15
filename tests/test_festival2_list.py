@@ -1,5 +1,3 @@
-# coding=utf8
-
 import calendar
 import unittest
 from datetime import date, timedelta
@@ -12,6 +10,7 @@ from borax.calendars.lunardate import LunarDate, LCalendars
 class SolarFestivalTestCase(unittest.TestCase):
     def test_yearly(self):
         sf = SolarFestival(month=2, day=4)
+        self.assertEqual(0, sf.schema)
         month, day = sf.gets('month', 'day')
         self.assertEqual(2, month)
         self.assertEqual(4, day)

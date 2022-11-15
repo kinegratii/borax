@@ -1,5 +1,3 @@
-# coding=utf8
-
 import collections.abc
 from functools import reduce
 

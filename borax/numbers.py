@@ -1,6 +1,3 @@
-# coding=utf8
-
-
 import re
 from decimal import Decimal
 
@@ -46,7 +43,7 @@ class ChineseNumbers:
         capital_str = ''.join([LOWER_DIGITS[int(i)] for i in num_str])
         s_units = LOWER_UNITS[len(LOWER_UNITS) - len(num_str):]
 
-        o = ''.join('{}{}'.format(u, d) for u, d in zip(capital_str, s_units))
+        o = ''.join(f'{u}{d}' for u, d in zip(capital_str, s_units))
         for p, d in ChineseNumbers.RULES:
             o = re.sub(p, d, o)
         if 10 <= _n < 20:
@@ -122,7 +119,7 @@ class FinanceNumbers:
         capital_str = ''.join([UPPER_DIGITS[int(i)] for i in num_str])
         s_units = units[len(units) - len(num_str):]
 
-        o = ''.join('{}{}'.format(u, d) for u, d in zip(capital_str, s_units))
+        o = ''.join(f'{u}{d}' for u, d in zip(capital_str, s_units))
         for p, d in FinanceNumbers.RULES:
             o = re.sub(p, d, o)
 

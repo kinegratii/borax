@@ -1,6 +1,9 @@
 [run]
 omit =
     borax\ui\*.py
+    borax\apps\festival_creator.py
+    borax\calendars\datepicker.py
+    borax\calendars\ui.py
 [report]
 exclude_lines =
     pragma: no cover

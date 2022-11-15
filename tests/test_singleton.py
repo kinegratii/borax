@@ -1,5 +1,3 @@
-# coding=utf8
-
 from borax.patterns.singleton import MetaSingleton
 
 

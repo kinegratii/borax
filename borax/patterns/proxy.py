@@ -1,4 +1,3 @@
-# coding=utf8
 """
 https://github.com/coleifer/peewee/blob/3.8.2/peewee.py
 """

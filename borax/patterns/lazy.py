@@ -1,4 +1,3 @@
-# coding=utf8
 """
 A Lazy Creator for a Object.
 """

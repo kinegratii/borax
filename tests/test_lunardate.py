@@ -1,5 +1,3 @@
-# coding=utf8
-
 import datetime
 import unittest
 from datetime import date, timedelta
@@ -192,7 +190,7 @@ class FormatterTestCase(unittest.TestCase):
         self.assertEqual('十一月', ld1.strftime('%F'))
 
     def test_cn_week(self):
-        ld = LunarDate(2017, 6, 1, 1)
+        ld = LunarDate(2022, 8, 15)
         self.assertEqual('六', ld.strftime('%W'))
         ld2 = ld + timedelta(days=1)
         self.assertEqual('日', ld2.strftime('%W'))

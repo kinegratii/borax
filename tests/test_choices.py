@@ -1,6 +1,3 @@
-# coding=utf8
-
-
 import unittest
 
 from borax import choices

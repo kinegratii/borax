@@ -1,5 +1,3 @@
-# coding=utf8
-
 import unittest
 
 from borax.structures.dictionary import AttributeDict

@@ -2,6 +2,8 @@
 
 > 模块： `borax.calendars.festivals`
 
+> Update in 4.0.0: 本模块已被移除。
+>
 > 本模块已经标记为 废弃 状态，请使用 `festivals2` 模块。
 
 ## 日期模式类(DateSchema)
@@ -70,11 +72,11 @@
 农历日期，比如七夕(七月初七)、腊八节 （腊月初八）等。
 
 ignore_leap表示是否忽略闰月进行匹配。比如：
- 
+
  (1)  `LunarSchema(month=6, day=1)` 可以匹配 `LunarDate(2017, 6, 1, 0)` 和 `LunarDate(2017, 6, 1, 1)` 两个日期。
- 
+
  (2) `LunarSchema(month=6, day=1, ignore_leap=0)` 只匹配 `LunarDate(2017, 6, 1, 0)` 一个日期。
- 
+
  (3) `LunarSchema(month=6, day=1, leap=1, ignore_leap=1)` 只匹配 `LunarDate(2017, 6, 1, 1)` 一个日期。
 
 节日编码表示如下：

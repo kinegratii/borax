@@ -1,6 +1,3 @@
-# coding=utf8
-
-
 import json
 from datetime import datetime, date
 from functools import singledispatch
@@ -11,7 +8,7 @@ __all__ = ['encode_object', 'encoder', 'dumps', 'dump', 'CJSONEncoder']
 def encode_object(obj):
     if hasattr(obj, '__json__'):
         return obj.__json__()
-    raise TypeError('Type {} is not JSON serializable'.format(obj.__class__.__name__))
+    raise TypeError(f'Type {obj.__class__.__name__} is not JSON serializable')
 
 
 def _unregister(self, cls):

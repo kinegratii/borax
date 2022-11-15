@@ -1,6 +1,3 @@
-# coding=utf8
-
-
 def format_percentage(numerator: int, denominator: int, *, places: int = 2, null_val: str = '-') -> str:
     if denominator == 0:
         return null_val
@@ -76,4 +73,4 @@ class Percentage:
         )
 
     def __str__(self):
-        return '<Percentage:{} {}>'.format(self.display, self.percent_display)
+        return f'<Percentage:{self.display} {self.percent_display}>'
