@@ -18,6 +18,7 @@ copyright: Copyright &copy; 2018 - 2022 Samuel.Yan
 markdown_extensions:
   - pymdownx.highlight
   - pymdownx.superfences
+  - mdx_truly_sane_lists
 nav:
   - 首页: README.md
   - 农历与节日:
