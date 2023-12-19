@@ -128,3 +128,8 @@ class FestivalLibraryCURDTestCase(unittest.TestCase):
         fl3 = fl.exclude_(schema__in=[FestivalSchema.WEEK, FestivalSchema.TERM])
         self.assertEqual(len(fl), len(fl1) + len(fl2))
         self.assertEqual(len(fl3), len(fl1))
+
+    def test_festivals_functional_program(self):
+        fl = FestivalLibrary.load_builtin()
+        fl2 = FestivalLibrary(filter(lambda f: f.schema == FestivalSchema.SOLAR, fl))
+        self.assertTrue(isinstance(fl2, FestivalLibrary))

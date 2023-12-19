@@ -88,12 +88,12 @@ print(ld) # LunarDate(2020, 11, 18, 0)
 
 Period 是一个工具类，提供了一系列方法，这些方法均返回一个包含起始日期和终止日期的二元素元组。
 
-| 方法                                                     | 描述              |
-| -------------------------------------------------------- | ----------------- |
-| Period.solar_year(year)                                  | 公历year年        |
-| Period.solar_month(year, month)                          | 公历year年month月 |
-| Period.lunar_year(year)                                  | 农历year年        |
-| Period.lunar_month(year, month, leap=_IGNORE_LEAP_MONTH) | 农历year年month月 |
+| 方法                                                         | 描述              |
+| ------------------------------------------------------------ | ----------------- |
+| Period.solar_year(year) -> Tuple[date, date]                 | 公历year年        |
+| Period.solar_month(year, month) -> Tuple[date, date]         | 公历year年month月 |
+| Period.lunar_year(year) -> Tuple[LunarDate, LunarDate]       | 农历year年        |
+| Period.lunar_month(year, month, leap=_IGNORE_LEAP_MONTH) -> Tuple[LunarDate, LunarDate] | 农历year年month月 |
 
 
 需要注意的是，当leap为默认值且农历year年month月有闰月时，将返回的是两个月时间段的起始日期。下面是 `lunar_month` 方法不同取值的返回的结果。
@@ -376,7 +376,7 @@ Festival.get_one_day(start_date=None, end_date=None) -> Optional[WrappedDate]
 ### 倒计时
 
 ```python
-Festival.countdown(date_obj: MixedDate = None) -> Tuple[int, Optional[WrappedDate]])
+Festival.countdown(date_obj: MixedDate = None) -> Tuple[int, Optional[WrappedDate]]
 ```
 
 计算本 festival 匹配的日期距离 date_obj 的天数及其日期。
@@ -416,6 +416,16 @@ FestivalLibrary.extend_unique(other)
 ```
 
 添加多个节日对象，类似于 extend 方法，但是如果code已经存在则不再加入。
+
+### extend_term_festivals
+
+> Add in v4.0.1
+
+```
+FestivalLibrary.extend_term_festivals()
+```
+
+添加24个节气节日。
 
 ### delete_by_indexes
 

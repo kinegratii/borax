@@ -1000,6 +1000,9 @@ class FestivalLibrary(collections.UserList):
                     pass
         return self
 
+    def extend_term_festivals(self):
+        return self.extend_unique([f'400{i:02d}0' for i in range(24)])
+
     def delete_by_indexes(self, indexes: list):
         """Delete items by indexes."""
         index_list = sorted(indexes, reverse=True)
@@ -1195,7 +1198,8 @@ class FestivalLibrary(collections.UserList):
 
     def load_term_festivals(self):
         """Add 24-term festivals."""
-        return self.extend_unique([f'400{i:02d}0' for i in range(24)])
+        warnings.warn('This function is deprecated. Use extend_term_festivals instead.', DeprecationWarning)
+        return self.extend_term_festivals()
 
     @classmethod
     def load_builtin(cls, identifier: str = 'basic') -> 'FestivalLibrary':
