@@ -1,6 +1,6 @@
-nose2~=0.12
+nose2~=0.14
 coverage~=5.5
-flake8~=5.0
+flake8~=6.1
 mccabe~=0.6
-wheel~=0.37
+wheel~=0.42
 setuptools~=65.0
