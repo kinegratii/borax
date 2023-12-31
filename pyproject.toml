@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "borax"
+authors = [
+    { name = "kinegratii", email = "zhenwei.yan@hotmail.com" },
+]
+description = "A tool collections.(Chinese-Lunar-Calendars/Python-Patterns)"
+readme = "README.md"
+requires-python = ">=3.7"
+keywords = ["chinese lunar calendar", "python tool"]
+license = { text = "MIT License" }
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3 :: Only",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Utilities",
+    'Operating System :: OS Independent'
+]
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/kinegratii/borax"
+Documentation = "https://borax.readthedocs.io/zh_CN/latest/"
+Repository = "https://github.com/kinegratii/borax"
+
+[tool.setuptools]
+packages = ["borax"]
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = { attr = "borax.__version__" }
