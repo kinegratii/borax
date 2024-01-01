@@ -35,7 +35,6 @@ Documentation = "https://borax.readthedocs.io/zh_CN/latest/"
 Repository = "https://github.com/kinegratii/borax"
 
 [tool.setuptools]
-packages = ["borax"]
 include-package-data = true
 
 [tool.setuptools.dynamic]

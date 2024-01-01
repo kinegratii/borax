@@ -1,5 +1,11 @@
 # 更新日志
 
+## v4.0.1
+
+- 使用 *pyproject.toml* 项目构建配置文件，构建命令 `python -m build -w`
+- 支持python3.12
+- 新增方法 `FestivalLibrary.extend_term_festivals`
+
 ## v4.0.0 (20221115)
 
 - 新增基于 tkinter 的 [节日界面库](/guides/festivals-ui)

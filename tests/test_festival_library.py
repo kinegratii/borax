@@ -81,6 +81,9 @@ class FestivalLibraryCalendarTestCase(unittest.TestCase):
         fl = FestivalLibrary.load_builtin()
         days = fl.monthdaycalendar(2022, 1)
         self.assertEqual(6, len(days))
+        fl1 = FestivalLibrary(fl)
+        self.assertTrue(isinstance(fl1, FestivalLibrary))
+        self.assertTrue(len(fl) == len(fl1))
 
 
 class FestivalLibraryCURDTestCase(unittest.TestCase):

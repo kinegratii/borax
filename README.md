@@ -217,6 +217,15 @@ print(FinanceNumbers.to_capital_str(decimal.Decimal(4.50))) # '肆元伍角零�
 - [x] [nose2](https://pypi.org/project/nose2/) | [pytest](https://docs.pytest.org/en/latest/)
 - [x] [Github Action](https://github.com/kinegratii/borax/actions)
 - [x] [Code Coverage](https://codecov.io/)
+- [x] [pyproject.toml build tools](https://packaging.python.org/)
+
+## 项目构建 (Project Build)
+
+从4.0.1开始，borax 使用 *pyproject.toml* 作为项目构建的配置文件，使用以下命令构建 wheel 发行包。
+
+```shell
+python -m build -w
+```
 
 ## 开源协议 (License)
 
