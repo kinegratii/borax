@@ -397,6 +397,22 @@ class FestivalLibrary(collections.UserList):
     pass
 ```
 
+创建一个节日库对象主要有两种方法：
+
+第一，从 borax 提供默认数据加载。
+
+```python
+fl = FestivalLibrary.load_builtin('basic') # 加载基础节日库，可选 empty / basic / ext1
+```
+
+第二，从已有的节日创建新的节日库。
+
+```python
+fl1 = FestivalLibrary(fl) # 复制 fl节日库
+
+fl2 = FestivalLibrary(filter(lambda f: f.schema == FestivalSchema.SOLAR, fl)) # 使用函数式编程过滤其中的公历型节日
+```
+
 ### get_code_set
 
 > Add in v3.5.1
