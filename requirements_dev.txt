@@ -1,5 +1,5 @@
 nose2~=0.14
-coverage~=5.5
+coverage~=7.4
 flake8~=6.1
 mccabe~=0.6
 wheel~=0.42
