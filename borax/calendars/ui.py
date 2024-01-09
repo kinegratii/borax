@@ -239,3 +239,8 @@ class FestivalTableFrame(ttk.Frame):
             indexes.append(self._tree.index(selected_item))
             self._tree.delete(selected_item)
         self._library.delete_by_indexes(indexes)
+
+    def clear_data(self):
+        iid_values = self._tree.get_children()
+        self._tree.delete(*iid_values)
+        self._library = FestivalLibrary()
