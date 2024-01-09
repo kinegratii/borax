@@ -14,13 +14,14 @@ extra:
       link: https://github.com/kinegratii/borax
     - icon: fontawesome/brands/python
       link: https://pypi.org/project/borax
-copyright: Copyright &copy; 2018 - 2022 Samuel.Yan
+copyright: Copyright &copy; 2018 - 2024 Samuel.Yan
 markdown_extensions:
   - pymdownx.highlight
   - pymdownx.superfences
   - mdx_truly_sane_lists
 nav:
   - 首页: README.md
+  - 应用: guides/borax_calendar_app.md
   - 农历与节日:
     - 农历: guides/lunardate.md
     - 节日: guides/festivals2.md

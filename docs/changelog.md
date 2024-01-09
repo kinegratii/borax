@@ -1,14 +1,21 @@
 # 更新日志
 
-## v4.0.1
+## v4.1.0
+- 功能更新
+  - 新增 [Borax日历应用](/guides/borax_calendar_app) 
+  - 新增方法 `FestivalLibrary.extend_term_festivals`
+- 项目构建
+  - 本地开发环境更新至 python3.11.7
+  - 使用 *pyproject.toml* 项目构建配置文件，构建命令 `python -m build -w`
+  - 支持python3.12
+- 项目文档
+  - mkdocs-material 更新至 9.5.3
+  - 不再支持 docsify 构建（index.html 冲突）
 
-- 使用 *pyproject.toml* 项目构建配置文件，构建命令 `python -m build -w`
-- 支持python3.12
-- 新增方法 `FestivalLibrary.extend_term_festivals`
 
 ## v4.0.0 (20221115)
 
-- 新增基于 tkinter 的 [节日界面库](/guides/festivals-ui)
+- 新增基于 tkinter 的 [节日界面库](/guides/festivals2-ui)
 - 移除源代码文件编码声明行
 - 移除 `borax.calendars.festival` 模块
 - 修正 `LunarDate` 显示星期错误的问题 （[#49](https://github.com/kinegratii/borax/issues/49)）
