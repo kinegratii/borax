@@ -121,7 +121,7 @@ class MessageLabel(ttk.Label):
             self.after(timeout, self._clear)
 
     def _clear(self):
-        self.config({'text': ''})
+        self.config({'text': '', 'foreground': 'black'})
 
 
 class FestivalCreatePanel(ttk.Frame):
@@ -137,8 +137,8 @@ class FestivalCreatePanel(ttk.Frame):
 
         self._vm = VarModel()
 
-        n_row, s_row, l_row, w_row, t_row, btn_row, msg_row = 0, 2, 4, 6, 8, 10, 11
-        empty_rows = (1, 3, 5, 7, 9)
+        n_row, s_row, l_row, w_row, t_row, btn_row, export_btn_row, msg_row = 0, 2, 4, 6, 8, 10, 12, 13
+        empty_rows = (1, 3, 5, 7, 9, 11)
         ccb_w = 10
 
         freq_choices = ((FreqConst.YEARLY, '每年'), (FreqConst.MONTHLY, '每月'))
@@ -229,7 +229,8 @@ class FestivalCreatePanel(ttk.Frame):
         source_cc.grid(row=btn_row, column=4)
         source_cc.current(0)
         ttk.Button(frame, text='打开文件', command=self._open_and_add).grid(row=btn_row, column=5)
-        ttk.Button(frame, text='导出文件', command=self._export).grid(row=btn_row, column=6)
+        ttk.Button(frame, text='导出文件', command=self._export).grid(row=export_btn_row, column=0, columnspan=8,
+                                                                  sticky='we')
 
         self._msg_label = MessageLabel(frame, text='')
         self._msg_label.grid(row=msg_row, column=0, columnspan=10)
@@ -261,6 +262,9 @@ class FestivalCreatePanel(ttk.Frame):
         self._festival_table.delete_selected_festivals()
 
     def _export(self, event=None):
+        if len(self._festival_table.tree_view.get_children()) == 0:
+            self._msg_label.splash('表格无数据！', foreground='red')
+            return
         filename = filedialog.asksaveasfilename(parent=self, title='保存到', defaultextension='.csv',
                                                 filetypes=(('csv', 'csv'),))
         if filename:
