@@ -139,8 +139,8 @@ class FestivalCreatePanel(ttk.Frame):
 
         self._vm = VarModel()
 
-        n_row, s_row, l_row, w_row, t_row, btn_row, export_btn_row, msg_row = 0, 2, 4, 6, 8, 10, 12, 13
-        empty_rows = (1, 3, 5, 7, 9, 11)
+        n_row, s_row, l_row, w_row, t_row, btn_row, msg_row = 0, 2, 4, 6, 8, 10, 11
+        empty_rows = (1, 3, 5, 7, 9)
         ccb_w = 10
 
         freq_choices = ((FreqConst.YEARLY, '每年'), (FreqConst.MONTHLY, '每月'))
