@@ -4,9 +4,9 @@ import calendar
 import collections
 import csv
 import enum
+import warnings
 from datetime import date, timedelta, datetime
 from pathlib import Path
-import warnings
 from typing import List, Tuple, Optional, Union, Iterator, Set, Generator, Sequence
 
 from borax.calendars.lunardate import LunarDate, LCalendars, TermUtils, TextUtils, TERMS_CN
@@ -22,9 +22,23 @@ __all__ = [
 MixedDate = Union[date, LunarDate]
 
 
+# Public Constants
+
 class FreqConst:
     YEARLY = 0
     MONTHLY = 1
+
+
+class FestivalCatalog:
+    basic = 'basic'
+    event = 'event'
+    life = 'life'
+    public = 'public'
+    tradition = 'tradition'
+    term = 'term'
+    other = 'other'
+
+    CATALOGS = ['basic', 'term', 'public', 'tradition', 'event', 'life', 'other']
 
 
 # Private Global Variables
@@ -45,18 +59,6 @@ class FestivalSchema(enum.IntEnum):
     WEEK = 2
     LUNAR_OLD = 3  # 兼容旧版本
     TERM = 4
-
-
-class FestivalCatalog:
-    basic = 'basic'
-    event = 'event'
-    life = 'life'
-    public = 'public'
-    tradition = 'tradition'
-    term = 'term'
-    other = 'other'
-
-    CATALOGS = ['basic', 'term', 'public', 'tradition', 'event', 'life', 'other']
 
 
 class WrappedDate:

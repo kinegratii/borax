@@ -15,7 +15,7 @@
 
 ### 常量定义
 
-`festival2` 定义了一些常量，这些常量通常归属于一个名称以“Const”结尾的类，并使用大写字母的变量命名形式。
+`festival2` 定义了一些常量，这些常量通常归属于一个类，并使用大写字母的变量命名形式。本文档仅列出那些属于 public 权限的常量类。
 
 #### FreqConst
 
@@ -26,16 +26,32 @@ FreqConst 表示节日的频率，用于设置 `Festival` 的 `freq` 参数。
 | FreqConst.YEARLY = 0  | 表示每年 |
 | FreqConst.MONTHLY = 1 | 表示每月 |
 
-#### LeapConst
+#### FestivalCatalog
 
-LeapConst表示农历闰月的标志，用于 `Period` 、`Festival` 对象初始化操作。
+FestivalCatalog 定义了一些节日的分类标签，可以通过 `Festival.catalog` 属性进行读写。
 
-| 定义                 | 表示 |
-| -------------------- | ---- |
-| LeapConst.NORMAL = 0 | 平月 |
-| LeapConst.LEAP = 1   | 闰月 |
-| LeapConst.MIXED = 2  | 混合 |
+默认支持以下标签。
 
+```python
+class FestivalCatalog:
+    basic = 'basic'
+    event = 'event'
+    life = 'life'
+    public = 'public'
+    tradition = 'tradition'
+    term = 'term'
+    other = 'other'
+    
+    CATALOGS = ['basic', 'term', 'public', 'tradition', 'event', 'life', 'other']
+```
+
+节日标签用于同一日期有多个节日时，这些节日之间的先后排序问题。
+
+```python
+amy_birthday = SolarFestival(month=10,day=1, catalog='event')
+```
+
+如上例子，`amy_birthday` 总是在国庆节（其标签为 basic）之后。
 
 ## 基础数据结构 - WrappedDate
 

@@ -13,7 +13,7 @@ from borax import __version__ as borax_version
 from borax.calendars.festivals2 import FestivalLibrary, WrappedDate
 from borax.calendars.lunardate import TextUtils, TERMS_CN
 from borax.calendars.ui import CalendarFrame, FestivalTableFrame
-from borax.capp.festival_creator import FestivalCreatePanel, start_festival_creator
+from borax.capp.festival_creator import FestivalCreatePanel
 
 library = FestivalLibrary.load_builtin().sort_by_countdown()
 
