@@ -49,7 +49,7 @@ $ pip install borax
 Borax的版本符合 [语义化版本](https://semver.org/lang/zh-CN/) ，格式为 `<主版本号>.<副版本号>.<修正版本号>`， 推荐使用下面方式定义Borax的依赖版本号。
 
 ```text
-borax~=3.5
+borax~=4.1
 ```
 
 ## 使用示例 (Usage)
@@ -221,7 +221,7 @@ print(FinanceNumbers.to_capital_str(decimal.Decimal(4.50))) # '肆元伍角零�
 
 ## 项目构建 (Project Build)
 
-从4.0.1开始，borax 使用 *pyproject.toml* 作为项目构建的配置文件，使用以下命令构建 wheel 发行包。
+从4.1.0 开始，borax 使用 *pyproject.toml* 作为项目构建的配置文件，使用以下命令构建 wheel 发行包。
 
 ```shell
 python -m build -w

@@ -9,6 +9,7 @@ from datetime import date, timedelta, datetime
 from pathlib import Path
 from typing import List, Tuple, Optional, Union, Iterator, Set, Generator, Sequence
 
+from borax.calendars.dataset import get_festival_dataset_path
 from borax.calendars.lunardate import LunarDate, LCalendars, TermUtils, TextUtils, TERMS_CN
 
 __all__ = [
@@ -1211,11 +1212,4 @@ class FestivalLibrary(collections.UserList):
         """
         if identifier == 'empty':
             return FestivalLibrary()
-        if identifier == 'zh-Hans':  # Old identifier
-            identifier = 'basic'
-        file_dict = {
-            'basic': 'FestivalData.csv',
-            'ext1': 'dataset/festivals_ext1.csv'
-        }
-        file_path = Path(__file__).parent / file_dict.get(identifier)
-        return cls.load_file(file_path)
+        return cls.load_file(get_festival_dataset_path(identifier))
