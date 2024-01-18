@@ -8,6 +8,7 @@ theme:
   features:
     - navigation.tabs
     - navigation.sections
+    - navigation.footer
 extra:
   social:
     - icon: fontawesome/brands/github

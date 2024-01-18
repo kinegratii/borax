@@ -1,4 +1,4 @@
-# Borax - python3工具库 - 中国农历/中文数字/设计模式/树形结构
+# Borax - python农历&节日工具库 - 中文数字/设计模式/树形结构
 
 
 [![PyPI](https://img.shields.io/pypi/v/borax.svg)](https://pypi.org/project/borax) 
