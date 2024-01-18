@@ -29,7 +29,7 @@ style: ttk.Style = None
 class WDateVar(tk.StringVar):
 
     def __init__(self, master=None, value=None, name=None, date_fmt='%Y-%m-%d'):
-        tk.Variable.__init__(self, master, value, name)
+        super().__init__(master, value, name)
         self._date_object = None
         self._date_fmt = date_fmt
 

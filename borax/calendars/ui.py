@@ -51,7 +51,7 @@ class CalendarFrame(ttk.Frame):
         bw, bh = 3, 1
         tool_row_no, head_row_no, week_row_no, day_row_no = range(4)
 
-        today_btn = tk.Button(self, text='今日', relief=tk.GROOVE, command=lambda: self._nav_current_month())
+        today_btn = tk.Button(self, text='今日', relief=tk.GROOVE, command=self._nav_current_month)
         today_btn.grid(row=0, column=5, sticky='wens', columnspan=2, pady=4)
         pre_btn = tk.Button(self, text='\u25C4', width=bw, height=bh, command=lambda: self.page_to(-1),
                             relief=tk.GROOVE)
@@ -85,12 +85,12 @@ class CalendarFrame(ttk.Frame):
         month = self._v_month.get()
         cell_index = 0
         _mi, _ma, _left_zero = -1, -1, 0
-        for day, text, wd in self._library.iter_month_daytuples(year, month):
+        for day, text, _ in self._library.iter_month_daytuples(year, month):
             if day == 0:
                 day_text = ''
                 _left_zero += int(_mi == -1)
             else:
-                day_text = '{}\n{}'.format(day, text)
+                day_text = f'{day}\n{text}'
                 if day == 1:
                     _mi = cell_index
                 _ma += 1

@@ -17,7 +17,7 @@ __all__ = [
     'FreqConst', 'Festival', 'FestivalSchema',
     'SolarFestival', 'LunarFestival', 'WeekFestival', 'TermFestival',
     'encode', 'decode', 'decode_festival',
-    'FestivalLibrary',
+    'FestivalLibrary', 'ConditionUtils'
 ]
 
 MixedDate = Union[date, LunarDate]
