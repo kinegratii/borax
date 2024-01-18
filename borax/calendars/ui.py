@@ -183,7 +183,7 @@ class FestivalTableFrame(ttk.Frame):
     """A table frame displaying festivals with CURD feature."""
 
     def __init__(self, master=None, columns: Sequence = None, festival_source: Union[str, FestivalLibrary] = 'empty',
-                 **kwargs):
+                 countdown_ordered: bool = False, **kwargs):
         super().__init__(master=master, **kwargs)
         self._adapter = FestivalItemAdapter(columns)
         if isinstance(festival_source, FestivalLibrary):
@@ -198,6 +198,7 @@ class FestivalTableFrame(ttk.Frame):
         for i, name in enumerate(self._adapter.displays, start=1):
             self._tree.column(f"# {i}", anchor=tk.CENTER, width=self._adapter.widths[i - 1])
             self._tree.heading(f"# {i}", text=name)
+        self._countdown_ordered = countdown_ordered
 
         self.notify_data_changed()
 
@@ -213,11 +214,15 @@ class FestivalTableFrame(ttk.Frame):
     def row_count(self):
         return len(self._tree.get_children())
 
+    def change_festival_source(self, source: str):
+        self._library = FestivalLibrary.load_builtin(source)
+        self.notify_data_changed()
+
     def notify_data_changed(self):
         item_iids = self._tree.get_children()
         if len(item_iids):
             self._tree.delete(*item_iids)
-        for ndays, wd, festival in self._library.list_days_in_countdown(countdown_ordered=False):
+        for ndays, wd, festival in self._library.list_days_in_countdown(countdown_ordered=self._countdown_ordered):
             values = self._adapter.object2values(festival, wd, ndays)
             self._tree.insert('', 'end', text="1", values=values)
 

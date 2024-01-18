@@ -186,7 +186,8 @@ class GanzhiPanel(ttk.Frame):
         gz_grid_frame = ttk.Frame(self)
         for offset in range(60):
             row, col = offset // 10, offset % 10
-            btn = tk.Button(gz_grid_frame, text=TextUtils.get_gz_cn(offset), width=3, height=1,
+            btn_text = '{} {}'.format(TextUtils.offset2gz(offset), offset + 1)
+            btn = tk.Button(gz_grid_frame, text=btn_text, width=5, height=1,
                             command=lambda go=offset: self._show_years(go), relief=tk.GROOVE)
             btn.grid(row=row, column=col, ipadx=5, ipady=5)
         gz_grid_frame.pack(side='left')
@@ -237,12 +238,14 @@ class CApp(ttk.Frame):
         self.cal_panel.bind_date_selected(self.on_show_date_detail)
 
         ttk.Separator(self, orient=tk.VERTICAL).pack(side='left', fill=tk.Y, expand=True)
+        self._table_festival_libray = library
         columns = (("name", 100), ("description", 180), ("code", 80), ("next_day", 150), ("countdown", 60))
-        cs = FestivalTableFrame(self, columns=columns, festival_source=library)
-        cs.pack(side='right', expand=True, fill=tk.BOTH, padx=10, pady=10)
+        self._cs = FestivalTableFrame(self, columns=columns, festival_source=library, countdown_ordered=True)
+        self._cs.pack(side='right', expand=True, fill=tk.BOTH, padx=10, pady=10)
 
         # cs.update_data()
         self._style_var = tk.StringVar()
+        self._table_festival_source_var = tk.StringVar(value='basic')
         self.create_top_menu()
         self._tool_dlg = None
         self._gz_dlg = None
@@ -262,9 +265,11 @@ class CApp(ttk.Frame):
         menu_bar.add_command(label='日期计算', command=self.start_tool_dlg)
         menu_bar.add_command(label='干支节气', command=self.start_gz_dlg)
         menu_bar.add_command(label='创建节日', command=self.start_festival_dlg)
-        settings_menu = tk.Menu(menu_bar)
-        settings_menu.add_command(label='节日源')
-        menu_bar.add_cascade(label='设置', menu=settings_menu)
+        source_menu = tk.Menu(menu_bar)
+        for source in ('basic', 'ext1'):
+            source_menu.add_radiobutton(label=source, variable=self._table_festival_source_var,
+                                        command=self._change_source)
+        menu_bar.add_cascade(label='节日源', menu=source_menu)
         about_menu = tk.Menu(menu_bar)
         about_menu.add_command(label='项目主页', command=lambda: webbrowser.open(PROJECT_URLS['home']))
         about_menu.add_command(label='关于软件', command=self.show_about_info)
@@ -273,6 +278,9 @@ class CApp(ttk.Frame):
     def _change_theme(self):
         global style
         style.theme_use(self._style_var.get())
+
+    def _change_source(self):
+        self._cs.change_festival_source(self._table_festival_source_var.get())
 
     def on_show_date_detail(self, wd: WrappedDate):
         self.detail_frame.set_selected_date(wd)
