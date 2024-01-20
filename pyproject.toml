@@ -58,3 +58,8 @@ exclude_lines = [
     "if __name__ == .__main__.:",
     "def print_(self):"
 ]
+[tool.flake8]
+ignore = ["E743", "E501"]
+max-line-length = 120
+max-complexity = 25
+exclude = [".git", "__pycache__", "build", "dist"]
