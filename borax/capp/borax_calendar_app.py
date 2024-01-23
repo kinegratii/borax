@@ -11,8 +11,9 @@ from typing import Optional
 
 from borax import __version__ as borax_version
 from borax.calendars.festivals2 import FestivalLibrary, WrappedDate
-from borax.calendars.lunardate import TextUtils, TERMS_CN
+from borax.calendars.lunardate import TextUtils, TERMS_CN, TERM_PINYIN
 from borax.calendars.ui import CalendarFrame, FestivalTableFrame
+from borax.calendars.utils import ThreeNineUtils
 from borax.capp.festival_creator import FestivalCreatePanel
 
 library = FestivalLibrary.load_builtin().sort_by_countdown()
@@ -27,6 +28,9 @@ style: ttk.Style = None
 
 
 class WDateVar(tk.StringVar):
+    """A tkinter variable for WrappedDate object.
+    Use set_date/get_date instead of set/get function.
+    """
 
     def __init__(self, master=None, value=None, name=None, date_fmt='%Y-%m-%d'):
         super().__init__(master, value, name)
@@ -176,7 +180,11 @@ class DateDetailFrame(ttk.LabelFrame):
         week_cn = ld.cn_week
         self.label_widgets['solar_week'].config(text=f'星期{week_cn}')
         self.label_widgets['solar_gz'].config(text=ld.gz_str())
-        self.label_widgets['festival'].config(text=' '.join(library.get_festival_names(sd)))
+        day_labels = library.get_festival_names(sd)
+        three_night_label = ThreeNineUtils.get_39label(sd)
+        if three_night_label:
+            day_labels.append(three_night_label)
+        self.label_widgets['festival'].config(text=' '.join(day_labels))
 
 
 class GanzhiPanel(ttk.Frame):
@@ -194,7 +202,7 @@ class GanzhiPanel(ttk.Frame):
 
         self.year_list = ttk.Treeview(self, column=("年份",), show='headings', height=5)
         self.year_list.column("# 1", anchor=tk.CENTER)
-        self.year_list.heading("# 1", text="年份")
+        self.year_list.heading("# 1", text="农历年份")
         self.year_list.pack(side='left', expand=True, fill=tk.BOTH)
 
     def _show_years(self, gz_offset: int):
@@ -212,7 +220,7 @@ class TermPanel(ttk.Frame):
     def __init__(self, master=None, **kwargs):
         super().__init__(master, **kwargs)
 
-        columns = ("序号", "节气", "太阳地心视黄经（度）")
+        columns = ("序号", "节气", "识别码(拼音首字母)", "太阳地心视黄经（度）")
         self.term_table = ttk.Treeview(self, column=columns, show='headings', height=5)
         self.term_table.pack(side='top', expand=True, fill=tk.BOTH)
         for i, name in enumerate(columns, start=1):
@@ -221,7 +229,7 @@ class TermPanel(ttk.Frame):
 
         for tindex, tname in enumerate(TERMS_CN):  # 1-285
             dg = (285 + 15 * tindex) % 360
-            self.term_table.insert('', 'end', text="1", values=(tindex + 1, tname, dg))
+            self.term_table.insert('', 'end', text="1", values=(tindex, tname, TERM_PINYIN[tindex], dg))
 
 
 class CApp(ttk.Frame):
@@ -238,8 +246,8 @@ class CApp(ttk.Frame):
         self.cal_panel.bind_date_selected(self.on_show_date_detail)
 
         ttk.Separator(self, orient=tk.VERTICAL).pack(side='left', fill=tk.Y, expand=True)
-        self._table_festival_libray = library
-        columns = (("name", 100), ("description", 180), ("code", 80), ("next_day", 150), ("countdown", 60))
+        self._table_festival_library = library
+        columns = (("name", 120), ("description", 160), ("code", 80), ("next_day", 150), ("countdown", 60))
         self._cs = FestivalTableFrame(self, columns=columns, festival_source=library, countdown_ordered=True)
         self._cs.pack(side='right', expand=True, fill=tk.BOTH, padx=10, pady=10)
 
@@ -263,7 +271,7 @@ class CApp(ttk.Frame):
             viewmenu.add_radiobutton(label=name, variable=self._style_var, command=self._change_theme)
         menu_bar.add_cascade(label='界面主题', menu=viewmenu)
         menu_bar.add_command(label='日期计算', command=self.start_tool_dlg)
-        menu_bar.add_command(label='干支节气', command=self.start_gz_dlg)
+        menu_bar.add_command(label='节气干支', command=self.start_gz_dlg)
         menu_bar.add_command(label='创建节日', command=self.start_festival_dlg)
         source_menu = tk.Menu(menu_bar)
         for source in ('basic', 'ext1'):
@@ -305,10 +313,10 @@ class CApp(ttk.Frame):
         self._gz_dlg = tk.Toplevel(self)
         self._gz_dlg.resizable(False, False)
         notebook = ttk.Notebook(self._gz_dlg)
-        d = GanzhiPanel(notebook)
-        notebook.add(d, text='干支')
         tp = TermPanel(notebook)
         notebook.add(tp, text='节气')
+        d = GanzhiPanel(notebook)
+        notebook.add(d, text='干支')
         notebook.pack(side='top')
         self._gz_dlg.lift()
 

@@ -35,8 +35,8 @@ class CalendarFrame(ttk.Frame):
         else:
             self._library = festival_source
         self._v_day_matrix = [[tk.StringVar() for _ in range(7)] for _ in range(6)]
-        self._d_selected_date = None  # type: Optional[WrappedDate]
-        self._callbacks = {}  # type: Dict[str,Callable]
+        self._d_selected_date: Optional[WrappedDate] = None
+        self._callbacks: Dict[str, Callable] = {}
         self._day_cell_indexes = -1, -1  # The cell indexes of first and last day in this month.
 
         self._cal_obj = calendar.Calendar(firstweekday=self._firstweekday)

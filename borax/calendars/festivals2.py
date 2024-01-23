@@ -982,7 +982,7 @@ class FestivalLibrary(collections.UserList):
         """
         return set([f.encode() for f in self.data])
 
-    def extend_unique(self, other):
+    def extend_unique(self, other: Union[collections.UserList, List[str], 'FestivalLibrary']) -> 'FestivalLibrary':
         """Add a new festival if code does not exist.
         """
         f_codes = {f.encode() for f in self.data}
@@ -1117,7 +1117,8 @@ class FestivalLibrary(collections.UserList):
         return data_items
 
     def iter_month_daytuples(self, year: int, month: int, firstweekday: int = 0, return_pos: bool = False):
-        """迭代返回公历月份（含前后完整日期）中每个日期信息
+        """return all day info for a whole solar month as (day_integer, day_text, wrapped_date)
+        The day_text show in the order:festival_name,term_name, lunar_day_text
         """
         row = 0
         cal = calendar.Calendar(firstweekday=firstweekday)
@@ -1157,7 +1158,7 @@ class FestivalLibrary(collections.UserList):
             fileobj = path_or_buf.open('w', encoding='utf8', newline='')
         else:
             fileobj = path_or_buf
-        writer = csv.writer(fileobj, )
+        writer = csv.writer(fileobj)
         for festival in self:
             row = (festival.encode(), festival.name, festival.catalog)
             writer.writerow(row)

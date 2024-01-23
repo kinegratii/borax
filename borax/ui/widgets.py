@@ -55,3 +55,16 @@ class TimerLabel(CounterLabel):
     @property
     def state(self):
         return self._state
+
+
+class MessageLabel(tk.Label):
+    """A label that can show text in a short time.Variable binding is not supported."""
+    _key2colors = {'error': 'red', 'warning': 'orange', 'success': 'green'}
+
+    def show_text(self, text: str, text_color: str = 'black', splash_ms: int = 0):
+        self.config({'text': text, 'fg': MessageLabel._key2colors.get(text_color, text_color)})
+        if splash_ms:
+            self.after(splash_ms, self._clear)
+
+    def _clear(self):
+        self.config({'text': ''})

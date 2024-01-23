@@ -53,6 +53,13 @@ class FestivalLibraryUniqueTestCase(unittest.TestCase):
         fl.extend_unique(['205026', '89005'])
         self.assertEqual(3, len(fl))
 
+    def test_unique_for_basic_library(self):
+        fl = FestivalLibrary.load_builtin('basic')
+        total_1 = len(fl)
+        fl.extend_term_festivals()
+        total_2 = len(fl)
+        self.assertEqual(22, total_2 - total_1)
+
     def test_edit(self):
         fl = FestivalLibrary()
         fl.load_term_festivals()
