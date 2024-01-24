@@ -6,7 +6,7 @@
 
 `numbers` 提供了下列的模块级常量。 
 
-- **numbers.MAX_VALUE_LIMIT = 1_0000_0000_0000 **
+- **numbers.MAX_VALUE_LIMIT = 1_0000_0000_0000**
 
 本模块可以处理的数字上限，值为一万亿（10^12） ， 超过该值将抛出 `ValueError` 异常，适用本模块的所有函数。
 

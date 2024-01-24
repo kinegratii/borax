@@ -1,4 +1,3 @@
-import time
 import unittest
 
 from borax.devtools import RuntimeMeasurer

@@ -33,10 +33,11 @@ Borax 是一个Python3工具集合库。包括了以下几个话题：
 
 Borax 的 python 版本要求如下
 
-| borax 版本 | python版本 |
-| ------ | ------ |
-| 4.x | 3.7+ |
-| 3.x | 3.5+ |
+| borax 版本 | python版本 | 维护状态 |
+| ------ | ------ | ------ |
+| 4.1.x | 3.9+ | 维护开发 |
+| 4.0.0 | 3.7+ | 不再维护 |
+| 3.x | 3.5+ | 不再维护 |
 
 可以通过 *pip* 安装 ：
 
@@ -202,13 +203,15 @@ print(FinanceNumbers.to_capital_str(decimal.Decimal(4.50))) # '肆元伍角零�
 
 ## 文档 (Document)
 
-文档由 [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) 构建，另外备用文档使用 [docsify](https://docsify.js.org/) 构建。
+文档由 [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) 构建 ~~，另外备用文档使用 [docsify](https://docsify.js.org/) 构建~~ 。
+
+> 2024年1月起，仅保留 Read the Docs 文档源。
 
 | 源 | 网址 |
 | ---- | ---- |
 | read-the-docs | [https://borax.readthedocs.io/zh_CN/latest/](https://borax.readthedocs.io/zh_CN/latest/) |
-| github | [https://kinegratii.github.io/borax](https://kinegratii.github.io/borax) |
-| gitee | [https://kinegratii.gitee.io/borax](https://kinegratii.gitee.io/borax) |
+| github（已废弃） | [https://kinegratii.github.io/borax](https://kinegratii.github.io/borax) |
+| gitee（已废弃） | [https://kinegratii.gitee.io/borax](https://kinegratii.gitee.io/borax) |
 
 ## 开发特性和规范 (Development Features)
 
