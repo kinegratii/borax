@@ -6,6 +6,7 @@ import csv
 import enum
 import warnings
 from datetime import date, timedelta, datetime
+from functools import cached_property
 from pathlib import Path
 from typing import List, Tuple, Optional, Union, Iterator, Set, Generator, Sequence
 
@@ -149,11 +150,11 @@ class WrappedDate:
     def encode(self) -> str:
         if self._fl == 'l':
             festival = LunarFestival(month=self.lunar.month, day=self.lunar.day, leap=self.lunar.leap)
-            encoded_str = festival.encode()
+            encoded_str = festival.code
             return '{}{:04d}{}'.format(encoded_str[0], self.lunar.year, encoded_str[1:])
         else:
             festival = SolarFestival(month=self.solar.month, day=self.solar.day)
-            encoded_str = festival.encode()
+            encoded_str = festival.code
             return '{}{:04d}{}'.format(encoded_str[0], self.solar.year, encoded_str[1:])
 
     @classmethod
@@ -230,6 +231,10 @@ class Festival:
     def set_name(self, name):
         self._name = name
         return self
+
+    @cached_property
+    def code(self):
+        return self.encode()
 
     @property
     def schema(self):
@@ -980,19 +985,22 @@ class FestivalLibrary(collections.UserList):
     def get_code_set(self) -> Set[str]:
         """Get codes for all festivals.
         """
-        return set([f.encode() for f in self.data])
+        return set([f.code for f in self.data])
 
-    def extend_unique(self, other: Union[collections.UserList, List[str], 'FestivalLibrary']) -> 'FestivalLibrary':
+    def extend_unique(
+            self,
+            other: Union[collections.UserList, List[Union[str, Festival]], 'FestivalLibrary']
+    ) -> 'FestivalLibrary':
         """Add a new festival if code does not exist.
         """
-        f_codes = {f.encode() for f in self.data}
+        f_codes = {f.code for f in self.data}
         if isinstance(other, collections.UserList):
             new_data = other.data
         else:
             new_data = other
         for item in new_data:
             if isinstance(item, Festival):
-                if item.encode() not in f_codes:
+                if item.code not in f_codes:
                     self.data.append(item)
             elif isinstance(item, str):
                 try:
@@ -1160,7 +1168,7 @@ class FestivalLibrary(collections.UserList):
             fileobj = path_or_buf
         writer = csv.writer(fileobj)
         for festival in self:
-            row = (festival.encode(), festival.name, festival.catalog)
+            row = (festival.code, festival.name, festival.catalog)
             writer.writerow(row)
 
     @classmethod
@@ -1185,7 +1193,7 @@ class FestivalLibrary(collections.UserList):
                     fl.append(festival)
                 except ValueError:
                     continue
-        fl.sort(key=lambda x: x.encode())
+        fl.sort(key=lambda x: x.code)
         return fl
 
     def filter(self, catalogs: Sequence = None) -> 'FestivalLibrary':

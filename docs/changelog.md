@@ -1,10 +1,19 @@
 # 更新日志
 
-## v4.1.0
+## v4.1.0 (20240330)
+
+> Borax最低python版本要求为python3.9
+
+[发布日志](/release-note/v410)
+
 - 功能更新
   - 新增 [Borax日历应用](/guides/borax_calendar_app) 
+  - 包 `borax.apps` 变更为 `borax.capp`
   - 新增方法 `FestivalLibrary.extend_term_festivals`
+  - 新增 `borax.ui.widgets.MessageLabel` 类
+  - `Festival` 类新增 `code` 属性
 - 项目构建
+  - 不再支持python3.7和python3.8
   - 本地开发环境更新至 python3.11.7
   - 使用 *pyproject.toml* 项目构建配置文件，构建命令 `python -m build -w`
   - 支持python3.12
@@ -12,8 +21,9 @@
   - mkdocs-material 更新至 9.5.3
   - 不再支持 docsify 构建（index.html 冲突）
 
-
 ## v4.0.0 (20221115)
+
+[发布日志](/release-note/v400)
 
 - 新增基于 tkinter 的 [节日界面库](/guides/festivals2-ui)
 - 移除源代码文件编码声明行

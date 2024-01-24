@@ -2,6 +2,8 @@
 
 > 模块： `borax.calendars.festivals2`
 
+> Updated in 4.1.0：新增 Festival.code属性。
+
 > Updated in 3.5.6: 星期型节日(WeekFestival)类支持倒数序号。如：“国际麻风节(1月最后一个星期天)”
 
 > Updated in 3.5.6: 星期型节日(WeekFestival)类支持每月频率。
@@ -247,6 +249,14 @@ TermFestival(index=0)
 
 ## Festival属性
 
+### code
+
+> Add in 4.1.0
+
+类型：str，编码字符串。 `FestivalLibrary` 以此属性作为唯一性的标志。
+
+需要注意的是该属性使用 `cached_property` 进行修饰。
+
 ### name
 
 类型：str，节日名称，如“元旦”、“中秋节”等。
@@ -408,12 +418,14 @@ print(spring_festival.countdown()) # (273, <WrappedDate:2022-02-01(二〇二二�
 
 `FestivalLibrary` 是集合容器类，提供了一些常用的节日。此类继承自 `collections.UserList` ，拥有  append/remove/extend/insert等方法。
 
+需要注意的是，`FestivalLibrary` 并不重写这些方法的逻辑，因此如需保证节日不重复，可以使用 `extend_unique` 方法添加。
+
 ```python
 class FestivalLibrary(collections.UserList):
     pass
 ```
 
-创建一个节日库对象主要有两种方法：
+创建一个节日库对象主要有三种方法：
 
 第一，从 borax 提供默认数据加载。
 
@@ -421,12 +433,19 @@ class FestivalLibrary(collections.UserList):
 fl = FestivalLibrary.load_builtin('basic') # 加载基础节日库，可选 empty / basic / ext1
 ```
 
-第二，从已有的节日创建新的节日库。
+第二，从某个 csv 文件加载。
+
+```python
+fl = FestivalLibrary.load_file('/usr/amy/festivals/my_festival.csv')
+```
+
+第三，从已有的节日创建新的节日库。
 
 ```python
 fl1 = FestivalLibrary(fl) # 复制 fl节日库
 
-fl2 = FestivalLibrary(filter(lambda f: f.schema == FestivalSchema.SOLAR, fl)) # 使用函数式编程过滤其中的公历型节日
+# 使用函数式编程过滤其中的公历型节日
+fl2 = FestivalLibrary(filter(lambda f: f.schema == FestivalSchema.SOLAR, fl)) 
 ```
 
 ### get_code_set
@@ -480,7 +499,7 @@ FestivalLibrary.load_file(cls, file_path: Union[str, Path]) -> 'FestivalLibrary'
 ### load_builtin
 
 ```python
-FestivalLibrary.load_builtin(cls, identifier: str = 'zh-Hans') -> 'FestivalLibrary'
+FestivalLibrary.load_builtin(cls, identifier: str = 'basic') -> 'FestivalLibrary'
 ```
 
 加载Borax提供的节日库数据。
