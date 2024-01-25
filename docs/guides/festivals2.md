@@ -488,6 +488,24 @@ FestivalLibrary.delete_by_indexes(indexes:List[int])
 
 按照位置删除多个元素。
 
+### load
+
+> Add in 4.1.0
+
+```python
+FestivalLibrary.load(cls, identifier_or_path: Union[str, Path]) -> 'FestivalLibrary'
+```
+
+加载Borax内部数据或自定义文件。
+
+```python
+fl = FestivalLibrary.load('basic')
+
+fl2 = FestivalLibrary.load('/usr/my/my_festivals.csv')
+```
+
+
+
 ### load_file
 
 ```python

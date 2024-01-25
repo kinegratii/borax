@@ -23,6 +23,12 @@ class FestivalLibraryTestCase(unittest.TestCase):
 
         self.assertIn('元旦', [g.name for g in gd_days])
 
+    def test_new_load(self):
+        fl = FestivalLibrary.load('basic')
+        self.assertEqual(33, len(fl))
+        with self.assertRaises(FileNotFoundError):
+            fl2 = FestivalLibrary.load('not-found')
+
     def test_list_days(self):
         fl = FestivalLibrary.load_builtin()
         fes_list = []

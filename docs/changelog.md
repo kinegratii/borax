@@ -9,7 +9,8 @@
 - 功能更新
   - 新增 [Borax日历应用](/guides/borax_calendar_app) 
   - 包 `borax.apps` 变更为 `borax.capp`
-  - 新增方法 `FestivalLibrary.extend_term_festivals`
+  - 新增方法 `FestivalLibrary.extend_term_festivals` 
+  - 新增方法 `FestivalLibrary.load`
   - 新增 `borax.ui.widgets.MessageLabel` 类
   - `Festival` 类新增 `code` 属性
 - 项目构建

@@ -1222,3 +1222,14 @@ class FestivalLibrary(collections.UserList):
         if identifier == 'empty':
             return FestivalLibrary()
         return cls.load_file(get_festival_dataset_path(identifier))
+
+    @classmethod
+    def load(cls, identifier_or_path: Union[str, Path]) -> 'FestivalLibrary':
+        """Create a FestivalLibrary object from borax builtin dataset or custom file."""
+        if identifier_or_path == 'empty':
+            return FestivalLibrary()
+        try:
+            path_o = get_festival_dataset_path(identifier_or_path)
+            return cls.load_file(path_o)
+        except ValueError:
+            return cls.load_file(identifier_or_path)
