@@ -18,8 +18,6 @@ from borax.capp.festival_creator import FestivalCreatePanel
 
 library = FestivalLibrary.load_builtin().sort_by_countdown()
 
-__VERSION__ = '1.1.0'
-
 PROJECT_URLS = {
     'home': 'https://github.com/kinegratii/borax'
 }
@@ -347,7 +345,7 @@ class CApp(ttk.Frame):
             self._create_festival_dialog()
 
     def show_about_info(self):
-        showinfo('关于', f' 日历v{__VERSION__}\n\n Powered by Borax{borax_version}')
+        showinfo('关于', f' 日历v{borax_version}\n\n Powered by Borax{borax_version}')
 
 
 def start_calendar_app():
@@ -356,7 +354,7 @@ def start_calendar_app():
     x, y = int(root.winfo_screenwidth() / 2 - rw / 2), int(root.winfo_screenheight() / 2 - rh / 2)
     root.geometry(f"{rw}x{rh}+{x}+{y}")
     root.resizable(False, False)
-    root.title(f'日历 - v{__VERSION__}')
+    root.title(f'日历 - v{borax_version}')
     global style
     style = ttk.Style(root)
     # style.theme_use('alt')

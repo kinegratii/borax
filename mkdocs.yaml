@@ -9,6 +9,10 @@ theme:
     - navigation.tabs
     - navigation.sections
     - navigation.footer
+validation:
+  links:
+    absolute_links: ignore
+    unrecognized_links: ignore
 extra:
   social:
     - icon: fontawesome/brands/github

@@ -65,16 +65,24 @@ class FestivalSchema(enum.IntEnum):
 
 class WrappedDate:
     """A date object with solar and lunar calendars."""
-    __slots__ = ['solar', 'lunar', 'name', '_fl']
+    __slots__ = ['_solar', '_lunar', 'name', '_fl']
 
     def __init__(self, date_obj: MixedDate, name: str = ''):
-        self.solar = LCalendars.cast_date(date_obj, date)
-        self.lunar = LCalendars.cast_date(date_obj, LunarDate)
+        self._solar = LCalendars.cast_date(date_obj, date)
+        self._lunar = LCalendars.cast_date(date_obj, LunarDate)
         self.name = name
         if isinstance(date_obj, date):
             self._fl = 's'
         else:
             self._fl = 'l'
+
+    @property
+    def solar(self):
+        return self._solar
+
+    @property
+    def lunar(self):
+        return self._lunar
 
     def __iter__(self):
         yield self.solar
@@ -121,13 +129,6 @@ class WrappedDate:
 
     def __eq__(self, other):
         return isinstance(self, type(other)) and self.__key() == other.__key()
-
-    def __getstate__(self):
-        return self.__key()
-
-    def __setstate__(self, state):
-        _year, _month, _day = state
-        self.solar = date(_year, _month, _day)
 
     def full_str(self):
         return f'{self.solar}({self.lunar.cn_str()})'

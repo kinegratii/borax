@@ -13,6 +13,7 @@
   - 新增方法 `FestivalLibrary.load`
   - 新增 `borax.ui.widgets.MessageLabel` 类
   - `Festival` 类新增 `code` 属性
+  - `WrappedDate.solar` 和 `WrappedDate.lunar` 属性变更为只读属性，不可写入
 - 项目构建
   - 不再支持python3.7和python3.8
   - 本地开发环境更新至 python3.11.7
