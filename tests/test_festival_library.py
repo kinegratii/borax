@@ -3,7 +3,8 @@ from datetime import date
 from io import StringIO
 from unittest.mock import MagicMock, patch
 
-from borax.calendars.festivals2 import LunarFestival, TermFestival, FestivalLibrary, FestivalSchema
+from borax.calendars.festivals2 import (LunarFestival, TermFestival, FestivalLibrary, FestivalSchema,
+                                        FestivalDatasetNotExist)
 
 
 class FestivalLibraryTestCase(unittest.TestCase):
@@ -26,8 +27,8 @@ class FestivalLibraryTestCase(unittest.TestCase):
     def test_new_load(self):
         fl = FestivalLibrary.load('basic')
         self.assertEqual(33, len(fl))
-        with self.assertRaises(FileNotFoundError):
-            fl2 = FestivalLibrary.load('not-found')
+        with self.assertRaises(FestivalDatasetNotExist):
+            FestivalLibrary.load('not-found')
 
     def test_list_days(self):
         fl = FestivalLibrary.load_builtin()

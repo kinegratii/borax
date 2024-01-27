@@ -18,7 +18,7 @@ __all__ = [
     'FreqConst', 'Festival', 'FestivalSchema',
     'SolarFestival', 'LunarFestival', 'WeekFestival', 'TermFestival',
     'encode', 'decode', 'decode_festival',
-    'FestivalLibrary', 'ConditionUtils'
+    'FestivalLibrary', 'ConditionUtils', 'FestivalDatasetNotExist'
 ]
 
 MixedDate = Union[date, LunarDate]
@@ -970,6 +970,10 @@ class ConditionUtils:
         return description_contains in festival.description
 
 
+class FestivalDatasetNotExist(Exception):
+    pass
+
+
 class FestivalLibrary(collections.UserList):
     """A festival collection.
 
@@ -1226,11 +1230,18 @@ class FestivalLibrary(collections.UserList):
 
     @classmethod
     def load(cls, identifier_or_path: Union[str, Path]) -> 'FestivalLibrary':
-        """Create a FestivalLibrary object from borax builtin dataset or custom file."""
+        """Create a FestivalLibrary object from borax builtin dataset or custom file.
+        If dataset does not exist,a FestivalDatasetNotExist is raised.
+        """
         if identifier_or_path == 'empty':
             return FestivalLibrary()
-        try:
-            path_o = get_festival_dataset_path(identifier_or_path)
-            return cls.load_file(path_o)
-        except ValueError:
-            return cls.load_file(identifier_or_path)
+        if isinstance(identifier_or_path, str):
+            try:
+                path_o = get_festival_dataset_path(identifier_or_path)
+            except ValueError:
+                path_o = Path(identifier_or_path)
+        else:
+            path_o = identifier_or_path
+        if not path_o.exists():
+            raise FestivalDatasetNotExist(f'FestivalDataset does not exist:{identifier_or_path}')
+        return cls.load_file(path_o)
