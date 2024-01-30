@@ -36,7 +36,7 @@ Borax 的 python 版本要求如下
 | borax 版本 | python版本 | 维护状态 |
 | ------ | ------ | ------ |
 | 4.1.x | 3.9+ | 维护开发 |
-| 4.0.0 | 3.7+ | 不再维护 |
+| 4.0.0 | 3.7+ | 维护至2024年12月31日 |
 | 3.x | 3.5+ | 不再维护 |
 
 可以通过 *pip* 安装 ：
@@ -59,7 +59,7 @@ borax~=4.1
 
 一个支持1900-2100年的农历日期工具库。
 
-> 本模块的数据和算法参考自项目 [jjonline/calendar.js](https://github.com/jjonline/calendar.js) 。
+> 本模块的数据和算法参考自项目 [jjonline/calendar.js](https://github.com/jjonline/calendar.js)  ，部分算法和数据有所修改。
 
 创建日期，日期推算
 
@@ -67,7 +67,7 @@ borax~=4.1
 from datetime import timedelta
 from borax.calendars import LunarDate
 
-# 获取今天的农历日期（农历2018年七月初一）
+# 获取今天的农历日期（农历二〇一八年七月初一）
 print(LunarDate.today()) # LunarDate(2018, 7, 1, 0)
 
 # 将公历日期转化为农历日期
@@ -100,7 +100,7 @@ festival = LunarFestival(month=1, day=1)
 print(festival.description) # '农历每年正月初一'
 
 # 下一次春节的具体日期以及距离天数
-print(festival.countdown()) # (273, <GeneralDate:2022-02-01(二〇二二年正月初一)>)
+print(festival.countdown()) # (273, <WrappedDate:2022-02-01(二〇二二年正月初一)>)
 
 # 接下来5个春节的日期 ['2022-02-01(二〇二二年正月初一)', '2023-01-22(二〇二三年正月初一)', '2024-02-10(二〇二四年正月初一)', '2025-01-29(二〇二五年正月初一)', '2026-02-17(二〇二六年正月初一)']
 print([str(wd) for wd in festival.list_days(start_date=date.today(), count=5)])

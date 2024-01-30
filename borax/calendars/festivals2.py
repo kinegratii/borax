@@ -8,7 +8,7 @@ import warnings
 from datetime import date, timedelta, datetime
 from functools import cached_property
 from pathlib import Path
-from typing import List, Tuple, Optional, Union, Iterator, Set, Generator, Sequence
+from typing import List, Tuple, Optional, Union, Iterator, Set, Generator, Sequence, Literal
 
 from borax.calendars.dataset import get_festival_dataset_path
 from borax.calendars.lunardate import LunarDate, LCalendars, TermUtils, TextUtils, TERMS_CN
@@ -1219,13 +1219,15 @@ class FestivalLibrary(collections.UserList):
         return self.extend_term_festivals()
 
     @classmethod
-    def load_builtin(cls, identifier: str = 'basic') -> 'FestivalLibrary':
+    def load_builtin(cls, identifier: Literal['basic', 'empty', 'ext1', 'zh-Hans'] = 'basic') -> 'FestivalLibrary':
         """Load builtin library in borax project.
 
         Available Identifiers: basic, zh-Hans, ext1, empty
         """
         if identifier == 'empty':
             return FestivalLibrary()
+        if identifier == 'zh-Hans':
+            warnings.warn('identifier "zh-Hans" is deprecated.Use "basic" instead. ', DeprecationWarning)
         return cls.load_file(get_festival_dataset_path(identifier))
 
     @classmethod
