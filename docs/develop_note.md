@@ -1,13 +1,15 @@
 # 开发笔记
 
-## python版本约束
+## 代码编写
+
+### python版本约束
 
 Borax 4.1.0开始，要求python最低版本为3.9，主要是引入了新的特性，包括：
 
 - `functools.cached_property` 装饰器 (python3.8+)
 - `typing.Literal` 类型注释(python3.8+)
 
-## 代码风格
+### 代码风格
 
 项目代码风格以 [PEP8](https://peps.python.org/pep-0008/) + pycharm 的配置为基准，并增加下列的一些自定义规则。
 
@@ -16,7 +18,13 @@ Borax 4.1.0开始，要求python最低版本为3.9，主要是引入了新的特
 - 禁止使用 `\` 作为代码行分割的标志，需使用括号
 - 不再接受注释方式的类型声明，如 `a = 2 # type:int` 应该为 `a:int = 2` (pyflake触发 `F401` 警告)
 
-## 项目开发
+### API稳定性
+
+Borax 保证API的稳定性，使用 `warnings` 模块标识已经被废弃的类和函数，并在首次标识之后的2-3个系列版本移除这些类和函数。
+
+## 项目构建
+
+### 配置文件
 
 Borax 默认使用 *pyproject.toml* 文件作为项目配置文件，具体包括单元测试、静态检查等内容。
 
@@ -33,7 +41,7 @@ Borax 默认使用 *pyproject.toml* 文件作为项目配置文件，具体包�
 
 
 
-## 项目构建
+### 项目构建
 
 项目使用 `build` 作为包构建工具，使用下列命令生成 wheel 文件。
 
@@ -41,13 +49,15 @@ Borax 默认使用 *pyproject.toml* 文件作为项目配置文件，具体包�
 python -m build -w
 ```
 
-## 文档编写
+## 文档
+
+### 文档编写
 
 除了常规的模块文档外，项目包括以下两种日志文档：
 
 - 更新日志：每个版本的changelog。
 - 发布日志：某些重要版本的 release note，每个版本单独一篇文章。
 
-## 文档生成
+### 文档生成
 
 Borax项目使用 [Material for MkDocs ](https://squidfunk.github.io/mkdocs-material/)  作为文档生成工具，不再支持 docsify 文档生成工具。
