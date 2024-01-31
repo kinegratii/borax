@@ -1,4 +1,4 @@
-# Borax - python3工具库 - 中国农历/中文数字/设计模式/树形结构
+# Borax - python农历&节日工具库 - 中文数字/设计模式/树形结构
 
 [![PyPI](https://img.shields.io/pypi/v/borax.svg)](https://pypi.org/project/borax) 
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/borax.svg)](https://pypi.org/project/borax)
@@ -29,9 +29,11 @@ Borax 是一个Python3工具集合库。
 
 ## 开发(Development)
 
+- **开发环境**: python3.11.7
+- **集成测试环境**: python3.9 - 3.12
 - **代码仓库**：[Github](https://github.com/kinegratii/borax/) | [Gitee (镜像)](https://gitee.com/kinegratii/borax)
 - **项目开发**:  [版本日志](changelog) | [技术文档(外链)](http://fd8cc08f.wiz06.com/wapp/pages/view/share/s/3Zzc2f0LJQ3w2TWIQb0ZMSna1zg4gs1vPQmb2vlh9M2zhqK8)
-- **发布日志**: [v3.5](release-note/v350) | [v3.5.6](release-note/v356) | [v4.0.0](release-note/v400)
+- **发布日志**: [v3.5](release-note/v350) | [v3.5.6](release-note/v356) | [v4.0.0](release-note/v400) | [v4.1.0](release-note/v410)
 
 ## 快速开始(Quickstart)
 
@@ -39,10 +41,11 @@ Borax 是一个Python3工具集合库。
 
 Borax 的 python 版本要求如下
 
-| borax 版本 | python版本 |
-| ------ | ------ |
-| 4.x | 3.7+ |
-| 3.x | 3.5+ |
+| borax 版本 | python版本 | 维护状态 |
+| ------ | ------ | ------ |
+| 4.1.x | 3.9+ | 维护开发 |
+| 4.0.0 | 3.7+ | 维护至2024年12月31日 |
+| 3.x | 3.5+ | 不再维护 |
 
 可以通过 *pip* 安装 ：
 

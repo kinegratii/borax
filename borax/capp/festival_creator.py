@@ -9,7 +9,7 @@ from borax.calendars.festivals2 import (
 from borax.calendars.lunardate import TextUtils, TERMS_CN
 from borax.calendars.ui import FestivalTableFrame
 
-__all__ = ['FestivalCreatePanel']
+__all__ = ['FestivalCreatePanel', 'start_festival_creator']
 
 
 class ChoicesCombobox(ttk.Combobox):
@@ -121,7 +121,7 @@ class MessageLabel(ttk.Label):
             self.after(timeout, self._clear)
 
     def _clear(self):
-        self.config({'text': ''})
+        self.config({'text': '', 'foreground': 'black'})
 
 
 class FestivalCreatePanel(ttk.Frame):
@@ -134,6 +134,8 @@ class FestivalCreatePanel(ttk.Frame):
         lf.pack(side='top', fill='x', padx=10, pady=10, expand=True)
         ttk.Label(lf, text='  本工具支持创建公历型、农历型、星期型、节气型节日，并导出为csv文件。').pack(
             side='top', padx=5, pady=5, fill='both', expand=True)
+        main_frame = tk.Frame(self)
+        main_frame.pack(side='top', fill='both')
 
         self._vm = VarModel()
 
@@ -152,8 +154,8 @@ class FestivalCreatePanel(ttk.Frame):
         delta_choices = [(0, '当日'), (-1, '之前'), (1, '之后')]
         gz_day_choices = list(TextUtils.BRANCHES + TextUtils.STEMS)
 
-        frame = ttk.Frame(self)
-        frame.pack(side='top', expand=True, fill=tk.BOTH, padx=10, pady=10)
+        frame = ttk.Frame(main_frame)
+        frame.pack(side='left', expand=True, fill=tk.BOTH, padx=10, pady=10)
         ttk.Label(frame, text='名称').grid(row=n_row, column=0)
         ttk.Entry(frame, textvariable=self._vm.vars['name']).grid(row=n_row, column=1, columnspan=3, sticky='we')
         ttk.Label(frame, text='分类').grid(row=n_row, column=4)
@@ -219,17 +221,8 @@ class FestivalCreatePanel(ttk.Frame):
         ttk.Label(frame, text='日').grid(row=t_row, column=7)
 
         # Toolbar 8 cols
-        ttk.Button(frame, text='创建节日', command=self._create).grid(row=btn_row, column=0)
-        ttk.Button(frame, text='删除所选', command=self._delete).grid(row=btn_row, column=1)
-        ttk.Label(frame, text='节日源：').grid(row=btn_row, column=3)
-        source_choices = (('empty', '空白'), ('basic', '基础(basic)'), ('ext1', '扩展1(ext1)'), ('custom', '自定义'))
-        self._source_var = tk.StringVar()
-        source_cc = ChoicesCombobox(frame, choices=source_choices, val_variable=self._source_var,
-                                    value_selected=self._on_source_selected, width=ccb_w)
-        source_cc.grid(row=btn_row, column=4)
-        source_cc.current(0)
-        ttk.Button(frame, text='打开文件', command=self._open_and_add).grid(row=btn_row, column=5)
-        ttk.Button(frame, text='导出文件', command=self._export).grid(row=btn_row, column=6)
+        ttk.Button(frame, text='创建节日', command=self._create).grid(row=btn_row, column=0, columnspan=8,
+                                                                  sticky='we')
 
         self._msg_label = MessageLabel(frame, text='')
         self._msg_label.grid(row=msg_row, column=0, columnspan=10)
@@ -244,23 +237,46 @@ class FestivalCreatePanel(ttk.Frame):
         frame2 = ttk.Frame(self)
         frame2.pack(side='top', expand=True, fill=tk.BOTH)
         ttk.Label(frame2, textvariable=self._festival_detail).pack(side='top')
+        ttk.Separator(main_frame, orient=tk.VERTICAL).pack(side='left', fill=tk.Y, expand=True)
+        right_frame = tk.Frame(main_frame)
+        right_frame.pack(side='right', expand=True, fill='both', padx=10, pady=10)
+        toolbar_frame = tk.Frame(right_frame)
+        toolbar_frame.pack(side='top', fill='x')
+        ttk.Label(toolbar_frame, text='节日源：').grid(row=0, column=0)
+        source_choices = (('empty', '空白'), ('basic', '基础(basic)'), ('ext1', '扩展1(ext1)'), ('custom', '自定义'))
+        self._source_var = tk.StringVar()
+        source_cc = ChoicesCombobox(toolbar_frame, choices=source_choices, val_variable=self._source_var,
+                                    value_selected=self._on_source_selected, width=ccb_w)
+        source_cc.grid(row=0, column=1)
+        source_cc.current(0)
+        ttk.Button(toolbar_frame, text='打开/加载', command=self._open_and_add).grid(row=0, column=2)
+        ttk.Button(toolbar_frame, text='删除所选', command=self._delete).grid(row=0, column=3)
+        ttk.Button(toolbar_frame, text='清空数据', command=self._clear_data).grid(row=0, column=4)
+        ttk.Button(toolbar_frame, text='导出文件', command=self._export).grid(row=0, column=5)
 
-        columns = (("name", 100), ("description", 200), ("code", 120), ("next_day", 200), ("countdown", 100))
-        self._festival_table = FestivalTableFrame(self, festival_source='empty', columns=columns)
-        self._festival_table.pack(side='top', expand=True, fill=tk.BOTH, padx=10, pady=10)
+        columns = (("name", 100), ("description", 180), ("code", 80), ("next_day", 150), ("countdown", 60))
+        self._festival_table = FestivalTableFrame(right_frame, festival_source='empty', columns=columns)
+        self._festival_table.pack(side='top', expand=True, fill=tk.BOTH)
 
     def _create(self, event=None):
         try:
             festival = self._vm.validate()
             self._festival_table.add_festival(festival)
-            self._festival_detail.set(f'{festival.description} {festival.encode()}')
+            self._msg_label.splash(f'{festival.description} {festival.encode()}', foreground='green')
         except ValidateError as e:
             self._msg_label.splash(str(e), foreground='red')
 
     def _delete(self, event=None):
         self._festival_table.delete_selected_festivals()
 
+    def _clear_data(self, event=None):
+        self._festival_table.clear_data()
+        self._msg_label.splash('清空成功！', foreground='green')
+
     def _export(self, event=None):
+        if len(self._festival_table.tree_view.get_children()) == 0:
+            self._msg_label.splash('表格无数据！', foreground='red')
+            return
         filename = filedialog.asksaveasfilename(parent=self, title='保存到', defaultextension='.csv',
                                                 filetypes=(('csv', 'csv'),))
         if filename:
@@ -286,7 +302,7 @@ class FestivalCreatePanel(ttk.Frame):
         self._msg_label.splash(f'加载成功,共{self._festival_table.row_count}条', foreground='green')
 
 
-def main():
+def start_festival_creator():
     root = tk.Tk()
     root.title('节日创建工具')
     root.resizable(False, False)
@@ -296,4 +312,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    start_festival_creator()

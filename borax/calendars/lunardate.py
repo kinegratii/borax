@@ -452,8 +452,8 @@ class TextUtils:
             if x % 2 != y % 2:
                 raise ValueError
             return (6 * x - 5 * y) % 60
-        except (TypeError, ValueError):
-            raise ValueError(f'Invalid gz string: {gz}')
+        except (TypeError, ValueError) as e:
+            raise ValueError(f'Invalid gz string: {gz}') from e
 
     @staticmethod
     def offset2gz(offset: int) -> str:

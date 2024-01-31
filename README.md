@@ -1,4 +1,4 @@
-# Borax - python3工具库 - 中国农历/中文数字/设计模式/树形结构
+# Borax - python农历&节日工具库 - 中文数字/设计模式/树形结构
 
 
 [![PyPI](https://img.shields.io/pypi/v/borax.svg)](https://pypi.org/project/borax) 
@@ -33,10 +33,11 @@ Borax 是一个Python3工具集合库。包括了以下几个话题：
 
 Borax 的 python 版本要求如下
 
-| borax 版本 | python版本 |
-| ------ | ------ |
-| 4.x | 3.7+ |
-| 3.x | 3.5+ |
+| borax 版本 | python版本 | 维护状态 |
+| ------ | ------ | ------ |
+| 4.1.x | 3.9+ | 维护开发 |
+| 4.0.0 | 3.7+ | 维护至2024年12月31日 |
+| 3.x | 3.5+ | 不再维护 |
 
 可以通过 *pip* 安装 ：
 
@@ -49,7 +50,7 @@ $ pip install borax
 Borax的版本符合 [语义化版本](https://semver.org/lang/zh-CN/) ，格式为 `<主版本号>.<副版本号>.<修正版本号>`， 推荐使用下面方式定义Borax的依赖版本号。
 
 ```text
-borax~=3.5
+borax~=4.1
 ```
 
 ## 使用示例 (Usage)
@@ -58,7 +59,7 @@ borax~=3.5
 
 一个支持1900-2100年的农历日期工具库。
 
-> 本模块的数据和算法参考自项目 [jjonline/calendar.js](https://github.com/jjonline/calendar.js) 。
+> 本模块的数据和算法参考自项目 [jjonline/calendar.js](https://github.com/jjonline/calendar.js)  ，部分算法和数据有所修改。
 
 创建日期，日期推算
 
@@ -66,7 +67,7 @@ borax~=3.5
 from datetime import timedelta
 from borax.calendars import LunarDate
 
-# 获取今天的农历日期（农历2018年七月初一）
+# 获取今天的农历日期（农历二〇一八年七月初一）
 print(LunarDate.today()) # LunarDate(2018, 7, 1, 0)
 
 # 将公历日期转化为农历日期
@@ -99,7 +100,7 @@ festival = LunarFestival(month=1, day=1)
 print(festival.description) # '农历每年正月初一'
 
 # 下一次春节的具体日期以及距离天数
-print(festival.countdown()) # (273, <GeneralDate:2022-02-01(二〇二二年正月初一)>)
+print(festival.countdown()) # (273, <WrappedDate:2022-02-01(二〇二二年正月初一)>)
 
 # 接下来5个春节的日期 ['2022-02-01(二〇二二年正月初一)', '2023-01-22(二〇二三年正月初一)', '2024-02-10(二〇二四年正月初一)', '2025-01-29(二〇二五年正月初一)', '2026-02-17(二〇二六年正月初一)']
 print([str(wd) for wd in festival.list_days(start_date=date.today(), count=5)])
@@ -202,13 +203,15 @@ print(FinanceNumbers.to_capital_str(decimal.Decimal(4.50))) # '肆元伍角零�
 
 ## 文档 (Document)
 
-文档由 [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) 构建，另外备用文档使用 [docsify](https://docsify.js.org/) 构建。
+文档由 [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) 构建 ~~，另外备用文档使用 [docsify](https://docsify.js.org/) 构建~~ 。
+
+> 2024年1月起，仅保留 Read the Docs 文档源。
 
 | 源 | 网址 |
 | ---- | ---- |
 | read-the-docs | [https://borax.readthedocs.io/zh_CN/latest/](https://borax.readthedocs.io/zh_CN/latest/) |
-| github | [https://kinegratii.github.io/borax](https://kinegratii.github.io/borax) |
-| gitee | [https://kinegratii.gitee.io/borax](https://kinegratii.gitee.io/borax) |
+| github（已废弃） | [https://kinegratii.github.io/borax](https://kinegratii.github.io/borax) |
+| gitee（已废弃） | [https://kinegratii.gitee.io/borax](https://kinegratii.gitee.io/borax) |
 
 ## 开发特性和规范 (Development Features)
 
@@ -217,6 +220,15 @@ print(FinanceNumbers.to_capital_str(decimal.Decimal(4.50))) # '肆元伍角零�
 - [x] [nose2](https://pypi.org/project/nose2/) | [pytest](https://docs.pytest.org/en/latest/)
 - [x] [Github Action](https://github.com/kinegratii/borax/actions)
 - [x] [Code Coverage](https://codecov.io/)
+- [x] [pyproject.toml build tools](https://packaging.python.org/)
+
+## 项目构建 (Project Build)
+
+从4.1.0 开始，borax 使用 *pyproject.toml* 作为项目构建的配置文件，使用以下命令构建 wheel 发行包。
+
+```shell
+python -m build -w
+```
 
 ## 开源协议 (License)
 

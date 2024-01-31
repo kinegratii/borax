@@ -35,8 +35,8 @@ class CalendarFrame(ttk.Frame):
         else:
             self._library = festival_source
         self._v_day_matrix = [[tk.StringVar() for _ in range(7)] for _ in range(6)]
-        self._d_selected_date = None  # type: Optional[WrappedDate]
-        self._callbacks = {}  # type: Dict[str,Callable]
+        self._d_selected_date: Optional[WrappedDate] = None
+        self._callbacks: Dict[str, Callable] = {}
         self._day_cell_indexes = -1, -1  # The cell indexes of first and last day in this month.
 
         self._cal_obj = calendar.Calendar(firstweekday=self._firstweekday)
@@ -51,7 +51,7 @@ class CalendarFrame(ttk.Frame):
         bw, bh = 3, 1
         tool_row_no, head_row_no, week_row_no, day_row_no = range(4)
 
-        today_btn = tk.Button(self, text='今日', relief=tk.GROOVE, command=lambda: self._nav_current_month())
+        today_btn = tk.Button(self, text='今日', relief=tk.GROOVE, command=self._nav_current_month)
         today_btn.grid(row=0, column=5, sticky='wens', columnspan=2, pady=4)
         pre_btn = tk.Button(self, text='\u25C4', width=bw, height=bh, command=lambda: self.page_to(-1),
                             relief=tk.GROOVE)
@@ -85,12 +85,12 @@ class CalendarFrame(ttk.Frame):
         month = self._v_month.get()
         cell_index = 0
         _mi, _ma, _left_zero = -1, -1, 0
-        for day, text, wd in self._library.iter_month_daytuples(year, month):
+        for day, text, _ in self._library.iter_month_daytuples(year, month):
             if day == 0:
                 day_text = ''
                 _left_zero += int(_mi == -1)
             else:
-                day_text = '{}\n{}'.format(day, text)
+                day_text = f'{day}\n{text}'
                 if day == 1:
                     _mi = cell_index
                 _ma += 1
@@ -183,7 +183,7 @@ class FestivalTableFrame(ttk.Frame):
     """A table frame displaying festivals with CURD feature."""
 
     def __init__(self, master=None, columns: Sequence = None, festival_source: Union[str, FestivalLibrary] = 'empty',
-                 **kwargs):
+                 countdown_ordered: bool = False, **kwargs):
         super().__init__(master=master, **kwargs)
         self._adapter = FestivalItemAdapter(columns)
         if isinstance(festival_source, FestivalLibrary):
@@ -198,6 +198,7 @@ class FestivalTableFrame(ttk.Frame):
         for i, name in enumerate(self._adapter.displays, start=1):
             self._tree.column(f"# {i}", anchor=tk.CENTER, width=self._adapter.widths[i - 1])
             self._tree.heading(f"# {i}", text=name)
+        self._countdown_ordered = countdown_ordered
 
         self.notify_data_changed()
 
@@ -213,11 +214,15 @@ class FestivalTableFrame(ttk.Frame):
     def row_count(self):
         return len(self._tree.get_children())
 
+    def change_festival_source(self, source: str):
+        self._library = FestivalLibrary.load_builtin(source)
+        self.notify_data_changed()
+
     def notify_data_changed(self):
         item_iids = self._tree.get_children()
         if len(item_iids):
             self._tree.delete(*item_iids)
-        for ndays, wd, festival in self._library.list_days_in_countdown(countdown_ordered=False):
+        for ndays, wd, festival in self._library.list_days_in_countdown(countdown_ordered=self._countdown_ordered):
             values = self._adapter.object2values(festival, wd, ndays)
             self._tree.insert('', 'end', text="1", values=values)
 
@@ -239,3 +244,8 @@ class FestivalTableFrame(ttk.Frame):
             indexes.append(self._tree.index(selected_item))
             self._tree.delete(selected_item)
         self._library.delete_by_indexes(indexes)
+
+    def clear_data(self):
+        iid_values = self._tree.get_children()
+        self._tree.delete(*iid_values)
+        self._library = FestivalLibrary()

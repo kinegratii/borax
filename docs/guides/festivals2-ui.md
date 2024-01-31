@@ -120,15 +120,20 @@ cf.page_to(2022, 9, 1)  # 2022年9月的下一个月
 ### 创建组件
 
 ```python
-FestivalTableFrame(master=None, colunms:Sequeue=None, festival_source:Union[str,FestivalLibrary]='empty',  **kwargs)
+FestivalTableFrame(master=None, colunms:Sequeue=None, festival_source:Union[str,FestivalLibrary]='empty', countdown_ordered:bool=False, **kwargs)
 ```
 
 构建参数及其意义如下：
 
-| 参数                                               | 描述             |
-| -------------------------------------------------- | ---------------- |
-| colunms:Sequeue                                    | 列定义           |
-| festival_source:Union[str,FestivalLibrary]='empty' | 节日源，默认为空 |
+| 参数                                               | 描述                             |
+| -------------------------------------------------- | -------------------------------- |
+| colunms:Sequeue                                    | 列定义                           |
+| festival_source:Union[str,FestivalLibrary]='empty' | 节日源，默认为空                 |
+| countdown_ordered:bool=False                       | 是否按倒计天数排序。<sup>1</sup> |
+
+备注：
+
+1. v4.1.0新增。
 
 表格列定义方式如下：
 
@@ -190,6 +195,10 @@ ftf = FestivalTableFrame(festival_source='basic')
 ftf.festival_library.sorted(key=lambda x:x.code)
 ftf.notifiy_data_changed()
 ```
+
+- `change_festival_source(source:str)`
+
+v4.1.0新增。更新指定数据源。
 
 
 

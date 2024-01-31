@@ -97,6 +97,14 @@ class LunarDateTestCase(unittest.TestCase):
         ld1 = LunarDate(2018, 6, 1)
         ld2 = LunarDate(2018, 6, 1)
         self.assertEqual(1, len({ld1, ld2}))
+        # Act as dict keys
+        dic = {ld1: 'day1'}
+        self.assertEqual('day1', dic.get(ld1))
+        ld3 = LunarDate(2018, 6, 1)
+        self.assertEqual('day1', dic.get(ld3))
+        dic[ld3] = 'day2'
+        self.assertEqual(1, len(dic))
+        self.assertEqual('day2', dic.get(ld1))
 
     def test_term_ganzhi_feature(self):
         ld = LunarDate(2018, 6, 26)

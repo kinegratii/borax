@@ -2,6 +2,8 @@
 
 > 模块： `borax.calendars.festivals2`
 
+> Updated in 3.6.0：LunarDate类不再支持直接序列，必须先转化对应的 WrappedDate 对象。
+>
 > Updated in 3.5.6: 星期型节日(WeekFestival)类支持倒数序号。如：“国际麻风节(1月最后一个星期天)”
 >
 > Add in 3.5.0

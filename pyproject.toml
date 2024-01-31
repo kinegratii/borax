@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "borax"
+authors = [
+    { name = "kinegratii", email = "zhenwei.yan@hotmail.com" },
+]
+description = "A tool collections.(Chinese-Lunar-Calendars/Python-Patterns)"
+readme = "README.md"
+requires-python = ">=3.9"
+keywords = ["chinese lunar calendar", "python tool"]
+license = { text = "MIT License" }
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3 :: Only",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Utilities",
+    'Operating System :: OS Independent'
+]
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/kinegratii/borax"
+Documentation = "https://borax.readthedocs.io/zh_CN/latest/"
+Repository = "https://github.com/kinegratii/borax"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = { attr = "borax.__version__" }
+
+[tool.coverage.run]
+omit = [
+    "borax\\ui\\*.py",
+    "borax\\capp\\*.py",
+    "borax\\apps\\*.py",
+    "borax\\calendars\\datepicker.py",
+    "borax\\calendars\\ui.py"
+]
+[tool.coverage.report]
+exclude_lines = [
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "def print_(self):"
+]
+[tool.flake8]
+ignore = ["E743", "E501"]
+max-line-length = 120
+max-complexity = 25
+exclude = [".git", "__pycache__", "build", "dist"]

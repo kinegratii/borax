@@ -8,18 +8,25 @@ theme:
   features:
     - navigation.tabs
     - navigation.sections
+    - navigation.footer
+validation:
+  links:
+    absolute_links: ignore
+    unrecognized_links: ignore
 extra:
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/kinegratii/borax
     - icon: fontawesome/brands/python
       link: https://pypi.org/project/borax
-copyright: Copyright &copy; 2018 - 2022 Samuel.Yan
+copyright: Copyright &copy; 2018 - 2024 Samuel.Yan
 markdown_extensions:
   - pymdownx.highlight
   - pymdownx.superfences
+  - mdx_truly_sane_lists
 nav:
   - 首页: README.md
+  - 日历应用: guides/borax_calendar_app.md
   - 农历与节日:
     - 农历: guides/lunardate.md
     - 节日: guides/festivals2.md
@@ -41,9 +48,11 @@ nav:
   - 文章:
     - 农历与节日: guides/festivals2-usage.md
     - 农历开发笔记: posts/lunardate-development.md
-  - 更新日志:
+  - 开发&更新日志:
     - 更新日志: changelog.md
+    - 开发日志: develop_note.md
     - 发布日志:
+      - v4.1.0: release-note/v410.md
       - v4.0.0: release-note/v400.md
       - v3.5.6: release-note/v356.md
       - v3.5.0: release-note/v350.md

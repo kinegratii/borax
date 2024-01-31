@@ -4,11 +4,13 @@ import calendar
 import collections
 import csv
 import enum
-from datetime import date, timedelta, datetime
-from pathlib import Path
 import warnings
-from typing import List, Tuple, Optional, Union, Iterator, Set, Generator, Sequence
+from datetime import date, timedelta, datetime
+from functools import cached_property
+from pathlib import Path
+from typing import List, Tuple, Optional, Union, Iterator, Set, Generator, Sequence, Literal
 
+from borax.calendars.dataset import get_festival_dataset_path
 from borax.calendars.lunardate import LunarDate, LCalendars, TermUtils, TextUtils, TERMS_CN
 
 __all__ = [
@@ -16,15 +18,29 @@ __all__ = [
     'FreqConst', 'Festival', 'FestivalSchema',
     'SolarFestival', 'LunarFestival', 'WeekFestival', 'TermFestival',
     'encode', 'decode', 'decode_festival',
-    'FestivalLibrary',
+    'FestivalLibrary', 'ConditionUtils', 'FestivalDatasetNotExist'
 ]
 
 MixedDate = Union[date, LunarDate]
 
 
+# Public Constants
+
 class FreqConst:
     YEARLY = 0
     MONTHLY = 1
+
+
+class FestivalCatalog:
+    basic = 'basic'
+    event = 'event'
+    life = 'life'
+    public = 'public'
+    tradition = 'tradition'
+    term = 'term'
+    other = 'other'
+
+    CATALOGS = ['basic', 'term', 'public', 'tradition', 'event', 'life', 'other']
 
 
 # Private Global Variables
@@ -47,30 +63,26 @@ class FestivalSchema(enum.IntEnum):
     TERM = 4
 
 
-class FestivalCatalog:
-    basic = 'basic'
-    event = 'event'
-    life = 'life'
-    public = 'public'
-    tradition = 'tradition'
-    term = 'term'
-    other = 'other'
-
-    CATALOGS = ['basic', 'term', 'public', 'tradition', 'event', 'life', 'other']
-
-
 class WrappedDate:
     """A date object with solar and lunar calendars."""
-    __slots__ = ['solar', 'lunar', 'name', '_fl']
+    __slots__ = ['_solar', '_lunar', 'name', '_fl']
 
     def __init__(self, date_obj: MixedDate, name: str = ''):
-        self.solar = LCalendars.cast_date(date_obj, date)
-        self.lunar = LCalendars.cast_date(date_obj, LunarDate)
+        self._solar = LCalendars.cast_date(date_obj, date)
+        self._lunar = LCalendars.cast_date(date_obj, LunarDate)
         self.name = name
         if isinstance(date_obj, date):
             self._fl = 's'
         else:
             self._fl = 'l'
+
+    @property
+    def solar(self):
+        return self._solar
+
+    @property
+    def lunar(self):
+        return self._lunar
 
     def __iter__(self):
         yield self.solar
@@ -118,13 +130,6 @@ class WrappedDate:
     def __eq__(self, other):
         return isinstance(self, type(other)) and self.__key() == other.__key()
 
-    def __getstate__(self):
-        return self.__key()
-
-    def __setstate__(self, state):
-        _year, _month, _day = state
-        self.solar = date(_year, _month, _day)
-
     def full_str(self):
         return f'{self.solar}({self.lunar.cn_str()})'
 
@@ -146,11 +151,11 @@ class WrappedDate:
     def encode(self) -> str:
         if self._fl == 'l':
             festival = LunarFestival(month=self.lunar.month, day=self.lunar.day, leap=self.lunar.leap)
-            encoded_str = festival.encode()
+            encoded_str = festival.code
             return '{}{:04d}{}'.format(encoded_str[0], self.lunar.year, encoded_str[1:])
         else:
             festival = SolarFestival(month=self.solar.month, day=self.solar.day)
-            encoded_str = festival.encode()
+            encoded_str = festival.code
             return '{}{:04d}{}'.format(encoded_str[0], self.solar.year, encoded_str[1:])
 
     @classmethod
@@ -227,6 +232,10 @@ class Festival:
     def set_name(self, name):
         self._name = name
         return self
+
+    @cached_property
+    def code(self):
+        return self.encode()
 
     @property
     def schema(self):
@@ -961,6 +970,10 @@ class ConditionUtils:
         return description_contains in festival.description
 
 
+class FestivalDatasetNotExist(Exception):
+    pass
+
+
 class FestivalLibrary(collections.UserList):
     """A festival collection.
 
@@ -977,19 +990,22 @@ class FestivalLibrary(collections.UserList):
     def get_code_set(self) -> Set[str]:
         """Get codes for all festivals.
         """
-        return set([f.encode() for f in self.data])
+        return set([f.code for f in self.data])
 
-    def extend_unique(self, other):
+    def extend_unique(
+            self,
+            other: Union[collections.UserList, List[Union[str, Festival]], 'FestivalLibrary']
+    ) -> 'FestivalLibrary':
         """Add a new festival if code does not exist.
         """
-        f_codes = {f.encode() for f in self.data}
+        f_codes = {f.code for f in self.data}
         if isinstance(other, collections.UserList):
             new_data = other.data
         else:
             new_data = other
         for item in new_data:
             if isinstance(item, Festival):
-                if item.encode() not in f_codes:
+                if item.code not in f_codes:
                     self.data.append(item)
             elif isinstance(item, str):
                 try:
@@ -999,6 +1015,9 @@ class FestivalLibrary(collections.UserList):
                 except ValueError:
                     pass
         return self
+
+    def extend_term_festivals(self):
+        return self.extend_unique([f'400{i:02d}0' for i in range(24)])
 
     def delete_by_indexes(self, indexes: list):
         """Delete items by indexes."""
@@ -1111,7 +1130,8 @@ class FestivalLibrary(collections.UserList):
         return data_items
 
     def iter_month_daytuples(self, year: int, month: int, firstweekday: int = 0, return_pos: bool = False):
-        """迭代返回公历月份（含前后完整日期）中每个日期信息
+        """return all day info for a whole solar month as (day_integer, day_text, wrapped_date)
+        The day_text show in the order:festival_name,term_name, lunar_day_text
         """
         row = 0
         cal = calendar.Calendar(firstweekday=firstweekday)
@@ -1151,9 +1171,9 @@ class FestivalLibrary(collections.UserList):
             fileobj = path_or_buf.open('w', encoding='utf8', newline='')
         else:
             fileobj = path_or_buf
-        writer = csv.writer(fileobj, )
+        writer = csv.writer(fileobj)
         for festival in self:
-            row = (festival.encode(), festival.name, festival.catalog)
+            row = (festival.code, festival.name, festival.catalog)
             writer.writerow(row)
 
     @classmethod
@@ -1178,7 +1198,7 @@ class FestivalLibrary(collections.UserList):
                     fl.append(festival)
                 except ValueError:
                     continue
-        fl.sort(key=lambda x: x.encode())
+        fl.sort(key=lambda x: x.code)
         return fl
 
     def filter(self, catalogs: Sequence = None) -> 'FestivalLibrary':
@@ -1195,21 +1215,35 @@ class FestivalLibrary(collections.UserList):
 
     def load_term_festivals(self):
         """Add 24-term festivals."""
-        return self.extend_unique([f'400{i:02d}0' for i in range(24)])
+        warnings.warn('This function is deprecated. Use extend_term_festivals instead.', DeprecationWarning)
+        return self.extend_term_festivals()
 
     @classmethod
-    def load_builtin(cls, identifier: str = 'basic') -> 'FestivalLibrary':
+    def load_builtin(cls, identifier: Literal['basic', 'empty', 'ext1', 'zh-Hans'] = 'basic') -> 'FestivalLibrary':
         """Load builtin library in borax project.
 
         Available Identifiers: basic, zh-Hans, ext1, empty
         """
         if identifier == 'empty':
             return FestivalLibrary()
-        if identifier == 'zh-Hans':  # Old identifier
-            identifier = 'basic'
-        file_dict = {
-            'basic': 'FestivalData.csv',
-            'ext1': 'dataset/festivals_ext1.csv'
-        }
-        file_path = Path(__file__).parent / file_dict.get(identifier)
-        return cls.load_file(file_path)
+        if identifier == 'zh-Hans':
+            warnings.warn('identifier "zh-Hans" is deprecated.Use "basic" instead. ', DeprecationWarning)
+        return cls.load_file(get_festival_dataset_path(identifier))
+
+    @classmethod
+    def load(cls, identifier_or_path: Union[str, Path]) -> 'FestivalLibrary':
+        """Create a FestivalLibrary object from borax builtin dataset or custom file.
+        If dataset does not exist,a FestivalDatasetNotExist is raised.
+        """
+        if identifier_or_path == 'empty':
+            return FestivalLibrary()
+        if isinstance(identifier_or_path, str):
+            try:
+                path_o = get_festival_dataset_path(identifier_or_path)
+            except ValueError:
+                path_o = Path(identifier_or_path)
+        else:
+            path_o = identifier_or_path
+        if not path_o.exists():
+            raise FestivalDatasetNotExist(f'FestivalDataset does not exist:{identifier_or_path}')
+        return cls.load_file(path_o)

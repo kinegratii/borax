@@ -2,6 +2,8 @@
 
 > 模块： `borax.calendars.festivals2`
 
+> Updated in 4.1.0：新增 Festival.code属性。
+
 > Updated in 3.5.6: 星期型节日(WeekFestival)类支持倒数序号。如：“国际麻风节(1月最后一个星期天)”
 
 > Updated in 3.5.6: 星期型节日(WeekFestival)类支持每月频率。
@@ -15,7 +17,7 @@
 
 ### 常量定义
 
-`festival2` 定义了一些常量，这些常量通常归属于一个名称以“Const”结尾的类，并使用大写字母的变量命名形式。
+`festival2` 定义了一些常量，这些常量通常归属于一个类，并使用大写字母的变量命名形式。本文档仅列出那些属于 public 权限的常量类。
 
 #### FreqConst
 
@@ -26,16 +28,32 @@ FreqConst 表示节日的频率，用于设置 `Festival` 的 `freq` 参数。
 | FreqConst.YEARLY = 0  | 表示每年 |
 | FreqConst.MONTHLY = 1 | 表示每月 |
 
-#### LeapConst
+#### FestivalCatalog
 
-LeapConst表示农历闰月的标志，用于 `Period` 、`Festival` 对象初始化操作。
+FestivalCatalog 定义了一些节日的分类标签，可以通过 `Festival.catalog` 属性进行读写。
 
-| 定义                 | 表示 |
-| -------------------- | ---- |
-| LeapConst.NORMAL = 0 | 平月 |
-| LeapConst.LEAP = 1   | 闰月 |
-| LeapConst.MIXED = 2  | 混合 |
+默认支持以下标签。
 
+```python
+class FestivalCatalog:
+    basic = 'basic'
+    event = 'event'
+    life = 'life'
+    public = 'public'
+    tradition = 'tradition'
+    term = 'term'
+    other = 'other'
+    
+    CATALOGS = ['basic', 'term', 'public', 'tradition', 'event', 'life', 'other']
+```
+
+节日标签用于同一日期有多个节日时，这些节日之间的先后排序问题。
+
+```python
+amy_birthday = SolarFestival(month=10,day=1, catalog='event')
+```
+
+如上例子，`amy_birthday` 总是在国庆节（其标签为 basic）之后。
 
 ## 基础数据结构 - WrappedDate
 
@@ -88,12 +106,12 @@ print(ld) # LunarDate(2020, 11, 18, 0)
 
 Period 是一个工具类，提供了一系列方法，这些方法均返回一个包含起始日期和终止日期的二元素元组。
 
-| 方法                                                     | 描述              |
-| -------------------------------------------------------- | ----------------- |
-| Period.solar_year(year)                                  | 公历year年        |
-| Period.solar_month(year, month)                          | 公历year年month月 |
-| Period.lunar_year(year)                                  | 农历year年        |
-| Period.lunar_month(year, month, leap=_IGNORE_LEAP_MONTH) | 农历year年month月 |
+| 方法                                                         | 描述              |
+| ------------------------------------------------------------ | ----------------- |
+| Period.solar_year(year) -> Tuple[date, date]                 | 公历year年        |
+| Period.solar_month(year, month) -> Tuple[date, date]         | 公历year年month月 |
+| Period.lunar_year(year) -> Tuple[LunarDate, LunarDate]       | 农历year年        |
+| Period.lunar_month(year, month, leap=_IGNORE_LEAP_MONTH) -> Tuple[LunarDate, LunarDate] | 农历year年month月 |
 
 
 需要注意的是，当leap为默认值且农历year年month月有闰月时，将返回的是两个月时间段的起始日期。下面是 `lunar_month` 方法不同取值的返回的结果。
@@ -230,6 +248,14 @@ TermFestival(index=0)
 | day_gz | 天干或地支标签。                           |           |
 
 ## Festival属性
+
+### code
+
+> Add in 4.1.0
+
+类型：str，编码字符串。 `FestivalLibrary` 以此属性作为唯一性的标志。
+
+需要注意的是该属性使用 `cached_property` 进行修饰。
 
 ### name
 
@@ -376,7 +402,7 @@ Festival.get_one_day(start_date=None, end_date=None) -> Optional[WrappedDate]
 ### 倒计时
 
 ```python
-Festival.countdown(date_obj: MixedDate = None) -> Tuple[int, Optional[WrappedDate]])
+Festival.countdown(date_obj: MixedDate = None) -> Tuple[int, Optional[WrappedDate]]
 ```
 
 计算本 festival 匹配的日期距离 date_obj 的天数及其日期。
@@ -392,9 +418,34 @@ print(spring_festival.countdown()) # (273, <WrappedDate:2022-02-01(二〇二二�
 
 `FestivalLibrary` 是集合容器类，提供了一些常用的节日。此类继承自 `collections.UserList` ，拥有  append/remove/extend/insert等方法。
 
+需要注意的是，`FestivalLibrary` 并不重写这些方法的逻辑，因此如需保证节日不重复，可以使用 `extend_unique` 方法添加。
+
 ```python
 class FestivalLibrary(collections.UserList):
     pass
+```
+
+创建一个节日库对象主要有三种方法：
+
+第一，从 borax 提供默认数据加载。
+
+```python
+fl = FestivalLibrary.load_builtin('basic') # 加载基础节日库，可选 empty / basic / ext1
+```
+
+第二，从某个 csv 文件加载。
+
+```python
+fl = FestivalLibrary.load_file('/usr/amy/festivals/my_festival.csv')
+```
+
+第三，从已有的节日创建新的节日库。
+
+```python
+fl1 = FestivalLibrary(fl) # 复制 fl节日库
+
+# 使用函数式编程过滤其中的公历型节日
+fl2 = FestivalLibrary(filter(lambda f: f.schema == FestivalSchema.SOLAR, fl)) 
 ```
 
 ### get_code_set
@@ -417,6 +468,16 @@ FestivalLibrary.extend_unique(other)
 
 添加多个节日对象，类似于 extend 方法，但是如果code已经存在则不再加入。
 
+### extend_term_festivals
+
+> Add in v4.0.1
+
+```
+FestivalLibrary.extend_term_festivals()
+```
+
+添加24个节气节日。
+
 ### delete_by_indexes
 
 > Add in v4.0.0
@@ -426,6 +487,24 @@ FestivalLibrary.delete_by_indexes(indexes:List[int])
 ```
 
 按照位置删除多个元素。
+
+### load
+
+> Add in 4.1.0
+
+```python
+FestivalLibrary.load(cls, identifier_or_path: Union[str, Path]) -> 'FestivalLibrary'
+```
+
+加载Borax内部数据或自定义文件。
+
+```python
+fl = FestivalLibrary.load('basic')
+
+fl2 = FestivalLibrary.load('/usr/my/my_festivals.csv')
+```
+
+
 
 ### load_file
 
@@ -438,7 +517,7 @@ FestivalLibrary.load_file(cls, file_path: Union[str, Path]) -> 'FestivalLibrary'
 ### load_builtin
 
 ```python
-FestivalLibrary.load_builtin(cls, identifier: str = 'zh-Hans') -> 'FestivalLibrary'
+FestivalLibrary.load_builtin(cls, identifier: str = 'basic') -> 'FestivalLibrary'
 ```
 
 加载Borax提供的节日库数据。

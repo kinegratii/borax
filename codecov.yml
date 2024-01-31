@@ -4,6 +4,7 @@ coverage:
     - borax/apps/festival_creator.py
     - borax/calendars/datepicker.py
     - borax/calendars/ui.py
+    - borax/capp/*.py
   status:
     project:
       default:

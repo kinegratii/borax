@@ -3,7 +3,8 @@ from datetime import date
 from io import StringIO
 from unittest.mock import MagicMock, patch
 
-from borax.calendars.festivals2 import LunarFestival, TermFestival, FestivalLibrary, FestivalSchema
+from borax.calendars.festivals2 import (LunarFestival, TermFestival, FestivalLibrary, FestivalSchema,
+                                        FestivalDatasetNotExist)
 
 
 class FestivalLibraryTestCase(unittest.TestCase):
@@ -22,6 +23,12 @@ class FestivalLibraryTestCase(unittest.TestCase):
             gd_days.extend(gd_list)
 
         self.assertIn('元旦', [g.name for g in gd_days])
+
+    def test_new_load(self):
+        fl = FestivalLibrary.load('basic')
+        self.assertEqual(33, len(fl))
+        with self.assertRaises(FestivalDatasetNotExist):
+            FestivalLibrary.load('not-found')
 
     def test_list_days(self):
         fl = FestivalLibrary.load_builtin()
@@ -53,6 +60,13 @@ class FestivalLibraryUniqueTestCase(unittest.TestCase):
         fl.extend_unique(['205026', '89005'])
         self.assertEqual(3, len(fl))
 
+    def test_unique_for_basic_library(self):
+        fl = FestivalLibrary.load_builtin('basic')
+        total_1 = len(fl)
+        fl.extend_term_festivals()
+        total_2 = len(fl)
+        self.assertEqual(22, total_2 - total_1)
+
     def test_edit(self):
         fl = FestivalLibrary()
         fl.load_term_festivals()
@@ -81,6 +95,9 @@ class FestivalLibraryCalendarTestCase(unittest.TestCase):
         fl = FestivalLibrary.load_builtin()
         days = fl.monthdaycalendar(2022, 1)
         self.assertEqual(6, len(days))
+        fl1 = FestivalLibrary(fl)
+        self.assertTrue(isinstance(fl1, FestivalLibrary))
+        self.assertTrue(len(fl) == len(fl1))
 
 
 class FestivalLibraryCURDTestCase(unittest.TestCase):
@@ -128,3 +145,8 @@ class FestivalLibraryCURDTestCase(unittest.TestCase):
         fl3 = fl.exclude_(schema__in=[FestivalSchema.WEEK, FestivalSchema.TERM])
         self.assertEqual(len(fl), len(fl1) + len(fl2))
         self.assertEqual(len(fl3), len(fl1))
+
+    def test_festivals_functional_program(self):
+        fl = FestivalLibrary.load_builtin()
+        fl2 = FestivalLibrary(filter(lambda f: f.schema == FestivalSchema.SOLAR, fl))
+        self.assertTrue(isinstance(fl2, FestivalLibrary))
