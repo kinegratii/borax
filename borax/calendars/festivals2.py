@@ -30,6 +30,8 @@ class FreqConst:
     YEARLY = 0
     MONTHLY = 1
 
+    LABEL2VAL = {'monthly': 1, 'yearly': 0, 'm': 1, 'y': 0}
+
 
 class FestivalCatalog:
     basic = 'basic'
@@ -460,12 +462,17 @@ class SolarFestival(Festival):
     """
     date_class = date
 
-    def __init__(self, *, day: int, freq: int = FreqConst.YEARLY, month: int = 0, name: str = None):
+    def __init__(self, *, day: int, freq: Union[int, Literal['yearly', 'monthly', 'y', 'm']] = FreqConst.YEARLY,
+                 month: int = 0, name: str = None):
         if day < 0:
             day = -day
             reverse = 1
         else:
             reverse = 0
+        if isinstance(freq, str):
+            freq = FreqConst.LABEL2VAL.get(freq, -1)
+            if freq == -1:
+                raise ValueError('Invalid freq string.')
         super().__init__(name=name, freq=freq, month=month, day=day, reverse=reverse, schema=FestivalSchema.SOLAR)
 
     def _get_description(self) -> str:
@@ -680,13 +687,17 @@ class LunarFestival(Festival):
     """
     date_class = LunarDate
 
-    def __init__(self, *, day: int, freq: int = FreqConst.YEARLY, month: int = 0, leap: int = _IGNORE_LEAP_MONTH,
-                 name: str = None):
+    def __init__(self, *, day: int, freq: Union[int, Literal['yearly', 'monthly', 'y', 'm']] = FreqConst.YEARLY,
+                 month: int = 0, leap: int = _IGNORE_LEAP_MONTH, name: str = None):
         if day < 0:
             day = -day
             reverse = 1
         else:
             reverse = 0
+        if isinstance(freq, str):
+            freq = FreqConst.LABEL2VAL.get(freq, -1)
+            if freq == -1:
+                raise ValueError('Invalid freq string.')
         super().__init__(freq=freq, name=name, month=month, day=day, leap=leap, reverse=reverse,
                          schema=FestivalSchema.LUNAR)
 
