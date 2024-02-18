@@ -392,7 +392,7 @@ Festival.list_days_in_future(end_date=None, reverse: bool = False, count: int = 
 Festival.list_days_in_past(end_date=None, reverse: bool = False, count: int = -1) -> List[WrappedDate]
 ```
 
-返回今后时间（[today, end_date]）之间（含起止日期）匹配本 Festival 的日期列表。
+返回过去时间（[today, end_date]）之间（含起止日期）匹配本 Festival 的日期列表。
 
 ### get_one_day
 
@@ -693,7 +693,7 @@ pprint.pprint(days)
 FestivalLibrary.monthdaycalendar(year: int, month: int, firstweekday: int = 0)
 ```
 
-返回二维列表，每一行表示一个星期。逻辑同iter_month_daytuples。
+返回二维列表，每一行表示一个星期。逻辑同`iter_month_daytuples` 。
 
 ### to_csv
 

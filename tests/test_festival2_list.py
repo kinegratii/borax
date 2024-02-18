@@ -52,7 +52,7 @@ class SolarFestivalTestCase(unittest.TestCase):
         self.assertTrue(sf.is_(date(2024, 2, 1)))
 
         with self.assertRaises(ValueError):
-            sf2 = SolarFestival(freq='33', day=1)
+            SolarFestival(freq='33', day=1)
 
 
 class WeekFestivalTestCase(unittest.TestCase):
