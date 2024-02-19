@@ -1,5 +1,9 @@
 # 更新日志
 
+## v4.1.1
+
+- `SolarFestival` 和`LunarFestival` 初始化函数 `freq` 参数支持字符串设置（ [ #56](https://github.com/kinegratii/borax/issues/56) ）
+
 ## v4.1.0 (20240131)
 
 > Borax最低python版本要求为python3.9
