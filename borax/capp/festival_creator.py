@@ -95,11 +95,17 @@ class VarModel:
 
     def _validate_f0(self):
         freq, month, reverse, day = self.gets('s_freq', 's_month', 's_reverse', 's_day')
+        _d = abs(day)
+        if (month == 0 and _d > 366) or _d > 31:
+            raise ValidateError('公历 日/天 数值范围不正确。')
         festival = SolarFestival(day=reverse * day, freq=freq, month=month)
         return festival
 
     def _validate_f1(self):
         freq, leap, reverse, month, day = self.gets('l_freq', 'l_leap', 'l_reverse', 'l_month', 'l_day')
+        _d = abs(day)
+        if (month == 0 and _d > 384) or _d > 30:
+            raise ValidateError('农历 日/天 数值范围不正确。')
         festival = LunarFestival(day=reverse * day, freq=freq, leap=leap, month=month)
         return festival
 
@@ -130,7 +136,7 @@ class FestivalCreatePanel(ttk.Frame):
     def __init__(self, master=None, **kwargs):
         super().__init__(master, **kwargs)
 
-        lf = ttk.LabelFrame(self, labelanchor='n', text='节日管理工具')
+        lf = ttk.LabelFrame(self, labelanchor='n', text='节日创建工具')
         lf.pack(side='top', fill='x', padx=10, pady=10, expand=True)
         ttk.Label(lf, text='  本工具支持创建公历型、农历型、星期型、节气型节日，并导出为csv文件。').pack(
             side='top', padx=5, pady=5, fill='both', expand=True)
@@ -138,9 +144,6 @@ class FestivalCreatePanel(ttk.Frame):
         main_frame.pack(side='top', fill='both')
 
         self._vm = VarModel()
-
-        n_row, s_row, l_row, w_row, t_row, btn_row, msg_row = 0, 2, 4, 6, 8, 10, 11
-        empty_rows = (1, 3, 5, 7, 9)
         ccb_w = 10
 
         freq_choices = ((FreqConst.YEARLY, '每年'), (FreqConst.MONTHLY, '每月'))
@@ -149,88 +152,92 @@ class FestivalCreatePanel(ttk.Frame):
         day_reverse_choices = [(1, '正向'), (-1, '倒数')]
         week_choices = list(enumerate('一二三四五六日'))
         term_choices = list(enumerate(TERMS_CN))
-        index_choices = [(i, f'第{i}个') for i in range(1, 10)]
+        index_choices = [(0, '当日')] + [(i, f'第{i}个') for i in range(1, 10)]
         index2_choices = [(i, f'第{i}个') for i in range(1, 10)] + [(-i, f'倒数第{i}个') for i in range(1, 10)]
         delta_choices = [(0, '当日'), (-1, '之前'), (1, '之后')]
         gz_day_choices = list(TextUtils.BRANCHES + TextUtils.STEMS)
 
+        # main_frame ->
+
         frame = ttk.Frame(main_frame)
         frame.pack(side='left', expand=True, fill=tk.BOTH, padx=10, pady=10)
-        ttk.Label(frame, text='名称').grid(row=n_row, column=0)
-        ttk.Entry(frame, textvariable=self._vm.vars['name']).grid(row=n_row, column=1, columnspan=3, sticky='we')
-        ttk.Label(frame, text='分类').grid(row=n_row, column=4)
-        ttk.Entry(frame, textvariable=self._vm.vars['catalog']).grid(row=n_row, column=5, columnspan=3, sticky='we')
+
+        name_ui = ttk.Frame(frame)
+        name_ui.pack(side='top', fill='x')
+        ttk.Label(name_ui, text='名称').pack(side='left')
+        ttk.Entry(name_ui, textvariable=self._vm.vars['name']).pack(side='left')
+        ttk.Label(name_ui, text='分类').pack(side='left')
+        ttk.Entry(name_ui, textvariable=self._vm.vars['catalog']).pack(side='left')
+
         # Solar Festival
-        ttk.Radiobutton(frame, text='公历型', value=FestivalSchema.SOLAR.value, variable=self._vm.vars['schema']).grid(
-            row=s_row, column=0)
-        ChoicesCombobox(frame, choices=freq_choices, val_variable=self._vm.vars['s_freq'], width=ccb_w).grid(row=s_row,
-                                                                                                             column=1)
-        ChoicesCombobox(frame, choices=month_choices, val_variable=self._vm.vars['s_month'], width=ccb_w).grid(
-            row=s_row, column=3)
-        ttk.Label(frame, text='月').grid(row=s_row, column=4)
-        ChoicesCombobox(frame, choices=day_reverse_choices, val_variable=self._vm.vars['s_reverse'], width=ccb_w).grid(
-            row=s_row, column=5)
-        ttk.Combobox(frame, values=list(range(1, 32)), textvariable=self._vm.vars['s_day'], width=ccb_w).grid(row=s_row,
-                                                                                                              column=6)
-        ttk.Label(frame, text='日/天').grid(row=s_row, column=7)
+        s_rb = ttk.Radiobutton(frame, text='公历型', value=FestivalSchema.SOLAR.value, variable=self._vm.vars['schema'])
+        s_ui = ttk.LabelFrame(frame, labelwidget=s_rb, padding=5)
+        s_ui.pack(side='top', fill='x', expand=True, pady=10)
+        ChoicesCombobox(s_ui, choices=freq_choices, val_variable=self._vm.vars['s_freq'], width=ccb_w).grid(row=0,
+                                                                                                            column=1)
+        ChoicesCombobox(s_ui, choices=month_choices, val_variable=self._vm.vars['s_month'], width=ccb_w).grid(
+            row=0, column=3)
+        ttk.Label(s_ui, text='月  ').grid(row=0, column=4)
+        ChoicesCombobox(s_ui, choices=day_reverse_choices, val_variable=self._vm.vars['s_reverse'], width=ccb_w).grid(
+            row=0, column=5)
+        ttk.Combobox(s_ui, values=list(range(1, 32)), textvariable=self._vm.vars['s_day'], width=ccb_w).grid(row=0,
+                                                                                                             column=6)
+        ttk.Label(s_ui, text='日/天').grid(row=0, column=7)
 
         # Lunar Festival
-        ttk.Radiobutton(frame, text='农历型', value=FestivalSchema.LUNAR.value, variable=self._vm.vars['schema']).grid(
-            row=l_row,
-            column=0)
-        ChoicesCombobox(frame, choices=freq_choices, val_variable=self._vm.vars['l_freq'], width=ccb_w).grid(row=l_row,
-                                                                                                             column=1)
-        ChoicesCombobox(frame, choices=leap_choices, val_variable=self._vm.vars['l_leap'], width=ccb_w).grid(row=l_row,
-                                                                                                             column=2)
-        ChoicesCombobox(frame, choices=month_choices, val_variable=self._vm.vars['l_month'], width=ccb_w).grid(
-            row=l_row, column=3)
-        ttk.Label(frame, text='月').grid(row=l_row, column=4)
-        ChoicesCombobox(frame, choices=day_reverse_choices, val_variable=self._vm.vars['l_reverse'], width=ccb_w).grid(
-            row=l_row, column=5)
-        ttk.Combobox(frame, values=list(range(1, 31)), textvariable=self._vm.vars['l_day'], width=ccb_w).grid(row=l_row,
-                                                                                                              column=6)
-        ttk.Label(frame, text='日/天').grid(row=l_row, column=7)
+        l_rb = ttk.Radiobutton(frame, text='农历型', value=FestivalSchema.LUNAR.value, variable=self._vm.vars['schema'])
+        l_ui = ttk.LabelFrame(frame, labelwidget=l_rb, padding=5)
+        l_ui.pack(side='top', fill='x', expand=True, pady=10)
+        ChoicesCombobox(l_ui, choices=freq_choices, val_variable=self._vm.vars['l_freq'], width=ccb_w).grid(row=0,
+                                                                                                            column=1)
+        ChoicesCombobox(l_ui, choices=leap_choices, val_variable=self._vm.vars['l_leap'], width=ccb_w).grid(row=0,
+                                                                                                            column=2)
+        ChoicesCombobox(l_ui, choices=month_choices, val_variable=self._vm.vars['l_month'], width=ccb_w).grid(
+            row=0, column=3)
+        ttk.Label(l_ui, text='月  ').grid(row=0, column=4)
+        ChoicesCombobox(l_ui, choices=day_reverse_choices, val_variable=self._vm.vars['l_reverse'], width=ccb_w).grid(
+            row=0, column=5)
+        ttk.Combobox(l_ui, values=list(range(1, 31)), textvariable=self._vm.vars['l_day'], width=ccb_w).grid(row=0,
+                                                                                                             column=6)
+        ttk.Label(l_ui, text='日/天').grid(row=0, column=7)
         # Week Festival
-        ttk.Radiobutton(frame, text='星期型', value=FestivalSchema.WEEK.value, variable=self._vm.vars['schema']).grid(
-            row=w_row, column=0)
-        ttk.Label(frame, text='每年').grid(row=w_row, column=1)
-        ChoicesCombobox(frame, choices=month_choices, val_variable=self._vm.vars['w_month'], width=ccb_w).grid(
-            row=w_row, column=3)
-        ttk.Label(frame, text='月').grid(row=w_row, column=4)
-        ChoicesCombobox(frame, choices=index2_choices, val_variable=self._vm.vars['w_index'], width=ccb_w).grid(
-            row=w_row, column=5, columnspan=1)
-        ttk.Label(frame, text='星期').grid(row=w_row, column=6, columnspan=1)
-        ChoicesCombobox(frame, choices=week_choices, val_variable=self._vm.vars['w_week'], width=ccb_w).grid(
-            row=w_row, column=7, columnspan=1)
+        w_rb = ttk.Radiobutton(frame, text='星期型', value=FestivalSchema.WEEK.value, variable=self._vm.vars['schema'])
+        w_ui = ttk.LabelFrame(frame, labelwidget=w_rb, padding=5)
+        w_ui.pack(side='top', fill='x', expand=True, pady=10)
+
+        ttk.Label(w_ui, text='每年  ').grid(row=0, column=1)
+        ChoicesCombobox(w_ui, choices=month_choices, val_variable=self._vm.vars['w_month'], width=ccb_w).grid(
+            row=0, column=3)
+        ttk.Label(w_ui, text='月  ').grid(row=0, column=4)
+        ChoicesCombobox(w_ui, choices=index2_choices, val_variable=self._vm.vars['w_index'], width=ccb_w).grid(
+            row=0, column=5, columnspan=1)
+        ttk.Label(w_ui, text='  星期').grid(row=0, column=6, columnspan=1)
+        ChoicesCombobox(w_ui, choices=week_choices, val_variable=self._vm.vars['w_week'], width=ccb_w).grid(
+            row=0, column=7, columnspan=1)
 
         # Term Festival
-        ttk.Radiobutton(frame, text='节气型', value=FestivalSchema.TERM.value, variable=self._vm.vars['schema']).grid(
-            row=t_row,
-            column=0)
-        ttk.Label(frame, text='每年').grid(row=t_row, column=1)
-        ChoicesCombobox(frame, choices=term_choices, val_variable=self._vm.vars['t_term'], width=ccb_w).grid(
-            row=t_row, column=2, columnspan=1)
-        ttk.Label(frame, text='节气').grid(row=t_row, column=3)
-        ChoicesCombobox(frame, choices=delta_choices, val_variable=self._vm.vars['t_delta'], width=ccb_w).grid(
-            row=t_row, column=4, columnspan=1)
-        ChoicesCombobox(frame, choices=index_choices, val_variable=self._vm.vars['t_index'], empty_value=0,
-                        width=ccb_w).grid(row=t_row, column=5, columnspan=1)
-        ttk.Combobox(frame, values=gz_day_choices, textvariable=self._vm.vars['t_day_gz'], state='readonly',
-                     width=ccb_w).grid(
-            row=t_row, column=6, columnspan=1)
-        ttk.Label(frame, text='日').grid(row=t_row, column=7)
+        t_rb = ttk.Radiobutton(frame, text='节气型', value=FestivalSchema.TERM.value, variable=self._vm.vars['schema'])
+        t_ui = ttk.LabelFrame(frame, labelwidget=t_rb, padding=5)
+        t_ui.pack(side='top', fill='x', expand=True, pady=10)
 
-        # Toolbar 8 cols
-        ttk.Button(frame, text='创建节日', command=self._create).grid(row=btn_row, column=0, columnspan=8,
-                                                                  sticky='we')
+        ttk.Label(t_ui, text='每年  ').grid(row=0, column=1)
+        ChoicesCombobox(t_ui, choices=term_choices, val_variable=self._vm.vars['t_term'], width=ccb_w).grid(
+            row=0, column=2, columnspan=1)
+        ttk.Label(t_ui, text='节气  ').grid(row=0, column=3)
+        ChoicesCombobox(t_ui, choices=delta_choices, val_variable=self._vm.vars['t_delta'], width=ccb_w).grid(
+            row=0, column=4, columnspan=1)
+        ChoicesCombobox(t_ui, choices=index_choices, val_variable=self._vm.vars['t_index'], empty_value=0,
+                        width=ccb_w).grid(row=0, column=5, columnspan=1)
+        ttk.Combobox(t_ui, values=gz_day_choices, textvariable=self._vm.vars['t_day_gz'], state='readonly',
+                     width=ccb_w).grid(
+            row=0, column=6, columnspan=1)
+        ttk.Label(t_ui, text='日').grid(row=0, column=7)
+
+        ttk.Button(frame, text='创建节日', command=self._create).pack(side='top', fill='x')
 
         self._msg_label = MessageLabel(frame, text='')
-        self._msg_label.grid(row=msg_row, column=0, columnspan=10)
+        self._msg_label.pack(side='top')
 
-        for er in empty_rows:
-            ttk.Label(frame).grid(row=er, column=0, columnspan=7)
-
-        # init form values
         self._vm.init()
 
         self._festival_detail = tk.StringVar()

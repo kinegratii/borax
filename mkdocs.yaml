@@ -50,6 +50,7 @@ nav:
     - 农历开发笔记: posts/lunardate-development.md
   - 开发&更新日志:
     - 更新日志: changelog.md
+    - Capp更新日志: capp_changelog.md
     - 开发日志: develop_note.md
     - 发布日志:
       - v4.1.0: release-note/v410.md
