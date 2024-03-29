@@ -8,6 +8,7 @@ from borax.calendars.festivals2 import (
 )
 from borax.calendars.lunardate import TextUtils, TERMS_CN
 from borax.calendars.ui import FestivalTableFrame
+from borax.ui.widgets import MessageLabel
 
 __all__ = ['FestivalCreatePanel', 'start_festival_creator']
 
@@ -118,16 +119,6 @@ class VarModel:
         term, delta, index, day_gz = self.gets('t_term', 't_delta', 't_index', 't_day_gz')
         festival = TermFestival(term=term, nth=delta * index, day_gz=day_gz)
         return festival
-
-
-class MessageLabel(ttk.Label):
-    def splash(self, text: str, timeout: int = 1000, foreground='black', **kwargs):
-        self.config({'text': text, 'foreground': foreground, **kwargs})
-        if timeout != 0:
-            self.after(timeout, self._clear)
-
-    def _clear(self):
-        self.config({'text': '', 'foreground': 'black'})
 
 
 class FestivalCreatePanel(ttk.Frame):
@@ -269,26 +260,26 @@ class FestivalCreatePanel(ttk.Frame):
         try:
             festival = self._vm.validate()
             self._festival_table.add_festival(festival)
-            self._msg_label.splash(f'{festival.description} {festival.encode()}', foreground='green')
+            self._msg_label.show_success_splash(f'{festival.description} {festival.encode()}')
         except ValidateError as e:
-            self._msg_label.splash(str(e), foreground='red')
+            self._msg_label.show_error_splash(str(e))
 
     def _delete(self, event=None):
         self._festival_table.delete_selected_festivals()
 
     def _clear_data(self, event=None):
         self._festival_table.clear_data()
-        self._msg_label.splash('清空成功！', foreground='green')
+        self._msg_label.show_success_splash('清空成功！')
 
     def _export(self, event=None):
         if len(self._festival_table.tree_view.get_children()) == 0:
-            self._msg_label.splash('表格无数据！', foreground='red')
+            self._msg_label.show_warning_splash('表格无数据！')
             return
         filename = filedialog.asksaveasfilename(parent=self, title='保存到', defaultextension='.csv',
                                                 filetypes=(('csv', 'csv'),))
         if filename:
             self._festival_table.festival_library.to_csv(filename)
-            self._msg_label.splash('导出成功', foreground='green')
+            self._msg_label.show_success_splash('导出成功')
 
     def _on_source_selected(self, val: str):
         if val == 'custom':
@@ -306,7 +297,7 @@ class FestivalCreatePanel(ttk.Frame):
 
     def _load_new_festival_library(self, f_library: FestivalLibrary):
         self._festival_table.add_festivals_from_library(f_library)
-        self._msg_label.splash(f'加载成功,共{self._festival_table.row_count}条', foreground='green')
+        self._msg_label.show_success_splash(f'加载成功,共{self._festival_table.row_count}条')
 
 
 def start_festival_creator():

@@ -66,5 +66,14 @@ class MessageLabel(tk.Label):
         if splash_ms:
             self.after(splash_ms, self._clear)
 
+    def show_error_splash(self, text: str, splash_ms: int = 1000):
+        self.show_text(text, text_color='error', splash_ms=splash_ms)
+
+    def show_warning_splash(self, text: str, splash_ms: int = 1000):
+        self.show_text(text, text_color='warning', splash_ms=splash_ms)
+
+    def show_success_splash(self, text: str, splash_ms: int = 1000):
+        self.show_text(text, text_color='success', splash_ms=splash_ms)
+
     def _clear(self):
         self.config({'text': ''})
