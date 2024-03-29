@@ -2,7 +2,9 @@
 
 ## v4.1.1
 
+- 新增创建农历年最后一天的方法 `LunarDate.last_day_of_year`
 - `SolarFestival` 和`LunarFestival` 初始化函数 `freq` 参数支持字符串设置（ [ #56](https://github.com/kinegratii/borax/issues/56) ）
+- `Period.solar_year` 和 `Period.lunar_year` 新增 `end_year` 参数，支持跨年份计算
 
 ## v4.1.0 (20240131)
 

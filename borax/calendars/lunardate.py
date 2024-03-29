@@ -659,6 +659,12 @@ class LunarDate:
         return cls.from_solar_date(sd.year, sd.month, sd.day)
 
     @classmethod
+    def last_day_of_year(cls, year: int) -> 'LunarDate':
+        """return the last day in a lunar year."""
+        month, day, leap = list(LCalendars.iter_year_month(year))[-1]
+        return cls(year, month, day, leap)
+
+    @classmethod
     def strptime(cls, date_str: str, date_fmt: str) -> 'LunarDate':
         """Parse a LunarDate object from a whole string.
 
@@ -678,7 +684,7 @@ class LunarDate:
         :param other: a instance of LunarDate / date / timedelta
         :return:
         """
-        if hasattr(other, 'solar'):
+        if hasattr(other, 'solar'):  # For WrappedDate in festivals2 module
             return self.to_solar_date() - other.solar
         elif isinstance(other, LunarDate):
             return self.to_solar_date() - other.to_solar_date()

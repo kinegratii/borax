@@ -37,6 +37,8 @@ class LunarDateTestCase(unittest.TestCase):
         self.assertEqual(5, LCalendars.delta(today.after(5), today))
         self.assertEqual(-5, LCalendars.delta(today.before(5), today))
 
+        self.assertEqual(LunarDate(2023, 12, 30), LunarDate.last_day_of_year(2023))
+
     def test_convert_datetime(self):
         dt = LunarDate(1976, 8, 8, 1).to_solar_date()
         self.assertEqual(date(1976, 10, 1), dt)

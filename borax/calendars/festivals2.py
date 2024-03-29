@@ -169,8 +169,9 @@ class Period:
     """A shortcut methods for some specified date Period."""
 
     @staticmethod
-    def solar_year(year: int) -> Tuple[date, date]:
-        return date(year, 1, 1), date(year, 12, 31)
+    def solar_year(year: int, end_year: int = 0) -> Tuple[date, date]:
+        end_year = end_year or year
+        return date(year, 1, 1), date(end_year, 12, 31)
 
     @staticmethod
     def solar_month(year: int, month: int) -> Tuple[date, date]:
@@ -178,8 +179,9 @@ class Period:
         return date(year, month, 1), date(year, month, ndays)
 
     @staticmethod
-    def lunar_year(year: int) -> Tuple[LunarDate, LunarDate]:
-        return LunarDate(year, 1, 1), LunarDate(year + 1, 1, 1) - timedelta(days=1)
+    def lunar_year(year: int, end_year: int = 0) -> Tuple[LunarDate, LunarDate]:
+        end_year = end_year or year
+        return LunarDate(year, 1, 1), LunarDate.last_day_of_year(end_year)
 
     @staticmethod
     def lunar_month(year: int, month: int, leap: int = _IGNORE_LEAP_MONTH) -> Tuple[LunarDate, LunarDate]:
