@@ -42,6 +42,7 @@ nav:
     - 中文数字: guides/numbers.md
     - 百分数: guides/percentage.md
   - 其他模块:
+    - Django-Choices: guides/choices.md
     - 字符串: guides/strings.md
     - 单例模式: guides/singleton.md
     - 序列号池: guides/serial_pool.md

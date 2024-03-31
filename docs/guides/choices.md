@@ -2,7 +2,11 @@
 
 > 模块： `borax.choices`
 
-> Update in v3.4.0 
+> Changed in v3.4.0 ：适配 Django choices
+
+## 重要信息
+
+从 Borax 4.1.0 开始，本模块被标记为 废弃 状态，推荐使用标准的 Django Choices 。关于如何迁移参考下列文档。
 
 ## 开发背景
 
@@ -85,14 +89,14 @@ class YearInSchoolChoices(choices.ConstChoices):
 
 可以直接使用 `YearInShoolChoices.FRESHMAN` 访问该选项具体的值。
 
- ```bash
- >>> YearInShoolChoices.FRESHMAN
+```bash
+>>> YearInShoolChoices.FRESHMAN
 'FR'
 >>> YearInShoolChoices.is_valid('SR')
 True
 >>> YearInShoolChoices.is_valid('Et')
 False
- ```
+```
 ## 选项(Item)
 
 ### 显式Item定义
@@ -209,7 +213,7 @@ class DirectionChoices(VerticalChoices):
 
 
 
-## 关于Django.Choices
+## 与Django.Choices
 
 ### 概述
 
@@ -234,12 +238,12 @@ from django.db import models
 
 from borax import choices
 
-class MyChoices(models.TextChoices):
+class MyChoices(models.TextChoices): # Django choices style
     GREEN = 'g', 'green'
     RED = 'r', 'red'
     YELLOW = 'y', 'yellow'
 
-class MyChoices(choices.Choices):
+class MyChoices(choices.Choices): # Borax choices style
     GREEN = 'g', 'green'
     RED = 'r', 'red'
     YELLOW = 'y', 'yellow'
@@ -248,19 +252,23 @@ class MyChoices(choices.Choices):
 表 Borax.Choices *VS* Django.Choices
 
 
-|                             | Borax.Choices | Django.Choices     | 备注 |
-| --------------------------- | ------------- | ------------------ | ---- |
-| MyChoices.choices           | `(...)`       | `(...)`            |      |
-| MyChoices.GREEN             | `'g'`         | `<Enum MyChoices>` |      |
-| MyChoices['GREEN']          | -             | `<Enum MyChoices>` |      |
-| MyChoices.is_valid('g')     | True          | -                  |      |
-| MyChoices.GREEN.name        | -             | `'g'`              |      |
-| MyChoices.GREEN.label       | -             | `'green'`          |      |
-| MyChoices.GREEN.value       | -             | -                  |      |
-| MyChoices.GREEN.display     | -             | -                  |      |
-| MyChoices.get_value_display | `<label>`     | -                  |      |
-| MyChoices._ _ iter _ _      | Y             | -                  |      |
-| MyChoices.names             | v3.4.0+       | Y                  |      |
-| MyChoices.values            | v3.4.0+       | Y                  |      |
-| MyChoices.labels            | v3.4.0+       | Y                  |      |
-| member in (check values)    | Y             | Y                  |      |
+|                                          | Borax.Choices | Django.Choices     | 迁移说明                       |
+| ---------------------------------------- | ------------- | ------------------ | ------------------------------ |
+| MyChoices.choices                        | `(...)`       | `(...)`            |                                |
+| MyChoices.GREEN                          | `'g'`         | `<Enum MyChoices>` | 使用 `MyChoices.GREEN.value`   |
+| MyChoices['GREEN']                       | -             | `<Enum MyChoices>` |                                |
+| MyChoices.is_valid('g')                  | True          | -                  | 使用 `'g' in MyChoices.values` |
+| MyChoices.GREEN.name                     | -             | `'g'`              |                                |
+| MyChoices.GREEN.label                    | -             | `'green'`          |                                |
+| MyChoices.GREEN.value                    | -             | -                  |                                |
+| MyChoices.GREEN.display                  | -             | -                  |                                |
+| MyChoices.get_value_display              | `<label>`     | -                  |                                |
+| MyChoices._ _ iter _ _                   | Y             | -                  | 使用 `Enum` 模块的迭代方法     |
+| MyChoices.names                          | v3.4.0+       | Y                  |                                |
+| MyChoices.values                         | v3.4.0+       | Y                  |                                |
+| MyChoices.labels                         | v3.4.0+       | Y                  |                                |
+| member in (check values)  <sup>[1]</sup> | Y             | Y                  |                                |
+
+备注
+
+1. 在 Borax Choices 使用的是 `MyChoice.GREEN in MyChoice` 而在 Django Choices 使用的是 `MyChoices.GREEN.value in MyChoices` 。
