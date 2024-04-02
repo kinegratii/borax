@@ -181,7 +181,7 @@ class Period:
     @staticmethod
     def lunar_year(year: int, end_year: int = 0) -> Tuple[LunarDate, LunarDate]:
         end_year = end_year or year
-        return LunarDate(year, 1, 1), LunarDate.last_day_of_year(end_year)
+        return LunarDate(year, 1, 1), LunarDate.last_day(end_year)
 
     @staticmethod
     def lunar_month(year: int, month: int, leap: int = _IGNORE_LEAP_MONTH) -> Tuple[LunarDate, LunarDate]:

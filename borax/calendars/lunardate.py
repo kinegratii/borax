@@ -659,9 +659,21 @@ class LunarDate:
         return cls.from_solar_date(sd.year, sd.month, sd.day)
 
     @classmethod
-    def last_day_of_year(cls, year: int) -> 'LunarDate':
-        """return the last day in a lunar year."""
-        month, day, leap = list(LCalendars.iter_year_month(year))[-1]
+    def last_day(cls, year: int, month: int = 0, leap: int = 0) -> 'LunarDate':
+        """return the last day in a lunar year or a lunar month."""
+        mdls = list(LCalendars.iter_year_month(year))
+        if month == 0:
+            index = -1
+        else:
+            leap_month_of_year = LCalendars.leap_month(year)
+            if leap:
+                if month == leap_month_of_year:
+                    index = month
+                else:
+                    raise InvalidLunarDateError(f'{year=}, {month=},leap=1 does not exist.')
+            else:
+                index = month - 1 + int(leap_month_of_year and month > leap_month_of_year)
+        month, day, leap = mdls[index]
         return cls(year, month, day, leap)
 
     @classmethod
