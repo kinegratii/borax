@@ -103,6 +103,19 @@ LunarDate(2018, 6, 29, 0)
 LunarDate(2018, 7, 2, 0)
 ```
 
+获取农历年或农历月的最后一天。（v4.1.1新增。）
+
+```bash
+>>>LunarDate.last_day(2023)
+LunarDate(2023, 12, 30)
+>>>LunarDate.last_day(2023, 2)
+LunarDate(2023, 2, 30)
+>>>LunarDate.last_day(2023, 2, 1)
+LunarDate(2023, 2, 29, 1)
+```
+
+
+
 `lunardate` 模块可用的日期上下限
 
 ```shell

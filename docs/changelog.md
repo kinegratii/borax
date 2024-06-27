@@ -1,6 +1,6 @@
 # 更新日志
 
-## v4.1.1
+## v4.1.1 (20240630)
 
 - 新增创建农历年或农历月最后一天的方法 `LunarDate.last_day`
 - `SolarFestival` 和`LunarFestival` 初始化函数 `freq` 参数支持字符串设置（ [ #56](https://github.com/kinegratii/borax/issues/56) ）

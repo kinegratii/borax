@@ -37,8 +37,6 @@ class LunarDateTestCase(unittest.TestCase):
         self.assertEqual(5, LCalendars.delta(today.after(5), today))
         self.assertEqual(-5, LCalendars.delta(today.before(5), today))
 
-        self.assertEqual(LunarDate(2023, 12, 30), LunarDate.last_day_of_year(2023))
-
     def test_last_day(self):
         self.assertEqual(LunarDate(2023, 12, 30), LunarDate.last_day(2023))
         self.assertEqual(LunarDate(2023, 1, 29), LunarDate.last_day(2023, 1))
