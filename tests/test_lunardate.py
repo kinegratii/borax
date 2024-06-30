@@ -37,6 +37,17 @@ class LunarDateTestCase(unittest.TestCase):
         self.assertEqual(5, LCalendars.delta(today.after(5), today))
         self.assertEqual(-5, LCalendars.delta(today.before(5), today))
 
+    def test_last_day(self):
+        self.assertEqual(LunarDate(2023, 12, 30), LunarDate.last_day(2023))
+        self.assertEqual(LunarDate(2023, 1, 29), LunarDate.last_day(2023, 1))
+        self.assertEqual(LunarDate(2023, 2, 30), LunarDate.last_day(2023, 2))
+        self.assertEqual(LunarDate(2023, 2, 29, 1), LunarDate.last_day(2023, 2, leap=1))
+        self.assertEqual(LunarDate(2023, 3, 29), LunarDate.last_day(2023, 3))
+
+        self.assertEqual(LunarDate(2024, 12, 29), LunarDate.last_day(2024))
+        with self.assertRaises(Exception):
+            LunarDate.last_day(2024, 2, 1)
+
     def test_convert_datetime(self):
         dt = LunarDate(1976, 8, 8, 1).to_solar_date()
         self.assertEqual(date(1976, 10, 1), dt)

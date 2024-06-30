@@ -15,6 +15,7 @@ from borax.calendars.lunardate import TextUtils, TERMS_CN, TERM_PINYIN
 from borax.calendars.ui import CalendarFrame, FestivalTableFrame
 from borax.calendars.utils import ThreeNineUtils
 from borax.capp.festival_creator import FestivalCreatePanel
+from borax.ui.widgets import MessageLabel
 
 library = FestivalLibrary.load_builtin().sort_by_countdown()
 
@@ -82,7 +83,7 @@ class WCalendarToolDlg(ttk.Frame):
 
         ttk.Button(self._tool_form_frame, text='计算', command=self.run_date_delta).grid(
             row=2, column=0, columnspan=4, pady=8)
-        self.result1_label = ttk.Label(self._tool_form_frame, text='')
+        self.result1_label = MessageLabel(self._tool_form_frame, text='')
         self.result1_label.grid(row=3, column=0, columnspan=4)
         notebook.add(self._tool_form_frame, text='日期间隔', padding=4)
 
@@ -104,7 +105,7 @@ class WCalendarToolDlg(ttk.Frame):
         delta_days_com.grid(row=2, column=2, columnspan=2, sticky=tk.E + tk.W + tk.N + tk.S)
         ttk.Button(deduction_frame, text='计算', command=self.run_date_deduction).grid(
             row=3, column=0, columnspan=4, pady=8)
-        self.result2_label = ttk.Label(deduction_frame, text='')
+        self.result2_label = MessageLabel(deduction_frame, text='')
         self.result2_label.grid(row=4, column=0, columnspan=4)
         # init
         self.day_delta_s.set(1)
@@ -131,17 +132,17 @@ class WCalendarToolDlg(ttk.Frame):
         d1, d2 = self._data_stores['d1'].get_date(), self._data_stores['d2'].get_date()
         if d1 and d2:
             ndays = (d2.solar - d1.solar).days
-            self.result1_label.config(text=f'相差 {ndays} 天')
+            self.result1_label.show_text(text=f'相差 {ndays} 天')
         else:
-            self.result1_label.config(text='未选择日期，无法计算')
+            self.result1_label.show_error_splash(text='未选择日期，无法计算')
 
     def run_date_deduction(self):
         d3 = self._data_stores['d3'].get_date()
         if d3:
             result2 = d3 + timedelta(self.day_delta_s.get() * self.delta_days.get())
-            self.result2_label.config(text=str(result2))
+            self.result2_label.show_text(str(result2))
         else:
-            self.result2_label.config(text='未选择日期，无法计算')
+            self.result2_label.show_error_splash(text='未选择日期，无法计算')
 
 
 class DateDetailFrame(ttk.LabelFrame):

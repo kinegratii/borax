@@ -42,6 +42,7 @@ nav:
     - 中文数字: guides/numbers.md
     - 百分数: guides/percentage.md
   - 其他模块:
+    - Django-Choices: guides/choices.md
     - 字符串: guides/strings.md
     - 单例模式: guides/singleton.md
     - 序列号池: guides/serial_pool.md
@@ -50,6 +51,7 @@ nav:
     - 农历开发笔记: posts/lunardate-development.md
   - 开发&更新日志:
     - 更新日志: changelog.md
+    - Capp更新日志: capp_changelog.md
     - 开发日志: develop_note.md
     - 发布日志:
       - v4.1.0: release-note/v410.md

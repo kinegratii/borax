@@ -1,5 +1,12 @@
 # 更新日志
 
+## v4.1.1 (20240630)
+
+- 新增创建农历年或农历月最后一天的方法 `LunarDate.last_day`
+- `SolarFestival` 和`LunarFestival` 初始化函数 `freq` 参数支持字符串设置（ [ #56](https://github.com/kinegratii/borax/issues/56) ）
+- `Period.solar_year` 和 `Period.lunar_year` 新增 `end_year` 参数，支持跨年份计算
+- 废弃模块：`borax.choices`
+
 ## v4.1.0 (20240131)
 
 > Borax最低python版本要求为python3.9

@@ -47,6 +47,13 @@ class SolarFestivalTestCase(unittest.TestCase):
         self.assertEqual(date(2021, 2, 28), sf2.at(year=2021, month=2))
         self.assertEqual(date(2020, 2, 29), sf2.at(year=2020, month=2))
 
+    def test_freq_string(self):
+        sf = SolarFestival(freq='monthly', day=1)
+        self.assertTrue(sf.is_(date(2024, 2, 1)))
+
+        with self.assertRaises(ValueError):
+            SolarFestival(freq='33', day=1)
+
 
 class WeekFestivalTestCase(unittest.TestCase):
     def test_basic_logic(self):
@@ -136,6 +143,12 @@ class LunarFestivalTestCase(unittest.TestCase):
         with self.assertRaises(FestivalError):
             lf.at(year=2021)
 
+    def test_freq_string(self):
+        lf = LunarFestival(freq='m', day=1)
+        self.assertTrue(lf.is_(LunarDate(2024, 1, 1)))
+        with self.assertRaises(ValueError):
+            LunarFestival(freq='xxx', day=1)
+
 
 class CheckFestivalTestCase(unittest.TestCase):
     def test_all_days(self):
@@ -153,6 +166,10 @@ class PeriodTestCase(unittest.TestCase):
         sd2, ed2 = Period.solar_month(2020, 5)
         self.assertEqual(date(2020, 5, 1), sd2)
         self.assertEqual(date(2020, 5, 31), ed2)
+
+        sd3, ed3 = Period.solar_year(2020, 2021)
+        self.assertEqual(date(2020, 1, 1), sd3)
+        self.assertEqual(date(2021, 12, 31), ed3)
 
     def test_lunar_period(self):
         sd1, ed1 = Period.lunar_year(2020)
@@ -174,6 +191,10 @@ class PeriodTestCase(unittest.TestCase):
         sd5, ed5 = Period.lunar_month(2020, 5, leap=0)
         self.assertEqual(LunarDate(2020, 5, 1, 0), sd5)
         self.assertEqual(LunarDate(2020, 5, 30, 0), ed5)
+
+        sd6, ed6 = Period.lunar_year(2020, 2021)
+        self.assertEqual(LunarDate(2020, 1, 1), sd6)
+        self.assertEqual(LunarDate(2021, 12, 29), ed6)
 
 
 class WrappedDateTestCase(unittest.TestCase):
