@@ -3,7 +3,7 @@ import re
 import warnings
 from typing import Optional, Iterator, Tuple, TypeVar, Sequence, Union
 
-__all__ = ['LunarDate', 'LCalendars', 'InvalidLunarDateError', 'TermUtils', 'TextUtils', 'TERMS_CN']
+__all__ = ['LunarDate', 'LCalendars', 'InvalidLunarDateError', 'TermUtils', 'TextUtils', 'TERMS_CN', 'Formatter']
 T = TypeVar('T')
 
 
