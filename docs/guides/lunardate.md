@@ -210,6 +210,20 @@ LunarDate(2100, 12, 29, 0)
 '今天的干支表示法为：戊戌年庚申月辛未日'
 ```
 
+### 格式化API
+
+Borax.LunarDate 提供农历日期 `LunarDate` 的格式化API，用于对多个农历日期的统一格式化。
+
+```shell
+>>>ld = LunarDate.today()
+>>>fmt = Formatter('%Y年%L%M月%D')
+>>>fmt.format(ld)
+'二〇二五年正月初三'
+>>>ld1 = ld.after(10)
+>>>fmt.format(ld1)
+'二〇二五年正月十三'
+```
+
 ## 反向解析
 
 > Add in 3.5.6
