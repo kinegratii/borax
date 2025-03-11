@@ -1,5 +1,9 @@
 # 更新日志
 
+## v4.1.3
+
+- 修正日历界面类无法加载自定义节日源的bug [#62](https://github.com/kinegratii/borax/issues/62)
+
 ## v4.1.2 (20250131)
 
 > 新增python3.13构建支持
