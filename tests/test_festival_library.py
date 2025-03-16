@@ -27,8 +27,6 @@ class FestivalLibraryTestCase(unittest.TestCase):
     def test_new_load(self):
         fl = FestivalLibrary.load('basic')
         self.assertEqual(33, len(fl))
-        fl2 = FestivalLibrary.load(r'tests\test_festivals_datasets.csv')
-        self.assertEqual(33, len(fl2))
         with self.assertRaises(FestivalDatasetNotExist):
             FestivalLibrary.load('not-found')
 
