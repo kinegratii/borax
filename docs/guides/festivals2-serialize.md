@@ -1,4 +1,4 @@
-# 序列化
+# 编码序列化
 
 > 模块： `borax.calendars.festivals2`
 

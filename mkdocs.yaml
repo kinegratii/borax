@@ -19,7 +19,7 @@ extra:
       link: https://github.com/kinegratii/borax
     - icon: fontawesome/brands/python
       link: https://pypi.org/project/borax
-copyright: Copyright &copy; 2018 - 2024 Samuel.Yan
+copyright: Copyright &copy; 2018 - 2025 Samuel.Yan
 markdown_extensions:
   - pymdownx.highlight
   - pymdownx.superfences
@@ -30,7 +30,8 @@ nav:
   - 农历与节日:
     - 农历: guides/lunardate.md
     - 节日: guides/festivals2.md
-    - 序列化: guides/festivals2-serialize.md
+    - 节日集合库: guides/festivals2-library.md
+    - 编码序列化: guides/festivals2-serialize.md
     - 生日: guides/birthday.md
     - 工具类: guides/calendars-utils.md
     - 日历界面库: guides/festivals2-ui.md
