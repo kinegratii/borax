@@ -17,7 +17,7 @@ from borax.calendars.utils import ThreeNineUtils
 from borax.capp.festival_creator import FestivalCreatePanel
 from borax.ui.widgets import MessageLabel
 
-library = FestivalLibrary.load_builtin().sort_by_countdown()
+library = FestivalLibrary.load_builtin('basic1').sort_by_countdown()
 
 PROJECT_URLS = {
     'home': 'https://github.com/kinegratii/borax'
@@ -273,7 +273,7 @@ class CApp(ttk.Frame):
         menu_bar.add_command(label='节气干支', command=self.start_gz_dlg)
         menu_bar.add_command(label='创建节日', command=self.start_festival_dlg)
         source_menu = tk.Menu(menu_bar)
-        for source in ('basic', 'ext1'):
+        for source in ('basic1', 'ext1'):
             source_menu.add_radiobutton(label=source, variable=self._table_festival_source_var,
                                         command=self._change_source)
         menu_bar.add_cascade(label='节日源', menu=source_menu)

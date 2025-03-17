@@ -40,9 +40,11 @@ class FestivalLibraryTestCase(unittest.TestCase):
         festival_names = [items[1].name for items in fl.list_days(date(2022, 1, 1), date(2022, 12, 31))]
         self.assertIn('元旦', festival_names)
 
-    def test_empty_library(self):
+    def test_builtin_libraries(self):
         fl = FestivalLibrary.load_builtin('empty')
         self.assertEqual(0, len(fl))
+        fl1 = FestivalLibrary.load_builtin('basic1')
+        self.assertEqual(55, len(fl1))
 
 
 class FestivalLibraryUniqueTestCase(unittest.TestCase):

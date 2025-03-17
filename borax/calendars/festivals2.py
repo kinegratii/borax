@@ -641,7 +641,7 @@ class TermFestival(Festival):
         if self._nth != 0 and not (self._day_gz in TextUtils.BRANCHES or self._day_gz in TextUtils.STEMS):
             raise ValueError(f'Invalid day_gz: {day_gz}')
         if self._nth == 0:
-            self.set_name(t_name)
+            self.set_name(t_name)  # use calendar term names
         else:
             self.set_name(name)
 
@@ -1232,14 +1232,19 @@ class FestivalLibrary(collections.UserList):
         return self.extend_term_festivals()
 
     @classmethod
-    def load_builtin(cls, identifier: Literal['basic', 'empty', 'ext1', 'zh-Hans'] = 'basic') -> 'FestivalLibrary':
+    def load_builtin(
+            cls, identifier: Literal['basic', 'empty', 'ext1', 'zh-Hans', 'basic1'] = 'basic'
+    ) -> 'FestivalLibrary':
         """Load builtin library in borax project.
 
         Available Identifiers: basic, zh-Hans, ext1, empty
         """
         if identifier == 'empty':
             return FestivalLibrary()
-        if identifier == 'zh-Hans':
+        elif identifier == 'basic1':
+            library = cls.load_file(get_festival_dataset_path('basic')).extend_term_festivals()
+            return library
+        elif identifier == 'zh-Hans':
             warnings.warn('identifier "zh-Hans" is deprecated.Use "basic" instead. ', DeprecationWarning)
         return cls.load_file(get_festival_dataset_path(identifier))
 
