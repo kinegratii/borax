@@ -116,6 +116,8 @@ class WrappedDate:
         elif isinstance(other, timedelta):
             res = self.solar - other
             return WrappedDate(res)
+        elif isinstance(other, WrappedDate):
+            return self.solar - other.solar
         raise TypeError
 
     def __rsub__(self, other):

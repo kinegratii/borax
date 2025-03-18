@@ -223,6 +223,9 @@ class WrappedDateTestCase(unittest.TestCase):
         self.assertEqual(timedelta(days=2), wd - LunarDate(2021, 3, 18))
         self.assertEqual(WrappedDate(date(2021, 4, 30)), wd - timedelta(days=1))
 
+        wd1 = WrappedDate(date(2021, 5, 11))
+        self.assertEqual(10, (wd1 - wd).days)
+
     def test_wd(self):
         wd = WrappedDate(LunarDate(2022, 4, 1))
         self.assertEqual('四月初一', wd.lunar.cn_md)

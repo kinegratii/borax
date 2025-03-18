@@ -4,6 +4,7 @@
 
 - 新增Borax内置 `basic1`，与`basic` 相比，增加其他22个节气节日
 - 修正日历界面类 `CalendarFrame` 无法加载自定义节日源的bug [#62](https://github.com/kinegratii/borax/issues/62)
+- 修正两个 `WrappedDate` 无法相减的bug [#63](https://github.com/kinegratii/borax/issues/63)
 - 新增 `FestivalLibrary` 独立文档页面
 
 ## v4.1.2 (20250131)
