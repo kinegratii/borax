@@ -513,11 +513,15 @@ class SolarFestival(Festival):
                     _index -= ndays
             return []
         else:
+            nday_this_month = calendar.monthrange(year, self._month)[1]
             if self._reverse == 0:
                 day = self._day
+                if 0 < self._day <= nday_this_month:
+                    return [date(year, self._month, day)]
             else:
-                day = calendar.monthrange(year, self._month)[1] - self._day + 1
-            return [date(year, self._month, day)]
+                day = nday_this_month - self._day + 1
+                return [date(year, self._month, day)]
+            return []
 
     def _resolve_monthly(self, year, month, leap=0) -> List[Union[date, LunarDate]]:
 
@@ -761,11 +765,13 @@ class LunarFestival(Festival):
         for v_leap in leaps:
             if v_leap == 1 and LCalendars.leap_month(year) != month:
                 continue
+            nday_this_month = LCalendars.ndays(year, month, v_leap)
             if reverse:
-                v_day = LCalendars.ndays(year, month, v_leap) - day + 1
+                v_day = nday_this_month - day + 1
             else:
                 v_day = day
-            data_tuples.append(LunarDate(year, month, v_day, v_leap))
+            if 0 < v_day <= nday_this_month:
+                data_tuples.append(LunarDate(year, month, v_day, v_leap))
         return data_tuples
 
     def _list_monthly(self, start_date, end_date, reverse):
