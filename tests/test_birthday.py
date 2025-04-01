@@ -1,8 +1,42 @@
-from datetime import date
 import unittest
+from datetime import date
 
+from borax.calendars.birthday import nominal_age, actual_age_solar, actual_age_lunar, BirthdayCalculator
+from borax.calendars.festivals2 import WrappedDate
 from borax.calendars.lunardate import LunarDate
-from borax.calendars.birthday import nominal_age, actual_age_solar, actual_age_lunar
+
+
+class BirthdayCalculatorTestCase(unittest.TestCase):
+    def test_solar_birthday(self):
+        bc1 = BirthdayCalculator(date(2000, 3, 4))  # LunarDate(2000, 1, 29)
+
+        result = bc1.calculate(date(2010, 3, 3))
+        self.assertEqual(9, result.actual_age)
+        self.assertEqual(11, result.nominal_age)
+
+        result1 = bc1.calculate(date(2010, 3, 4))
+        self.assertEqual(10, result1.actual_age)
+        self.assertEqual(11, result1.nominal_age)
+
+        result2 = bc1.calculate(LunarDate(2009, 12, 30))
+        self.assertEqual(10, result2.nominal_age)
+
+        result3 = bc1.calculate(LunarDate(2010, 1, 1))
+        self.assertEqual(11, result3.nominal_age)
+
+    def test_leap_feb(self):
+        bc = BirthdayCalculator(date(2020, 2, 29))
+        result = bc.calculate(date(2021, 2, 28))
+        self.assertEqual(0, result.actual_age)
+        result = bc.calculate(date(2021, 3, 1))
+        self.assertEqual(1, result.actual_age)
+
+    def test_same_days(self):
+        my_birthday = LunarDate(2004, 2, 2)
+        this_day = date(2023, 1, 1)
+        my_bc = BirthdayCalculator(my_birthday)
+        same_day_list = my_bc.list_days_in_same_day(start_date=this_day)
+        self.assertIn(WrappedDate(LunarDate(2023, 2, 2)), same_day_list)
 
 
 class NominalAgeTestCase(unittest.TestCase):

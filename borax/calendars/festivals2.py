@@ -757,7 +757,7 @@ class LunarFestival(Festival):
             return self._build_date(year, month, self._day, leap, self._reverse)
 
     def _build_date(self, year, month, day, leap, reverse):
-        if leap not in (0, 1):
+        if leap not in (0, 1):  # only leap == 3
             leaps = (0, 1)
         else:
             leaps = (leap,)
