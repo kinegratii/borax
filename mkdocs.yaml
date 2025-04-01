@@ -47,6 +47,11 @@ nav:
     - 字符串: guides/strings.md
     - 单例模式: guides/singleton.md
     - 序列号池: guides/serial_pool.md
+    - tkui: guides/ui.md
+    - 已废弃模块:
+      - bjson: guides/bjson.md
+      - 节日库(旧版): guides/festival.md
+      - 序列号池(旧版): guides/serial_generator.md
   - 文章:
     - 农历与节日: guides/festivals2-usage.md
     - 农历开发笔记: posts/lunardate-development.md

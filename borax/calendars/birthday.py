@@ -35,9 +35,8 @@ def actual_age_lunar(birthday, today=None):
         today = LCalendars.cast_date(today, LunarDate)
     else:
         today = LunarDate.today()
-    return today.year - birthday.year - (
-            (today.month, today.leap, today.day) < (birthday.month, birthday.leap, birthday.day)
-    )
+    day_flag = (today.month, today.leap, today.day) < (birthday.month, birthday.leap, birthday.day)
+    return today.year - birthday.year - day_flag
 
 
 @dataclass
