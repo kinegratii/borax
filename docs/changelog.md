@@ -1,6 +1,6 @@
 # 更新日志
 
-## v4.1.3
+## v4.1.3 (20250401)
 
 - `borax.calendars.birthday` 新增 `BirthdayCalculator` 类计算器
 - 新增Borax内置 `basic1`，与`basic` 相比，增加其他22个节气节日
