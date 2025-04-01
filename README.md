@@ -11,9 +11,9 @@
 
 ## 概述 (Overview)
 
-> github  https://github.com/kinegratii/borax
+> 代码主仓库 github  https://github.com/kinegratii/borax
 >
-> gitee  https://gitee.com/kinegratii/borax
+> 备份仓库(仅版本发布时同步代码) gitee  https://gitee.com/kinegratii/borax
 
 
 
@@ -203,15 +203,11 @@ print(FinanceNumbers.to_capital_str(decimal.Decimal(4.50))) # '肆元伍角零�
 
 ## 文档 (Document)
 
-文档由 [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) 构建 ~~，另外备用文档使用 [docsify](https://docsify.js.org/) 构建~~ 。
-
-> 2024年1月起，仅保留 Read the Docs 文档源。
+文档由 [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) 构建。
 
 | 源 | 网址 |
 | ---- | ---- |
 | read-the-docs | [https://borax.readthedocs.io/zh_CN/latest/](https://borax.readthedocs.io/zh_CN/latest/) |
-| github（已废弃） | [https://kinegratii.github.io/borax](https://kinegratii.github.io/borax) |
-| gitee（已废弃） | [https://kinegratii.gitee.io/borax](https://kinegratii.gitee.io/borax) |
 
 ## 开发特性和规范 (Development Features)
 
@@ -221,6 +217,24 @@ print(FinanceNumbers.to_capital_str(decimal.Decimal(4.50))) # '肆元伍角零�
 - [x] [Github Action](https://github.com/kinegratii/borax/actions)
 - [x] [Code Coverage](https://codecov.io/)
 - [x] [pyproject.toml build tools](https://packaging.python.org/)
+
+## 单元测试 (Unittests)
+
+支持 unitests 和 nose2 测试框架。
+
+unittest
+
+```shell
+python -m unittest
+```
+
+nose2
+
+```shell
+nose2 tests
+```
+
+
 
 ## 项目构建 (Project Build)
 

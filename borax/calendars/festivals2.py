@@ -116,6 +116,8 @@ class WrappedDate:
         elif isinstance(other, timedelta):
             res = self.solar - other
             return WrappedDate(res)
+        elif isinstance(other, WrappedDate):
+            return self.solar - other.solar
         raise TypeError
 
     def __rsub__(self, other):
@@ -511,11 +513,15 @@ class SolarFestival(Festival):
                     _index -= ndays
             return []
         else:
+            nday_this_month = calendar.monthrange(year, self._month)[1]
             if self._reverse == 0:
                 day = self._day
+                if 0 < self._day <= nday_this_month:
+                    return [date(year, self._month, day)]
             else:
-                day = calendar.monthrange(year, self._month)[1] - self._day + 1
-            return [date(year, self._month, day)]
+                day = nday_this_month - self._day + 1
+                return [date(year, self._month, day)]
+            return []
 
     def _resolve_monthly(self, year, month, leap=0) -> List[Union[date, LunarDate]]:
 
@@ -641,7 +647,7 @@ class TermFestival(Festival):
         if self._nth != 0 and not (self._day_gz in TextUtils.BRANCHES or self._day_gz in TextUtils.STEMS):
             raise ValueError(f'Invalid day_gz: {day_gz}')
         if self._nth == 0:
-            self.set_name(t_name)
+            self.set_name(t_name)  # use calendar term names
         else:
             self.set_name(name)
 
@@ -751,7 +757,7 @@ class LunarFestival(Festival):
             return self._build_date(year, month, self._day, leap, self._reverse)
 
     def _build_date(self, year, month, day, leap, reverse):
-        if leap not in (0, 1):
+        if leap not in (0, 1):  # only leap == 3
             leaps = (0, 1)
         else:
             leaps = (leap,)
@@ -759,11 +765,13 @@ class LunarFestival(Festival):
         for v_leap in leaps:
             if v_leap == 1 and LCalendars.leap_month(year) != month:
                 continue
+            nday_this_month = LCalendars.ndays(year, month, v_leap)
             if reverse:
-                v_day = LCalendars.ndays(year, month, v_leap) - day + 1
+                v_day = nday_this_month - day + 1
             else:
                 v_day = day
-            data_tuples.append(LunarDate(year, month, v_day, v_leap))
+            if 0 < v_day <= nday_this_month:
+                data_tuples.append(LunarDate(year, month, v_day, v_leap))
         return data_tuples
 
     def _list_monthly(self, start_date, end_date, reverse):
@@ -1232,14 +1240,19 @@ class FestivalLibrary(collections.UserList):
         return self.extend_term_festivals()
 
     @classmethod
-    def load_builtin(cls, identifier: Literal['basic', 'empty', 'ext1', 'zh-Hans'] = 'basic') -> 'FestivalLibrary':
+    def load_builtin(
+            cls, identifier: Literal['basic', 'empty', 'ext1', 'zh-Hans', 'basic1'] = 'basic'
+    ) -> 'FestivalLibrary':
         """Load builtin library in borax project.
 
         Available Identifiers: basic, zh-Hans, ext1, empty
         """
         if identifier == 'empty':
             return FestivalLibrary()
-        if identifier == 'zh-Hans':
+        elif identifier == 'basic1':
+            library = cls.load_file(get_festival_dataset_path('basic')).extend_term_festivals()
+            return library
+        elif identifier == 'zh-Hans':
             warnings.warn('identifier "zh-Hans" is deprecated.Use "basic" instead. ', DeprecationWarning)
         return cls.load_file(get_festival_dataset_path(identifier))
 

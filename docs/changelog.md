@@ -1,5 +1,14 @@
 # 更新日志
 
+## v4.1.3 (20250401)
+
+- `borax.calendars.birthday` 新增 `BirthdayCalculator` 类计算器
+- 新增Borax内置 `basic1`，与`basic` 相比，增加其他22个节气节日
+- 修正日历界面类 `CalendarFrame` 无法加载自定义节日源的bug [bug#62](https://github.com/kinegratii/borax/issues/62)
+- 修正两个 `WrappedDate` 无法相减的bug [bug#63](https://github.com/kinegratii/borax/issues/63)
+- 修正在公历2月29日，农历三十情况下节日类 `SolarFestival` / `LunarFestival` 计算错误的bug [bug#64](https://github.com/kinegratii/borax/issues/64)
+- 新增 `FestivalLibrary` 独立文档页面
+
 ## v4.1.2 (20250131)
 
 > 新增python3.13构建支持

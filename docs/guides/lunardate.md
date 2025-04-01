@@ -408,7 +408,7 @@ ValueError: Invalid month for the year 2017
 
 > Updated in 3.5.2: 新增TermUtils.nth_term_day
 
-> Deprecated in 3.5.2: 原函数LCalendars.create_solar_date将在v3.6.0移除
+> Deprecated in 3.5.2: 函数LCalendars.create_solar_date已标记为废弃
 
 根据节气名称或者序号获取对应的公历日期对象(`dateitime.date`)。`term_index` 和 `term_name` 只需传入一个参数，
 
@@ -418,7 +418,7 @@ ValueError: Invalid month for the year 2017
 如果传入的参数无法创建对应的日期，将抛出 `ValueError` 异常。
 
 ```
->>>LCalendars.create_solar_date(2019, term_name='清明')
+>>>TermUtils.nth_term_day(2019, term_name='清明')
 2019-04-05
 ```
 

@@ -31,7 +31,7 @@ class CalendarFrame(ttk.Frame):
         self._v_year = tk.IntVar(value=year)
         self._v_month = tk.IntVar(value=month)
         if isinstance(festival_source, str):
-            self._library = FestivalLibrary.load_builtin(festival_source)
+            self._library = FestivalLibrary.load(festival_source)
         else:
             self._library = festival_source
         self._v_day_matrix = [[tk.StringVar() for _ in range(7)] for _ in range(6)]
@@ -189,7 +189,7 @@ class FestivalTableFrame(ttk.Frame):
         if isinstance(festival_source, FestivalLibrary):
             self._library = festival_source
         else:
-            self._library = FestivalLibrary.load_builtin(festival_source)
+            self._library = FestivalLibrary.load(festival_source)
         self._tree = ttk.Treeview(self, column=self._adapter.displays, show='headings')
         self._tree.pack(side='left', fill='both')
         verscrlbar = ttk.Scrollbar(self, orient="vertical", command=self._tree.yview)

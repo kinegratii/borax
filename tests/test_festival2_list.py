@@ -150,6 +150,20 @@ class LunarFestivalTestCase(unittest.TestCase):
             LunarFestival(freq='xxx', day=1)
 
 
+class SpecialFeaturesTestCase(unittest.TestCase):
+    def test_leap_feb(self):
+        leap_feb_festival = SolarFestival(month=2, day=29)
+        with self.assertRaises(FestivalError):
+            leap_feb_festival.at(year=2021)
+        self.assertIsNotNone(leap_feb_festival.at(year=2028))
+
+    def test_day30_in_lunar(self):
+        day30_festival = LunarFestival(month=12, day=30)
+        with self.assertRaises(FestivalError):
+            day30_festival.at(2024)
+        self.assertIsNotNone(day30_festival.at(year=2029))
+
+
 class CheckFestivalTestCase(unittest.TestCase):
     def test_all_days(self):
         ld = LunarDate(2021, 1, 3)
@@ -222,6 +236,9 @@ class WrappedDateTestCase(unittest.TestCase):
         self.assertEqual(timedelta(days=1), LunarDate(2021, 3, 21) - wd)
         self.assertEqual(timedelta(days=2), wd - LunarDate(2021, 3, 18))
         self.assertEqual(WrappedDate(date(2021, 4, 30)), wd - timedelta(days=1))
+
+        wd1 = WrappedDate(date(2021, 5, 11))
+        self.assertEqual(10, (wd1 - wd).days)
 
     def test_wd(self):
         wd = WrappedDate(LunarDate(2022, 4, 1))
